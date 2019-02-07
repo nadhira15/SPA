@@ -1,21 +1,30 @@
 #pragma once
 
-#include<stdio.h>
+#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
 
 using namespace std;
-typedef short PROC;
-
-class TNode;
-
-class VarTable;  // no need to #include "VarTable.h" as all I need is pointer
 
 class PKB {
 public:
-	static VarTable* varTable; 
-	static int setProcToAST(PROC p, TNode* r);
-	static TNode* getRootAST (PROC p);
+	PKB();
 
+	void addStatement(NodeType type, string variable);
+
+	short PrvLn(short stm);
+	short NxtLn(short stm);
+	vector<short> getAllFollowing(short stm);
+	vector<short> getAllFollowedBy(short stm);
+	vector<short> getAllFollowers();
+	vector<short> getAllFollowed();
+
+	vector<string> getAllVariable();
+
+private:
+	static vector<TNode*> stmTable;
+	static vector<string> varTable;
+
+	void addVariable(string name);
 };
