@@ -1,4 +1,4 @@
-﻿# Prerequisites
+# Prerequisites
 *.d
 
 # Compiled Object files
@@ -29,6 +29,7 @@
 *.exe
 *.out
 *.app
+
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -109,10 +110,12 @@ dlldata.c
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
 
+
 # .NET Core
 project.lock.json
 project.fragment.lock.json
 artifacts/
+
 
 # StyleCop
 StyleCopReport.xml
@@ -178,6 +181,7 @@ _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
 
+
 # JustCode is a .NET coding add-in
 .JustCode
 
@@ -231,9 +235,11 @@ publish/
 *.pubxml
 *.publishproj
 
+
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
 # checkin your Azure Web App publish settings, but sensitive information contained
 # in these scripts will be unencrypted
+
 PublishScripts/
 
 # NuGet Packages
