@@ -1,15 +1,19 @@
+#include <string>
+#include <vector>
+#include "TNode.h"
 #include "PKB.h"
 
 PKB::PKB()
 {
+	TNode root{ proc };
+	stmTable.push_back(&root);
 }
 
 void PKB::addStatement(NodeType type, string var)
 {
-	TNode node{type};
+	TNode node{ type };
 	stmTable.push_back(&node);
-	NodeType type2 = variable;
-	TNode varNode{ type2, var };
+	TNode varNode{ variable, var };
 	node.addChild(&varNode);
 	addVariable(var);
 }
@@ -71,7 +75,7 @@ vector<short> PKB::getAllFollowedBy(short index)
 
 vector<short> PKB::getAllFollowers()
 {
-	short index = 0;
+	short index = 1;
 	vector<short> statements;
 	TNode* node = stmTable.at(index);
 	while (node->hasRight())
@@ -88,11 +92,11 @@ vector<short> PKB::getAllFollowed()
 	short index = stmTable.size() - 1;
 	vector<short> statements;
 	TNode* node = stmTable.at(index);
-	while (node->hasRight())
+	while (node->hasLeft())
 	{
 		index++;
 		statements.push_back(index);
-		node = node->getRight();
+		node = node->getLeft();
 	}
 	return statements;
 }

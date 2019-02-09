@@ -5,7 +5,7 @@
 
 using namespace std;
 
-enum NodeType {read, print, variable, constant};
+enum NodeType {proc, read, print, variable, constant};
 
 class TNode
 {

@@ -1,3 +1,5 @@
+#include <vector>
+#include <string>
 #include "TNode.h"
 
 TNode::TNode(NodeType t)

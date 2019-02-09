@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdio.h>
-#include <iostream>
 #include <string>
 #include <vector>
 #include "TNode.h"
@@ -28,4 +26,4 @@ private:
 	static vector<string> varTable;
 
 	void addVariable(string name);
-};
+}
