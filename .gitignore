@@ -403,3 +403,4 @@ ASALocalRun/
 healthchecksdb
 
 Code/Tests/out.xml
+*.vcxproj.user
