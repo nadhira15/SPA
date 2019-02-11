@@ -30,6 +30,9 @@
     <ClCompile Include="..\source\LexicalToken.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AssignParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\PKB.h">

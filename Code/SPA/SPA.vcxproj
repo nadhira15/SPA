@@ -16,6 +16,7 @@
     <ClCompile Include="..\source\Parser.cpp" />
     <ClCompile Include="..\source\PKB.cpp" />
     <ClCompile Include="..\source\TNode.cpp" />
+    <ClCompile Include="AssignParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\LexicalToken.h" />
