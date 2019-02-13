@@ -27,6 +27,12 @@
     <ClCompile Include="..\source\TNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\LexicalToken.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AssignParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\PKB.h">
@@ -34,6 +40,9 @@
     </ClInclude>
     <ClInclude Include="..\source\TNode.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\LexicalToken.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
