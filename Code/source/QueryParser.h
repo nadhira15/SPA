@@ -19,4 +19,6 @@ public:
 	static vector<pair<string, string>> splitSelectConditions(string selectStatement);
 	static string validateSelectConditions(vector<pair<string, string>> selectConditions);
 	static string evaluateSelectConditions(vector<pair<string, string>> declarations, vector<pair<string, string>> selectConditions);
+	static string removeAllWhitespaces(string s);
+	static string removeTrailingWhitespaces(string s);
 };
