@@ -16,9 +16,15 @@ public:
 	static string validateClauses(vector<string> clauses);
 	static vector<pair<string, string>> splitDeclarations(vector<string> clauses);
 	static string validateDeclarations(vector<pair<string, string>> declarations);
-	static vector<pair<string, string>> splitSelectConditions(string selectStatement);
-	static string validateSelectConditions(vector<pair<string, string>> selectConditions);
-	static string evaluateSelectConditions(vector<pair<string, string>> declarations, vector<pair<string, string>> selectConditions);
+	static vector<string> splitSelectParameter(string selectStatement);
+	static vector<pair<string, pair<string, string>>> splitSuchThatCondition(string suchThatClause);
+	static vector<pair<string, pair<string, string>>> splitPatternCondition(string patternClause);
+	static string validateSelectedVar(vector<string> selectedVar, vector<pair<string, string>> declarations);
+	static string validateSuchThatParam(vector<pair<string, pair<string, string>>> param);
+	static string validatePatternParam(vector<pair<string, pair<string, string>>> param);
+	static string evaluateSelectConditions(vector<pair<string, string>> declarations,
+		vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
+		vector<pair<string, pair<string, string>>> patternCondition);
 	static string removeAllWhitespaces(string s);
 	static string removeTrailingWhitespaces(string s);
 };

@@ -49,16 +49,57 @@ string QueryParser::parse(string query) {
 
 	// parsing "Select" statement
 	string selectStatement = clauses[clauses.size() - 1];
-	vector<pair<string, string>> selectConditions = splitSelectConditions(selectStatement);
 
-	// validating "Select" conditions
-	errorString = validateSelectConditions(selectConditions);
+	vector<string> selectedVar;
+	vector<pair<string, pair<string, string>>> suchThatCondition;
+	vector<pair<string, pair<string, string>>> patternCondition;
+
+	int suchThatIndex = selectStatement.find("such that");
+	int patternIndex = selectStatement.find("pattern");
+	int selectStatementLen = selectStatement.length();
+
+	if (suchThatIndex == -1 && patternIndex == -1) {
+		selectedVar = splitSelectParameter(selectStatement);
+	}
+	else if (suchThatIndex == -1 && patternIndex != -1) {
+		selectedVar = splitSelectParameter(selectStatement.substr(0, suchThatIndex));
+		suchThatCondition = splitSuchThatCondition(selectStatement.substr(suchThatIndex));
+	}
+	else if (suchThatIndex != -1 && patternIndex == 1) {
+		selectedVar = splitSelectParameter(selectStatement.substr(0, patternIndex));
+		patternCondition = splitPatternCondition(selectStatement.substr(patternIndex));
+	}
+	else if (suchThatIndex < patternIndex) {
+		selectedVar = splitSelectParameter(selectStatement.substr(0, suchThatIndex));
+		suchThatCondition = splitSuchThatCondition(selectStatement.substr(suchThatIndex, patternIndex - suchThatIndex));
+		patternCondition = splitPatternCondition(selectStatement.substr(patternIndex));
+	}
+	else if (patternIndex < suchThatIndex) {
+		selectedVar = splitSelectParameter(selectStatement.substr(0, patternIndex));
+		patternCondition = splitPatternCondition(selectStatement.substr(patternIndex, suchThatIndex - patternIndex));
+		suchThatCondition = splitSuchThatCondition(selectStatement.substr(patternIndex));
+	}
+
+	// validating 'Select' parameter
+	errorString = validateSelectedVar(selectedVar, declarations);
 	if (errorString != "") {
 		return errorString;
 	}
 
-	string result = evaluateSelectConditions(declarations, selectConditions);
-	
+	// validating 'such that' parameter
+	errorString = validateSuchThatParam(suchThatCondition);
+	if (errorString != "") {
+		return errorString;
+	}
+
+	// validating 'pattern' parameter
+	errorString = validatePatternParam(patternCondition);
+	if (errorString != "") {
+		return errorString;
+	}
+
+	string result = evaluateSelectConditions(declarations, selectedVar, suchThatCondition, patternCondition);
+
 	return result;
 }
 
@@ -172,20 +213,70 @@ string QueryParser::validateDeclarations(vector<pair<string, string>> declaratio
 	return "";
 }
 
-vector<pair<string, string>> QueryParser::splitSelectConditions(string selectStatement) {
-	vector<pair<string, string>> output;
+vector<string> QueryParser::splitSelectParameter(string selectStatement) {
+	vector<string> output;
 
+	int firstSpace = selectStatement.find_first_of(whitespace);
+	string varName = removeAllWhitespaces(selectStatement.substr(firstSpace));
 
+	output.push_back(varName);
 
 	return output;
 }
 
-string QueryParser::validateSelectConditions(vector<pair<string, string>> selectConditions) {
+vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(string suchThatClause) {
+	vector<pair<string, pair<string, string>>> output;
+
+	int openBracket = suchThatClause.find("(");
+	int comma = suchThatClause.find(",");
+	int closeBracket = suchThatClause.find(")");
+	int strLen = suchThatClause.length();
+
+	string condition = removeAllWhitespaces(suchThatClause.substr(9, openBracket - 9));
+	string firstVar = removeAllWhitespaces(suchThatClause.substr(openBracket + 1, comma - openBracket - 1));
+	string secondVar = removeAllWhitespaces(suchThatClause.substr(comma + 1, closeBracket - comma - 1));
+
+	output.push_back(make_pair(condition, make_pair(firstVar, secondVar)));
+
+	return output;
+}
+
+vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(string patternClause) {
+	vector<pair<string, pair<string, string>>> output;
+
+	int openBracket = patternClause.find("(");
+	int comma = patternClause.find(",");
+	int closeBracket = patternClause.find(")");
+	int strLen = patternClause.length();
+
+	string varName = removeAllWhitespaces(patternClause.substr(7, openBracket - 7));
+	string firstPattern = removeAllWhitespaces(patternClause.substr(openBracket + 1, comma - openBracket - 1));
+	string secondPattern = removeAllWhitespaces(patternClause.substr(comma + 1, closeBracket - comma - 1));
+
+	output.push_back(make_pair(varName, make_pair(firstPattern, secondPattern)));
+
+	return output;
+}
+
+string QueryParser::validateSelectedVar(vector<string> selectedVar, vector<pair<string, string>> declarations) {
 
 	return "";
 }
 
-string QueryParser::evaluateSelectConditions(vector<pair<string, string>> declarations, vector<pair<string, string>> selectConditions) {
+string QueryParser::validateSuchThatParam(vector<pair<string, pair<string, string>>> param) {
+
+	return "";
+}
+
+string QueryParser::validatePatternParam(vector<pair<string, pair<string, string>>> param) {
+
+	return "";
+}
+
+string QueryParser::evaluateSelectConditions(vector<pair<string, string>> declarations, 
+	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
+	vector<pair<string, pair<string, string>>> patternCondition) {
+	
 	// TODO: evaluate the result of select conditions
 
 	return "";

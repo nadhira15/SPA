@@ -70,6 +70,41 @@ namespace UnitTesting
 			Assert::AreEqual(actual == expected, true);
 		}
 
+		TEST_METHOD(splitSelectParameter_success)
+		{
+			vector<string> actual = QueryParser::splitSelectParameter("Select a");
+			vector<string> expected{ "a" };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitSuchThatCondition_success)
+		{
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitSuchThatCondition("such that Parent(a, '_')");
+			vector<pair<string, pair<string, string>>> expected{ {"Parent", {"a", "'_'"}} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitSuchThatCondition_multipleWhitespaces_success)
+		{
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitSuchThatCondition("such that    Parent    (   a  , '_'  )  ");
+			vector<pair<string, pair<string, string>>> expected{ {"Parent", {"a", "'_'"}} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitPatternCondition_success)
+		{
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitPatternCondition("pattern a('_', 'x*y+z' )");
+			vector<pair<string, pair<string, string>>> expected{ {"a", {"'_'", "'x*y+z'"}} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitPatternCondition_multipleWhitespaces_success)
+		{
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitPatternCondition("pattern   a  ( '_' , 'x*y+z' ) ");
+			vector<pair<string, pair<string, string>>> expected{ {"a", {"'_'", "'x*y+z'"}} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
 		TEST_METHOD(removeAllWhitespaces_multipleTab_success)
 		{
 			string actual = QueryParser::removeAllWhitespaces("\t\ta\ts\td\t");
