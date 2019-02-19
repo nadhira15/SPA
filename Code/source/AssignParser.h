@@ -15,6 +15,3 @@ public:
 
 	bool parse(short stmtNo, std::string statement);
 };
-
-#pragma once
-
