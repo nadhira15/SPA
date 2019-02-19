@@ -12,7 +12,7 @@ namespace UnitTesting
 
 		TEST_METHOD(testSimpleAssign)
 		{
-			std::string testStatement = "y=x";
+			std::string testStatement = "y=x;";
 			std::string leftExpected = "y";
 			std::string rightExpected = "x";
 			AssignParser ap;
@@ -26,7 +26,7 @@ namespace UnitTesting
 
 		TEST_METHOD(testExpresionAndFactorAssign)
 		{
-			std::string testStatement = "p=x+6/2+200";
+			std::string testStatement = "p=x+6/2+200;";
 			std::string leftExpected = "p";
 			std::string rightExpected = "x+6/2+200";
 			AssignParser ap;
