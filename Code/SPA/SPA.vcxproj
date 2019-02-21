@@ -11,15 +11,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\source\AssignParser.cpp" />
     <ClCompile Include="..\source\DesignExtractor.cpp" />
+    <ClCompile Include="..\source\ExpressionUtil.cpp" />
     <ClCompile Include="..\source\LexicalToken.cpp" />
     <ClCompile Include="..\source\Parser.cpp" />
     <ClCompile Include="..\source\PKB.cpp" />
     <ClCompile Include="..\source\QueryParser.cpp" />
     <ClCompile Include="..\source\TNode.cpp" />
-    <ClCompile Include="AssignParser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\source\AssignParser.h" />
+    <ClInclude Include="..\source\ExpressionUtil.h" />
     <ClInclude Include="..\source\LexicalToken.h" />
     <ClInclude Include="..\source\PKB.h" />
     <ClInclude Include="..\source\QueryParser.h" />

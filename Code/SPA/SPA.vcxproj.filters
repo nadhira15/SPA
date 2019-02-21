@@ -33,7 +33,10 @@
     <ClCompile Include="..\source\LexicalToken.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AssignParser.cpp">
+    <ClCompile Include="..\source\AssignParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ExpressionUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,8 +50,14 @@
     <ClInclude Include="..\source\QueryParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\AssignParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\LexicalToken.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ExpressionUtil.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
