@@ -10,20 +10,33 @@
 
 using namespace std;
 
-std::regex assignStmt("^[\s]*([\w]+)[\s]*[=][\s]*(.+)[\s]*$");
+std::regex assignStmt("^[\\s]*([\\w]+)[\\s]*[=][\\s]*(.+)[\\s]*$");
 
-bool AssignParser::parse(short stmtNo, std::string statement) {
+std::string AssignParser::parseLeft(short stmtNo, std::string statement) {
 	
 	if (std::regex_match(statement, assignStmt)) {
 		smatch result;
 		regex_search(statement, result, assignStmt);
-		string left = result[0];
-		string right = result[1];
+		string left = result[1];
 
-		return true;
+		return left;
 	}
 	else {
-		return false;
+		throw "failed";
+	}
+}
+
+std::string AssignParser::parseRight(short stmtNo, std::string statement) {
+
+	if (std::regex_match(statement, assignStmt)) {
+		smatch result;
+		regex_search(statement, result, assignStmt);
+		string right = result[2];
+
+		return right;
+	}
+	else {
+		throw "failed";
 	}
 }
 

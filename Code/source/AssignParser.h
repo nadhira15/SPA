@@ -10,8 +10,8 @@
 class AssignParser
 {
 public:
+	std::string parseLeft(short stmtNo, std::string statement);
+	std::string parseRight(short stmtNo, std::string statement);
 	AssignParser();
 	~AssignParser();
-
-	bool parse(short stmtNo, std::string statement);
 };

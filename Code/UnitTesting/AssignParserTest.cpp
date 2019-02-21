@@ -12,30 +12,26 @@ namespace UnitTesting
 
 		TEST_METHOD(testSimpleAssign)
 		{
-			std::string testStatement = "y=x;";
-			std::string leftExpected = "y";
-			std::string rightExpected = "x";
+			std::string testStatement = "y=x";
+			std::string parseExpected = "y";
 			AssignParser ap;
 
-			std::string output = ap.getLeft(testStatement);
-			Assert::AreEqual(leftExpected, output);
+			std::string output = ap.parseLeft(5, testStatement);
 
-			std::string output2 = ap.getRight(testStatement);
-			Assert::AreEqual(rightExpected, output2);
+			
+			Assert::AreEqual(parseExpected, output);
 		}
 
 		TEST_METHOD(testExpresionAndFactorAssign)
 		{
-			std::string testStatement = "p=x+6/2+200;";
-			std::string leftExpected = "p";
-			std::string rightExpected = "x+6/2+200";
+			std::string testStatement = "p=x+6/2+200";
+			std::string parseExpected = "x+6/2+200";
 			AssignParser ap;
 
-			std::string output = ap.getLeft(testStatement);
-			Assert::AreEqual(leftExpected, output);
+			std::string output = ap.parseRight(5, testStatement);
 
-			std::string output2 = ap.getRight(testStatement);
-			Assert::AreEqual(rightExpected, output2);
+
+			Assert::AreEqual(parseExpected, output);
 		}
 
 	};
