@@ -1,3 +1,4 @@
 #pragma once
 using namespace std;
-int Parse();
+
+int Parse(std::string simpleCode);
