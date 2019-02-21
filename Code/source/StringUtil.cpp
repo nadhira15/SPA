@@ -15,7 +15,6 @@ using namespace StringUtil;
 std::vector<std::string> StringUtil::split(std::string stmt, char delimiter)
 {
 	vector<string> v;
-
 	string::size_type i = 0;
 	//Find first occurence of delimiter.
 	string::size_type j = stmt.find(delimiter);
