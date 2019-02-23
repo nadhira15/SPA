@@ -27,12 +27,6 @@
     <ClCompile Include="..\source\TNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Preprocesser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\Statement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\QueryParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,6 +42,12 @@
     <ClCompile Include="..\source\StringUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\Preprocesser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Statement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\PKB.h">
@@ -56,12 +56,6 @@
     <ClInclude Include="..\source\TNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\source\Preprocesser.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\Statement.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClInclude Include="..\source\QueryParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -75,6 +69,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\StringUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Preprocesser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Statement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
