@@ -17,17 +17,19 @@
     <ClCompile Include="..\source\LexicalToken.cpp" />
     <ClCompile Include="..\source\Parser.cpp" />
     <ClCompile Include="..\source\PKB.cpp" />
+    <ClCompile Include="..\source\Preprocesser.cpp" />
+    <ClCompile Include="..\source\Statement.cpp" />
     <ClCompile Include="..\source\StringUtil.cpp" />
     <ClCompile Include="..\source\QueryParser.cpp" />
     <ClCompile Include="..\source\TNode.cpp" />
-    <ClCompile Include="Preprocesser.cpp" />
-    <ClCompile Include="Statement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\AssignParser.h" />
     <ClInclude Include="..\source\ExpressionUtil.h" />
     <ClInclude Include="..\source\LexicalToken.h" />
     <ClInclude Include="..\source\PKB.h" />
+    <ClInclude Include="..\source\Preprocesser.h" />
+    <ClInclude Include="..\source\Statement.h" />
     <ClInclude Include="..\source\StringUtil.h" />
     <ClInclude Include="..\source\QueryParser.h" />
     <ClInclude Include="..\source\TNode.h" />
