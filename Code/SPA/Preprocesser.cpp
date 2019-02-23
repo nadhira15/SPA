@@ -19,6 +19,7 @@ int stopper;
 int stmtNum = 0;
 vector<Statement> procLst;
 stack<int> ifStmt;
+string KEYWORDS[] = { "procedure", "then", "call", "read", "print", "while", "if", "else" };
 
 vector<Statement> getProcLst() {
 	return procLst;
@@ -56,7 +57,7 @@ Statement processProc(int bookmark, int last)
 	string tmp;
 	size_t tmpn, pos;
 	//reset counters for '{' and '}'
-	count1 = 0;
+	count1 = 1;
 	count2 = 0;
 	//validation: check for last '}' and pass validation to validateProc
 	pos = chunk.find_last_not_of(" \t\f\v\n\r", last - 1);
@@ -71,12 +72,14 @@ Statement processProc(int bookmark, int last)
 	}
 	if (valid == 0) {} //throw error
 	Statement s = Statement(tmp, processLst(tmpn + 1, pos), valid, stmtNum);
-	if (count1 != count2) {}
+	if (count1 != count2 || !ifStmt.empty()) {
+		//throw error!!
+	}
 	return s;
 }
 
 /*
-input: start, end (not inclusive and estimate only)
+input: start, end (usually })
 output: Statement
 */
 vector<Statement> processLst(int bookmark, int last) {
@@ -88,16 +91,16 @@ vector<Statement> processLst(int bookmark, int last) {
 		if (chunk[i] == '}') { //end of a {} part
 			//double check count of '{' and '}'
 			count2++;
-			//end loop by i = last
-			i = last;
 			//reset stopper
 			stopper = i + 1;
+			//end loop by i = last
+			i = last;
 		}
 		else if (chunk[i] == '{') {
 			//double check count of '{' and '}'
 			count1++;
 			//return trimmed string of statement
-			tmp = trim(chunk.substr(bookmark, i - 1 - bookmark));
+			tmp = trim(chunk.substr(bookmark, i - bookmark));
 			//check validity
 			valid = validateCurvedBrackets(tmp);
 			//based on results of validation
@@ -106,8 +109,13 @@ vector<Statement> processLst(int bookmark, int last) {
 			}
 			else if (valid == 7) {
 				// ELSE statement
-				tmpN = ifStmt.top();
-				ifStmt.pop();
+				if (ifStmt.empty()) {
+					//error handling!!
+				}
+				else {
+					tmpN = ifStmt.top();
+					ifStmt.pop();
+				}
 			}
 			else if (valid == 6) {
 				// IF statement
@@ -155,9 +163,9 @@ int validateSemicolon(string s)
 	s = trim(s.substr(4, s.size() - 4));
 	if (s.find(" ") == string::npos) {
 		//READ, CALL, PRINT is passed as long as it contains 2 words
-		if (firstWord.compare("call") == 0) result = 2;
-		else if (firstWord.compare("read") == 0) result = 3;
-		else if (firstWord.compare("print") == 0) result = 4;
+		if (firstWord.compare(KEYWORDS[2]) == 0) result = 2;
+		else if (firstWord.compare(KEYWORDS[3]) == 0) result = 3;
+		else if (firstWord.compare(KEYWORDS[4]) == 0) result = 4;
 	}
 	return result;
 }
@@ -171,19 +179,20 @@ errors NOT covered: incorrect variables, expression (i.e. *+/-=), non-alphanumer
 int validateCurvedBrackets(string s)
 {
 	int result = 0;
-	string firstWord = s.substr(0, s.find(" "));
-	if (firstWord.compare("while") == 0) {
-		//WHILE is passed as long as it is followed by '(' and ')'
+	if (s.substr(0, 5).compare(KEYWORDS[5]) == 0) {
 		s = trim(s.substr(5, s.size() - 5));
-		if (s[0] == '(' && s.find(')') != string::npos) result = 5;
+		if (s[0] == '(' && s[s.size() - 1] == ')') {
+			result = 5;
+		}
 	}
-	else if (firstWord.compare("if") == 0) {
+	else if (s.substr(0, 2).compare(KEYWORDS[6]) == 0) {
 		//IF is passed as long as it is followed by '(' and ')' and last word is THEN
-		s = trim(s.substr(2, s.size() - 2));
-		string lastWord = s.substr(s.rfind(" ") + 1, s.size() - s.rfind(" "));
-		if (s[0] == '(' && s.find(')') != string::npos && lastWord.compare("then") == 0) result = 6;
+		if (s.substr(s.size() - 4, 4).compare(KEYWORDS[1]) == 0) { // last word is then
+			s = trim(s.substr(2, s.size() - 6));
+			if (s[0] == '(' && s[s.size() - 1] == ')') result = 6;
+		}
 	}
-	else if (firstWord.compare("else") == 0) {
+	else if (s.substr(0, 4).compare(KEYWORDS[7]) == 0) {
 		if (trim(s).size() == 4) result = 7;
 	}
 	return result;
@@ -199,7 +208,7 @@ int validateProc(string s)
 {
 	int result = 0;
 	string firstWord = s.substr(0, s.find(" "));
-	if (firstWord.compare("procedure") == 0) {
+	if (firstWord.compare(KEYWORDS[0]) == 0) {
 		//PROCEDURE is passed as long as it contains 2 words
 		s = trim(s.substr(9, s.size() - 9));
 		if (s.find(" ") == string::npos) result = 8;
