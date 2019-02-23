@@ -20,6 +20,8 @@
     <ClCompile Include="..\source\StringUtil.cpp" />
     <ClCompile Include="..\source\QueryParser.cpp" />
     <ClCompile Include="..\source\TNode.cpp" />
+    <ClCompile Include="Preprocesser.cpp" />
+    <ClCompile Include="Statement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\AssignParser.h" />
