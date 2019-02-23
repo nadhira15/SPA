@@ -31,6 +31,8 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\source\Statement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\QueryParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -54,6 +56,12 @@
     <ClInclude Include="..\source\TNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClCompile Include="..\source\Preprocesser.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Statement.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
     <ClInclude Include="..\source\QueryParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
