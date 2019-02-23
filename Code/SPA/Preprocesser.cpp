@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stack>
 #include <algorithm>
 
 using namespace std;
@@ -14,10 +15,11 @@ using namespace std;
 string chunk;
 int count1 = 0;
 int count2 = 0;
-int stopper = 0;
+int stopper;
+int stmtNum = 0;
 vector<Statement> procLst;
+stack<int> ifStmt;
 
-/* returns procedure vector */
 vector<Statement> getProcLst() {
 	return procLst;
 }
@@ -28,11 +30,10 @@ output: vector<Statement> that contains procedure statements
 */
 void Processer(string chunk1)
 {
+	//take file contents and save as global variable
 	chunk = chunk1;
 	size_t prev = chunk.find("procedure "), next;
 	while (prev != string::npos) {
-		count1 = 0;
-		count2 = 0;
 		next = chunk.find("procedure ", prev + 10);
 		if (next == string::npos) {
 			procLst.push_back(processProc(prev, chunk.size()));
@@ -43,31 +44,34 @@ void Processer(string chunk1)
 		prev = next;
 	}
 }
-
 /*
 input: start, end (not inclusive)
 output: Statement
-NOTE procedure can only occur once
+NOTE 'procedure' can only occur once per procedure
 */
 Statement processProc(int bookmark, int last)
 {
 	vector<Statement> stmtLst;
-	int valid = -1;
+	int valid;
 	string tmp;
 	size_t tmpn, pos;
-	//check for last '}'
+	//reset counters for '{' and '}'
+	count1 = 0;
+	count2 = 0;
+	//validation: check for last '}' and pass validation to validateProc
 	pos = chunk.find_last_not_of(" \t\f\v\n\r", last - 1);
-	if (chunk[last] != '}') {
+	tmpn = chunk.find('{', bookmark);
+	if (chunk[pos] != '}') {
 		valid = 0;
+		//!!error handling here
 	}
-	if (chunk.find('{') != string::npos) {
-		tmpn = chunk.find('{');
+	else if (tmpn != string::npos) {
 		tmp = trim(chunk.substr(bookmark, tmpn - bookmark));
-		valid = validateProc(tmp);
+		valid = validateProc(tmp); //validate procedure term
 	}
-	if (valid == 0) {} //Halt the program and show error?
-	Statement s = Statement(tmp, processLst(tmpn + 1, pos), 7);
-	if (count1 != count2) {} //
+	if (valid == 0) {} //throw error
+	Statement s = Statement(tmp, processLst(tmpn + 1, pos), valid, stmtNum);
+	if (count1 != count2) {}
 	return s;
 }
 
@@ -77,30 +81,56 @@ output: Statement
 */
 vector<Statement> processLst(int bookmark, int last) {
 	vector<Statement> stmtlst;
-	int valid, i;
-	string tmp;
-	string tmp2;
+	int valid, i, tmpN;
+	string tmp, tmp2;
+	stopper = 0;
 	for (i = bookmark; i < last; i++) {
-		if (chunk[i] == '}') {
+		if (chunk[i] == '}') { //end of a {} part
+			//double check count of '{' and '}'
 			count2++;
-			stopper = i + 1;
+			//end loop by i = last
 			i = last;
+			//reset stopper
+			stopper = i + 1;
 		}
 		else if (chunk[i] == '{') {
+			//double check count of '{' and '}'
 			count1++;
+			//return trimmed string of statement
 			tmp = trim(chunk.substr(bookmark, i - 1 - bookmark));
+			//check validity
 			valid = validateCurvedBrackets(tmp);
-			if (valid == 0) break; //
-			stmtlst.push_back(Statement(tmp, processLst(i + 1, last), valid));
+			//based on results of validation
+			if (valid == 0) {
+				//!!error handling
+			}
+			else if (valid == 7) {
+				// ELSE statement
+				tmpN = ifStmt.top();
+				ifStmt.pop();
+			}
+			else if (valid == 6) {
+				// IF statement
+				ifStmt.push(stmtNum);
+			}
+			if (valid == 5 || valid == 6) {
+				// WHILE statement
+				tmpN = stmtNum;
+				stmtNum++;
+			}
+			stmtlst.push_back(Statement(tmp, processLst(i + 1, last), valid, tmpN));
+			//after execution of previous process {}, return to previous bookmark and i-count
 			i = stopper;
 			bookmark = stopper;
 		}
 		else if (chunk[i] == ';') {
 			tmp = trim(chunk.substr(bookmark, i - bookmark));
 			bookmark = i + 1;
+			tmpN = stmtNum;
 			valid = validateSemicolon(tmp);
-			if (valid == 0) break; //
-			stmtlst.push_back(Statement(tmp, 0));
+			if (valid == 0) {}
+			stmtlst.push_back(Statement(tmp, valid, tmpN));
+			stmtNum++;
 		}
 	}
 	return stmtlst;
@@ -154,7 +184,7 @@ int validateCurvedBrackets(string s)
 		if (s[0] == '(' && s.find(')') != string::npos && lastWord.compare("then") == 0) result = 6;
 	}
 	else if (firstWord.compare("else") == 0) {
-		if (trim(s).size() == 4) result = 6;
+		if (trim(s).size() == 4) result = 7;
 	}
 	return result;
 }
@@ -172,7 +202,7 @@ int validateProc(string s)
 	if (firstWord.compare("procedure") == 0) {
 		//PROCEDURE is passed as long as it contains 2 words
 		s = trim(s.substr(9, s.size() - 9));
-		if (s.find(" ") == string::npos) result = 7;
+		if (s.find(" ") == string::npos) result = 8;
 	}
 	return result;
 }
@@ -181,6 +211,7 @@ int validateProc(string s)
 trim whitespace from front and back of string
 adapted from an answer in StackOverflow
 https://stackoverflow.com/questions/44973435/stdptr-fun-replacement-for-c17/44973498#44973498
+to save memory, will change this to void method in future
 */
 string trim(string s) {
 	s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) {
