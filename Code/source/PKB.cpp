@@ -13,7 +13,7 @@ void PKB::addProc(string name)
 
 void PKB::addStatement(int stmNo, stmType type)
 {
-	stmTypeList[stmNo] = type;
+	stmTypeList.assign(stmNo, type);
 
 	switch (type)
 	{
@@ -69,7 +69,7 @@ int PKB::getTotalStmNo()
 
 stmType PKB::getStmType(int stm)
 {
-	return stmTypeList[stm];
+	return stmTypeList.at(stm);
 }
 
 unordered_set<int> PKB::getReadStms()

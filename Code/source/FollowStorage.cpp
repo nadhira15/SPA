@@ -5,36 +5,31 @@ FollowStorage::FollowStorage()
 }
 
 /*
-	adds the follows related statements into the various lists in the storage
+	Pre-cond: Follows relations must be added in sequential order.
+			  Meaning adding follows(2,3) followed by follows(1,2) is not allowed
+	Adds the follows relation into the various lists in the storage
 */
 bool FollowStorage::addFollowPair(int followed, int follower)
 {
-	pair<unordered_map<int, fRelationships>::iterator, bool> itrPair;
+	pair<unordered_map<int, fRelationships>::iterator, bool> itrPair1;
+	pair<unordered_map<int, fRelationships>::iterator, bool> itrPair2;
 
-	//attempt to insert a new element with next initialized
-	itrPair = followTable.emplace(followed, fRelationships{ 0, follower, {}, {} });
+	//attempt to insert a new statement and its follower
+	itrPair1 = followTable.emplace(followed, fRelationships{ 0, follower, {}, {} });
+	itrPair2 = followTable.emplace(follower, fRelationships{ followed, 0, {}, {} });
 
-	//if element already exist and next is not initialized
-	if (!itrPair.second && itrPair.first->second.next == 0)
+	// As follows relation must be added in sequential order, the follower must be a new statement
+	if (!itrPair2.second)
 	{
-		itrPair.first->second.next = follower;
-	}
-	else if (!itrPair.second)	//if next is already initialized
-	{
+		if (itrPair1.second)	// If a new followed has been successfully added, erase it
+		{
+			followTable.erase(followed);
+		}
 		return false;
 	}
-
-	//attempt to insert a new element with previous initialized
-	itrPair = followTable.emplace(follower, fRelationships{ followed, 0, {}, {} });
-
-	//if element already exist and previous is not initialized
-	if (!itrPair.second && itrPair.first->second.previous == 0)
+	else if (!itrPair1.second)
 	{
-		itrPair.first->second.previous = followed;
-	}
-	else if (!itrPair.second)	//if previous is already initialized
-	{
-		return false;
+		itrPair1.first->second.next = follower;
 	}
 
 	followPairList.emplace(pair<int, int>(followed, follower));
@@ -44,7 +39,7 @@ bool FollowStorage::addFollowPair(int followed, int follower)
 }
 
 /*
-	adds the followers* related statements into the various lists in the storage
+	adds the followers* relation into the various lists in the storage
 */
 bool FollowStorage::addFollow_S_Pair(int followed, int follower)
 {
