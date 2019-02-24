@@ -109,7 +109,7 @@ unordered_set<int> PKB::getConstants()
 
 bool PKB::hasFollowRelation()
 {
-	return fStore.isEmpty();
+	return !fStore.isEmpty();
 }
 
 bool PKB::hasFollow_S_Pair(int stm1, int stm2)
