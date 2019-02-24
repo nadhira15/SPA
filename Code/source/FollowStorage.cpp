@@ -49,9 +49,21 @@ bool FollowStorage::addFollow_S_Pair(int followed, int follower)
 	itrPair1 = followTable.at(followed).allNext.emplace(follower);
 	itrPair2 = followTable.at(follower).allPrevious.emplace(followed);
 
-	//if either follower or followed was already added
-	if (!itrPair1.second || !itrPair2.second)
+	//if either follower or followed was already added, erase the other if it was added successfully
+	if (!itrPair1.second)
 	{
+		if (itrPair2.second)
+		{
+			followTable.find(follower)->second.allPrevious.erase(followed);
+		}
+		return false;
+	}
+	if (!itrPair2.second)
+	{
+		if (itrPair1.second)
+		{
+			followTable.find(followed)->second.allNext.erase(follower);
+		}
 		return false;
 	}
 
@@ -71,27 +83,27 @@ bool FollowStorage::containsFSPair(pair<int, int> pair)
 }
 
 // return the statement following the statement specified by the index
-int FollowStorage::getNextOf(int index)
+int FollowStorage::getNextOf(int stm)
 {
-	return followTable.at(index).next;
+	return followTable.at(stm).next;
 }
 
 // return the statement being followed by the statement specified by the index
-int FollowStorage::getPrevOf(int index)
+int FollowStorage::getPrevOf(int stm)
 {
-	return followTable.at(index).previous;
+	return followTable.at(stm).previous;
 }
 
 // return a list of statements that is directly/indirectly following the statement specified by index
-unordered_set<int> FollowStorage::getAllFollowing(int index)
+unordered_set<int> FollowStorage::getAllFollowing(int stm)
 {
-	return followTable.at(index).allNext;
+	return followTable.at(stm).allNext;
 }
 
 // return a list of statements that is directly/indirectly followed by the statement specified by index
-unordered_set<int> FollowStorage::getAllFollowedBy(int index)
+unordered_set<int> FollowStorage::getAllFollowedBy(int stm)
 {
-	return followTable.at(index).allPrevious;
+	return followTable.at(stm).allPrevious;
 }
 
 unordered_set<int> FollowStorage::getFollowerList()

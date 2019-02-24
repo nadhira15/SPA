@@ -1,10 +1,8 @@
 #pragma once
 
-#include <exception>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
-#include <vector>
 
 using namespace std;
 
@@ -26,10 +24,10 @@ public:
 	bool isEmpty();
 	bool containsFSPair(pair<int, int> pair);
 
-	int getNextOf(int index);
-	int getPrevOf(int index);
-	unordered_set<int> getAllFollowing(int index);
-	unordered_set<int> getAllFollowedBy(int index);
+	int getNextOf(int stm);
+	int getPrevOf(int stm);
+	unordered_set<int> getAllFollowing(int stm);
+	unordered_set<int> getAllFollowedBy(int stm);
 	unordered_set<int> getFollowerList();
 	unordered_set<int> getFollowedList();
 	unordered_set< pair<int, int> > getFPairList();
