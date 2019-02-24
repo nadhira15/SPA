@@ -139,6 +139,11 @@ bool PKB::addModifies(string procedure, string variable)
 	return mStore.addModifies(procedure, variable);
 }
 
+bool PKB::addAssign(int stm, string variable, string expr)
+{
+	return patternList.emplace(stm, pair<string, string>(variable, expr)).second;
+}
+
 string PKB::getProcName()
 {
 	return procName;
@@ -377,4 +382,41 @@ unordered_set<pair<int, string>> PKB::getStmVarModifyPairs()
 unordered_set<pair<string, string>> PKB::getProcVarModifyPairs()
 {
 	return mStore.getProcVarPairs;
+}
+
+vector<int> PKB::findPattern(string variable, string expr, bool isExclusive)
+{
+	vector<int> validStm;
+	for each (const auto elem in patternList)
+	{
+		if (elem.second.first.compare(variable) == 0)
+		{
+			if (isExclusive && elem.second.second.compare(expr) == 0)
+			{
+				validStm.push_back(elem.first);
+			}
+			else if (!isExclusive && elem.second.second.find(expr) != string::npos)
+			{
+				validStm.push_back(elem.first);
+			}
+		}
+	}
+	return validStm;
+}
+
+vector<int> PKB::findPattern(string expr, bool isExclusive)
+{
+	vector<int> validStm;
+	for each (const auto elem in patternList)
+	{
+		if (isExclusive && elem.second.second.compare(expr) == 0)
+		{
+			validStm.push_back(elem.first);
+		}
+		else if (!isExclusive && elem.second.second.find(expr) != string::npos)
+		{
+			validStm.push_back(elem.first);
+		}
+	}
+	return validStm;
 }

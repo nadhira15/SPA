@@ -43,6 +43,9 @@ public:
 	bool addModifies(int stm, string variable);
 	bool addModifies(string procedure, string variable);
 
+	//adding patterns
+	bool addAssign(int stm, string variable, string expr);
+
 	//general getter methods
 	string getProcName();
 	int getTotalStmNo();
@@ -101,6 +104,10 @@ public:
 	unordered_set< pair<int, string> > getStmVarModifyPairs();
 	unordered_set< pair<string, string> > getProcVarModifyPairs();
 
+	//For Pattern clauses
+	vector<int> findPattern(string variable, string expr, bool isExclusive);
+	vector<int> findPattern(string expr, bool isExclusive);
+
 private:
 	static string procName;
 	static vector<stmType> stmTypeList;
@@ -116,4 +123,5 @@ private:
 	static ParentStorage pStore;
 	static UseStorage uStore;
 	static ModifyStorage mStore;
+	static unordered_map<int, pair<string, string> > patternList;
 };
