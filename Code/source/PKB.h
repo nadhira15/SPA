@@ -24,10 +24,14 @@ public:
 	//adding follows relationships
 	bool addFollow(int stm1, int stm2);
 	bool addFollow_S(int stm1, int stm2);
+	bool setAllFollowing(int stm, unordered_set<int> stmList);
+	bool setAllFollowBy(int stm, unordered_set<int> stmList);
 
 	//adding parent relationships
 	bool addParent(int stm1, int stm2);
 	bool addParent_S(int stm1, int stm2);
+	bool setAllAncestors(int stm, unordered_set<int> stmList);
+	bool setAllDescendants(int stm, unordered_set<int> stmList);
 
 	//general getter methods
 	string getProcName();

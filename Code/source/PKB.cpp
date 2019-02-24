@@ -57,6 +57,16 @@ bool PKB::addFollow_S(int stm1, int stm2)
 	return fStore.addFollow_S_Pair(stm1, stm2);
 }
 
+bool PKB::setAllFollowing(int stm, unordered_set<int> stmList)
+{
+	return fStore.setAllFollowing(stm, stmList);
+}
+
+bool PKB::setAllFollowBy(int stm, unordered_set<int> stmList)
+{
+	return fStore.setAllFollowedBy(stm, stmList);
+}
+
 bool PKB::addParent(int stm1, int stm2)
 {
 	return pStore.addParent_Child(stm1, stm2);
@@ -65,6 +75,16 @@ bool PKB::addParent(int stm1, int stm2)
 bool PKB::addParent_S(int stm1, int stm2)
 {
 	return pStore.addAnc_Desc(stm1, stm2);
+}
+
+bool PKB::setAllAncestors(int stm, unordered_set<int> stmList)
+{
+	return pStore.setAncestors(stm, stmList);
+}
+
+bool PKB::setAllDescendants(int stm, unordered_set<int> stmList)
+{
+	return pStore.setDescendants(stm, stmList);
 }
 
 string PKB::getProcName()

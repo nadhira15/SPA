@@ -71,6 +71,26 @@ bool FollowStorage::addFollow_S_Pair(int followed, int follower)
 	return true;
 }
 
+bool FollowStorage::setAllFollowing(int followed, unordered_set<int> followers)
+{
+	if (followTable.find(followed)->second.allNext.size() != 0)
+	{
+		return false;
+	}
+	followTable.find(followed)->second.allNext = followers;
+	return true;
+}
+
+bool FollowStorage::setAllFollowedBy(int follower, unordered_set<int> followed)
+{
+	if (followTable.find(follower)->second.allPrevious.size() != 0)
+	{
+		return false;
+	}
+	followTable.find(follower)->second.allPrevious = followed;
+	return true;
+}
+
 bool FollowStorage::isEmpty()
 {
 	return followTable.size == 0;

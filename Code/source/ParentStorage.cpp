@@ -68,6 +68,26 @@ bool ParentStorage::addAnc_Desc(int ancestor, int descendant)
 	return true;
 }
 
+bool ParentStorage::setAncestors(int descendant, unordered_set<int> ancestors)
+{
+	if (parentTable.find(descendant)->second.ancestors.size() != 0)
+	{
+		return false;
+	}
+	parentTable.find(descendant)->second.ancestors = ancestors;
+	return true;
+}
+
+bool ParentStorage::setDescendants(int ancestor, unordered_set<int> descendants)
+{
+	if (parentTable.find(ancestor)->second.descendants.size() != 0)
+	{
+		return false;
+	}
+	parentTable.find(ancestor)->second.descendants = descendants;
+	return true;
+}
+
 bool ParentStorage::isEmpty()
 {
 	return parentTable.size() == 0;
