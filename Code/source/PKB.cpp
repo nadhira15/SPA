@@ -49,7 +49,7 @@ void PKB::addConstant(int value)
 
 bool PKB::addFollow(int stm1, int stm2)
 {
-	if (stm2 <= stm1)
+	if (stm2 <= stm1 || stm1 <= 0 || stm2 <= 0)
 	{
 		return false;
 	}
@@ -58,7 +58,7 @@ bool PKB::addFollow(int stm1, int stm2)
 
 bool PKB::addFollow_S(int stm1, int stm2)
 {
-	if (stm2 <= stm1)
+	if (stm2 <= stm1 || stm1 <= 0 || stm2 <= 0)
 	{
 		return false;
 	}
@@ -77,7 +77,7 @@ bool PKB::setAllFollowBy(int stm, unordered_set<int> stmList)
 
 bool PKB::addParent(int stm1, int stm2)
 {
-	if (stm2 <= stm1)
+	if (stm2 <= stm1 || stm1 <= 0 || stm2 <= 0)
 	{
 		return false;
 	}
@@ -86,7 +86,7 @@ bool PKB::addParent(int stm1, int stm2)
 
 bool PKB::addParent_S(int stm1, int stm2)
 {
-	if (stm2 <= stm1)
+	if (stm2 <= stm1 || stm1 <= 0 || stm2 <= 0)
 	{
 		return false;
 	}
@@ -101,6 +101,24 @@ bool PKB::setAllAncestors(int stm, unordered_set<int> stmList)
 bool PKB::setAllDescendants(int stm, unordered_set<int> stmList)
 {
 	return pStore.setDescendants(stm, stmList);
+}
+
+bool PKB::addUses(int stm, string variable)
+{
+	if (variable == "")
+	{
+		return false;
+	}
+	return uStore.addUses(stm, variable);
+}
+
+bool PKB::addUses(string procedure, string variable)
+{
+	if (procedure == "" || variable == "")
+	{
+		return false;
+	}
+	return uStore.addUses(procedure, variable);
 }
 
 string PKB::getProcName()
@@ -261,4 +279,44 @@ unordered_set<pair<int, int>> PKB::getParentChildPairs()
 unordered_set<pair<int, int>> PKB::getAncDescPairs()
 {
 	return pStore.getAnc_DescList();
+}
+
+bool PKB::isUsing(int stm, string variable)
+{
+	return uStore.containsStmVarPair(pair<int, string>(stm, variable) );
+}
+
+bool PKB::isUsing(string procedure, string variable)
+{
+	return uStore.containsProcVarPair(pair<string, string>(procedure, variable));
+}
+
+unordered_set<string> PKB::getUsedVar(int stm)
+{
+	return uStore.getVarUsedBy(stm);
+}
+
+unordered_set<string> PKB::getUsedVar(string procedure)
+{
+	return uStore.getVarUsedBy(procedure);
+}
+
+unordered_set<int> PKB::getStmUsing(string variable)
+{
+	return uStore.getStmUsing(variable);
+}
+
+unordered_set<string> PKB::getProcUsing(string variable)
+{
+	return uStore.getProcUsing(variable);
+}
+
+unordered_set<pair<int, string>> PKB::getStmVarUsePairs()
+{
+	return uStore.getStmVarPairs;
+}
+
+unordered_set<pair<string, string>> PKB::getProcVarUsePairs()
+{
+	return uStore.getProcVarPairs;
 }

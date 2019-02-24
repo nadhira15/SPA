@@ -8,8 +8,10 @@ using namespace std;
 
 #include "FollowStorage.h"
 #include "ParentStorage.h"
+#include "UseStorage.h"
 
 enum stmType { read, print, assign, whileStm, ifStm };
+enum argType { stm, proc };
 
 class PKB {
 public:
@@ -21,17 +23,21 @@ public:
 	void addVariable(string name);
 	void addConstant(int value);
 
-	//adding follows relationships
+	//adding Follows relationships
 	bool addFollow(int stm1, int stm2);
 	bool addFollow_S(int stm1, int stm2);
 	bool setAllFollowing(int stm, unordered_set<int> stmList);
 	bool setAllFollowBy(int stm, unordered_set<int> stmList);
 
-	//adding parent relationships
+	//adding Parent relationships
 	bool addParent(int stm1, int stm2);
 	bool addParent_S(int stm1, int stm2);
 	bool setAllAncestors(int stm, unordered_set<int> stmList);
 	bool setAllDescendants(int stm, unordered_set<int> stmList);
+
+	//adding Use relationships
+	bool addUses(int stm, string variable);
+	bool addUses(string procedure, string variable);
 
 	//general getter methods
 	string getProcName();
@@ -45,7 +51,7 @@ public:
 	unordered_set<string> getVariables();
 	unordered_set<int> getConstants();
 
-	//For follow relations
+	//For Follows/Follows* relations
 	bool hasFollowRelation();
 	bool hasFollow_S_Pair(int stm1, int stm2);
 	int getPrvStm(int stm);
@@ -57,7 +63,7 @@ public:
 	unordered_set< pair<int, int> > getFollowPairs();
 	unordered_set< pair<int, int> > getFollow_S_Pairs();
 
-	//For parent relations
+	//For Parent/Parent* relations
 	bool hasParentRelation();
 	bool isParent(int stm);
 	bool isChild(int stm);
@@ -71,6 +77,15 @@ public:
 	unordered_set< pair<int, int> > getParentChildPairs();
 	unordered_set< pair<int, int> > getAncDescPairs();
 
+	//For Uses relations
+	bool isUsing(int stm, string variable);
+	bool isUsing(string procedure, string variable);
+	unordered_set<string> getUsedVar(int stm);
+	unordered_set<string> getUsedVar(string procedure);
+	unordered_set<int> getStmUsing(string variable);
+	unordered_set<string> getProcUsing(string variable);
+	unordered_set< pair<int, string> > getStmVarUsePairs();
+	unordered_set< pair<string, string> > getProcVarUsePairs();
 
 private:
 	static string procName;
@@ -85,4 +100,5 @@ private:
 
 	static FollowStorage fStore;
 	static ParentStorage pStore;
+	static UseStorage uStore;
 };
