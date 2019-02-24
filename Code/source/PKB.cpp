@@ -49,11 +49,19 @@ void PKB::addConstant(int value)
 
 bool PKB::addFollow(int stm1, int stm2)
 {
+	if (stm2 <= stm1)
+	{
+		return false;
+	}
 	return fStore.addFollowPair(stm1, stm2);
 }
 
 bool PKB::addFollow_S(int stm1, int stm2)
 {
+	if (stm2 <= stm1)
+	{
+		return false;
+	}
 	return fStore.addFollow_S_Pair(stm1, stm2);
 }
 
@@ -69,11 +77,19 @@ bool PKB::setAllFollowBy(int stm, unordered_set<int> stmList)
 
 bool PKB::addParent(int stm1, int stm2)
 {
+	if (stm2 <= stm1)
+	{
+		return false;
+	}
 	return pStore.addParent_Child(stm1, stm2);
 }
 
 bool PKB::addParent_S(int stm1, int stm2)
 {
+	if (stm2 <= stm1)
+	{
+		return false;
+	}
 	return pStore.addAnc_Desc(stm1, stm2);
 }
 
