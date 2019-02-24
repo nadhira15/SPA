@@ -67,6 +67,11 @@ int PKB::getTotalStmNo()
 	return stmTypeList.size();
 }
 
+stmType PKB::getStmType(int stm)
+{
+	return stmTypeList[stm];
+}
+
 unordered_set<int> PKB::getReadStms()
 {
 	return readStmList;

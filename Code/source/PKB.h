@@ -27,6 +27,7 @@ public:
 	//general getter methods
 	string getProcName();
 	int getTotalStmNo();
+	stmType getStmType(int stm);
 	unordered_set<int> getReadStms();
 	unordered_set<int> getPrintStms();
 	unordered_set<int> getAssignStms();
