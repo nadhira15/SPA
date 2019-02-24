@@ -9,9 +9,9 @@ using namespace std;
 #include "FollowStorage.h"
 #include "ParentStorage.h"
 #include "UseStorage.h"
+#include "ModifyStorage.h"
 
 enum stmType { read, print, assign, whileStm, ifStm };
-enum argType { stm, proc };
 
 class PKB {
 public:
@@ -35,9 +35,13 @@ public:
 	bool setAllAncestors(int stm, unordered_set<int> stmList);
 	bool setAllDescendants(int stm, unordered_set<int> stmList);
 
-	//adding Use relationships
+	//adding Uses relationships
 	bool addUses(int stm, string variable);
 	bool addUses(string procedure, string variable);
+
+	//adding Modifies relationships
+	bool addModifies(int stm, string variable);
+	bool addModifies(string procedure, string variable);
 
 	//general getter methods
 	string getProcName();
@@ -87,6 +91,16 @@ public:
 	unordered_set< pair<int, string> > getStmVarUsePairs();
 	unordered_set< pair<string, string> > getProcVarUsePairs();
 
+	//For Modifies relations
+	bool isModifying(int stm, string variable);
+	bool isModifying(string procedure, string variable);
+	string getModifiedVar(int stm);
+	string getModifiedVar(string procedure);
+	unordered_set<int> getStmModifying(string variable);
+	unordered_set<string> getProcModifying(string variable);
+	unordered_set< pair<int, string> > getStmVarModifyPairs();
+	unordered_set< pair<string, string> > getProcVarModifyPairs();
+
 private:
 	static string procName;
 	static vector<stmType> stmTypeList;
@@ -101,4 +115,5 @@ private:
 	static FollowStorage fStore;
 	static ParentStorage pStore;
 	static UseStorage uStore;
+	static ModifyStorage mStore;
 };

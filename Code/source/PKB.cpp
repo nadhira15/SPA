@@ -121,6 +121,24 @@ bool PKB::addUses(string procedure, string variable)
 	return uStore.addUses(procedure, variable);
 }
 
+bool PKB::addModifies(int stm, string variable)
+{
+	if (variable == "")
+	{
+		return false;
+	}
+	return mStore.addModifies(stm, variable);
+}
+
+bool PKB::addModifies(string procedure, string variable)
+{
+	if (procedure == "" || variable == "")
+	{
+		return false;
+	}
+	return mStore.addModifies(procedure, variable);
+}
+
 string PKB::getProcName()
 {
 	return procName;
@@ -319,4 +337,44 @@ unordered_set<pair<int, string>> PKB::getStmVarUsePairs()
 unordered_set<pair<string, string>> PKB::getProcVarUsePairs()
 {
 	return uStore.getProcVarPairs;
+}
+
+bool PKB::isModifying(int stm, string variable)
+{
+	return mStore.containsStmVarPair(pair<int, string>(stm, variable));
+}
+
+bool PKB::isModifying(string procedure, string variable)
+{
+	return mStore.containsProcVarPair(pair<string, string>(procedure, variable));
+}
+
+string PKB::getModifiedVar(int stm)
+{
+	return mStore.getVarModifiedBy(stm);
+}
+
+string PKB::getModifiedVar(string procedure)
+{
+	return mStore.getVarModifiedBy(procedure);
+}
+
+unordered_set<int> PKB::getStmModifying(string variable)
+{
+	return mStore.getStmModifying(variable);
+}
+
+unordered_set<string> PKB::getProcModifying(string variable)
+{
+	return mStore.getProcModifying(variable);
+}
+
+unordered_set<pair<int, string>> PKB::getStmVarModifyPairs()
+{
+	return mStore.getStmVarPairs;
+}
+
+unordered_set<pair<string, string>> PKB::getProcVarModifyPairs()
+{
+	return mStore.getProcVarPairs;
 }
