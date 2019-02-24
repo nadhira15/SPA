@@ -57,6 +57,16 @@ bool PKB::addFollow_S(int stm1, int stm2)
 	return fStore.addFollow_S_Pair(stm1, stm2);
 }
 
+bool PKB::addParent(int stm1, int stm2)
+{
+	return pStore.addParent_Child(stm1, stm2);
+}
+
+bool PKB::addParent_S(int stm1, int stm2)
+{
+	return pStore.addAnc_Desc(stm1, stm2);
+}
+
 string PKB::getProcName()
 {
 	return procName;
@@ -155,4 +165,64 @@ unordered_set<pair<int, int>> PKB::getFollowPairs()
 unordered_set<pair<int, int>> PKB::getFollow_S_Pairs()
 {
 	return fStore.getF_S_PairList();
+}
+
+bool PKB::hasParentRelation()
+{
+	return !pStore.isEmpty();
+}
+
+bool PKB::isParent(int stm)
+{
+	return pStore.isParent(stm);
+}
+
+bool PKB::isChild(int stm)
+{
+	return pStore.isChild(stm);
+}
+
+bool PKB::hasAncDescPair(int stm1, int stm2)
+{
+	return pStore.containsAnc_Desc(pair<int, int>(stm1, stm2));
+}
+
+int PKB::getParent(int stm)
+{
+	return pStore.getParentOf(stm);
+}
+
+unordered_set<int> PKB::getChildren(int stm)
+{
+	return pStore.getChildrenOf(stm);
+}
+
+unordered_set<int> PKB::getAllAncestors(int stm)
+{
+	return pStore.getAncestorsOf(stm);
+}
+
+unordered_set<int> PKB::getAllDescendants(int stm)
+{
+	return pStore.getDescendantsOf(stm);
+}
+
+unordered_set<int> PKB::getAllParents()
+{
+	return pStore.getParentList;
+}
+
+unordered_set<int> PKB::getAllChildren()
+{
+	return pStore.getChildrenList();
+}
+
+unordered_set<pair<int, int>> PKB::getParentChildPairs()
+{
+	return pStore.getParent_ChildList();
+}
+
+unordered_set<pair<int, int>> PKB::getAncDescPairs()
+{
+	return pStore.getAnc_DescList();
 }

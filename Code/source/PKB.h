@@ -7,6 +7,7 @@
 using namespace std;
 
 #include "FollowStorage.h"
+#include "ParentStorage.h"
 
 enum stmType { read, print, assign, whileStm, ifStm };
 
@@ -23,6 +24,10 @@ public:
 	//adding follows relationships
 	bool addFollow(int stm1, int stm2);
 	bool addFollow_S(int stm1, int stm2);
+
+	//adding parent relationships
+	bool addParent(int stm1, int stm2);
+	bool addParent_S(int stm1, int stm2);
 
 	//general getter methods
 	string getProcName();
@@ -48,6 +53,20 @@ public:
 	unordered_set< pair<int, int> > getFollowPairs();
 	unordered_set< pair<int, int> > getFollow_S_Pairs();
 
+	//For parent relations
+	bool hasParentRelation();
+	bool isParent(int stm);
+	bool isChild(int stm);
+	bool hasAncDescPair(int stm1, int stm2);
+	int getParent(int stm);
+	unordered_set<int> getChildren(int stm);
+	unordered_set<int> getAllAncestors(int stm);
+	unordered_set<int> getAllDescendants(int stm);
+	unordered_set<int> getAllParents();
+	unordered_set<int> getAllChildren();
+	unordered_set< pair<int, int> > getParentChildPairs();
+	unordered_set< pair<int, int> > getAncDescPairs();
+
 
 private:
 	static string procName;
@@ -61,4 +80,5 @@ private:
 	static unordered_set<int> whileStmList;
 
 	static FollowStorage fStore;
+	static ParentStorage pStore;
 };
