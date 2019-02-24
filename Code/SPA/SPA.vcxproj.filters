@@ -27,12 +27,18 @@
     <ClCompile Include="..\source\FollowStorage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\ParentStorage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\PKB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\FollowStorage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ParentStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

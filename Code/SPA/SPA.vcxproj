@@ -13,11 +13,13 @@
   <ItemGroup>
     <ClCompile Include="..\source\DesignExtractor.cpp" />
     <ClCompile Include="..\source\FollowStorage.cpp" />
+    <ClCompile Include="..\source\ParentStorage.cpp" />
     <ClCompile Include="..\source\Parser.cpp" />
     <ClCompile Include="..\source\PKB.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\FollowStorage.h" />
+    <ClInclude Include="..\source\ParentStorage.h" />
     <ClInclude Include="..\source\PKB.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
