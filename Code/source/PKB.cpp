@@ -39,12 +39,22 @@ void PKB::addStatement(int stmNo, stmType type)
 
 void PKB::addVariable(string name)
 {
-	varList.push_back(name);
+	varList.emplace(name);
 }
 
 void PKB::addConstant(int value)
 {
-	constList.push_back(value);
+	constList.emplace(value);
+}
+
+bool PKB::addFollow(int stm1, int stm2)
+{
+	return fStore.addFollowPair(stm1, stm2);
+}
+
+bool PKB::addFollow_S(int stm1, int stm2)
+{
+	return fStore.addFollow_S_Pair(stm1, stm2);
 }
 
 string PKB::getProcName()
@@ -82,12 +92,62 @@ unordered_set<int> PKB::getWhileStms()
 	return whileStmList;
 }
 
-vector<string> PKB::getVariables()
+unordered_set<string> PKB::getVariables()
 {
 	return varList;
 }
 
-vector<int> PKB::getConstants()
+unordered_set<int> PKB::getConstants()
 {
 	return constList;
+}
+
+bool PKB::hasFollowRelation()
+{
+	return fStore.isEmpty();
+}
+
+bool PKB::hasFollow_S_Pair(int stm1, int stm2)
+{
+	return fStore.containsFSPair(pair<int, int>(stm1, stm2));
+}
+
+int PKB::getPrvStm(int stm)
+{
+	return fStore.getPrevOf(stm);
+}
+
+int PKB::getNxtStm(int stm)
+{
+	return fStore.getNextOf(stm);
+}
+
+unordered_set<int> PKB::getAllFollowing(int stm)
+{
+	return fStore.getAllFollowing(stm);
+}
+
+unordered_set<int> PKB::getAllFollowedBy(int stm)
+{
+	return fStore.getAllFollowedBy(stm);
+}
+
+unordered_set<int> PKB::getAllFollowers()
+{
+	return fStore.getFollowerList();
+}
+
+unordered_set<int> PKB::getAllFollowed()
+{
+	return fStore.getFollowedList;
+}
+
+unordered_set<pair<int, int>> PKB::getFollowPairs()
+{
+	return fStore.getFPairList();
+}
+
+unordered_set<pair<int, int>> PKB::getFollow_S_Pairs()
+{
+	return fStore.getF_S_PairList();
 }
