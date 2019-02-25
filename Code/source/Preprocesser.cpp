@@ -52,7 +52,6 @@ NOTE 'procedure' can only occur once per procedure
 */
 Statement processProc(int bookmark, int last)
 {
-	vector<Statement> stmtLst;
 	int valid;
 	string tmp;
 	size_t tmpn, pos;
@@ -74,7 +73,7 @@ Statement processProc(int bookmark, int last)
 	if (valid == 0) {} //throw error
 	tmpn2 = stmtNum;
 	vector<Statement> stmtlst = processLst(tmpn + 1, pos);
-	if (stmtLst.empty() || count1 != count2 || !ifStmt.empty()) {} //throw error
+	if (stmtlst.empty() || count1 != count2 || !ifStmt.empty()) {} //throw error
 	return Statement(tmp, stmtlst, valid, tmpn2);
 }
 
