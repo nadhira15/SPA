@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\AssignParser.cpp" />
+    <ClCompile Include="..\source\ConditionalExp.cpp" />
     <ClCompile Include="..\source\DesignExtractor.cpp" />
     <ClCompile Include="..\source\ExpressionUtil.cpp" />
     <ClCompile Include="..\source\LexicalToken.cpp" />
