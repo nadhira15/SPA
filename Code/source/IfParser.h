@@ -12,7 +12,7 @@ using namespace std;
 
 class IfParser {
 public:
-	string parse(short stmtNo, std::string stmt, vector<Statement> stmtlst);
+	string ifParse(short stmtNo, std::string stmt, vector<Statement> stmtlst);
 
 };
 

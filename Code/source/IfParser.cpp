@@ -10,7 +10,7 @@
 
 using namespace std;
 
-string IfParser::parse(short stmtNo, string stmt, vector<Statement> stmtlst) {
+string IfParser::ifParse(short stmtNo, string stmt, vector<Statement> stmtlst) {
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
 	string cond_expr = stmt.substr(i + 1, j - i - 1);

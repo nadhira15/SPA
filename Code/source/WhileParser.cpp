@@ -10,7 +10,7 @@
 
 using namespace std;
 
-string WhileParser::parse(short stmtNo, std::string stmt, vector<Statement> stmtlst) {
+string WhileParser::whileParse(short stmtNo, std::string stmt, vector<Statement> stmtlst) {
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
 	string cond_expr = stmt.substr(i + 1, j - i - 1);
