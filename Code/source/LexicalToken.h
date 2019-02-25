@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
 
-class LexicalToken {
-public:
-	static bool verifyName(std::string s);
-	static bool verifyInteger(std::string n);
-};
+using namespace std;
+
+namespace LexicalToken {
+	bool verifyName(std::string s);
+	bool verifyInteger(std::string n);
+}
