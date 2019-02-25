@@ -163,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ExpressionUtilTest.cpp" />
+    <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="LexicalTokenTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
