@@ -64,6 +64,8 @@ string QueryParser::parse(string query) {
 	vector<pair<string, pair<string, string>>> suchThatCondition;
 	vector<pair<string, pair<string, string>>> patternCondition;
 
+	//TODO: implement parser for more than 1 such that clause and pattern
+
 	int suchThatIndex = selectStatement.find("such that");
 	int patternIndex = selectStatement.find("pattern");
 	int selectStatementLen = selectStatement.length();
@@ -180,6 +182,11 @@ string QueryParser::validateClauses(vector<string> clauses) {
 }
 
 vector<pair<string, string>> QueryParser::splitDeclarations(vector<string> clauses) {
+	/*
+	Splitting each declarations clause by whitespaces.
+	Returns a vector<pair<string, string>> consisting of design-entity and synonym
+	*/
+
 	vector<pair<string, string>> output;
 	int clausesSize = clauses.size();
 
@@ -212,6 +219,11 @@ vector<pair<string, string>> QueryParser::splitDeclarations(vector<string> claus
 }
 
 string QueryParser::validateDeclarations(vector<pair<string, string>> declarations) {
+	/*
+	Validate declaration vector based on following conditions:
+	- design-entity should be valid
+	- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
+	*/
 
 	for (int i = 0; i < declarations.size(); i++) {
 		if (validVarType.find(declarations[i].first) == validVarType.end()) {
@@ -227,6 +239,12 @@ string QueryParser::validateDeclarations(vector<pair<string, string>> declaratio
 }
 
 vector<string> QueryParser::splitSelectParameter(string selectStatement) {
+	/*
+	Splitting select clause by whitespaces.
+	Returns a vector<string> consisting of design-entity selected
+	TODO: implement select boolean and tuples
+	*/
+	
 	vector<string> output;
 
 	int firstSpace = selectStatement.find_first_of(whitespace);
@@ -238,6 +256,11 @@ vector<string> QueryParser::splitSelectParameter(string selectStatement) {
 }
 
 vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(string suchThatClause) {
+	/*
+	Splitting such that clause by open bracket, comma, and close bracket.
+	Returns a vector<pair<string, pair<string, string>>> consisting of relation, stmtRef/entRef, stmtRef/entRef
+	*/
+	
 	vector<pair<string, pair<string, string>>> output;
 
 	int openBracket = suchThatClause.find("(");
@@ -255,6 +278,11 @@ vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(s
 }
 
 vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(string patternClause) {
+	/*
+	Splitting pattern clause by open bracket, comma, and close bracket.
+	Returns a vector<pair<string, pair<string, string>>> consisting of design-entity, entRef, expression-spec
+	*/
+	
 	vector<pair<string, pair<string, string>>> output;
 
 	int openBracket = patternClause.find("(");
@@ -272,6 +300,11 @@ vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(st
 }
 
 string QueryParser::validateSelectedVar(vector<string> selectedVar, unordered_map<string, string> declarationsMap) {
+	/*
+	Validate vector of selected variable based on following conditions:
+	- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
+	- synonym should be declared previously
+	*/
 
 	for (int i = 0; i < selectedVar.size(); i++) {
 		if (!LexicalToken::verifyName(selectedVar[i])) {
@@ -287,6 +320,13 @@ string QueryParser::validateSelectedVar(vector<string> selectedVar, unordered_ma
 }
 
 string QueryParser::validateSuchThatParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
+	/*
+	Validate vector of such that parameter based on following conditions:
+	- valid relation name
+	- for each relation, first and second argument should be valid
+
+	TODO: implement validation for other relations
+	*/
 
 	unordered_set<string> validRelation = { "Parent", "Parent*", "Follows", "Follows*", "Uses", "Modifies" };
 	unordered_set<string> validArgs = { "stmt", "read", "print", "while", "if", "assign" };
@@ -363,6 +403,15 @@ string QueryParser::validateSuchThatParam(vector<pair<string, pair<string, strin
 }
 
 string QueryParser::validatePatternParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
+	/*
+	Validate vector of pattern parameter based on following conditions:
+	- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
+	- synonym should be declared previously
+	- synonym should be assign type (assign-synonym)
+
+	TODO: implement validation for if and while pattern
+	*/
+
 
 	for (int i = 0; i < param.size(); i++) {
 		string stmt = param[i].first;
@@ -386,7 +435,7 @@ string QueryParser::evaluateSelectConditions(vector<pair<string, string>> declar
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {
 	
-	// TODO: evaluate the result of select conditions
+	// TODO: call query evaluator
 
 	return "";
 }
