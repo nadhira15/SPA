@@ -56,21 +56,12 @@ bool PKB::addFollow(int stm1, int stm2)
 	return fStore.addFollowPair(stm1, stm2);
 }
 
-bool PKB::addFollow_S(int stm1, int stm2)
-{
-	if (stm2 <= stm1 || stm1 <= 0 || stm2 <= 0)
-	{
-		return false;
-	}
-	return fStore.addFollow_S_Pair(stm1, stm2);
-}
-
-bool PKB::setAllFollowing(int stm, unordered_set<int> stmList)
+bool PKB::setFollowers(int stm, unordered_set<int> stmList)
 {
 	return fStore.setAllFollowing(stm, stmList);
 }
 
-bool PKB::setAllFollowBy(int stm, unordered_set<int> stmList)
+bool PKB::setStmFollowedBy(int stm, unordered_set<int> stmList)
 {
 	return fStore.setAllFollowedBy(stm, stmList);
 }
@@ -84,21 +75,12 @@ bool PKB::addParent(int stm1, int stm2)
 	return pStore.addParent_Child(stm1, stm2);
 }
 
-bool PKB::addParent_S(int stm1, int stm2)
-{
-	if (stm2 <= stm1 || stm1 <= 0 || stm2 <= 0)
-	{
-		return false;
-	}
-	return pStore.addAnc_Desc(stm1, stm2);
-}
-
-bool PKB::setAllAncestors(int stm, unordered_set<int> stmList)
+bool PKB::setAncestors(int stm, unordered_set<int> stmList)
 {
 	return pStore.setAncestors(stm, stmList);
 }
 
-bool PKB::setAllDescendants(int stm, unordered_set<int> stmList)
+bool PKB::setDescendants(int stm, unordered_set<int> stmList)
 {
 	return pStore.setDescendants(stm, stmList);
 }

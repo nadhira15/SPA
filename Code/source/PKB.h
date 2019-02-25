@@ -25,15 +25,13 @@ public:
 
 	//adding Follows relationships
 	bool addFollow(int stm1, int stm2);
-	bool addFollow_S(int stm1, int stm2);
-	bool setAllFollowing(int stm, unordered_set<int> stmList);
-	bool setAllFollowBy(int stm, unordered_set<int> stmList);
+	bool setFollowers(int stm, unordered_set<int> stmList);
+	bool setStmFollowedBy(int stm, unordered_set<int> stmList);
 
 	//adding Parent relationships
 	bool addParent(int stm1, int stm2);
-	bool addParent_S(int stm1, int stm2);
-	bool setAllAncestors(int stm, unordered_set<int> stmList);
-	bool setAllDescendants(int stm, unordered_set<int> stmList);
+	bool setAncestors(int stm, unordered_set<int> stmList);
+	bool setDescendants(int stm, unordered_set<int> stmList);
 
 	//adding Uses relationships
 	bool addUses(int stm, string variable);
