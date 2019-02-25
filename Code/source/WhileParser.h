@@ -12,7 +12,7 @@ using namespace std;
 
 class WhileParser {
 public:
-	string whileParse(short stmtNo, std::string stmt, vector<Statement> stmtlst);
+	vector<string> whileParse(short stmtNo, std::string stmt, vector<Statement> stmtlst);
 
 };
 
