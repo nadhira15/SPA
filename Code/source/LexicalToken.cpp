@@ -1,8 +1,8 @@
 #include <string>
+#include "LexicalToken.h"
 
 using namespace std;
-
-#include "LexicalToken.h"
+using namespace LexicalToken;
 
 //Check if string is a NAME Lexical. A Name Lexical starts with a alphabet and is followed by a string of alphanumerical
 //Characters. Returns true if input is suitable as a procedure name or variable name. Returns false otherwise.
