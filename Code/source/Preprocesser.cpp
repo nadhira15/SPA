@@ -166,12 +166,12 @@ errors NOT covered: incorrect variables, expression (i.e. *+/-=)
 int validateSemicolon(string s)
 {
 	int result = 0;
-	if (s.find("=") != string::npos) {
+	if (s.find("=") != string::npos && s.find("=") == s.rfind("=")) {
 		//ASSIGN is passed as long as it contains an "="
 		result = 1;
 	}
 	string firstWord = s.substr(0, s.find(" "));
-	s = trim(s.substr(4, s.size() - 4));
+	s = trim(s.substr(s.find(" "), s.size() - s.find(" ")));
 	if (s.find(" ") == string::npos) {
 		//READ, CALL, PRINT is passed as long as it contains 2 words
 		if (firstWord.compare(KEYWORDS[2]) == 0) result = 2;
