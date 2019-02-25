@@ -11,7 +11,7 @@ using namespace LexicalToken;
 using namespace StringUtil;
 
 regex terms("(\\w+)");
-regex validExpression("^(?:\(?\\s*(\\w+)\\s*\)?)(?:\\s*[+\*\-%\/]\\s*(?:\(?\\s*(\\w+)\\s*\)?))*$");
+regex validExpression("^(?:\\(?\\s*(\\w+)\\s*\\)?)(?:\\s*[+\\*\\-%\\/]\\s*(?:\\(?\\s*(\\w+)\\s*\\)?))*$");
 
 //Convert Infix Expressions into Prefix expression for easier string matching
 string ExpressionUtil::convertInfixToPrefix(string expression) {
@@ -24,7 +24,7 @@ string ExpressionUtil::convertInfixToPrefix(string expression) {
 	char spaceDelimiter = ' ';
 	vector<string> expressionVector = split(expression, spaceDelimiter);
 
-	for (int i = 0; i < expressionVector.size(); i++) {
+	for (size_t i = 0; i < expressionVector.size(); i++) {
 		//Push opening bracket to operator stack
 		if (expressionVector[i] == "(") {
 			operatorStack.push(expressionVector[i]);
@@ -46,7 +46,7 @@ string ExpressionUtil::convertInfixToPrefix(string expression) {
 
 				//form sub-expression
 
-				string subexpre = operator1 + " " + operand1 + " " + operand2;
+				string subexpre = operator1 + " " + operand2 + " " + operand1;
 				operandStack.push(subexpre);
 			}
 
@@ -55,7 +55,7 @@ string ExpressionUtil::convertInfixToPrefix(string expression) {
 		}
 
 		//If operand push operand Stack
-		else if (!isOperator(expressionVector[i].c_str[0])) {
+		else if (!isOperator(expressionVector[i].c_str()[0])) {
 			operandStack.push(expressionVector[i]);
 		}
 
@@ -72,15 +72,14 @@ string ExpressionUtil::convertInfixToPrefix(string expression) {
 				operatorStack.pop();
 
 				//form sub-expression
-
-				string subexpre = operator1 + " " + operand1 + " " + operand2;
+				string subexpre = operator1 + " " + operand2 + " " + operand1;
 				operandStack.push(subexpre);
 			}
 			operatorStack.push(expressionVector[i]);
 		}
 	}
 
-	while (!operatorStack.empty) {
+	while (!operatorStack.empty()) {
 		string operand1 = operandStack.top();
 		operandStack.pop();
 
@@ -92,7 +91,7 @@ string ExpressionUtil::convertInfixToPrefix(string expression) {
 
 		//form sub-expression
 
-		string subexpre = operator1 + " " + operand1 + " " + operand2;
+		string subexpre = operator1 + " " + operand2 + " " + operand1;
 		operandStack.push(subexpre);
 	}
 			
@@ -109,7 +108,7 @@ void ExpressionUtil::expressionPreprocess(std::string &expression)
 
 	//Add a space at every occurence of an operator.
 	for (string op : operators) {
-		int pos = 0;
+		size_t pos = 0;
 		while (true) {
 			pos = expression.find(op, pos);
 
@@ -119,7 +118,7 @@ void ExpressionUtil::expressionPreprocess(std::string &expression)
 			}
 
 			//Don't add if at the start.
-			if (pos != 0) {
+			if (pos != 0 && expression[pos] != '(') {
 				expression.insert(pos, " ");
 				pos++;
 			}
@@ -132,9 +131,10 @@ void ExpressionUtil::expressionPreprocess(std::string &expression)
 				break;
 			}
 
-
-			expression.insert(pos, " ");
-			pos++;
+			if (expression[pos-1] != ')') {
+				expression.insert(pos, " ");
+				pos++;
+			}
 		}
 	}
 }
@@ -145,7 +145,7 @@ vector<string> ExpressionUtil::getVariables(string infixExpression) {
 
 	vector<string> variableVector;
 
-	for (int i = 0; i < result.size(); i++) {
+	for (size_t i = 0; i < result.size(); i++) {
 		bool isValidName = verifyName(result[i]);
 		if (isValidName) {
 			variableVector.push_back(result[i]);
@@ -161,7 +161,7 @@ vector<string> ExpressionUtil::getConstants(string infixExpression) {
 
 	vector<string> constantVector;
 
-	for (int i = 0; i < result.size(); i++) {
+	for (size_t i = 0; i < result.size(); i++) {
 		bool isValidInteger = verifyInteger(result[i]);
 		if (isValidInteger) {
 			constantVector.push_back(result[i]);
@@ -178,7 +178,7 @@ bool ExpressionUtil::verifyInfixExpression(string infixExpression) {
 			smatch result;
 			regex_search(infixExpression, result, terms);
 
-			for (int i = 0; i < result.size(); i++) {
+			for (size_t i = 0; i < result.size(); i++) {
 				bool isValidName = verifyName(result[i]);
 				bool isValidInteger = verifyInteger(result[i]);
 				if (!isValidName && !isValidInteger) {
@@ -200,7 +200,7 @@ bool ExpressionUtil::verifyInfixExpression(string infixExpression) {
 bool ExpressionUtil::checkParenthesis(string infixExpression) {
 	stack<char> bracketStack;
 
-	for (int i = 0; i < infixExpression.length; i++) {
+	for (size_t i = 0; i < infixExpression.length(); i++) {
 		if (infixExpression.at(i) == '(') {
 			bracketStack.push('(');
 		}
@@ -215,7 +215,7 @@ bool ExpressionUtil::checkParenthesis(string infixExpression) {
 		}
 	}
 
-	if (bracketStack.empty) {
+	if (bracketStack.empty()) {
 		return true;
 	}
 	else {
@@ -224,7 +224,7 @@ bool ExpressionUtil::checkParenthesis(string infixExpression) {
 }
 
 // Get priority of the operator. If is not a operator return 0.
-int getPriority(string p)
+int ExpressionUtil::getPriority(string p)
 {
 	char c = p.c_str()[0];
 	if (c == '-' || c == '+')
@@ -234,7 +234,7 @@ int getPriority(string p)
 	return 0;
 }
 
-bool isOperator(char c)
+bool ExpressionUtil::isOperator(char c)
 {
 	return (!isalpha(c) && !isdigit(c));
 }

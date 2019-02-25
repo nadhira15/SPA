@@ -17,4 +17,6 @@ namespace ExpressionUtil
 
 	bool verifyInfixExpression(string infixExpression);
 	bool checkParenthesis(string infixExpression);
+	int getPriority(string p);
+	bool isOperator(char c);
 }

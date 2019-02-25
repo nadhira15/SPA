@@ -4,6 +4,6 @@
 using namespace std;
 
 namespace LexicalToken {
-	static bool verifyName(std::string s);
-	static bool verifyInteger(std::string n);
+	bool verifyName(std::string s);
+	bool verifyInteger(std::string n);
 }
