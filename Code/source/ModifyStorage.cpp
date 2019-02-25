@@ -6,7 +6,10 @@ ModifyStorage::ModifyStorage()
 
 bool ModifyStorage::addModifies(int stm, string variable)
 {
-	stmVarPairs.emplace(pair<int, string>(stm, variable));
+	if (!stmVarPairs.emplace(pair<int, string>(stm, variable)).second)
+	{
+		return false;
+	}
 	varList_Stm.emplace(stm, variable);
 	stmLists.emplace(variable, unordered_set<int>{ stm });
 	stmLists.emplace("", unordered_set<int>{ stm });
@@ -15,7 +18,10 @@ bool ModifyStorage::addModifies(int stm, string variable)
 
 bool ModifyStorage::addModifies(string procedure, string variable)
 {
-	procVarPairs.emplace(pair<string, string>(procedure, variable));
+	if (!procVarPairs.emplace(pair<string, string>(procedure, variable)).second)
+	{
+		return false;
+	}
 	varList_Proc.emplace(procedure, variable);
 	procLists.emplace(variable, unordered_set<string>{ procedure });
 	procLists.emplace("", unordered_set<string>{ procedure });

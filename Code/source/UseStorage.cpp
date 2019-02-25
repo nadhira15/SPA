@@ -6,7 +6,10 @@ UseStorage::UseStorage()
 
 bool UseStorage::addUses(int stm, string variable)
 {
-	stmVarPairs.emplace(pair<int, string>(stm, variable));
+	if (!stmVarPairs.emplace(pair<int, string>(stm, variable)).second)
+	{
+		return false;
+	}
 	varLists_Stm.emplace(stm, unordered_set<string>{ variable } );
 	stmLists.emplace(variable, unordered_set<int>{ stm } );
 	stmLists.emplace("", unordered_set<int>{ stm } );
@@ -15,7 +18,10 @@ bool UseStorage::addUses(int stm, string variable)
 
 bool UseStorage::addUses(string procedure, string variable)
 {
-	procVarPairs.emplace(pair<string, string>(procedure, variable));
+	if (!procVarPairs.emplace(pair<string, string>(procedure, variable)).second)
+	{
+		return false;
+	}
 	varLists_Proc.emplace(procedure, unordered_set<string>{ variable });
 	procLists.emplace(variable, unordered_set<string>{ procedure });
 	procLists.emplace("", unordered_set<string>{ procedure });
