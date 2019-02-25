@@ -5,69 +5,42 @@ FollowStorage::FollowStorage()
 }
 
 /*
-	Pre-cond: Follows relations must be added in sequential order.
-			  Meaning adding follows(2,3) followed by follows(1,2) is not allowed
 	Adds the follows relation into the various lists in the storage
+	Returns false if	1) the pair is already stored
+						2) the followed statement has another follower stored
+						3) the follower is following another statement
 */
 bool FollowStorage::addFollowPair(int followed, int follower)
 {
-	pair<unordered_map<int, fRelationships>::iterator, bool> itrPair1;
-	pair<unordered_map<int, fRelationships>::iterator, bool> itrPair2;
-
-	//attempt to insert a new statement and its follower
-	itrPair1 = followTable.emplace(followed, fRelationships{ 0, follower, {}, {} });
-	itrPair2 = followTable.emplace(follower, fRelationships{ followed, 0, {}, {} });
-
-	// As follows relation must be added in sequential order, the follower must be a new statement
-	if (!itrPair2.second)
+	// if follows Pair is already added, return false
+	if (!followPairList.emplace(pair<int, int>(followed, follower)).second)
 	{
-		if (itrPair1.second)	// If a new followed has been successfully added, erase it
-		{
-			followTable.erase(followed);
-		}
 		return false;
 	}
-	else if (!itrPair1.second)
+
+	// if followed exist in followTable and has next initialized, return false
+	auto itrpr1 = followTable.emplace(followed, fRelationships{ 0, follower, {}, {} });
+	if (!itrpr1.second && followTable.find(followed)->second.next != 0)
 	{
-		itrPair1.first->second.next = follower;
+		return false;
+	}
+	// if follower exist in followTable and has previous initialized, return false
+	auto itrpr2 = followTable.emplace(follower, fRelationships{ followed, 0, {}, {} });
+	if (!itrpr2.second && followTable.find(follower)->second.previous != 0)
+	{
+		return false;
+	}
+	if (!itrpr1.second)
+	{
+		itrpr1.first->second.next = follower;
+	}
+	if (!itrpr2.second)
+	{
+		itrpr2.first->second.previous = followed;
 	}
 
-	followPairList.emplace(pair<int, int>(followed, follower));
 	followedList.emplace(followed);
 	followerList.emplace(follower);
-	return true;
-}
-
-/*
-	adds the followers* relation into the various lists in the storage
-*/
-bool FollowStorage::addFollow_S_Pair(int followed, int follower)
-{
-	pair<unordered_set<int>::iterator, bool> itrPair1, itrPair2;
-
-	//attempt to insert a new follower and followed
-	itrPair1 = followTable.at(followed).allNext.emplace(follower);
-	itrPair2 = followTable.at(follower).allPrevious.emplace(followed);
-
-	//if either follower or followed was already added, erase the other if it was added successfully
-	if (!itrPair1.second)
-	{
-		if (itrPair2.second)
-		{
-			followTable.find(follower)->second.allPrevious.erase(followed);
-		}
-		return false;
-	}
-	if (!itrPair2.second)
-	{
-		if (itrPair1.second)
-		{
-			followTable.find(followed)->second.allNext.erase(follower);
-		}
-		return false;
-	}
-
-	follow_S_PairList.emplace(pair<int, int>(followed, follower));
 	return true;
 }
 

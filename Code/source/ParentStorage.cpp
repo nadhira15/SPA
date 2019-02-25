@@ -5,66 +5,32 @@ ParentStorage::ParentStorage()
 }
 
 /*
-	Pre-cond: Parent-child relations must be added in sequential order.
-			  Meaning adding Parent(2,3) followed by Parent(1,2) is not allowed
 	Adds the parent relation into the various lists in the storage
+	Returns false if	1) the pair is already stored
+						2) the child already has another parent
 */
 bool ParentStorage::addParent_Child(int parent, int child)
 {
-	pair<unordered_map<int, pRelationships>::iterator, bool> itrPair1;
-	pair<unordered_map<int, pRelationships>::iterator, bool> itrPair2;
-
-	//attempt to insert a new parent statement and its child
-	itrPair1 = parentTable.emplace(parent, pRelationships{ 0, {child}, {}, {} });
-	itrPair2 = parentTable.emplace(child, pRelationships{ parent, {}, {}, {} });
-
-	// As parent relation must be added in sequential order, the child must be a new statement
-	if (!itrPair2.second)
+	// if Parent-Child Pair is already added, return false
+	if (!parent_ChildPairList.emplace(pair<int, int>(parent, child)).second)
 	{
-		if (itrPair1.second)	// If a new parent has been successfully added, erase it
-		{
-			parentTable.erase(parent);
-		}
 		return false;
 	}
-	else if (!itrPair1.second)
+
+	// if child exist in parentTable and has parent already initialized, return false
+	auto itrpr = parentTable.emplace(child, pRelationships{ parent, {}, {}, {} });
+	if (!itrpr.second && parentTable.find(child)->second.parent != 0)
 	{
-		itrPair1.first->second.children.emplace(child);
+		return false;
+	}
+	else if (!itrpr.second)
+	{
+		itrpr.first->second.parent = parent;
 	}
 
-	parent_ChildPairList.emplace(pair<int, int>(parent, child));
+	parentTable.find(parent)->second.children.emplace(child);
 	parentList.emplace(parent);
 	childrenList.emplace(child);
-	return true;
-}
-
-bool ParentStorage::addAnc_Desc(int ancestor, int descendant)
-{
-	pair<unordered_set<int>::iterator, bool> itrPair1, itrPair2;
-
-	//attempt to insert a new ancestor and descendant
-	itrPair1 = parentTable.at(ancestor).descendants.emplace(descendant);
-	itrPair2 = parentTable.at(descendant).ancestors.emplace(ancestor);
-
-	//if either ancestor or descendant was already added, erase the other if it was added successfully
-	if (!itrPair1.second)
-	{
-		if (itrPair2.second)
-		{
-			parentTable.find(descendant)->second.ancestors.erase(ancestor);
-		}
-		return false;
-	}
-	if (!itrPair2.second)
-	{
-		if (itrPair1.second)
-		{
-			parentTable.find(ancestor)->second.descendants.erase(descendant);
-		}
-		return false;
-	}
-
-	anc_DescPairList.emplace(pair<int, int>(ancestor, descendant));
 	return true;
 }
 

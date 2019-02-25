@@ -19,7 +19,6 @@ public:
 	FollowStorage();
 
 	bool addFollowPair(int followed, int follower);
-	bool addFollow_S_Pair(int followed, int follower);
 	bool setAllFollowing(int followed, unordered_set<int> followers);
 	bool setAllFollowedBy(int follower, unordered_set<int> followed);
 

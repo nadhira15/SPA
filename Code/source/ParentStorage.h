@@ -19,7 +19,6 @@ public:
 	ParentStorage();
 
 	bool addParent_Child(int parent, int child);
-	bool addAnc_Desc(int ancestor, int descendant);
 	bool setAncestors(int descendant, unordered_set<int> ancestors);
 	bool setDescendants(int ancestor, unordered_set<int> descendants);
 
