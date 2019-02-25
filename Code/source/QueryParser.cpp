@@ -298,14 +298,24 @@ string QueryParser::validateSuchThatParam(vector<pair<string, pair<string, strin
 		string relation = param[i].first;
 		string firstArgs = param[i].second.first;
 		string secondArgs = param[i].second.second;
+		string firstArgsType;
+		string secondArgsType;
 
 		if (validRelation.find(relation) == validRelation.end()) {
 			return "invalid query";
 		}
 
+		if (declarationsMap.find(firstArgs) != declarationsMap.end()) {
+			firstArgsType = declarationsMap.find(firstArgs)->second;
+		}
+
+		if (declarationsMap.find(secondArgs) != declarationsMap.end()) {
+			secondArgsType = declarationsMap.find(secondArgs)->second;
+		}
+
 		if (relation == "Uses") {
 			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) && !LexicalToken::verifyName(firstArgs) &&
-				validFirstArgsUses.find(firstArgs) == validFirstArgsUses.end()) {
+				validFirstArgsUses.find(firstArgsType) == validFirstArgsUses.end()) {
 				return "invalid query";
 			}
 
@@ -315,7 +325,7 @@ string QueryParser::validateSuchThatParam(vector<pair<string, pair<string, strin
 		}
 		else if (relation == "Modifies") {
 			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) && !LexicalToken::verifyName(firstArgs) &&
-				validFirstArgsModifies.find(firstArgs) == validFirstArgsModifies.end()) {
+				validFirstArgsModifies.find(firstArgsType) == validFirstArgsModifies.end()) {
 				return "invalid query";
 			}
 
@@ -325,12 +335,12 @@ string QueryParser::validateSuchThatParam(vector<pair<string, pair<string, strin
 		}
 		else if (relation == "Parent" || relation == "Parent*") {
 			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) &&
-				validFirstArgsParent.find(firstArgs) == validFirstArgsParent.end()) {
+				validFirstArgsParent.find(firstArgsType) == validFirstArgsParent.end()) {
 				return "invalid query";
 			}
 
 			if (secondArgs != "_" && !LexicalToken::verifyInteger(secondArgs) && 
-				validArgs.find(firstArgs) == validArgs.end()) {
+				validArgs.find(secondArgsType) == validArgs.end()) {
 				return "invalid query";
 			}
 		}
@@ -338,12 +348,12 @@ string QueryParser::validateSuchThatParam(vector<pair<string, pair<string, strin
 			// relation == Follows | Follows*
 
 			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) &&
-				validArgs.find(firstArgs) == validArgs.end()) {
+				validArgs.find(firstArgsType) == validArgs.end()) {
 				return "invalid query";
 			}
 
 			if (secondArgs != "_" && !LexicalToken::verifyInteger(secondArgs) &&
-				validArgs.find(firstArgs) == validArgs.end()) {
+				validArgs.find(secondArgsType) == validArgs.end()) {
 				return "invalid query";
 			}
 		}
