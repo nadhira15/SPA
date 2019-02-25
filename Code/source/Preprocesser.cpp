@@ -25,6 +25,12 @@ vector<Statement> getProcLst() {
 	return procLst;
 }
 
+void error(int t) {
+	string s1 = "Pre-processing error, incorrect syntax for ";
+	string s2 = (t == 0) ? "procedure" : (t == 1) ? "if/else, while" : "assign, call, print, read";
+	throw "\n" + s1 + s2 + "\n";
+}
+
 /*
 input: nil
 output: vector<Statement> that contains procedure statements
@@ -64,17 +70,22 @@ Statement processProc(int bookmark, int last)
 	tmpn = chunk.find('{', bookmark);
 	if (chunk[pos] != '}') {
 		valid = 0;
+		error(0);
 		//!!error handling here
-	}
-	else if (tmpn != string::npos) {
+	} else if (tmpn != string::npos) {
 		tmp = trim(chunk.substr(bookmark, tmpn - bookmark));
 		valid = validateProc(tmp); //validate procedure term
 	}
-	if (valid == 0) {} //throw error
+	if (valid == 0) {
+		error(0);
+	}
 	tmpn2 = stmtNum;
 	vector<Statement> stmtlst = processLst(tmpn + 1, pos);
-	if (stmtlst.empty() || count1 != count2 || !ifStmt.empty()) {} //throw error
-	return Statement(tmp, stmtlst, valid, tmpn2);
+	if (stmtlst.empty() || count1 != count2 || !ifStmt.empty()) {
+		error(0);
+	}
+	Statement s = Statement(tmp, stmtlst, valid, tmpn2); //will proceed even with errors
+	return s;
 }
 
 /*
@@ -104,19 +115,16 @@ vector<Statement> processLst(int bookmark, int last) {
 			valid = validateCurvedBrackets(tmp);
 			//based on results of validation
 			if (valid == 0) {
-				//!!error handling
-			}
-			else if (valid == 7) {
+				error(1);
+			} else if (valid == 7) {
 				// ELSE statement
 				if (ifStmt.empty()) {
-					//error handling!!
-				}
-				else {
+					error(1);
+				} else {
 					tmpN = ifStmt.top();
 					ifStmt.pop();
 				}
-			}
-			else if (valid == 6) {
+			} else if (valid == 6) {
 				// IF statement
 				ifStmt.push(stmtNum);
 			}
@@ -135,9 +143,13 @@ vector<Statement> processLst(int bookmark, int last) {
 			bookmark = i + 1;
 			tmpN = stmtNum;
 			valid = validateSemicolon(tmp);
-			if (valid == 0) {}
-			stmtlst.push_back(Statement(tmp, valid, tmpN));
-			stmtNum++;
+			if (valid == 0) {
+				//ignore this statement
+				error(2);
+			} else {
+				stmtlst.push_back(Statement(tmp, valid, tmpN));
+				stmtNum++;
+			}
 		}
 	}
 	return stmtlst;
