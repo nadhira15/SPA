@@ -238,5 +238,3 @@ bool ExpressionUtil::isOperator(char c)
 {
 	return (!isalpha(c) && !isdigit(c));
 }
-
-

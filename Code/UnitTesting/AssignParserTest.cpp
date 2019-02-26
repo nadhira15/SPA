@@ -16,7 +16,7 @@ namespace UnitTesting
 			std::string parseExpected = "y";
 			AssignParser ap;
 
-			std::string output = ap.parseLeft(5, testStatement);
+			std::string output = ap.parseLeft(testStatement);
 
 			
 			Assert::AreEqual(parseExpected, output);
@@ -28,7 +28,7 @@ namespace UnitTesting
 			std::string parseExpected = "x+6/2+200";
 			AssignParser ap;
 
-			std::string output = ap.parseRight(5, testStatement);
+			std::string output = ap.parseRight(testStatement);
 
 
 			Assert::AreEqual(parseExpected, output);
