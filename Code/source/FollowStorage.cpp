@@ -66,7 +66,7 @@ bool FollowStorage::setAllFollowedBy(int follower, unordered_set<int> followed)
 
 bool FollowStorage::isEmpty()
 {
-	return followTable.size == 0;
+	return followTable.size() == 0;
 }
 
 // returns true if follows* pair is found

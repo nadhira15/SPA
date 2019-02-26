@@ -1,5 +1,3 @@
-#pragma once
-
 #include "PKB.h"
 
 PKB::PKB()
@@ -213,7 +211,7 @@ unordered_set<int> PKB::getAllFollowers()
 
 unordered_set<int> PKB::getAllFollowed()
 {
-	return fStore.getFollowedList;
+	return fStore.getFollowedList();
 }
 
 unordered_set<pair<int, int>> PKB::getFollowPairs()
@@ -268,7 +266,7 @@ unordered_set<int> PKB::getAllDescendants(int stm)
 
 unordered_set<int> PKB::getAllParents()
 {
-	return pStore.getParentList;
+	return pStore.getParentList();
 }
 
 unordered_set<int> PKB::getAllChildren()
@@ -318,12 +316,12 @@ unordered_set<string> PKB::getProcUsing(string variable)
 
 unordered_set<pair<int, string>> PKB::getStmVarUsePairs()
 {
-	return uStore.getStmVarPairs;
+	return uStore.getStmVarPairs();
 }
 
 unordered_set<pair<string, string>> PKB::getProcVarUsePairs()
 {
-	return uStore.getProcVarPairs;
+	return uStore.getProcVarPairs();
 }
 
 bool PKB::isModifying(int stm, string variable)
@@ -358,12 +356,12 @@ unordered_set<string> PKB::getProcModifying(string variable)
 
 unordered_set<pair<int, string>> PKB::getStmVarModifyPairs()
 {
-	return mStore.getStmVarPairs;
+	return mStore.getStmVarPairs();
 }
 
 unordered_set<pair<string, string>> PKB::getProcVarModifyPairs()
 {
-	return mStore.getProcVarPairs;
+	return mStore.getProcVarPairs();
 }
 
 vector<int> PKB::findPattern(string variable, string expr, bool isExclusive)
