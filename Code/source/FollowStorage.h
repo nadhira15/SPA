@@ -33,6 +33,7 @@ public:
 	unordered_set<int> getFollowedList();
 	unordered_set< pair<int, int> > getFPairList();
 	unordered_set< pair<int, int> > getF_S_PairList();
+	unordered_set<int> getRoots();
 
 private:
 	static unordered_map<int, fRelationships> followTable;
@@ -40,4 +41,5 @@ private:
 	static unordered_set< pair<int, int> > follow_S_PairList;
 	static unordered_set<int> followerList;
 	static unordered_set<int> followedList;
+	static unordered_set<int> rootList;
 };

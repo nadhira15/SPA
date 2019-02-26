@@ -35,6 +35,7 @@ public:
 	unordered_set<int> getChildrenList();
 	unordered_set< pair<int, int> > getParent_ChildList();
 	unordered_set< pair<int, int> > getAnc_DescList();
+	unordered_set<int> getRootList();
 
 private:
 	static unordered_map<int, pRelationships> parentTable;
@@ -42,4 +43,5 @@ private:
 	static unordered_set< pair<int, int> > anc_DescPairList;
 	static unordered_set<int> parentList;
 	static unordered_set<int> childrenList;
+	static unordered_set<int> rootList;
 };

@@ -11,12 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\source\DesignExtractor.cpp" />
     <ClCompile Include="..\source\FollowStorage.cpp" />
     <ClCompile Include="..\source\ModifyStorage.cpp" />
     <ClCompile Include="..\source\ParentStorage.cpp" />
     <ClCompile Include="..\source\Parser.cpp" />
     <ClCompile Include="..\source\PKB.cpp" />
+    <ClCompile Include="..\source\PostProcessor.cpp" />
     <ClCompile Include="..\source\UseStorage.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -24,6 +24,7 @@
     <ClInclude Include="..\source\ModifyStorage.h" />
     <ClInclude Include="..\source\ParentStorage.h" />
     <ClInclude Include="..\source\PKB.h" />
+    <ClInclude Include="..\source\PostProcessor.h" />
     <ClInclude Include="..\source\UseStorage.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

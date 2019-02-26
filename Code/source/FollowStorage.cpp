@@ -18,25 +18,42 @@ bool FollowStorage::addFollowPair(int followed, int follower)
 		return false;
 	}
 
-	// if followed exist in followTable and has next initialized, return false
+	// if followed exist in followTable and has "next" initialized, return false
 	auto itrpr1 = followTable.emplace(followed, fRelationships{ 0, follower, {}, {} });
 	if (!itrpr1.second && followTable.find(followed)->second.next != 0)
 	{
 		return false;
 	}
-	// if follower exist in followTable and has previous initialized, return false
+
+	// if follower exist in followTable and has "previous" initialized, return false
 	auto itrpr2 = followTable.emplace(follower, fRelationships{ followed, 0, {}, {} });
 	if (!itrpr2.second && followTable.find(follower)->second.previous != 0)
 	{
 		return false;
 	}
-	if (!itrpr1.second)
+
+	// if a new followed statement, add it to the list of roots
+	if (itrpr1.second)
+	{
+		rootList.emplace(followed);
+	}
+	else	// followed is not a statement and does not have "next" initialized
 	{
 		itrpr1.first->second.next = follower;
 	}
-	if (!itrpr2.second)
+	if (!itrpr2.second)		//follower is not a new statement and does not "previous" initialized
 	{
 		itrpr2.first->second.previous = followed;
+		if (rootList.find(follower) != rootList.end())	//if follower was a root
+		{
+			rootList.erase(follower);
+			int root = followed;
+			while (followTable.find(root)->second.previous != 0)	//while root has a previous statement
+			{
+				root = followTable.find(root)->second.previous;
+			}
+			rootList.emplace(root);
+		}
 	}
 
 	followedList.emplace(followed);
@@ -117,4 +134,9 @@ unordered_set<pair<int, int>> FollowStorage::getFPairList()
 unordered_set<pair<int, int>> FollowStorage::getF_S_PairList()
 {
 	return follow_S_PairList;
+}
+
+unordered_set<int> FollowStorage::getRoots()
+{
+	return rootList;
 }

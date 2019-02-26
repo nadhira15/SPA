@@ -23,12 +23,31 @@ bool ParentStorage::addParent_Child(int parent, int child)
 	{
 		return false;
 	}
-	else if (!itrpr.second)
+	else if (!itrpr.second)		// if child exist but does not have parent initialized
 	{
 		itrpr.first->second.parent = parent;
+		if (rootList.find(child) != rootList.end())	//if child was a root
+		{
+			rootList.erase(child);
+			int root = parent;
+			while (parentTable.find(root)->second.parent != 0)	//while root has a parent
+			{
+				root = parentTable.find(root)->second.parent;
+			}
+			rootList.emplace(root);
+		}
 	}
 
-	parentTable.find(parent)->second.children.emplace(child);
+	// if a new parent statement is added into the table, add to the root list
+	if (parentTable.emplace(parent, pRelationships{ 0, {child}, {}, {} }).second)
+	{
+		rootList.emplace(parent);
+	}
+	else
+	{
+		parentTable.find(parent)->second.children.emplace(child);
+	}
+
 	parentList.emplace(parent);
 	childrenList.emplace(child);
 	return true;
@@ -112,4 +131,9 @@ unordered_set<pair<int, int>> ParentStorage::getParent_ChildList()
 unordered_set<pair<int, int>> ParentStorage::getAnc_DescList()
 {
 	return anc_DescPairList;
+}
+
+unordered_set<int> ParentStorage::getRootList()
+{
+	return rootList;
 }

@@ -67,6 +67,7 @@ public:
 	unordered_set<int> getAllFollowed();
 	unordered_set< pair<int, int> > getFollowPairs();
 	unordered_set< pair<int, int> > getFollow_S_Pairs();
+	unordered_set<int> getFollowRoots();
 
 	//For Parent/Parent* relations
 	bool hasParentRelation();
@@ -81,6 +82,7 @@ public:
 	unordered_set<int> getAllChildren();
 	unordered_set< pair<int, int> > getParentChildPairs();
 	unordered_set< pair<int, int> > getAncDescPairs();
+	unordered_set<int> getParentRoots();
 
 	//For Uses relations
 	bool isUsing(int stm, string variable);

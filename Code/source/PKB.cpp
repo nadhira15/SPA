@@ -224,6 +224,11 @@ unordered_set<pair<int, int>> PKB::getFollow_S_Pairs()
 	return fStore.getF_S_PairList();
 }
 
+unordered_set<int> PKB::getFollowRoots()
+{
+	return fStore.getRoots();
+}
+
 bool PKB::hasParentRelation()
 {
 	return !pStore.isEmpty();
@@ -282,6 +287,11 @@ unordered_set<pair<int, int>> PKB::getParentChildPairs()
 unordered_set<pair<int, int>> PKB::getAncDescPairs()
 {
 	return pStore.getAnc_DescList();
+}
+
+unordered_set<int> PKB::getParentRoots()
+{
+	return pStore.getRootList();
 }
 
 bool PKB::isUsing(int stm, string variable)
