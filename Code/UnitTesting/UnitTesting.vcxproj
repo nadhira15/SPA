@@ -162,6 +162,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConditionalExpTest.cpp" />
     <ClCompile Include="procedureParserTest.cpp" />
     <ClCompile Include="ExpressionUtilTest.cpp" />
     <ClCompile Include="QueryParserTest.cpp" />
