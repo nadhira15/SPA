@@ -92,7 +92,7 @@ vector<string> AssignParser::getRightConstant(string statement) {
 
 }
 
-string AssignParser::getPostfixExpression(string statement) {
+string AssignParser::getPrefixExpression(string statement) {
 	string expression = parseRight(statement);
 	bool isValidExpression = verifyInfixExpression(expression);
 

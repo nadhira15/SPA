@@ -17,7 +17,7 @@ public:
 	string getLeft(string statement);
 	vector<string> getRightVariable(string statement);
 	vector<string> getRightConstant(string statement);
-	string getPostfixExpression(string statement);
+	string getPrefixExpression(string statement);
 	AssignParser();
 	~AssignParser();
 };
