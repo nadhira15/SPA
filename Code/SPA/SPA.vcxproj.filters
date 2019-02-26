@@ -56,5 +56,8 @@
     <ClInclude Include="..\source\PostProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\Hasher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

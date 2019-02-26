@@ -92,7 +92,7 @@ void PostProcessor::traverseFamilyTree(int curr, unordered_set<int> ancestry,
 void PostProcessor::processUses()
 {
 	string procedure = pkb.getProcName();
-	unordered_set< pair<int, string> > usePairs = pkb.getStmVarUsePairs();
+	unordered_set< pair<int, string>, intStringhash> usePairs = pkb.getStmVarUsePairs();
 
 	for (auto itr = usePairs.cbegin(); itr != usePairs.cend(); ++itr)
 	{
@@ -108,7 +108,7 @@ void PostProcessor::processUses()
 void PostProcessor::processModifies()
 {
 	string procedure = pkb.getProcName();
-	unordered_set< pair<int, string> > modifyPairs = pkb.getStmVarModifyPairs();
+	unordered_set< pair<int, string>, intStringhash> modifyPairs = pkb.getStmVarModifyPairs();
 
 	for (auto itr = modifyPairs.cbegin(); itr != modifyPairs.cend(); ++itr)
 	{

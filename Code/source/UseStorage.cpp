@@ -58,12 +58,12 @@ unordered_set<string> UseStorage::getProcUsing(string variable)
 	return procLists.find(variable)->second;
 }
 
-unordered_set<pair<int, string>> UseStorage::getStmVarPairs()
+unordered_set<pair<int, string>, intStringhash> UseStorage::getStmVarPairs()
 {
 	return stmVarPairs;
 }
 
-unordered_set<pair<string, string>> UseStorage::getProcVarPairs()
+unordered_set<pair<string, string>, strPairhash> UseStorage::getProcVarPairs()
 {
 	return procVarPairs;
 }

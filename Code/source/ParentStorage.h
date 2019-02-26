@@ -6,6 +6,8 @@
 
 using namespace std;
 
+#include "Hasher.h"
+
 struct pRelationships
 {
 	int parent;
@@ -33,14 +35,14 @@ public:
 	unordered_set<int> getDescendantsOf(int stm);
 	unordered_set<int> getParentList();
 	unordered_set<int> getChildrenList();
-	unordered_set< pair<int, int> > getParent_ChildList();
-	unordered_set< pair<int, int> > getAnc_DescList();
+	unordered_set< pair<int, int>, intPairhash> getParent_ChildList();
+	unordered_set< pair<int, int>, intPairhash> getAnc_DescList();
 	unordered_set<int> getRootList();
 
 private:
 	static unordered_map<int, pRelationships> parentTable;
-	static unordered_set< pair<int, int> > parent_ChildPairList;
-	static unordered_set< pair<int, int> > anc_DescPairList;
+	static unordered_set< pair<int, int>, intPairhash> parent_ChildPairList;
+	static unordered_set< pair<int, int>, intPairhash> anc_DescPairList;
 	static unordered_set<int> parentList;
 	static unordered_set<int> childrenList;
 	static unordered_set<int> rootList;

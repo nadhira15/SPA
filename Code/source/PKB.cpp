@@ -214,12 +214,12 @@ unordered_set<int> PKB::getAllFollowed()
 	return fStore.getFollowedList();
 }
 
-unordered_set<pair<int, int>> PKB::getFollowPairs()
+unordered_set<pair<int, int>, intPairhash> PKB::getFollowPairs()
 {
 	return fStore.getFPairList();
 }
 
-unordered_set<pair<int, int>> PKB::getFollow_S_Pairs()
+unordered_set<pair<int, int>, intPairhash> PKB::getFollow_S_Pairs()
 {
 	return fStore.getF_S_PairList();
 }
@@ -279,12 +279,12 @@ unordered_set<int> PKB::getAllChildren()
 	return pStore.getChildrenList();
 }
 
-unordered_set<pair<int, int>> PKB::getParentChildPairs()
+unordered_set<pair<int, int>, intPairhash> PKB::getParentChildPairs()
 {
 	return pStore.getParent_ChildList();
 }
 
-unordered_set<pair<int, int>> PKB::getAncDescPairs()
+unordered_set<pair<int, int>, intPairhash> PKB::getAncDescPairs()
 {
 	return pStore.getAnc_DescList();
 }
@@ -324,12 +324,12 @@ unordered_set<string> PKB::getProcUsing(string variable)
 	return uStore.getProcUsing(variable);
 }
 
-unordered_set<pair<int, string>> PKB::getStmVarUsePairs()
+unordered_set<pair<int, string>, intStringhash> PKB::getStmVarUsePairs()
 {
 	return uStore.getStmVarPairs();
 }
 
-unordered_set<pair<string, string>> PKB::getProcVarUsePairs()
+unordered_set<pair<string, string>, strPairhash> PKB::getProcVarUsePairs()
 {
 	return uStore.getProcVarPairs();
 }
@@ -364,12 +364,12 @@ unordered_set<string> PKB::getProcModifying(string variable)
 	return mStore.getProcModifying(variable);
 }
 
-unordered_set<pair<int, string>> PKB::getStmVarModifyPairs()
+unordered_set<pair<int, string>, intStringhash> PKB::getStmVarModifyPairs()
 {
 	return mStore.getStmVarPairs();
 }
 
-unordered_set<pair<string, string>> PKB::getProcVarModifyPairs()
+unordered_set<pair<string, string>, strPairhash> PKB::getProcVarModifyPairs()
 {
 	return mStore.getProcVarPairs();
 }

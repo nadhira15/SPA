@@ -65,8 +65,8 @@ public:
 	unordered_set<int> getAllFollowedBy(int stm);
 	unordered_set<int> getAllFollowers();
 	unordered_set<int> getAllFollowed();
-	unordered_set< pair<int, int> > getFollowPairs();
-	unordered_set< pair<int, int> > getFollow_S_Pairs();
+	unordered_set< pair<int, int>, intPairhash> getFollowPairs();
+	unordered_set< pair<int, int>, intPairhash> getFollow_S_Pairs();
 	unordered_set<int> getFollowRoots();
 
 	//For Parent/Parent* relations
@@ -80,8 +80,8 @@ public:
 	unordered_set<int> getAllDescendants(int stm);
 	unordered_set<int> getAllParents();
 	unordered_set<int> getAllChildren();
-	unordered_set< pair<int, int> > getParentChildPairs();
-	unordered_set< pair<int, int> > getAncDescPairs();
+	unordered_set< pair<int, int>, intPairhash> getParentChildPairs();
+	unordered_set< pair<int, int>, intPairhash> getAncDescPairs();
 	unordered_set<int> getParentRoots();
 
 	//For Uses relations
@@ -91,8 +91,8 @@ public:
 	unordered_set<string> getUsedVar(string procedure);
 	unordered_set<int> getStmUsing(string variable);
 	unordered_set<string> getProcUsing(string variable);
-	unordered_set< pair<int, string> > getStmVarUsePairs();
-	unordered_set< pair<string, string> > getProcVarUsePairs();
+	unordered_set< pair<int, string>, intStringhash> getStmVarUsePairs();
+	unordered_set< pair<string, string>, strPairhash> getProcVarUsePairs();
 
 	//For Modifies relations
 	bool isModifying(int stm, string variable);
@@ -101,8 +101,8 @@ public:
 	string getModifiedVar(string procedure);
 	unordered_set<int> getStmModifying(string variable);
 	unordered_set<string> getProcModifying(string variable);
-	unordered_set< pair<int, string> > getStmVarModifyPairs();
-	unordered_set< pair<string, string> > getProcVarModifyPairs();
+	unordered_set< pair<int, string>, intStringhash> getStmVarModifyPairs();
+	unordered_set< pair<string, string>, strPairhash> getProcVarModifyPairs();
 
 	//For Pattern clauses
 	vector<int> findPattern(string variable, string expr, bool isExclusive);

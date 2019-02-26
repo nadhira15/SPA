@@ -123,12 +123,12 @@ unordered_set<int> ParentStorage::getChildrenList()
 	return childrenList;
 }
 
-unordered_set<pair<int, int>> ParentStorage::getParent_ChildList()
+unordered_set<pair<int, int>, intPairhash> ParentStorage::getParent_ChildList()
 {
 	return parent_ChildPairList;
 }
 
-unordered_set<pair<int, int>> ParentStorage::getAnc_DescList()
+unordered_set<pair<int, int>, intPairhash> ParentStorage::getAnc_DescList()
 {
 	return anc_DescPairList;
 }

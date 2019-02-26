@@ -7,6 +7,8 @@
 
 using namespace std;
 
+#include "Hasher.h"
+
 class UseStorage
 {
 public:
@@ -21,12 +23,12 @@ public:
 	unordered_set<string> getVarUsedBy(string proc);
 	unordered_set<int> getStmUsing(string variable);
 	unordered_set<string> getProcUsing(string variable);
-	unordered_set< pair<int, string> > getStmVarPairs();
-	unordered_set< pair<string, string> > getProcVarPairs();
+	unordered_set< pair<int, string>, intStringhash> getStmVarPairs();
+	unordered_set< pair<string, string>, strPairhash> getProcVarPairs();
 
 private:
-	static unordered_set<pair<int, string> > stmVarPairs;
-	static unordered_set<pair<string, string> > procVarPairs;
+	static unordered_set<pair<int, string>, intStringhash> stmVarPairs;
+	static unordered_set<pair<string, string>, strPairhash> procVarPairs;
 	static unordered_map<int, unordered_set<string> > varLists_Stm;
 	static unordered_map<string, unordered_set<string> > varLists_Proc;
 	static unordered_map<string, unordered_set<int> > stmLists;

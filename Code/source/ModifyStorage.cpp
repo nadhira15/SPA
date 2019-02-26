@@ -58,12 +58,12 @@ unordered_set<string> ModifyStorage::getProcModifying(string variable)
 	return procLists.find(variable)->second;
 }
 
-unordered_set<pair<int, string>> ModifyStorage::getStmVarPairs()
+unordered_set<pair<int, string>, intStringhash> ModifyStorage::getStmVarPairs()
 {
 	return stmVarPairs;
 }
 
-unordered_set<pair<string, string>> ModifyStorage::getProcVarPairs()
+unordered_set<pair<string, string>, strPairhash> ModifyStorage::getProcVarPairs()
 {
 	return procVarPairs;
 }

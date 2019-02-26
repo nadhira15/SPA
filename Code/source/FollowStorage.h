@@ -6,6 +6,8 @@
 
 using namespace std;
 
+#include "Hasher.h"
+
 struct fRelationships
 {
 	int previous;
@@ -31,14 +33,14 @@ public:
 	unordered_set<int> getAllFollowedBy(int stm);
 	unordered_set<int> getFollowerList();
 	unordered_set<int> getFollowedList();
-	unordered_set< pair<int, int> > getFPairList();
-	unordered_set< pair<int, int> > getF_S_PairList();
+	unordered_set< pair<int, int>, intPairhash> getFPairList();
+	unordered_set< pair<int, int>, intPairhash> getF_S_PairList();
 	unordered_set<int> getRoots();
 
 private:
 	static unordered_map<int, fRelationships> followTable;
-	static unordered_set< pair<int, int> > followPairList;
-	static unordered_set< pair<int, int> > follow_S_PairList;
+	static unordered_set< pair<int, int>, intPairhash> followPairList;
+	static unordered_set< pair<int, int>, intPairhash> follow_S_PairList;
 	static unordered_set<int> followerList;
 	static unordered_set<int> followedList;
 	static unordered_set<int> rootList;

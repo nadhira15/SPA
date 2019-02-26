@@ -126,12 +126,12 @@ unordered_set<int> FollowStorage::getFollowedList()
 	return followedList;
 }
 
-unordered_set<pair<int, int>> FollowStorage::getFPairList()
+unordered_set<pair<int, int>, intPairhash> FollowStorage::getFPairList()
 {
 	return followPairList;
 }
 
-unordered_set<pair<int, int>> FollowStorage::getF_S_PairList()
+unordered_set<pair<int, int>, intPairhash> FollowStorage::getF_S_PairList()
 {
 	return follow_S_PairList;
 }

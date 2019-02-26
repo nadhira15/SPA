@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\FollowStorage.h" />
+    <ClInclude Include="..\source\Hasher.h" />
     <ClInclude Include="..\source\ModifyStorage.h" />
     <ClInclude Include="..\source\ParentStorage.h" />
     <ClInclude Include="..\source\PKB.h" />
