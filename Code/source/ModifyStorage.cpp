@@ -1,5 +1,12 @@
 #include "ModifyStorage.h"
 
+unordered_set<pair<int, string>, intStringhash> ModifyStorage::stmVarPairs;
+unordered_set<pair<string, string>, strPairhash> ModifyStorage::procVarPairs;
+unordered_map<int, string> ModifyStorage::varList_Stm;
+unordered_map<string, string> ModifyStorage::varList_Proc;
+unordered_map<string, unordered_set<int> > ModifyStorage::stmLists;
+unordered_map<string, unordered_set<string> > ModifyStorage::procLists;
+
 ModifyStorage::ModifyStorage()
 {
 }

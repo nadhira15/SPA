@@ -1,5 +1,12 @@
 #include "UseStorage.h"
 
+unordered_set<pair<int, string>, intStringhash> UseStorage::stmVarPairs;
+unordered_set<pair<string, string>, strPairhash> UseStorage::procVarPairs;
+unordered_map<int, unordered_set<string> > UseStorage::varLists_Stm;
+unordered_map<string, unordered_set<string> > UseStorage::varLists_Proc;
+unordered_map<string, unordered_set<int> > UseStorage::stmLists;
+unordered_map<string, unordered_set<string> > UseStorage::procLists;
+
 UseStorage::UseStorage()
 {
 }
