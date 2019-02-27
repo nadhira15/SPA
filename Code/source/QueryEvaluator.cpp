@@ -17,14 +17,14 @@ using namespace std;
 string QueryEvaluator::evaluateQuery(vector<pair<string, string>> declarations,
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {
-	
-	unordered_set<int> afterPatternFilter = filterPatternCondition(patternCondition);
-
-	if (suchThatCondition.size == 0) {
-		return setToString(intSetToStrSet(afterPatternFilter));
+	if (patternCondition.size == 0) {
+		return setToString(filterSuchThatCondition(declarations, selectedVar, suchThatCondition, getAllStms(), ""));
 	}
+	unordered_set<int> afterPatternFilter = filterPatternCondition(patternCondition);
+	string patternSynonym = patternCondition[0].first;
 
-	unordered_set<string> afterSuchThatFilter = filterSuchThatCondition(declarations, selectedVar, suchThatCondition, afterPatternFilter);
+	unordered_set<string> afterSuchThatFilter = filterSuchThatCondition(declarations, selectedVar, 
+		suchThatCondition, afterPatternFilter, patternSynonym);
 	return setToString(afterSuchThatFilter);
 }
 
@@ -38,7 +38,7 @@ unordered_set<int> filterPatternCondition(vector<pair<string, pair<string, strin
 Evaluate the such that condition which returns a list of answers
 */
 unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> declarations, vector<string> selectedVar,
-	vector<pair<string, pair<string, string>>> suchThatCondition, unordered_set<int> afterPatternFilter) {
+	vector<pair<string, pair<string, string>>> suchThatCondition, unordered_set<int> afterPatternFilter, string patternSynonym) {
 	string relation = suchThatCondition[0].first;
 	string firstArgument = suchThatCondition[0].second.first;
 	string secondArgument = suchThatCondition[0].second.second;
@@ -66,32 +66,8 @@ unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> decla
 		evaluation.insert("none");
 	}
 	else if (certainty == "true") {
-		if ((afterPatternFilter.size == PKB().getTotalStmNo()) || selectedVarType != "assign") {
-			if (selectedVarType == "stmt") {
-				return intSetToStrSet(getAllStms());
-			}
-			else if (selectedVarType == "read") {
-				return intSetToStrSet(PKB().getReadStms());
-			}
-			else if (selectedVarType == "print") {
-				return intSetToStrSet(PKB().getPrintStms());
-			}
-			else if (selectedVarType == "while") {
-				return intSetToStrSet(PKB().getWhileStms());
-			}
-			else if (selectedVarType == "if") {
-				return intSetToStrSet(PKB().getIfStms());
-			}
-			else if (selectedVarType == "variable") {
-				return PKB().getVariables();
-			}
-			else if (selectedVarType == "constant") {
-				return intSetToStrSet(PKB().getConstants());
-			}
-			else if (selectedVarType == "procedure") {
-				evaluation.insert(PKB().getProcName());
-			}
-			return evaluation;
+		if ((selectedVarType != "assign") || (patternSynonym.size == 0)) {
+			return getStmts(selectedVarType);
 		}
 		return intSetToStrSet(afterPatternFilter);
 	}
@@ -275,6 +251,38 @@ unordered_set<string> intPairSetToStrSet(unordered_set<pair<int, int>> intPairSe
 	}
 
 	return strSet;
+}
+
+unordered_set<string> getStmts(string s) {
+	unordered_set<string> result;
+	if (s == "stmt") {
+		return intSetToStrSet(getAllStms());
+	}
+	else if (s == "read") {
+		return intSetToStrSet(PKB().getReadStms());
+	}
+	else if (s == "print") {
+		return intSetToStrSet(PKB().getPrintStms());
+	}
+	else if (s == "while") {
+		return intSetToStrSet(PKB().getWhileStms());
+	}
+	else if (s == "if") {
+		return intSetToStrSet(PKB().getIfStms());
+	}
+	else if (s == "assign") {
+		return intSetToStrSet(PKB().getAssignStms());
+	}
+	else if (s == "variable") {
+		return PKB().getVariables();
+	}
+	else if (s == "constant") {
+		return intSetToStrSet(PKB().getConstants());
+	}
+	else if (s == "procedure") {
+		result.insert(PKB().getProcName());
+	}
+	return result;
 }
 
 
