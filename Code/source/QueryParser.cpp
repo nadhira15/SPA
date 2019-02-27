@@ -31,7 +31,7 @@ string QueryParser::parse(string query) {
 	// initial query validation
 	errorString = initialValidation(query);
 	if (errorString != "") {
-		return errorString;
+		return "error";
 	}
 
 	// splitting clauses
@@ -40,7 +40,7 @@ string QueryParser::parse(string query) {
 	// validating clauses
 	errorString = validateClauses(clauses);
 	if (errorString != "") {
-		return errorString;
+		return "error";
 	}
 
 	// parsing declarations
@@ -54,7 +54,7 @@ string QueryParser::parse(string query) {
 	// validating declarations
 	errorString = validateDeclarations(declarations);
 	if (errorString != "") {
-		return errorString;
+		return "error";
 	}
 
 	// parsing "Select" statement
@@ -95,19 +95,19 @@ string QueryParser::parse(string query) {
 	// validating 'Select' parameter
 	errorString = validateSelectedVar(selectedVar, declarationsMap);
 	if (errorString != "") {
-		return errorString;
+		return "error";
 	}
 
 	// validating 'such that' parameter
 	errorString = validateSuchThatParam(suchThatCondition, declarationsMap);
 	if (errorString != "") {
-		return errorString;
+		return "error";
 	}
 
 	// validating 'pattern' parameter
 	errorString = validatePatternParam(patternCondition, declarationsMap);
 	if (errorString != "") {
-		return errorString;
+		return "error";
 	}
 
 	string result = evaluateSelectConditions(declarations, selectedVar, suchThatCondition, patternCondition);
