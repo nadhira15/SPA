@@ -1,4 +1,4 @@
-﻿﻿# Prerequisites
+﻿# Prerequisites
 *.d
 
 # Compiled Object files
@@ -399,3 +399,4 @@ ASALocalRun/
 healthchecksdb
 
 Code/Tests/out.xml
+*.vcxproj.user
