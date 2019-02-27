@@ -60,9 +60,8 @@
     <ClCompile Include="..\source\Statement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\source\QueryEvaluator.cpp">
-=======
+	  <Filter>Source Files</Filter>
     <ClCompile Include="..\source\IfParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -76,7 +75,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\source\PrintParser.cpp">
->>>>>>> dd9a08d63765800ed5c5c74f0e3cf1b9cbd8e9f5
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -123,9 +121,8 @@
     <ClInclude Include="..\source\Statement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\source\QueryEvaluator.h">
-=======
+	  <Filter>Header Files</Filter>
     <ClInclude Include="..\source\IfParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -142,7 +139,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\PrintParser.h">
->>>>>>> dd9a08d63765800ed5c5c74f0e3cf1b9cbd8e9f5
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
