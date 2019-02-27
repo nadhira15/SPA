@@ -22,12 +22,9 @@ std::string ProcedureParser:: parseProcName(const std::string toParse){
 	}
 }
 
-bool ProcedureParser::varifyProcName(const std::string toParse) {
-	std::smatch matches;
+bool ProcedureParser::verifyProcName(const std::string toParse) {
 	std::regex reg("\\s*procedure\\s+([a-zA-Z]+[a-zA-Z]*\\d*)\\s*");
-	if (std::regex_match(toParse, matches, reg)) {
-		std::ssub_match procedureName = matches[1];
-		std::string name = procedureName.str();
+	if (std::regex_match(toParse, reg)) {
 		return true;
 	}
 	else {
