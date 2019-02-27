@@ -11,6 +11,42 @@ namespace UnitTesting
 	{
 	public:
 
+		TEST_METHOD(verifyValidExpression)
+		{
+			std::string testStatement = "5*((a+b) / 5)";
+
+			bool validExpression = ExpressionUtil::verifyInfixExpression(testStatement);
+
+			Assert::IsTrue(validExpression);
+		}
+
+		TEST_METHOD(verifyInvalidBracketsNumbers)
+		{
+			std::string testStatement = "5*((a+b) / 5";
+
+			bool validExpression = ExpressionUtil::verifyInfixExpression(testStatement);
+
+			Assert::IsFalse(validExpression);
+		}
+
+		TEST_METHOD(verifyInvalidEntities)
+		{
+			std::string testStatement = "5*(a+bc3) / 5a";
+
+			bool validExpression = ExpressionUtil::verifyInfixExpression(testStatement);
+
+			Assert::IsFalse(validExpression);
+		}
+
+		TEST_METHOD(verifyInvalidBracketPlacement)
+		{
+			std::string testStatement = "5)*(a+b / 5";
+
+			bool validExpression = ExpressionUtil::verifyInfixExpression(testStatement);
+
+			Assert::IsFalse(validExpression);
+		}
+
 		TEST_METHOD(test2OperandConversion)
 		{
 			std::string testStatement = "x+6";
@@ -65,6 +101,39 @@ namespace UnitTesting
 			std::string output = ExpressionUtil::convertInfixToPrefix(testStatement);
 
 			Assert::AreEqual(expectedConvert, output);
+		}
+
+		TEST_METHOD(testExtractConstants)
+		{
+			std::string testStatement = "5*(a+b) / 5";
+
+			vector<std::string> expectedConstants{ "5", "5" };
+
+			vector<std::string> output = ExpressionUtil::getConstants(testStatement);
+
+			Assert::IsTrue(expectedConstants == output);
+		}
+
+		TEST_METHOD(testExtractVariables)
+		{
+			std::string testStatement = "5*(ac+bb) / 5";
+
+			vector<std::string> expectedVariables{ "ac", "bb" };	
+
+			vector<std::string> output = ExpressionUtil::getVariables(testStatement);
+
+			Assert::IsTrue(expectedVariables == output);
+		}
+
+		TEST_METHOD(testExtractVariables2)
+		{
+			std::string testStatement = "5*(ac+bb) / 5 + (abc1512)";
+
+			vector<std::string> expectedVariables{ "ac", "bb", "abc1512" };
+
+			vector<std::string> output = ExpressionUtil::getVariables(testStatement);
+
+			Assert::IsTrue(expectedVariables == output);
 		}
 	};
 }

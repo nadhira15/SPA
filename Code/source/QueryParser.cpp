@@ -225,7 +225,7 @@ string QueryParser::validateDeclarations(vector<pair<string, string>> declaratio
 	- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
 	*/
 
-	for (int i = 0; i < declarations.size(); i++) {
+	for (size_t i = 0; i < declarations.size(); i++) {
 		if (validVarType.find(declarations[i].first) == validVarType.end()) {
 			return "invalid query";
 		}
