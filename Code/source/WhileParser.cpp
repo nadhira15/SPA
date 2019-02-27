@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include "Parser.h"
 #include "WhileParser.h"
 #include "Statement.h"
 #include "PKB.h"
@@ -28,7 +29,7 @@ using namespace std;
   output: vector<string> of variables/constants
 */
 
-WhileParser::WhileParser(short stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb) {
+WhileParser::WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb1) {
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
 	string cond_expr = stmt.substr(i + 1, j - i - 1);
@@ -37,8 +38,9 @@ WhileParser::WhileParser(short stmtNo, std::string stmt, vector<Statement> stmtl
 	if (valid) {
 		var = ConditionalExp::getVariables();
 		c = ConditionalExp::getConstants();
-		//call parser for while stmtlst
-		//Parser(stmtlst, pkb);
+		pkb = pkb1;
+		stmtLst = stmtlst;
+		stmtNum = stmtNo;
 	} else {
 		throw "While statement is not in the right form!\n";
 	}
@@ -50,4 +52,8 @@ vector<string> WhileParser::getVariables() {
 
 vector<string> WhileParser::getConstants() {
 	return c;
+}
+ 
+void WhileParser::parseStmtLst() {
+	Parser().parse(stmtLst, stmtNum, pkb);
 }

@@ -29,7 +29,12 @@ using namespace std;
 */
 
 class ElseParser {
+private:
+	int stmtNum;
+	PKB pkb;
+	vector<Statement> stmtLst;
 public:
-	ElseParser(short stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb);
+	ElseParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb);
+	void parseStmtLst();
 };
 

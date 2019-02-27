@@ -15,7 +15,8 @@ using namespace std;
 /* Usage guide for if, else and while parsers:
 
   If/while parser will contain:
-  (1) the parse method: to validate and call parser to parse the stmtlst inside
+  (1) constructor: to validate and store object variables
+  (1) the parseStmtLst method: call parser to parse the stmtlst inside
   (2) getter methods for the Use variables and constants
   Else parser will only contain the parse method which calls parser to parse stmtlst inside
 
@@ -32,9 +33,13 @@ class WhileParser {
 private:
 	vector<string> var;
 	vector<string> c;
+	int stmtNum;
+	PKB pkb;
+	vector<Statement> stmtLst;
 public:
-	WhileParser(short stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb);
+	WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb);
 	vector<string> getVariables();
 	vector<string> getConstants();
+	void parseStmtLst();
 };
 

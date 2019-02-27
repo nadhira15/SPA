@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include "Parser.h"
 #include "IfParser.h"
 #include "Statement.h"
 #include "PKB.h"
@@ -28,7 +29,7 @@ using namespace std;
   output: vector<string> of variables/constants
 */
 
-IfParser::IfParser(short stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb) {
+IfParser::IfParser(int stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb1) {
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
 	string cond_expr = stmt.substr(i + 1, j - i - 1);
@@ -37,10 +38,10 @@ IfParser::IfParser(short stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb
 	if (valid) {
 		var = ConditionalExp::getVariables();
 		c = ConditionalExp::getConstants();
-		//call parser for if stmtlst
-		//Parser(stmtlst, pkb);
-	}
-	else {
+		pkb = pkb1;
+		stmtLst = stmtlst;
+		stmtNum = stmtNo;
+	} else {
 		throw "If statement is not in the right form!\n";
 	}
 }
@@ -51,4 +52,8 @@ vector<string> IfParser::getVariables() {
 
 vector<string> IfParser::getConstants() {
 	return c;
+}
+
+void IfParser::parseStmtLst() {
+	Parser().parse(stmtLst, stmtNum, pkb);
 }

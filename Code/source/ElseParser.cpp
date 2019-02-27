@@ -28,9 +28,14 @@ using namespace std;
   output: vector<string> of variables/constants
 */
 
-ElseParser::ElseParser(short stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb) {
-	//call parser for if stmtlst
-	//Parser(stmtlst, pkb);
+ElseParser::ElseParser(int stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb1) {
+	stmtNum = stmtNo;
+	stmtLst = stmtlst;
+	pkb = pkb1;
 }
 
 // else does not require secondary validation
+
+void ElseParser::parseStmtLst() {
+	Parser().parse(stmtLst, stmtNum, pkb);
+}
