@@ -19,6 +19,8 @@ public:
 
 	void populateDesignEntities(Statement stmt, PKB pkb);
 
+	void extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine);
+
 	void populateStmtList(Statement stmt, PKB pkb);
 
 };
