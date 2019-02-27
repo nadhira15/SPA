@@ -21,6 +21,7 @@ procedure TestB {
     } else {
       a = div / 2;
       if (a >= div) then {
+        a = a;
       } else {
         while (b != div) {
           times = times * div + minus * sum;
