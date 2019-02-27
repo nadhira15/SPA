@@ -11,7 +11,7 @@ using namespace LexicalToken;
 using namespace StringUtil;
 
 regex terms("(\\w+)");
-regex validExpression("^(?:\\(?\\s*(\\w+)\\s*\\)?)(?:\\s*[+\\*\\-%\\/]\\s*(?:\\(?\\s*(\\w+)\\s*\\)?))*$");
+regex validExpression("^(?:\\(*\\s*(\\w+)\\s*\\)*)(?:\\s*[+\\*\\-%\\/]\\s*(?:\\(*\\s*(\\w+)\\s*\\)*))*$");
 
 //Convert Infix Expressions into Prefix expression for easier string matching
 string ExpressionUtil::convertInfixToPrefix(string expression) {
@@ -141,15 +141,14 @@ void ExpressionUtil::expressionPreprocess(std::string &expression)
 
 vector<string> ExpressionUtil::getVariables(string infixExpression) {
 	smatch result;
-	regex_search(infixExpression, result, terms);
-
 	vector<string> variableVector;
 
-	for (size_t i = 0; i < result.size(); i++) {
-		bool isValidName = verifyName(result[i]);
+	while (regex_search(infixExpression, result, terms)) {
+		bool isValidName = verifyName(result[0]);
 		if (isValidName) {
-			variableVector.push_back(result[i]);
+			variableVector.push_back(result[0]);
 		}
+		infixExpression = result.suffix().str();
 	}
 
 	return variableVector;
@@ -157,15 +156,14 @@ vector<string> ExpressionUtil::getVariables(string infixExpression) {
 
 vector<string> ExpressionUtil::getConstants(string infixExpression) {
 	smatch result;
-	regex_search(infixExpression, result, terms);
-
 	vector<string> constantVector;
 
-	for (size_t i = 0; i < result.size(); i++) {
-		bool isValidInteger = verifyInteger(result[i]);
+	while (regex_search(infixExpression, result, terms)) {
+		bool isValidInteger = verifyInteger(result[0]);
 		if (isValidInteger) {
-			constantVector.push_back(result[i]);
+			constantVector.push_back(result[0]);
 		}
+		infixExpression = result.suffix().str();
 	}
 
 	return constantVector;
@@ -176,14 +174,14 @@ bool ExpressionUtil::verifyInfixExpression(string infixExpression) {
 	if (regex_match(infixExpression, validExpression)) {
 		if (checkParenthesis(infixExpression)) {
 			smatch result;
-			regex_search(infixExpression, result, terms);
 
-			for (size_t i = 0; i < result.size(); i++) {
-				bool isValidName = verifyName(result[i]);
-				bool isValidInteger = verifyInteger(result[i]);
+			while (regex_search(infixExpression, result, terms)) {
+				bool isValidName = verifyName(result[0]);
+				bool isValidInteger = verifyInteger(result[0]);
 				if (!isValidName && !isValidInteger) {
 					return false;
 				}
+				infixExpression = result.suffix().str();
 			}
 			return true;
 		}
@@ -205,8 +203,7 @@ bool ExpressionUtil::checkParenthesis(string infixExpression) {
 			bracketStack.push('(');
 		}
 		else if (infixExpression.at(i) == ')') {
-			char stackTop = bracketStack.top();
-			if (stackTop == NULL) {
+			if (bracketStack.empty()) {
 				return false;
 			}
 			else {
@@ -238,5 +235,3 @@ bool ExpressionUtil::isOperator(char c)
 {
 	return (!isalpha(c) && !isdigit(c));
 }
-
-
