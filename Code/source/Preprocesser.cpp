@@ -46,6 +46,7 @@ output: vector<Statement> that contains procedure statements
 */
 Preprocesser::Preprocesser(string chunk1)
 {
+	vector<string> KEYWORDS = { "procedure", "then", "call", "read", "print", "while", "if", "else" };
 	//take file contents and save as global variable
 	chunk = chunk1;
 	size_t prev = chunk.find("procedure "), next;
@@ -183,9 +184,9 @@ int Preprocesser::validateSemicolon(string s)
 	s = trim(s.substr(s.find(" "), s.size() - s.find(" ")));
 	if (s.find(" ") == string::npos) {
 		//READ, CALL, PRINT is passed as long as it contains 2 words
-		if (firstWord.compare(KEYWORDS[2]) == 0) result = 2;
-		else if (firstWord.compare(KEYWORDS[3]) == 0) result = 3;
-		else if (firstWord.compare(KEYWORDS[4]) == 0) result = 4;
+		if (firstWord.compare(KEYWORDS.at(2)) == 0) result = 2;
+		else if (firstWord.compare(KEYWORDS.at(3)) == 0) result = 3;
+		else if (firstWord.compare(KEYWORDS.at(4)) == 0) result = 4;
 	}
 	return result;
 }
@@ -199,20 +200,20 @@ errors NOT covered: incorrect variables, expression (i.e. *+/-=), non-alphanumer
 int Preprocesser::validateCurvedBrackets(string s)
 {
 	int result = 0;
-	if (s.substr(0, 5).compare(KEYWORDS[5]) == 0) {
+	if (s.substr(0, 5).compare(KEYWORDS.at(5)) == 0) {
 		s = trim(s.substr(5, s.size() - 5));
 		if (s[0] == '(' && s[s.size() - 1] == ')') {
 			result = 5;
 		}
 	}
-	else if (s.substr(0, 2).compare(KEYWORDS[6]) == 0) {
+	else if (s.substr(0, 2).compare(KEYWORDS.at(6)) == 0) {
 		//IF is passed as long as it is followed by '(' and ')' and last word is THEN
-		if (s.substr(s.size() - 4, 4).compare(KEYWORDS[1]) == 0) { // last word is then
+		if (s.substr(s.size() - 4, 4).compare(KEYWORDS.at(1)) == 0) { // last word is then
 			s = trim(s.substr(2, s.size() - 6));
 			if (s[0] == '(' && s[s.size() - 1] == ')') result = 6;
 		}
 	}
-	else if (s.substr(0, 4).compare(KEYWORDS[7]) == 0) {
+	else if (s.substr(0, 4).compare(KEYWORDS.at(7)) == 0) {
 		if (trim(s).size() == 4) result = 7;
 	}
 	return result;
@@ -228,7 +229,7 @@ int Preprocesser::validateProc(string s)
 {
 	int result = 0;
 	string firstWord = s.substr(0, s.find(" "));
-	if (firstWord.compare(KEYWORDS[0]) == 0) {
+	if (firstWord.compare(KEYWORDS.at(0)) == 0) {
 		//PROCEDURE is passed as long as it contains 2 words
 		s = trim(s.substr(9, s.size() - 9));
 		if (s.find(" ") == string::npos) result = 8;
