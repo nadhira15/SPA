@@ -1,5 +1,12 @@
 #include "FollowStorage.h"
 
+unordered_map<int, fRelationships> FollowStorage::followTable;
+unordered_set< pair<int, int>, intPairhash> FollowStorage::followPairList;
+unordered_set< pair<int, int>, intPairhash> FollowStorage::follow_S_PairList;
+unordered_set<int> FollowStorage::followerList;
+unordered_set<int> FollowStorage::followedList;
+unordered_set<int> FollowStorage::rootList;
+
 FollowStorage::FollowStorage()
 {
 }

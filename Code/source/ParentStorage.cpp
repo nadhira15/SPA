@@ -1,5 +1,12 @@
 #include "ParentStorage.h"
 
+unordered_map<int, pRelationships> ParentStorage::parentTable;
+unordered_set< pair<int, int>, intPairhash> ParentStorage::parent_ChildPairList;
+unordered_set< pair<int, int>, intPairhash> ParentStorage::anc_DescPairList;
+unordered_set<int> ParentStorage::parentList;
+unordered_set<int> ParentStorage::childrenList;
+unordered_set<int> ParentStorage::rootList;
+
 ParentStorage::ParentStorage()
 {
 }
