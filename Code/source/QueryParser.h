@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
@@ -19,9 +20,9 @@ public:
 	static vector<string> splitSelectParameter(string selectStatement);
 	static vector<pair<string, pair<string, string>>> splitSuchThatCondition(string suchThatClause);
 	static vector<pair<string, pair<string, string>>> splitPatternCondition(string patternClause);
-	static string validateSelectedVar(vector<string> selectedVar, vector<pair<string, string>> declarations);
-	static string validateSuchThatParam(vector<pair<string, pair<string, string>>> param);
-	static string validatePatternParam(vector<pair<string, pair<string, string>>> param);
+	static string validateSelectedVar(vector<string> selectedVar, unordered_map<string, string> declarationsMap);
+	static string validateSuchThatParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap);
+	static string validatePatternParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap);
 	static string evaluateSelectConditions(vector<pair<string, string>> declarations,
 		vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 		vector<pair<string, pair<string, string>>> patternCondition);

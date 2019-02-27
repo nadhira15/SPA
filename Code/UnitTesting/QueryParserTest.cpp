@@ -70,6 +70,30 @@ namespace UnitTesting
 			Assert::AreEqual(actual == expected, true);
 		}
 
+		TEST_METHOD(validateDeclarations_success)
+		{
+			vector<pair<string, string>> declarations{ {"assign", "a"}, {"assign", "a1"}, {"assign", "a2"}, {"while", "w"} };
+			string actual = QueryParser::validateDeclarations(declarations);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateDeclarations_invalidType)
+		{
+			vector<pair<string, string>> declarations{ {"assign", "a"}, {"hello", "h"} };
+			string actual = QueryParser::validateDeclarations(declarations);
+			string expected = "invalid query";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateDeclarations_invalidName)
+		{
+			vector<pair<string, string>> declarations{ {"assign", "a12_"}, {"hello", "h"} };
+			string actual = QueryParser::validateDeclarations(declarations);
+			string expected = "invalid query";
+			Assert::AreEqual(actual == expected, true);
+		}
+
 		TEST_METHOD(splitSelectParameter_success)
 		{
 			vector<string> actual = QueryParser::splitSelectParameter("Select a");
@@ -102,6 +126,96 @@ namespace UnitTesting
 		{
 			vector<pair<string, pair<string, string>>> actual = QueryParser::splitPatternCondition("pattern   a  ( '_' , 'x*y+z' ) ");
 			vector<pair<string, pair<string, string>>> expected{ {"a", {"'_'", "'x*y+z'"}} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateSelectedVar_success)
+		{
+			vector<string> selectedVar = { "a" };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryParser::validateSelectedVar(selectedVar, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateSelectedVar_varNotDeclared)
+		{
+			vector<string> selectedVar = { "b" };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryParser::validateSelectedVar(selectedVar, declarationsMap);
+			string expected = "selected variable not found";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateSelectedVar_invalidVarName)
+		{
+			vector<string> selectedVar = { "hello_1" };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryParser::validateSelectedVar(selectedVar, declarationsMap);
+			string expected = "invalid variable name";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateSuchThatParam_success)
+		{
+			vector<pair<string, pair<string, string>>> param{ {"Parent", { "ifs", "_" }} };
+			unordered_map<string, string> declarationsMap = { {"ifs", "if"}, {"s", "stmt"} };
+			string actual = QueryParser::validateSuchThatParam(param, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateSuchThatParam_invalidRelName)
+		{
+			vector<pair<string, pair<string, string>>> param{ {"IfWhile", { "a", "_" }} };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryParser::validateSuchThatParam(param, declarationsMap);
+			string expected = "invalid query";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateSuchThatParam_invalidParamType)
+		{
+			vector<pair<string, pair<string, string>>> param{ {"Parent", { "a", "_" }} };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryParser::validateSuchThatParam(param, declarationsMap);
+			string expected = "invalid query";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validatePatternParam_success)
+		{
+			vector<pair<string, pair<string, string>>> param{ {"a", {"'_'", "'x*y+z'"}} };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryParser::validatePatternParam(param, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validatePatternParam_invalidStmtName)
+		{
+			vector<pair<string, pair<string, string>>> param{ {"a_a", {"'_'", "'x*y+z'"}} };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryParser::validatePatternParam(param, declarationsMap);
+			string expected = "invalid variable name";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validatePatternParam_stmtNotDeclared)
+		{
+			vector<pair<string, pair<string, string>>> param{ {"b", {"'_'", "'x*y+z'"}} };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryParser::validatePatternParam(param, declarationsMap);
+			string expected = "statement not found";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validatePatternParam_stmtTypeNotAssign)
+		{
+			vector<pair<string, pair<string, string>>> param{ {"s", {"'_'", "'x*y+z'"}} };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryParser::validatePatternParam(param, declarationsMap);
+			string expected = "statement type is not assign";
 			Assert::AreEqual(actual == expected, true);
 		}
 
