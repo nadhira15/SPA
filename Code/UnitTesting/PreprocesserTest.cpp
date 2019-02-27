@@ -63,37 +63,37 @@ namespace UnitTesting
 		}
 		TEST_METHOD(testWhileValidator1)
 		{
-			int result = p.validateProc("while( a == b )");
+			int result = p.validateCurvedBrackets("while( a == b )");
 			Assert::AreEqual(5, result);
 		}
 		TEST_METHOD(testWhileValidator2)
 		{
-			int result = p.validateProc("while (a==b)a");
+			int result = p.validateCurvedBrackets("while (a==b)a");
 			Assert::AreEqual(0, result);
 		}
 		TEST_METHOD(testIfValidator1)
 		{
-			int result = p.validateProc("if(aaaa)then");
+			int result = p.validateCurvedBrackets("if(aaaa)then");
 			Assert::AreEqual(6, result);
 		}
 		TEST_METHOD(testIfValidator2)
 		{
-			int result = p.validateProc("if (a == b) then");
+			int result = p.validateCurvedBrackets("if (a == b) then");
 			Assert::AreEqual(6, result);
 		}
 		TEST_METHOD(testIfValidator3)
 		{
-			int result = p.validateProc("if(aaaa)athen");
+			int result = p.validateCurvedBrackets("if(aaaa)athen");
 			Assert::AreEqual(0, result);
 		}
 		TEST_METHOD(testElseValidator1)
 		{
-			int result = p.validateProc("else");
+			int result = p.validateCurvedBrackets("else");
 			Assert::AreEqual(7, result);
 		}
 		TEST_METHOD(testElseValidator2)
 		{
-			int result = p.validateProc("elsa");
+			int result = p.validateCurvedBrackets("elsa");
 			Assert::AreEqual(0, result);
 		}
 		TEST_METHOD(testProcValidator1)

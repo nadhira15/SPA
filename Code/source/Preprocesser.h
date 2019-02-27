@@ -42,7 +42,6 @@ private:
 	void error(int i);
 	Statement processProc(int bookmark, int last);
 	vector<Statement> processLst(int bookmark, int last);
-	vector<string> KEYWORDS;
 public:
 	//only validators, atring trimmer, getter and Processer is public
 	int validateSemicolon(string s);
