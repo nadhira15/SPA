@@ -11,6 +11,11 @@ using namespace std;
 #include "PKB.h"
 #include "Statement.h"
 #include "AssignParser.h"
+#include "ReadParser.h"
+#include "PrintParser.h"
+#include "WhileParser.h"
+#include "IfParser.h"
+#include "ElseParser.h"
 
 Parser::Parser()
 {
@@ -60,9 +65,11 @@ void Parser::populateDesignEntities(Statement stmt, PKB pkb) {
 		break;
 	case 3:
 		//ReadStatement
+		extractReadEntity(stmtString, pkb, stmtLine);
 		break;
 	case 4:
 		//PrintStatement
+		extractPrintEntity(stmtString, pkb, stmtLine);
 		break;
 	case 5:
 		//WhileStatement
@@ -79,8 +86,7 @@ void Parser::populateDesignEntities(Statement stmt, PKB pkb) {
 	}
 }
 
-void Parser::extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine)
-{
+void Parser::extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine) {
 	AssignParser ap;
 	string modified = ap.getLeft(stmtString);
 	vector<string> usedVariables = ap.getRightVariable(stmtString);
@@ -104,6 +110,23 @@ void Parser::extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine
 
 	pkb.addAssign(stmtLine, modified, prefixExpression);
 }
+
+void extractReadEntity(std::string &stmtString, PKB &pkb, int stmtLine) {
+	ReadParser rp;
+	string modified = rp.parseReadStmt(stmtString);
+
+	pkb.addModifies(stmtLine, modified);
+	pkb.addVariable(modified);
+}
+
+void extractPrintEntity(std::string &stmtString, PKB &pkb, int stmtLine) {
+	PrintParser pp;
+	string used = pp.parsePrintStmt(stmtString);
+
+	pkb.addUses(stmtLine, used);
+	pkb.addVariable(used);
+}
+
 
 void Parser::populateStmtList(Statement stmt, PKB pkb) {
 	int stmtLine = stmt.getStmtNum();
