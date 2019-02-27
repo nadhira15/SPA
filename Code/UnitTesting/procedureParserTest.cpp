@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "TNode.h"
 #include "ProcedureParser.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -24,15 +23,15 @@ namespace UnitTesting
 			Assert::AreEqual(expected, result);
 		}
 
-		TEST_METHOD(testVarifyProcName)
+		TEST_METHOD(testVerifyProcName)
 		{
-			bool result = ProcedureParser::varifyProcName("procedure ComputeWatever");
+			bool result = ProcedureParser::verifyProcName("procedure ComputeWatever");
 			Assert::AreEqual(result, true);
 		}
 
-		TEST_METHOD(testVarifyProcInvalidName)
+		TEST_METHOD(testVerifyProcInvalidName)
 		{
-			bool result = ProcedureParser::varifyProcName("procedure Com@puteWatever");
+			bool result = ProcedureParser::verifyProcName("procedure Com@puteWatever");
 			Assert::AreEqual(result, false);
 		}
 	};
