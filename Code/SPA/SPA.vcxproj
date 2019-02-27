@@ -13,7 +13,6 @@
   <ItemGroup>
     <ClCompile Include="..\source\AssignParser.cpp" />
     <ClCompile Include="..\source\ConditionalExp.cpp" />
-    <ClCompile Include="..\source\DesignExtractor.cpp" />
     <ClCompile Include="..\source\ElseParser.cpp" />
     <ClCompile Include="..\source\ExpressionUtil.cpp" />
     <ClCompile Include="..\source\IfParser.cpp" />
@@ -27,7 +26,6 @@
     <ClCompile Include="..\source\Statement.cpp" />
     <ClCompile Include="..\source\StringUtil.cpp" />
     <ClCompile Include="..\source\QueryParser.cpp" />
-    <ClCompile Include="..\source\TNode.cpp" />
     <ClCompile Include="..\source\WhileParser.cpp" />
     <ClCompile Include="..\source\FollowStorage.cpp" />
     <ClCompile Include="..\source\ParentStorage.cpp" />
@@ -49,7 +47,6 @@
     <ClInclude Include="..\source\Statement.h" />
     <ClInclude Include="..\source\StringUtil.h" />
     <ClInclude Include="..\source\QueryParser.h" />
-    <ClInclude Include="..\source\TNode.h" />
     <ClInclude Include="..\source\WhileParser.h" />
     <ClInclude Include="..\source\FollowStorage.h" />
     <ClInclude Include="..\source\ParentStorage.h" />
