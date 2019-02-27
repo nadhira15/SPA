@@ -40,7 +40,7 @@ void PKB::addVariable(string name)
 	varList.emplace(name);
 }
 
-void PKB::addConstant(int value)
+void PKB::addConstant(string value)
 {
 	constList.emplace(value);
 }
@@ -169,7 +169,7 @@ unordered_set<string> PKB::getVariables()
 	return varList;
 }
 
-unordered_set<int> PKB::getConstants()
+unordered_set<string> PKB::getConstants()
 {
 	return constList;
 }

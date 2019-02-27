@@ -21,7 +21,7 @@ public:
 	void addProc(string procName);
 	void addStatement(int stmNo, stmType type);
 	void addVariable(string name);
-	void addConstant(int value);
+	void addConstant(string value);
 
 	//adding Follows relationships
 	bool addFollow(int stm1, int stm2);
@@ -54,7 +54,7 @@ public:
 	unordered_set<int> getIfStms();
 	unordered_set<int> getWhileStms();
 	unordered_set<string> getVariables();
-	unordered_set<int> getConstants();
+	unordered_set<string> getConstants();
 
 	//For Follows/Follows* relations
 	bool hasFollowRelation();
@@ -112,7 +112,7 @@ private:
 	static string procName;
 	static vector<stmType> stmTypeList;
 	static unordered_set<string> varList;
-	static unordered_set<int> constList;
+	static unordered_set<string> constList;
 	static unordered_set<int> readStmList;
 	static unordered_set<int> printStmList;
 	static unordered_set<int> assignStmList;
