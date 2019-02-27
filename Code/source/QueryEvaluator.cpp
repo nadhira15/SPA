@@ -32,6 +32,33 @@ unordered_set<int> filterPatternCondition(vector<pair<string, pair<string, strin
 	if (patternCondition.size == 0) {
 		return getAllStms();
 	}
+
+	unordered_set<int> result;
+	vector<int> PKBresult;
+
+	for (int i = 0; i < patternCondition.size(); i++) {
+		string LHSpattern = patternCondition[i].second.first;
+		string RHSpattern = patternCondition[i].second.second;
+		bool isExclusive = true;
+		string variable, expr;
+
+		if (RHSpattern[0] == '_' && RHSpattern[RHSpattern.length() - 1] == '_') {
+			isExclusive = false;
+		}
+
+		if (LHSpattern[0] == '_') {
+			PKBresult = PKB().findPattern(RHSpattern, isExclusive);
+		}
+		else {
+			PKBresult = PKB().findPattern(LHSpattern, RHSpattern, isExclusive);
+		}
+	}
+
+	for (int i = 0; i < PKBresult.size(); i++) {
+		result.insert(PKBresult[i]);
+	}
+
+	return result;
 }
 
 /*
@@ -162,7 +189,7 @@ string isSuchThatTrivial(string relation, string firstArgument, string secondArg
 			}
 			return "not trivial";
 		}
-		return "not trivial";
+	return "not trivial";
 	}
 	else if (relation == "Uses") {
 		if (LexicalToken::verifyInteger(firstArgument)) {
@@ -210,6 +237,151 @@ string isSuchThatTrivial(string relation, string firstArgument, string secondArg
 	return "not trivial";
 }
 
+unordered_set<string> evaluateNonTupleSuchThat(string relation, string firstArgument, string secondArgument) {
+	unordered_set<string> result;
+	if (relation == "Follows") {
+		if (firstArgument != "_" && !LexicalToken::verifyInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				return intSetToStrSet(PKB().getAllFollowed());
+			}
+			else if (LexicalToken::verifyInteger(secondArgument)) {
+				result.insert(to_string(PKB().getPrvStm(stoi(secondArgument))));
+			}
+			else {
+				return result;
+			}
+		}
+		if (secondArgument != "_" && !LexicalToken::verifyInteger(secondArgument)) {
+			if (firstArgument == "_") {
+				return intSetToStrSet(PKB().getAllFollowers());
+			}
+			else if (LexicalToken::verifyInteger(firstArgument)) {
+				result.insert(to_string(PKB().getNxtStm(stoi(secondArgument))));
+			}
+			else {
+				return result;
+			}
+		}
+		return result;
+	}
+	else if (relation == "Follows*") {
+		if (firstArgument != "_" && !LexicalToken::verifyInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				return intSetToStrSet(PKB().getAllFollowed());
+			}
+			else if (LexicalToken::verifyInteger(secondArgument)) {
+				return intSetToStrSet(PKB().getAllFollowedBy(stoi(secondArgument)));
+			}
+			else {
+				return result;
+			}
+		}
+		if (secondArgument != "_" && !LexicalToken::verifyInteger(secondArgument)) {
+			if (firstArgument == "_") {
+				return intSetToStrSet(PKB().getAllFollowers());
+			}
+			else if (LexicalToken::verifyInteger(firstArgument)) {
+				return intSetToStrSet(PKB().getAllFollowing(stoi(secondArgument)));
+			}
+			else {
+				return result;
+			}
+		}
+		return result;
+	}
+	if (relation == "Parent") {
+		if (firstArgument != "_" && !LexicalToken::verifyInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				return intSetToStrSet(PKB().getAllParents());
+			}
+			else if (LexicalToken::verifyInteger(secondArgument)) {
+				result.insert(to_string(PKB().getParent(stoi(secondArgument))));
+			}
+			else {
+				return result;
+			}
+		}
+		if (secondArgument != "_" && !LexicalToken::verifyInteger(secondArgument)) {
+			if (firstArgument == "_") {
+				return intSetToStrSet(PKB().getAllChildren());
+			}
+			else if (LexicalToken::verifyInteger(firstArgument)) {
+				return intSetToStrSet(PKB().getChildren(stoi(secondArgument)));
+			}
+			else {
+				return result;
+			}
+		}
+		return result;
+	}
+	else if (relation == "Parent*") {
+		if (firstArgument != "_" && !LexicalToken::verifyInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				return intSetToStrSet(PKB().getAllParents());
+			}
+			else if (LexicalToken::verifyInteger(secondArgument)) {
+				return intSetToStrSet(PKB().getAllAncestors(stoi(secondArgument)));
+			}
+			else {
+				return result;
+			}
+		}
+		if (secondArgument != "_" && !LexicalToken::verifyInteger(secondArgument)) {
+			if (firstArgument == "_") {
+				return intSetToStrSet(PKB().getAllParents());
+			}
+			else if (LexicalToken::verifyInteger(firstArgument)) {
+				return intSetToStrSet(PKB().getAllDescendants(stoi(secondArgument)));
+			}
+			else {
+				return result;
+			}
+		}
+		return result;
+	}
+	else if (relation == "Uses") {
+		if ((secondArgument != "_") && (secondArgument.front != "\"")) {
+			if ((LexicalToken::verifyInteger(firstArgument)) || firstArgument.front == "\"") {
+				return PKB().getUsedVar(firstArgument);
+			} 
+			return result;
+		}
+		if ((firstArgument != "_") && (secondArgument.front != "\"")) {
+			if (secondArgument == "_") {
+				return intSetToStrSet(PKB().getStmUsing(""));
+			}
+			else if (secondArgument.front == "\"") {
+				return intSetToStrSet(PKB().getStmUsing(secondArgument));
+			} 
+			else {
+				return result;
+			}
+		}
+		return result;
+	}
+	else if (relation == "Modifies") {
+		if ((secondArgument != "_") && (secondArgument.front != "\"")) {
+			if ((LexicalToken::verifyInteger(firstArgument)) || firstArgument.front == "\"") {
+				result.insert(PKB().getModifiedVar(firstArgument));
+			}
+			return result;
+		}
+		if ((firstArgument != "_") && (secondArgument.front != "\"")) {
+			if (secondArgument == "_") {
+				return intSetToStrSet(PKB().getStmModifying(""));
+			}
+			else if (secondArgument.front == "\"") {
+				return intSetToStrSet(PKB().getStmModifying(secondArgument));
+			}
+			else {
+				return result;
+			}
+		}
+		return result;
+	}
+
+	return result;
+}
 unordered_set<int> getAllStms() {
 	unordered_set<int> allStms;
 	for (int i = 1; i <= PKB().getTotalStmNo(); i++) {
