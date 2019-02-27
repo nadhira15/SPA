@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include "Parser.h"
 #include "ElseParser.h"
 #include "Statement.h"
 #include "PKB.h"

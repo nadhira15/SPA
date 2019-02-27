@@ -34,7 +34,7 @@ WhileParser::WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst
 	int j = stmt.rfind(')');
 	string cond_expr = stmt.substr(i + 1, j - i - 1);
 	//validate conditional expression and return all uses variable
-	bool valid = verifyConditionalExp(cond_expr);
+	bool valid = ConditionalExp::verifyConditionalExp(cond_expr);
 	if (valid) {
 		var = ConditionalExp::getVariables();
 		c = ConditionalExp::getConstants();
