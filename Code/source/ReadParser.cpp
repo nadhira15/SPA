@@ -6,10 +6,11 @@
 #include<regex>
 
 using namespace std;
-using namespace LexicalToken;
 
 #include"ReadParser.h"
 #include "LexicalToken.h"
+
+using namespace LexicalToken;
 
 //take in full statement string
 std::string ReadParser::parseReadStmt(const std::string toParse) {

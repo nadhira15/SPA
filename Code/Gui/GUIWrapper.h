@@ -5,6 +5,8 @@
 #include <iostream>
 #include <list>
 
+#include "PKB.h"
+
 
 class GUIWrapper {
  public:
@@ -19,6 +21,8 @@ class GUIWrapper {
   
   // method for evaluating a query
   virtual void evaluate(std::string query, std::list<std::string>& results);
+private:
+	PKB pkb;
 };
 
 #endif

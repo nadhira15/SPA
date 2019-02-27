@@ -6,10 +6,12 @@
 #include<regex>
 
 using namespace std;
-using namespace LexicalToken;
 
 #include"PrintParser.h"
 #include "LexicalToken.h"
+
+using namespace LexicalToken;
+
 
 //take in full statement string
 std::string PrintParser::parsePrintStmt(const std::string toParse) {
@@ -26,7 +28,7 @@ std::string PrintParser::parsePrintStmt(const std::string toParse) {
 			return name;
 		}
 		else {
-			throw "Invalid Variable Name"
+			throw "Invalid Variable Name";
 		}
 	}
 	else {

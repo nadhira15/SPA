@@ -21,6 +21,18 @@ public:
 
 	void extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine);
 
+	void extractReadEntity(std::string & stmtString, PKB & pkb, int stmtLine);
+
+	void extractPrintEntity(std::string & stmtString, PKB & pkb, int stmtLine);
+
+	void extractWhileEntity(std::string & stmtString, PKB & pkb, int stmtLine, vector<Statement> stmtLst);
+
+	void extractIfEntity(std::string & stmtString, PKB & pkb, int stmtLine, vector<Statement> stmtLst);
+
+	void extractElseEntity(std::string & stmtString, PKB & pkb, int stmtLine, vector<Statement> stmtLst);
+
+	void extractProcedureEntity(std::string & stmtString, PKB & pkb, vector<Statement> stmtLst);
+
 	void populateStmtList(Statement stmt, PKB pkb);
 
 };

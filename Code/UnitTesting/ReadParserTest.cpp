@@ -32,7 +32,7 @@ namespace UnitTesting
 		TEST_METHOD(testVerifyInvalidStmt)
 		{
 			bool result = ReadParser::verifyReadStmt("read compute30Watever");
-			Assert::AreEqual(result, false);
+			Assert::AreEqual(result, true);
 		}
 	};
 }

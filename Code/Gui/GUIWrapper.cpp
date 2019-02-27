@@ -2,15 +2,29 @@
 
 #include <iostream>
 
+#include "PKB.h"
+#include "Preprocesser.h"
+#include "Parser.h"
+
 // a default constructor
 GUIWrapper::GUIWrapper() {
   // create any objects here as instance variables of this class
   // as well as any initialization required for your spa program
 }
-
 // method for parsing the SIMPLE source
 void GUIWrapper::parse(std::string filename) {
 	// call your parser to do the parsing
+	Preprocesser preprocesser = Preprocesser(filename);
+	Parser parser = Parser();
+
+	vector<Statement> procList = preprocesser.getProcLst();
+
+	try {
+		parser.parse(procList, 0, pkb);
+	}
+	catch (string exception) {
+		std::cout << "Exception Occurred: " << exception << std::endl;
+	}
 	std::cout << "parsed " << filename << std::endl;
   // ...rest of your code...
 }
