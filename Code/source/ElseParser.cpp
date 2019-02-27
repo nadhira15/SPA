@@ -30,12 +30,15 @@ using namespace std;
 */
 
 ElseParser::ElseParser(int stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb1) {
-	stmtNum = stmtNo;
-	stmtLst = stmtlst;
-	pkb = pkb1;
+	bool valid1 = !stmtlst.empty();
+	if (valid1) {
+		stmtNum = stmtNo;
+		stmtLst = stmtlst;
+		pkb = pkb1;
+	} else {
+		throw "Else if not in the right form! \n";
+	}
 }
-
-// else does not require secondary validation
 
 void ElseParser::parseStmtLst() {
 	Parser().parse(stmtLst, stmtNum, pkb);
