@@ -32,8 +32,9 @@ class IfParser {
 private:
 	vector<string> var;
 	vector<string> c;
+	short stmtNum;
 public:
-	void ifParse(short stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb);
+	IfParser(short stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb);
 	vector<string> getVariables();
 	vector<string> getConstants();
 };

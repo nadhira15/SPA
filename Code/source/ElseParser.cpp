@@ -28,7 +28,7 @@ using namespace std;
   output: vector<string> of variables/constants
 */
 
-void ElseParser::elseParse(short stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb) {
+ElseParser::ElseParser(short stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb) {
 	//call parser for if stmtlst
 	//Parser(stmtlst, pkb);
 }

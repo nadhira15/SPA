@@ -33,7 +33,7 @@ private:
 	vector<string> var;
 	vector<string> c;
 public:
-	void whileParse(short stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb);
+	WhileParser(short stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb);
 	vector<string> getVariables();
 	vector<string> getConstants();
 };

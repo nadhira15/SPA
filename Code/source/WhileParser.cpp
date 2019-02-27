@@ -28,7 +28,7 @@ using namespace std;
   output: vector<string> of variables/constants
 */
 
-void WhileParser::whileParse(short stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb) {
+WhileParser::WhileParser(short stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb) {
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
 	string cond_expr = stmt.substr(i + 1, j - i - 1);
@@ -51,4 +51,3 @@ vector<string> WhileParser::getVariables() {
 vector<string> WhileParser::getConstants() {
 	return c;
 }
-

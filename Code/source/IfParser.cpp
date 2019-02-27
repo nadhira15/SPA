@@ -28,7 +28,7 @@ using namespace std;
   output: vector<string> of variables/constants
 */
 
-void IfParser::ifParse(short stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb) {
+IfParser::IfParser(short stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb) {
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
 	string cond_expr = stmt.substr(i + 1, j - i - 1);
