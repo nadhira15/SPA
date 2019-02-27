@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\AssignParser.cpp" />
+    <ClCompile Include="..\source\ConditionalExp.cpp" />
     <ClCompile Include="..\source\DesignExtractor.cpp" />
     <ClCompile Include="..\source\ElseParser.cpp" />
     <ClCompile Include="..\source\ExpressionUtil.cpp" />
@@ -19,12 +20,19 @@
     <ClCompile Include="..\source\LexicalToken.cpp" />
     <ClCompile Include="..\source\Parser.cpp" />
     <ClCompile Include="..\source\PKB.cpp" />
+    <ClCompile Include="..\source\PrintParser.cpp" />
+    <ClCompile Include="..\source\ProcedureParser.cpp" />
     <ClCompile Include="..\source\Preprocesser.cpp" />
+    <ClCompile Include="..\source\ReadParser.cpp" />
     <ClCompile Include="..\source\Statement.cpp" />
     <ClCompile Include="..\source\StringUtil.cpp" />
     <ClCompile Include="..\source\QueryParser.cpp" />
     <ClCompile Include="..\source\TNode.cpp" />
     <ClCompile Include="..\source\WhileParser.cpp" />
+    <ClCompile Include="..\source\FollowStorage.cpp" />
+    <ClCompile Include="..\source\ParentStorage.cpp" />
+    <ClCompile Include="..\source\UseStorage.cpp" />
+    <ClCompile Include="..\source\ModifyStorage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\AssignParser.h" />
@@ -32,13 +40,22 @@
     <ClInclude Include="..\source\ExpressionUtil.h" />
     <ClInclude Include="..\source\IfParser.h" />
     <ClInclude Include="..\source\LexicalToken.h" />
+    <ClInclude Include="..\source\Parser.h" />
     <ClInclude Include="..\source\PKB.h" />
+    <ClInclude Include="..\source\PrintParser.h" />
+    <ClInclude Include="..\source\ProcedureParser.h" />
     <ClInclude Include="..\source\Preprocesser.h" />
+    <ClInclude Include="..\source\ReadParser.h" />
     <ClInclude Include="..\source\Statement.h" />
     <ClInclude Include="..\source\StringUtil.h" />
     <ClInclude Include="..\source\QueryParser.h" />
     <ClInclude Include="..\source\TNode.h" />
     <ClInclude Include="..\source\WhileParser.h" />
+    <ClInclude Include="..\source\FollowStorage.h" />
+    <ClInclude Include="..\source\ParentStorage.h" />
+    <ClInclude Include="..\source\UseStorage.h" />
+    <ClInclude Include="..\source\ModifyStorage.h" />
+    <ClInclude Include="..\source\Hasher.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>
@@ -75,10 +92,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
