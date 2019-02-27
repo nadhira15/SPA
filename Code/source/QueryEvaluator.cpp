@@ -71,6 +71,11 @@ unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> decla
 		}
 		return intSetToStrSet(afterPatternFilter);
 	}
+	else if (certainty == "not trivial") {
+		if (patternSynonym.size == 0) {
+			
+		}
+	}
 }
 
 /*
@@ -283,6 +288,33 @@ unordered_set<string> getStmts(string s) {
 		result.insert(PKB().getProcName());
 	}
 	return result;
+}
+
+unordered_set<string> filterTypeNonTuple(string typeRequired, unordered_set<string>toBeFiltered) {
+	unordered_set<string> typeRequiredSet = getStmts(typeRequired);
+	unordered_set<string> filteredSet;
+	for (unordered_set<string>::iterator it = toBeFiltered.begin(); it != toBeFiltered.end(); ++it) {
+		string pointer = *it;
+		if (typeRequiredSet.count(pointer) == 1) {
+			filteredSet.insert(pointer);
+		}
+	}
+
+	return filteredSet;
+}
+
+unordered_set<pair<string, string>> filterTypeTuple(string firstTypeRequired, string secondTypeRequired,
+	unordered_set<pair<string, string>> toBeFiltered) {
+	unordered_set<string> firstTypeRequiredSet = getStmts(firstTypeRequired);
+	unordered_set<string> secondTypeRequiredSet = getStmts(secondTypeRequired);
+	unordered_set<pair<string, string>> filteredSet;
+	for (unordered_set<pair<string, string>>::iterator it = toBeFiltered.begin(); it != toBeFiltered.end(); ++it) {
+		pair<string, string> pointer = *it;
+		if (firstTypeRequiredSet.count(pointer.first) == 1 &&
+			secondTypeRequiredSet.count(pointer.second) == 1) {
+			filteredSet.insert(pointer);
+		}
+	}
 }
 
 
