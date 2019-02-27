@@ -13,6 +13,7 @@ using namespace std;
 #include "PKB.h"
 #include "QueryEvaluator.h"
 #include "LexicalToken.h"
+#include "Hasher.h"
 
 string QueryEvaluator::evaluateQuery(vector<pair<string, string>> declarations,
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
@@ -86,6 +87,9 @@ unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> decla
 		}
 	}
 
+	if (firstArgumentType == "procedure") {
+		firstArgument = PKB().getProcName();
+	}
 	unordered_set<string> evaluation;
 	string certainty = isSuchThatTrivial(relation, firstArgument, secondArgument);
 
@@ -99,7 +103,33 @@ unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> decla
 		return intSetToStrSet(afterPatternFilter);
 	}
 	else if (certainty == "not trivial") {
-	
+		unordered_set<string> suchThatResult = evaluateSuchThat(relation, firstArgument, secondArgument);
+		if (patternSynonym.size == 0) {
+			if (selectedVar[0] == firstArgument) {
+				if (secondArgumentType == "") {
+					return filterTypeNonTuple(firstArgumentType, suchThatResult);
+				} 
+				return getFirstParam(evaluateSuchThat(relation, firstArgument, secondArgument));
+			}
+			if (selectedVar[0] == secondArgument) {
+				if (firstArgumentType == "") {
+					return filterTypeNonTuple(secondArgumentType, suchThatResult);
+				}
+				return getSecondParam(evaluateSuchThat(relation, firstArgument, secondArgument));
+			}
+			if (suchThatResult.size == 0) {
+				evaluation.insert("none");
+			}
+			return getStmts(selectedVarType);
+		}
+		if (selectedVar[0] != patternSynonym && 
+			firstArgument != patternSynonym &&
+			secondArgument != patternSynonym) {
+			if (afterPatternFilter.size == 0) {
+				evaluation.insert("none");
+			}
+			return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, getAllStms(), "");
+		}
 	}
 }
 
@@ -237,7 +267,7 @@ string isSuchThatTrivial(string relation, string firstArgument, string secondArg
 	return "not trivial";
 }
 
-unordered_set<string> evaluateNonTupleSuchThat(string relation, string firstArgument, string secondArgument) {
+unordered_set<string> evaluateSuchThat(string relation, string firstArgument, string secondArgument) {
 	unordered_set<string> result;
 	if (relation == "Follows") {
 		if (firstArgument != "_" && !LexicalToken::verifyInteger(firstArgument)) {
@@ -248,7 +278,7 @@ unordered_set<string> evaluateNonTupleSuchThat(string relation, string firstArgu
 				result.insert(to_string(PKB().getPrvStm(stoi(secondArgument))));
 			}
 			else {
-				return result;
+				return intPairSetToStrSet(PKB().getFollowPairs());
 			}
 		}
 		if (secondArgument != "_" && !LexicalToken::verifyInteger(secondArgument)) {
@@ -273,7 +303,7 @@ unordered_set<string> evaluateNonTupleSuchThat(string relation, string firstArgu
 				return intSetToStrSet(PKB().getAllFollowedBy(stoi(secondArgument)));
 			}
 			else {
-				return result;
+				return intPairSetToStrSet(PKB().getFollow_S_Pairs());
 			}
 		}
 		if (secondArgument != "_" && !LexicalToken::verifyInteger(secondArgument)) {
@@ -298,7 +328,7 @@ unordered_set<string> evaluateNonTupleSuchThat(string relation, string firstArgu
 				result.insert(to_string(PKB().getParent(stoi(secondArgument))));
 			}
 			else {
-				return result;
+				return intPairSetToStrSet(PKB().getParentChildPairs());
 			}
 		}
 		if (secondArgument != "_" && !LexicalToken::verifyInteger(secondArgument)) {
@@ -323,7 +353,7 @@ unordered_set<string> evaluateNonTupleSuchThat(string relation, string firstArgu
 				return intSetToStrSet(PKB().getAllAncestors(stoi(secondArgument)));
 			}
 			else {
-				return result;
+				return intPairSetToStrSet(PKB().getAncDescPairs());
 			}
 		}
 		if (secondArgument != "_" && !LexicalToken::verifyInteger(secondArgument)) {
@@ -344,7 +374,10 @@ unordered_set<string> evaluateNonTupleSuchThat(string relation, string firstArgu
 			if ((LexicalToken::verifyInteger(firstArgument)) || firstArgument.front == "\"") {
 				return PKB().getUsedVar(firstArgument);
 			} 
-			return result;
+			if (firstArgument == PKB().getProcName()) {
+				return strPairSetToStrSet(PKB().getProcVarUsePairs());
+			}
+			return intStrSetToStrSet(PKB().getStmVarUsePairs());
 		}
 		if ((firstArgument != "_") && (secondArgument.front != "\"")) {
 			if (secondArgument == "_") {
@@ -364,7 +397,10 @@ unordered_set<string> evaluateNonTupleSuchThat(string relation, string firstArgu
 			if ((LexicalToken::verifyInteger(firstArgument)) || firstArgument.front == "\"") {
 				result.insert(PKB().getModifiedVar(firstArgument));
 			}
-			return result;
+			if (firstArgument == PKB().getProcName()) {
+				return strPairSetToStrSet(PKB().getProcVarModifyPairs());
+			}
+			return intStrSetToStrSet(PKB().getStmVarModifyPairs());
 		}
 		if ((firstArgument != "_") && (secondArgument.front != "\"")) {
 			if (secondArgument == "_") {
@@ -418,11 +454,31 @@ string truthValue(bool boolean) {
 	return "false";
 }
 
-unordered_set<string> intPairSetToStrSet(unordered_set<pair<int, int>> intPairSet) {
+unordered_set<string> intPairSetToStrSet(unordered_set<pair<int, int>, intPairhash> intPairSet) {
 	unordered_set<string> strSet;
 	for (unordered_set<pair<int, int>>::iterator it = intPairSet.begin(); it != intPairSet.end(); ++it) {
 		pair<int, int> pointer = *it;
 		strSet.insert(to_string(pointer.first) + " " + to_string(pointer.second));
+	}
+
+	return strSet;
+}
+
+unordered_set<string> intStrSetToStrSet(unordered_set<pair<int, string>, intStringhash> intStringSet) {
+	unordered_set<string> strSet;
+	for (unordered_set<pair<int, string>>::iterator it = intStringSet.begin(); it != intStringSet.end(); ++it) {
+		pair<int, string> pointer = *it;
+		strSet.insert(to_string(pointer.first) + " " + pointer.second);
+	}
+
+	return strSet;
+}
+
+unordered_set<string> strPairSetToStrSet(unordered_set<pair<string, string>, strPairhash> strPairSet) {
+	unordered_set<string> strSet;
+	for (unordered_set<pair<string, string>>::iterator it = strPairSet.begin(); it != strPairSet.end(); ++it) {
+		pair<string, string> pointer = *it;
+		strSet.insert(pointer.first + " " + pointer.second);
 	}
 
 	return strSet;
@@ -452,7 +508,7 @@ unordered_set<string> getStmts(string s) {
 		return PKB().getVariables();
 	}
 	else if (s == "constant") {
-		return intSetToStrSet(PKB().getConstants());
+		return PKB().getConstants());
 	}
 	else if (s == "procedure") {
 		result.insert(PKB().getProcName());
@@ -485,6 +541,58 @@ unordered_set<pair<string, string>> filterTypeTuple(string firstTypeRequired, st
 			filteredSet.insert(pointer);
 		}
 	}
+}
+
+unordered_set<string> getFirstParam(unordered_set<string> stringPair) {
+	unordered_set<string> result;
+	int spaceIndex;
+	for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
+		string pointer = *it;
+		spaceIndex = pointer.find(" ");
+		result.insert(pointer.substr(0, spaceIndex - 1));
+	}
+
+	return result;
+}
+
+unordered_set<string> getSecondParam(unordered_set<string> stringPair) {
+	unordered_set<string> result;
+	int spaceIndex;
+	for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
+		string pointer = *it;
+		spaceIndex = pointer.find(" ");
+		result.insert(pointer.substr(spaceIndex + 1, pointer.size - spaceIndex - 3));
+	}
+
+	return result;
+}
+
+unordered_set<string> getOtherPair(int position, unordered_set<string> stringPair, unordered_set<string> toContain) {
+	unordered_set<string> result;
+	int spaceIndex;
+	string first;
+	if (position == 1) {
+		for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
+			string pointer = *it;
+			spaceIndex = pointer.find(" ");
+			first = pointer.substr(0, spaceIndex - 1);
+			if (toContain.count(first) == 1) {
+				result.insert(pointer.substr(spaceIndex + 1, pointer.size - spaceIndex - 3));
+			}
+		}
+	}
+	if (position == 2) {
+		for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
+			string pointer = *it;
+			spaceIndex = pointer.find(" ");
+			first = pointer.substr(spaceIndex + 1, pointer.size - spaceIndex - 3);
+			if (toContain.count(first) == 1) {
+				result.insert(pointer.substr(0, spaceIndex - 1));
+			}
+		}
+	}
+
+	return result;
 }
 
 
