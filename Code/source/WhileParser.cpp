@@ -7,6 +7,7 @@
 #include <sstream>
 #include "WhileParser.h"
 #include "Statement.h"
+#include "PKB.h"
 
 using namespace std;
 
