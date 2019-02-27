@@ -162,7 +162,6 @@ vector<string> ExpressionUtil::getConstants(string infixExpression) {
 		bool isValidInteger = verifyInteger(result[0]);
 		if (isValidInteger) {
 			constantVector.push_back(result[0]);
-			infixExpression = result.suffix().str();
 		}
 		infixExpression = result.suffix().str();
 	}

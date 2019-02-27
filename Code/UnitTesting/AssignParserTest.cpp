@@ -10,29 +10,48 @@ namespace UnitTesting
 	{
 	public:
 
-		TEST_METHOD(testSimpleAssign)
+		TEST_METHOD(testAssignGetAssignee)
 		{
 			std::string testStatement = "y=x";
 			std::string parseExpected = "y";
 			AssignParser ap;
 
-			std::string output = ap.parseLeft(testStatement);
+			std::string output = ap.getLeft(testStatement);
 
-			
 			Assert::AreEqual(parseExpected, output);
 		}
 
-		TEST_METHOD(testExpresionAndFactorAssign)
+		TEST_METHOD(testAssignGetExpressionVariable)
 		{
-			std::string testStatement = "p=x+6/2+200";
-			std::string parseExpected = "x+6/2+200";
+			std::string testStatement = "p=x+6/gp+abc123abc";
+			vector<std::string> parseExpected{ "x", "gp", "abc123abc" };
 			AssignParser ap;
 
-			std::string output = ap.parseRight(testStatement);
+			vector<std::string> output = ap.getRightVariable(testStatement);
 
+			Assert::IsTrue(parseExpected == output);
+		}
+
+		TEST_METHOD(testAssignGetExpressionConstants)
+		{
+			std::string testStatement = "p=x+6/2+200";
+			vector<std::string> parseExpected{ "6", "2", "200" };
+			AssignParser ap;
+
+			vector<std::string> output = ap.getRightConstant(testStatement);
+
+			Assert::IsTrue(parseExpected == output);
+		}
+
+		TEST_METHOD(testAssignGetInfixExpression)
+		{
+			std::string testStatement = "p=x+6/2+200";
+			std::string parseExpected = "+ + x / 6 2 200";
+			AssignParser ap;
+
+			std::string output = ap.getPrefixExpression(testStatement);
 
 			Assert::AreEqual(parseExpected, output);
 		}
-
 	};
 }
