@@ -65,16 +65,14 @@ unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> decla
 	if (certainty == "false") {
 		evaluation.insert("none");
 	}
-	else if (certainty == "true") {
-		if ((selectedVarType != "assign") || (patternSynonym.size == 0)) {
+	else if ((certainty == "true") || (suchThatCondition.size == 0)) {
+		if ((selectedVar[0] != patternSynonym) || (patternSynonym.size == 0)) {
 			return getStmts(selectedVarType);
 		}
 		return intSetToStrSet(afterPatternFilter);
 	}
 	else if (certainty == "not trivial") {
-		if (patternSynonym.size == 0) {
-			
-		}
+	
 	}
 }
 
