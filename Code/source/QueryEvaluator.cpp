@@ -546,7 +546,7 @@ unordered_set<string> QueryEvaluator::getStmts(string s) {
 		return PKB().getVariables();
 	}
 	else if (s == "constant") {
-		return intSetToStrSet(PKB().getConstants());
+		return PKB().getConstants();
 	}
 	else if (s == "procedure") {
 		result.insert(PKB().getProcName());
