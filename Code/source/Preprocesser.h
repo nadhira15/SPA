@@ -5,7 +5,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stack>
 #include <algorithm>
+
 #include "Statement.h"
 
 using namespace std;
@@ -41,7 +43,6 @@ private:
 	Statement processProc(int bookmark, int last);
 	vector<Statement> processLst(int bookmark, int last);
 public:
-	string KEYWORDS[] = { "procedure", "then", "call", "read", "print", "while", "if", "else" };
 	//only validators, atring trimmer, getter and Processer is public
 	int validateSemicolon(string s);
 	int validateCurvedBrackets(string s);
