@@ -12,30 +12,39 @@ using namespace std;
 #include "Statement.h"
 #include "Preprocesser.h"
 
-string chunk;
-int count1 = 0;
-int count2 = 0;
-int stopper;
-int stmtNum = 0;
-vector<Statement> procLst;
-stack<int> ifStmt;
-string KEYWORDS[] = { "procedure", "then", "call", "read", "print", "while", "if", "else" };
+/**** Usage guide
+  Preprocesser will contain:
+  (1) validate(...): the validator methods to validate statement types (used mainly for testing)
+  (2) getProcLst: getter method for the procedure list
+  (3) Preprocesser: constructor method to satrt the processing of source code
 
-vector<Statement> getProcLst() {
+  Preprocesser:
+  input: string representing source code
+  output: the object
+
+  getter methods: getProcLst
+  input: null
+  output: vector<Statement> representing the vector of procedures in the program
+
+  to use:
+  (1) create preprocesser and get procedrue list: Preprocesser(string chunk).getProcLst();
+*/
+
+vector<Statement> Preprocesser::getProcLst() {
 	return procLst;
 }
 
-void error(int t) {
+void Preprocesser::error(int t) {
 	string s1 = "Pre-processing error, incorrect syntax for ";
 	string s2 = (t == 0) ? "procedure" : (t == 1) ? "if/else, while" : "assign, call, print, read";
 	throw "\n" + s1 + s2 + "\n";
 }
 
-/*
+/* constructor
 input: nil
 output: vector<Statement> that contains procedure statements
 */
-void Processer(string chunk1)
+Preprocesser::Preprocesser(string chunk1)
 {
 	//take file contents and save as global variable
 	chunk = chunk1;
@@ -56,7 +65,7 @@ input: start, end (not inclusive)
 output: Statement
 NOTE 'procedure' can only occur once per procedure
 */
-Statement processProc(int bookmark, int last)
+Statement Preprocesser::processProc(int bookmark, int last)
 {
 	int valid;
 	string tmp;
@@ -92,7 +101,7 @@ Statement processProc(int bookmark, int last)
 input: start, end (usually })
 output: Statement
 */
-vector<Statement> processLst(int bookmark, int last) {
+vector<Statement> Preprocesser::processLst(int bookmark, int last) {
 	vector<Statement> stmtlst;
 	int valid, i, tmpN;
 	string tmp, tmp2;
@@ -163,7 +172,7 @@ validation of syntax errors
 errors covered: incorrect syntax
 errors NOT covered: incorrect variables, expression (i.e. *+/-=)
 */
-int validateSemicolon(string s)
+int Preprocesser::validateSemicolon(string s)
 {
 	int result = 0;
 	if (s.find("=") != string::npos && s.find("=") == s.rfind("=")) {
@@ -187,7 +196,7 @@ validation of syntax errors
 errors covered: incorrect syntax for if, while
 errors NOT covered: incorrect variables, expression (i.e. *+/-=), non-alphanumeric characters
 */
-int validateCurvedBrackets(string s)
+int Preprocesser::validateCurvedBrackets(string s)
 {
 	int result = 0;
 	if (s.substr(0, 5).compare(KEYWORDS[5]) == 0) {
@@ -215,7 +224,7 @@ validation of syntax errors
 errors covered: incorrect syntax for procedure
 errors NOT covered: incorrect variables, expression (i.e. *+/-=), non-alphanumeric characters
 */
-int validateProc(string s)
+int Preprocesser::validateProc(string s)
 {
 	int result = 0;
 	string firstWord = s.substr(0, s.find(" "));
@@ -233,7 +242,7 @@ adapted from an answer in StackOverflow
 https://stackoverflow.com/questions/44973435/stdptr-fun-replacement-for-c17/44973498#44973498
 to save memory, will change this to void method in future
 */
-string trim(string s) {
+string Preprocesser::trim(string s) {
 	s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) {
 		return !isspace(ch);
 	}));
