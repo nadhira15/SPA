@@ -104,6 +104,9 @@ unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> decla
 	}
 	else if (certainty == "not trivial") {
 		unordered_set<string> suchThatResult = evaluateSuchThat(relation, firstArgument, secondArgument);
+		if (suchThatResult.size == 0) {
+			evaluation.insert("none");
+		}
 		if (patternSynonym.size == 0) {
 			if (selectedVar[0] == firstArgument) {
 				if (secondArgumentType == "") {
@@ -117,9 +120,6 @@ unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> decla
 				}
 				return getSecondParam(evaluateSuchThat(relation, firstArgument, secondArgument));
 			}
-			if (suchThatResult.size == 0) {
-				evaluation.insert("none");
-			}
 			return getStmts(selectedVarType);
 		}
 		if (selectedVar[0] != patternSynonym && 
@@ -130,7 +130,30 @@ unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> decla
 			}
 			return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, getAllStms(), "");
 		}
+		if ((firstArgument != patternSynonym) && (secondArgument != patternSynonym)) {
+			return intSetToStrSet(afterPatternFilter);
+		}
+		if (firstArgument == patternSynonym) {
+			if (selectedVar[0] == patternSynonym) {
+				if (secondArgumentType == "") {
+					return intersection(suchThatResult, intSetToStrSet(afterPatternFilter));
+				}
+				return intersection(getFirstParam(suchThatResult), intSetToStrSet(afterPatternFilter));
+			}
+			return getOtherPair(1, suchThatResult, intSetToStrSet(afterPatternFilter));
+		}
+		if (secondArgument == patternSynonym) {
+			if (selectedVar[0] == patternSynonym) {
+				if (firstArgumentType == "") {
+					return intersection(suchThatResult, intSetToStrSet(afterPatternFilter));
+				}
+				return intersection(getSecondParam(suchThatResult), intSetToStrSet(afterPatternFilter));
+			}
+			return getOtherPair(2, suchThatResult, intSetToStrSet(afterPatternFilter));
+		}
 	}
+
+	return evaluation;
 }
 
 /*
@@ -566,6 +589,20 @@ unordered_set<string> getSecondParam(unordered_set<string> stringPair) {
 
 	return result;
 }
+
+unordered_set<string> intersection(unordered_set<string> first, unordered_set<string> toContain) {
+	unordered_set<string> result;
+	for (unordered_set<string>::iterator it = first.begin(); it != first.end(); ++it) {
+		string pointer = *it;
+		if (toContain.count(pointer) == 1) {
+			result.insert(pointer);
+		}
+	}
+
+	return result;
+}
+
+
 
 unordered_set<string> getOtherPair(int position, unordered_set<string> stringPair, unordered_set<string> toContain) {
 	unordered_set<string> result;
