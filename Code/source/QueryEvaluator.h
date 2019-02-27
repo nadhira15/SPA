@@ -29,8 +29,8 @@ public:
 	static unordered_set<string> strPairSetToStrSet(unordered_set<pair<string, string>, strPairhash> strPairSet);
 	static unordered_set<string> getStmts(string s);
 	static unordered_set<string> filterTypeNonTuple(string typeRequired, unordered_set<string>toBeFiltered);
-	static unordered_set<pair<string, string>> filterTypeTuple(string firstTypeRequired, string secondTypeRequired,
-		unordered_set<pair<string, string>> toBeFiltered);
+	static unordered_set<string> filterTypeTuple(string firstTypeRequired, string secondTypeRequired,
+		unordered_set<string> toBeFiltered);
 	static unordered_set<string> getFirstParam(unordered_set<string> stringPair);
 	static unordered_set<string> getSecondParam(unordered_set<string> stringPair);
 	static unordered_set<string> intersection(unordered_set<string> first, unordered_set<string> toContain);

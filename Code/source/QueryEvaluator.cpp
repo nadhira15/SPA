@@ -11,7 +11,7 @@
 using namespace std;
 
 #include "PKB.h"
-#include "QueryEvaluator.h"
+#include "QueryEvaluator.h"	
 #include "LexicalToken.h"
 
 string QueryEvaluator::evaluateQuery(vector<pair<string, string>> declarations,
@@ -111,13 +111,17 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 				if (secondArgumentType == "") {
 					return filterTypeNonTuple(firstArgumentType, suchThatResult);
 				} 
-				return getFirstParam(evaluateSuchThat(relation, firstArgument, secondArgument));
+				return getFirstParam(filterTypeTuple(firstArgumentType, 
+					secondArgumentType, 
+					suchThatResult));
 			}
 			if (selectedVar[0] == secondArgument) {
 				if (firstArgumentType == "") {
 					return filterTypeNonTuple(secondArgumentType, suchThatResult);
 				}
-				return getSecondParam(evaluateSuchThat(relation, firstArgument, secondArgument));
+				return getSecondParam(filterTypeTuple(firstArgumentType,
+					secondArgumentType,
+					suchThatResult));
 			}
 			return getStmts(selectedVarType);
 		}
@@ -135,20 +139,32 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 		if (firstArgument == patternSynonym) {
 			if (selectedVar[0] == patternSynonym) {
 				if (secondArgumentType == "") {
-					return intersection(suchThatResult, intSetToStrSet(afterPatternFilter));
+					return intersection(
+						filterTypeNonTuple(firstArgumentType, suchThatResult), intSetToStrSet(afterPatternFilter));
 				}
-				return intersection(getFirstParam(suchThatResult), intSetToStrSet(afterPatternFilter));
+				return intersection(
+					getFirstParam(
+						filterTypeTuple(firstArgumentType, secondArgumentType, suchThatResult)), 
+					intSetToStrSet(afterPatternFilter));
 			}
-			return getOtherPair(1, suchThatResult, intSetToStrSet(afterPatternFilter));
+			return getOtherPair(1, filterTypeTuple(
+				firstArgumentType, secondArgumentType, suchThatResult), 
+				intSetToStrSet(afterPatternFilter));
 		}
 		if (secondArgument == patternSynonym) {
 			if (selectedVar[0] == patternSynonym) {
 				if (firstArgumentType == "") {
-					return intersection(suchThatResult, intSetToStrSet(afterPatternFilter));
+					return intersection(filterTypeNonTuple(
+						secondArgumentType, suchThatResult), intSetToStrSet(afterPatternFilter));
 				}
-				return intersection(getSecondParam(suchThatResult), intSetToStrSet(afterPatternFilter));
+				return intersection(
+					getSecondParam(
+						filterTypeTuple(firstArgumentType, secondArgumentType, suchThatResult)), 
+					intSetToStrSet(afterPatternFilter));
 			}
-			return getOtherPair(2, suchThatResult, intSetToStrSet(afterPatternFilter));
+			return getOtherPair(2, filterTypeTuple(
+				firstArgumentType, secondArgumentType, suchThatResult), 
+				intSetToStrSet(afterPatternFilter));
 		}
 	}
 
@@ -478,7 +494,7 @@ string QueryEvaluator::truthValue(bool boolean) {
 
 unordered_set<string> QueryEvaluator::intPairSetToStrSet(unordered_set<pair<int, int>, intPairhash> intPairSet) {
 	unordered_set<string> strSet;
-	for (unordered_set<pair<int, int>>::iterator it = intPairSet.begin(); it != intPairSet.end(); ++it) {
+	for (unordered_set<pair<int, int>, intPairhash>::iterator it = intPairSet.begin(); it != intPairSet.end(); ++it) {
 		pair<int, int> pointer = *it;
 		strSet.insert(to_string(pointer.first) + " " + to_string(pointer.second));
 	}
@@ -488,7 +504,7 @@ unordered_set<string> QueryEvaluator::intPairSetToStrSet(unordered_set<pair<int,
 
 unordered_set<string> QueryEvaluator::intStrSetToStrSet(unordered_set<pair<int, string>, intStringhash> intStringSet) {
 	unordered_set<string> strSet;
-	for (unordered_set<pair<int, string>>::iterator it = intStringSet.begin(); it != intStringSet.end(); ++it) {
+	for (unordered_set<pair<int, string>, intStringhash>::iterator it = intStringSet.begin(); it != intStringSet.end(); ++it) {
 		pair<int, string> pointer = *it;
 		strSet.insert(to_string(pointer.first) + " " + pointer.second);
 	}
@@ -498,7 +514,7 @@ unordered_set<string> QueryEvaluator::intStrSetToStrSet(unordered_set<pair<int, 
 
 unordered_set<string> QueryEvaluator::strPairSetToStrSet(unordered_set<pair<string, string>, strPairhash> strPairSet) {
 	unordered_set<string> strSet;
-	for (unordered_set<pair<string, string>>::iterator it = strPairSet.begin(); it != strPairSet.end(); ++it) {
+	for (unordered_set<pair<string, string>, strPairhash>::iterator it = strPairSet.begin(); it != strPairSet.end(); ++it) {
 		pair<string, string> pointer = *it;
 		strSet.insert(pointer.first + " " + pointer.second);
 	}
@@ -551,18 +567,23 @@ unordered_set<string> QueryEvaluator::filterTypeNonTuple(string typeRequired, un
 	return filteredSet;
 }
 
-unordered_set<pair<string, string>> QueryEvaluator::filterTypeTuple(string firstTypeRequired, string secondTypeRequired,
-	unordered_set<pair<string, string>> toBeFiltered) {
+unordered_set<string> QueryEvaluator::filterTypeTuple(string firstTypeRequired, string secondTypeRequired,
+	unordered_set<string> toBeFiltered) {
 	unordered_set<string> firstTypeRequiredSet = getStmts(firstTypeRequired);
 	unordered_set<string> secondTypeRequiredSet = getStmts(secondTypeRequired);
-	unordered_set<pair<string, string>> filteredSet;
-	for (unordered_set<pair<string, string>>::iterator it = toBeFiltered.begin(); it != toBeFiltered.end(); ++it) {
-		pair<string, string> pointer = *it;
-		if (firstTypeRequiredSet.count(pointer.first) == 1 &&
-			secondTypeRequiredSet.count(pointer.second) == 1) {
+	unordered_set<string> filteredSet;
+	for (unordered_set<string>::iterator it = toBeFiltered.begin(); it != toBeFiltered.end(); ++it) {
+		string pointer = *it;
+		int spaceIndex = pointer.find(" ");
+		string firstParam = pointer.substr(0, spaceIndex - 1);
+		string secondParam = pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 3);
+		if ((firstTypeRequiredSet.count(firstParam) == 1) &&
+			(secondTypeRequiredSet.count(secondParam) == 1)) {
 			filteredSet.insert(pointer);
 		}
 	}
+
+	return filteredSet;
 }
 
 unordered_set<string> QueryEvaluator::getFirstParam(unordered_set<string> stringPair) {
