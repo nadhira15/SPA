@@ -166,9 +166,15 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ExpressionUtilTest.cpp" />
+    <ClCompile Include="PreprocesserTest.cpp" />
     <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="LexicalTokenTest.cpp" />
+    <ClCompile Include="StatementTest.cpp" />
+    <ClCompile Include="ConditionalExpTest.cpp" />
+    <ClCompile Include="PrintParserTest.cpp" />
+    <ClCompile Include="procedureParserTest.cpp" />
+    <ClCompile Include="ExpressionUtilTest.cpp" />
+    <ClCompile Include="ReadParserTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
