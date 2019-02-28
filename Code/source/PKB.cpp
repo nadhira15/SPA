@@ -1,5 +1,22 @@
 #include "PKB.h"
 
+
+string PKB::procName;
+vector<stmType> PKB::stmTypeList;
+unordered_set<string> PKB::varList;
+unordered_set<string> PKB::constList;
+unordered_set<int> PKB::readStmList;
+unordered_set<int> PKB::printStmList;
+unordered_set<int> PKB::assignStmList;
+unordered_set<int> PKB::ifStmList;
+unordered_set<int> PKB::whileStmList;
+
+FollowStorage PKB::fStore;
+ParentStorage PKB::pStore;
+UseStorage PKB::uStore;
+ModifyStorage PKB::mStore;
+unordered_map<int, pair<string, string> > PKB::patternList;
+
 PKB::PKB()
 {
 }
