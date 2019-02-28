@@ -10,6 +10,7 @@
 
 using namespace std;
 
+#include "QueryEvaluator.h"
 #include "QueryParser.h"
 #include "LexicalToken.h"
 
@@ -434,10 +435,8 @@ string QueryParser::validatePatternParam(vector<pair<string, pair<string, string
 string QueryParser::evaluateSelectConditions(vector<pair<string, string>> declarations, 
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {
-	
-	// TODO: call query evaluator
 
-	return "";
+	return QueryEvaluator::evaluateQuery(declarations, selectedVar, suchThatCondition, patternCondition);
 }
 
 string QueryParser::removeAllWhitespaces(string s) {
