@@ -14,17 +14,6 @@ GUIWrapper::GUIWrapper() {
 // method for parsing the SIMPLE source
 void GUIWrapper::parse(std::string filename) {
 	// call your parser to do the parsing
-	Preprocesser preprocesser = Preprocesser(filename);
-	Parser parser = Parser();
-
-	vector<Statement> procList = preprocesser.getProcLst();
-
-	try {
-		parser.parse(procList, 0, pkb);
-	}
-	catch (string exception) {
-		std::cout << "Exception Occurred: " << exception << std::endl;
-	}
 	std::cout << "parsed " << filename << std::endl;
   // ...rest of your code...
 }

@@ -19,6 +19,7 @@ TestWrapper::TestWrapper() {
 
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
+	PKB pkb = PKB();
 	Preprocesser preprocesser = Preprocesser(filename);
 	Parser parser = Parser();
 
