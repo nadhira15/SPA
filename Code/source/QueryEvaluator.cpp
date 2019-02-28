@@ -14,6 +14,9 @@ using namespace std;
 #include "QueryEvaluator.h"	
 #include "LexicalToken.h"
 
+/*
+The main evaluator function of the query
+*/
 string QueryEvaluator::evaluateQuery(vector<pair<string, string>> declarations,
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {
@@ -28,6 +31,10 @@ string QueryEvaluator::evaluateQuery(vector<pair<string, string>> declarations,
 	return setToString(afterSuchThatFilter);
 }
 
+/*
+It filters the assignment statements
+that fulfill the pattern.
+*/
 unordered_set<int> QueryEvaluator::filterPatternCondition(vector<pair<string, pair<string, string>>> patternCondition) {
 	if (patternCondition.size() == 0) {
 		return getAllStms();
@@ -62,7 +69,9 @@ unordered_set<int> QueryEvaluator::filterPatternCondition(vector<pair<string, pa
 }
 
 /*
-Evaluate the such that condition which returns a list of answers
+The function evaluate the query by evaluating 
+its such that condition after given the filter 
+result of the Pattern Condition.
 */
 unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string, string>> declarations, vector<string> selectedVar,
 	vector<pair<string, pair<string, string>>> suchThatCondition, unordered_set<int> afterPatternFilter, string patternSynonym) {
@@ -172,7 +181,8 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 }
 
 /*
-Evaluate the such that conditions which gives boolean answer
+THe functions evaluate the such that conditions 
+which gives boolean answer
 */
 string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, string secondArgument) {
 	if (relation == "Follows") {
@@ -305,6 +315,10 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 	return "not trivial";
 }
 
+/*
+The function evaluates the non-trivial 
+Such That Conditions.
+*/
 unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string firstArgument, string secondArgument) {
 	unordered_set<string> result;
 	if (relation == "Follows") {
@@ -456,6 +470,10 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 
 	return result;
 }
+
+/*
+The function returns the list of all statements.
+*/
 unordered_set<int> QueryEvaluator::getAllStms() {
 	unordered_set<int> allStms;
 	for (int i = 1; i <= PKB().getTotalStmNo(); i++) {
@@ -464,6 +482,11 @@ unordered_set<int> QueryEvaluator::getAllStms() {
 
 	return allStms;
 }
+
+/*
+The function transforms a set of strings 
+into one string
+*/
 string QueryEvaluator::setToString(unordered_set<string> setOfString) {
 	stringstream ss;
 	for (unordered_set<string>::iterator it = setOfString.begin(); it != setOfString.end(); ++it) {
@@ -475,6 +498,10 @@ string QueryEvaluator::setToString(unordered_set<string> setOfString) {
 	return s;
 }
 
+/*
+The function transforms a set of integers
+into a set of strings
+*/
 unordered_set<string> QueryEvaluator::intSetToStrSet(unordered_set<int> intList) {
 	unordered_set<string> strList;
 	for (unordered_set<int>::iterator it = intList.begin(); it != intList.end(); ++it) {
@@ -484,6 +511,10 @@ unordered_set<string> QueryEvaluator::intSetToStrSet(unordered_set<int> intList)
 	return strList;
 }
 
+/*
+The function transforms a boolean value
+into a string.
+*/
 string QueryEvaluator::truthValue(bool boolean) {
 	if (boolean) {
 		return "true";
@@ -492,6 +523,10 @@ string QueryEvaluator::truthValue(bool boolean) {
 	return "false";
 }
 
+/*
+It transforms a set of pairs of integers into
+a set of pairs of strings.
+*/
 unordered_set<string> QueryEvaluator::intPairSetToStrSet(unordered_set<pair<int, int>, intPairhash> intPairSet) {
 	unordered_set<string> strSet;
 	for (unordered_set<pair<int, int>, intPairhash>::iterator it = intPairSet.begin(); it != intPairSet.end(); ++it) {
@@ -502,6 +537,11 @@ unordered_set<string> QueryEvaluator::intPairSetToStrSet(unordered_set<pair<int,
 	return strSet;
 }
 
+/*
+It transforms a set of pair of integer
+and string into a set of strings consist
+of an integer and a string
+*/
 unordered_set<string> QueryEvaluator::intStrSetToStrSet(unordered_set<pair<int, string>, intStringhash> intStringSet) {
 	unordered_set<string> strSet;
 	for (unordered_set<pair<int, string>, intStringhash>::iterator it = intStringSet.begin(); it != intStringSet.end(); ++it) {
@@ -512,6 +552,10 @@ unordered_set<string> QueryEvaluator::intStrSetToStrSet(unordered_set<pair<int, 
 	return strSet;
 }
 
+/*
+It transforms a set of pair of strings
+into a set of strings of pairs.
+*/
 unordered_set<string> QueryEvaluator::strPairSetToStrSet(unordered_set<pair<string, string>, strPairhash> strPairSet) {
 	unordered_set<string> strSet;
 	for (unordered_set<pair<string, string>, strPairhash>::iterator it = strPairSet.begin(); it != strPairSet.end(); ++it) {
@@ -522,6 +566,10 @@ unordered_set<string> QueryEvaluator::strPairSetToStrSet(unordered_set<pair<stri
 	return strSet;
 }
 
+/*
+The function retrieve all statements 
+of a given type
+*/
 unordered_set<string> QueryEvaluator::getStmts(string s) {
 	unordered_set<string> result;
 	if (s == "stmt") {
@@ -554,6 +602,12 @@ unordered_set<string> QueryEvaluator::getStmts(string s) {
 	return result;
 }
 
+/*
+The function filter a set of
+strings so that they are in the
+set of all statements of a given
+type.
+*/
 unordered_set<string> QueryEvaluator::filterTypeNonTuple(string typeRequired, unordered_set<string>toBeFiltered) {
 	unordered_set<string> typeRequiredSet = getStmts(typeRequired);
 	unordered_set<string> filteredSet;
@@ -567,6 +621,13 @@ unordered_set<string> QueryEvaluator::filterTypeNonTuple(string typeRequired, un
 	return filteredSet;
 }
 
+/*
+The function filter the set of strings
+of pairs so that the first member and 
+second member is in the set of all 
+statements in a first type and a second
+type respectively.
+*/
 unordered_set<string> QueryEvaluator::filterTypeTuple(string firstTypeRequired, string secondTypeRequired,
 	unordered_set<string> toBeFiltered) {
 	unordered_set<string> firstTypeRequiredSet = getStmts(firstTypeRequired);
@@ -575,7 +636,7 @@ unordered_set<string> QueryEvaluator::filterTypeTuple(string firstTypeRequired, 
 	for (unordered_set<string>::iterator it = toBeFiltered.begin(); it != toBeFiltered.end(); ++it) {
 		string pointer = *it;
 		int spaceIndex = pointer.find(" ");
-		string firstParam = pointer.substr(0, spaceIndex - 1);
+		string firstParam = pointer.substr(0, spaceIndex);
 		string secondParam = pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 3);
 		if ((firstTypeRequiredSet.count(firstParam) == 1) &&
 			(secondTypeRequiredSet.count(secondParam) == 1)) {
@@ -586,18 +647,26 @@ unordered_set<string> QueryEvaluator::filterTypeTuple(string firstTypeRequired, 
 	return filteredSet;
 }
 
+/*
+It fetch out all the first member of
+all pairs in the set
+*/
 unordered_set<string> QueryEvaluator::getFirstParam(unordered_set<string> stringPair) {
 	unordered_set<string> result;
 	int spaceIndex;
 	for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
 		string pointer = *it;
 		spaceIndex = pointer.find(" ");
-		result.insert(pointer.substr(0, spaceIndex - 1));
+		result.insert(pointer.substr(0, spaceIndex));
 	}
 
 	return result;
 }
 
+/*
+It fetch out all the second member
+of all pairs in the set.
+*/
 unordered_set<string> QueryEvaluator::getSecondParam(unordered_set<string> stringPair) {
 	unordered_set<string> result;
 	int spaceIndex;
@@ -610,6 +679,9 @@ unordered_set<string> QueryEvaluator::getSecondParam(unordered_set<string> strin
 	return result;
 }
 
+/*
+Find the intersection of 2 sets of string
+*/
 unordered_set<string> QueryEvaluator::intersection(unordered_set<string> first, unordered_set<string> toContain) {
 	unordered_set<string> result;
 	for (unordered_set<string>::iterator it = first.begin(); it != first.end(); ++it) {
@@ -622,8 +694,14 @@ unordered_set<string> QueryEvaluator::intersection(unordered_set<string> first, 
 	return result;
 }
 
-
-
+/*
+The function does the following:
+1. It checks which pair in stringPair which 
+member in position "position"(either 1 or 2)
+is in the toContain set.
+2. It fetch out all the member in the 
+other "position" of the filtered set of pairs.
+*/
 unordered_set<string> QueryEvaluator::getOtherPair(int position, unordered_set<string> stringPair, unordered_set<string> toContain) {
 	unordered_set<string> result;
 	int spaceIndex;
@@ -632,7 +710,7 @@ unordered_set<string> QueryEvaluator::getOtherPair(int position, unordered_set<s
 		for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
 			string pointer = *it;
 			spaceIndex = pointer.find(" ");
-			first = pointer.substr(0, spaceIndex - 1);
+			first = pointer.substr(0, spaceIndex);
 			if (toContain.count(first) == 1) {
 				result.insert(pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 3));
 			}
@@ -644,7 +722,7 @@ unordered_set<string> QueryEvaluator::getOtherPair(int position, unordered_set<s
 			spaceIndex = pointer.find(" ");
 			first = pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 3);
 			if (toContain.count(first) == 1) {
-				result.insert(pointer.substr(0, spaceIndex - 1));
+				result.insert(pointer.substr(0, spaceIndex));
 			}
 		}
 	}
