@@ -13,6 +13,12 @@ using namespace std;
 
 enum stmType { read, print, assign, whileStm, ifStm };
 
+/*
+	Accepts data from the Front-End's Parser, sends data to the PostProcessor when called and
+	accepts new data from it as well. PKB will also reply to queries made by the PQL's Query Evaluator.
+	Stores relationships data in their respective Storage classes while other information
+	like procedure name, statement types, statement lists and pattern are stored locally
+*/
 class PKB {
 public:
 	PKB();

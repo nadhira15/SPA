@@ -1,0 +1,13 @@
+procedure TestC {
+  read x;
+  if (b < 15) then {
+    while (c <= x) {
+      x = x + a;
+      c = 16; }}
+  else {
+    while (b >= c) {
+      c = 7 * (a - b);
+      a = b + c; }}
+  x = c;
+  k = x + a - b + a * a;
+  print k; }
