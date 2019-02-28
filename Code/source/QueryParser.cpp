@@ -74,11 +74,11 @@ string QueryParser::parse(string query) {
 	if (suchThatIndex == -1 && patternIndex == -1) {
 		selectedVar = splitSelectParameter(selectStatement);
 	}
-	else if (suchThatIndex == -1 && patternIndex != -1) {
+	else if (suchThatIndex != -1 && patternIndex == -1) {
 		selectedVar = splitSelectParameter(selectStatement.substr(0, suchThatIndex));
 		suchThatCondition = splitSuchThatCondition(selectStatement.substr(suchThatIndex));
 	}
-	else if (suchThatIndex != -1 && patternIndex == 1) {
+	else if (suchThatIndex == -1 && patternIndex != -1) {
 		selectedVar = splitSelectParameter(selectStatement.substr(0, patternIndex));
 		patternCondition = splitPatternCondition(selectStatement.substr(patternIndex));
 	}
