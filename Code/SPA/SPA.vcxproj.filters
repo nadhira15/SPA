@@ -126,8 +126,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\QueryEvaluator.h">
-	  <Filter>Header Files</Filter>
-	</ClInclude>
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\IfParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -147,6 +147,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\PostProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ConditionalExp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

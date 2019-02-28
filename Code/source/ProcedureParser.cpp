@@ -48,5 +48,6 @@ bool ProcedureParser::verifyProcName(const std::string toParse) {
 }
 
 void ProcedureParser::parseStmtLst(vector<Statement> stmtLst, PKB pkb) {
-	Parser().parse(stmtLst, 0, pkb);
+	Parser parser = Parser();
+	parser.parse(stmtLst, 0, pkb);
 }

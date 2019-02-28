@@ -79,13 +79,14 @@ Statement Preprocesser::processProc(int bookmark, int last)
 	count1 = 1;
 	count2 = 0;
 	//validation: check for last '}' and pass validation to validateProc
-	pos = chunk.find_last_not_of(" \t\f\v\n\r", last - 1);
-	tmpn = chunk.find('{', bookmark);
-	if (chunk[pos] != '}') {
-		valid = 0;
-		error(0);
+	pos = chunk.find_last_not_of(" \t\f\v\n\r");
+	tmpn = chunk.find('{');
+	//if (chunk[pos] != '}') {
+	//	valid = 0;
+	//	error(0);
 		//!!error handling here
-	} else if (tmpn != string::npos) {
+	//} else 
+	if (tmpn != string::npos) {
 		tmp = trim(chunk.substr(bookmark, tmpn - bookmark));
 		valid = validateProc(tmp); //validate procedure term
 	}

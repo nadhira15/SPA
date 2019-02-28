@@ -36,7 +36,7 @@ private:
 	int count1 = 0;
 	int count2 = 0;
 	int stopper;
-	int stmtNum = 0;
+	int stmtNum = 1;
 	vector<Statement> procLst;
 	stack<int> ifStmt;
 	void error(int i);

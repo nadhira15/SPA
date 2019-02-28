@@ -43,7 +43,7 @@ WhileParser::WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst
 		stmtLst = stmtlst;
 		stmtNum = stmtNo;
 	} else {
-		throw "While statement is not in the right form!\n";
+		//throw "While statement is not in the right form!\n";
 	}
 }
 
