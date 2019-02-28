@@ -75,17 +75,25 @@ result of the Pattern Condition.
 */
 unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string, string>> declarations, vector<string> selectedVar,
 	vector<pair<string, pair<string, string>>> suchThatCondition, unordered_set<int> afterPatternFilter, string patternSynonym) {
-	string relation = suchThatCondition[0].first;
-	string firstArgument = suchThatCondition[0].second.first;
-	string secondArgument = suchThatCondition[0].second.second;
+	
 	string selectedVarType;
-	string firstArgumentType;
-	string secondArgumentType;
 	for (vector<pair<string, string>>::size_type i = 0; i != declarations.size(); i++) {
 		if (declarations[i].second == selectedVar[0]) {
 			selectedVarType = declarations[i].first;
 		}
-
+	}
+	if (suchThatCondition.size() == 0) {
+		if ((selectedVar[0] != patternSynonym) || (patternSynonym.size() == 0)) {
+			return getStmts(selectedVarType);
+		}
+		return intSetToStrSet(afterPatternFilter);
+	}
+	string relation = suchThatCondition[0].first;
+	string firstArgument = suchThatCondition[0].second.first;
+	string secondArgument = suchThatCondition[0].second.second;
+	string firstArgumentType;
+	string secondArgumentType;
+	for (vector<pair<string, string>>::size_type i = 0; i != declarations.size(); i++) {
 		if (declarations[i].second == firstArgument) {
 			firstArgumentType = declarations[i].first;
 		}
