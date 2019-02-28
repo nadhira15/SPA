@@ -28,10 +28,11 @@ std::vector<std::string> StringUtil::split(std::string stmt, char delimiter)
 		//find the new j.
 		j = stmt.find(delimiter, j);
 
-		//Push remaining into vector before exiting loop.
-		if (j == string::npos)
-			v.push_back(stmt.substr(i, stmt.length()));
+		
 	}
+
+	if (j == string::npos)
+		v.push_back(stmt.substr(i, stmt.length()));
 
 	return v;
 }

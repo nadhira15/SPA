@@ -10,6 +10,19 @@ namespace UnitTesting
 	TEST_CLASS(ExpressionUtilTest)
 	{
 	public:
+		TEST_METHOD(convertInfix1Variable)
+		{
+			std::string testStatement = "a";
+			std::string expectedOutput = "a";
+			bool validExpression = ExpressionUtil::verifyInfixExpression(testStatement);
+
+			Assert::IsTrue(validExpression);
+
+			string prefixExpr = ExpressionUtil::convertInfixToPrefix(testStatement);
+
+
+			Assert::AreEqual(expectedOutput, prefixExpr);
+		}
 
 		TEST_METHOD(verifyValidExpression)
 		{
