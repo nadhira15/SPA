@@ -8,6 +8,13 @@ using namespace std;
 
 #include "Hasher.h"
 
+/* 
+	A structure to contain:	the statement being followed directly (previous),
+							it's immediate follower (next),
+							a list of statements that being directly/indirectly followed (allPrevious),
+							a list of statements directly/indirectly following it (allNext)
+	If such statement or list does not exist, it'll be set to 0 or {} respectively
+*/
 struct fRelationships
 {
 	int previous;
@@ -16,6 +23,9 @@ struct fRelationships
 	unordered_set<int> allNext;
 };
 
+/*
+	A storage class to store the Follows & Follows* relationships of statements
+*/
 class FollowStorage {
 public:
 	FollowStorage();
