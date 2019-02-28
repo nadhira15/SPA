@@ -20,7 +20,7 @@ std::string ReadParser::parseReadStmt(const std::string toParse) {
 	std::smatch matches;
 	std::regex reg("\\s*read\\s+(\\w+)\\s*");
 	if (std::regex_match(toParse, matches, reg)) {
-		std::ssub_match varName = matches[0];
+		std::ssub_match varName = matches[1];
 		std::string name = varName.str();
 
 		if (verifyName(name)) {

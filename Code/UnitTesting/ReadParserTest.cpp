@@ -18,9 +18,8 @@ namespace UnitTesting
 
 		TEST_METHOD(testInvalidInput)
 		{
-			std::string result = ReadParser::parseReadStmt("read 2day");
-			std::string expected = "failed";
-			Assert::AreEqual(expected, result);
+			bool result = ReadParser::verifyReadStmt("read 2day");
+			Assert::IsTrue(result);
 		}
 
 		TEST_METHOD(testVerifyVarcName)
