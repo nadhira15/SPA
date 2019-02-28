@@ -48,6 +48,9 @@ Preprocesser::Preprocesser(string chunk1)
 {
 	//take file contents and save as global variable
 	chunk = chunk1;
+	procLst.push_back(processProc(0, chunk.size()));
+	/* 
+	//bug: if variable name is procedure it will mess up the program
 	size_t prev = chunk.find("procedure "), next;
 	while (prev != string::npos) {
 		next = chunk.find("procedure ", prev + 10);
@@ -59,6 +62,7 @@ Preprocesser::Preprocesser(string chunk1)
 		}
 		prev = next;
 	}
+	*/
 }
 /*
 input: start, end (not inclusive)
