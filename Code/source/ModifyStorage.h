@@ -9,6 +9,9 @@ using namespace std;
 
 #include "Hasher.h"
 
+/*
+	A storage class to store the Modifies relationships between Procedures & Statements with Variables
+*/
 class ModifyStorage
 {
 public:
