@@ -11,6 +11,12 @@ using namespace std;
 #include "PKB.h"
 #include "Statement.h"
 #include "AssignParser.h"
+#include "ReadParser.h"
+#include "PrintParser.h"
+#include "WhileParser.h"
+#include "IfParser.h"
+#include "ElseParser.h"
+#include "ProcedureParser.h"
 
 Parser::Parser()
 {
@@ -58,29 +64,42 @@ void Parser::populateDesignEntities(Statement stmt, PKB pkb) {
 		//CallStatement
 		//TODO: Iteration 2
 		break;
-	case 3:
+	case 3: {
 		//ReadStatement
+		extractReadEntity(stmtString, pkb, stmtLine);
 		break;
-	case 4:
+	}
+	case 4: {
 		//PrintStatement
+		extractPrintEntity(stmtString, pkb, stmtLine);
 		break;
-	case 5:
+	}
+	case 5: {
 		//WhileStatement
+		vector<Statement> whileStmtLst = stmt.getStmtLst();
+		extractWhileEntity(stmtString, pkb, stmtLine, whileStmtLst);
 		break;
-	case 6:
-		//IfStatemnt
+	}
+	case 6: {
+		//IfStatement
+		vector<Statement> ifStmtLst = stmt.getStmtLst();
+		extractWhileEntity(stmtString, pkb, stmtLine, ifStmtLst);
 		break;
-	case 7:
-		//ElseStmt
+	}
+	case 7: {
+		//ElseStmt 
+		vector<Statement> elseStmtLst = stmt.getStmtLst();
+		extractWhileEntity(stmtString, pkb, stmtLine, elseStmtLst);
 		break;
-	case 8:
-		//Procedure
-		break;
+	}
+	case 8: {		//Procedure
+		vector<Statement> procStmtLst = stmt.getStmtLst();
+		extractProcedureEntity(stmtString, pkb, procStmtLst);
+	}
 	}
 }
 
-void Parser::extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine)
-{
+void Parser::extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine) {
 	AssignParser ap;
 	string modified = ap.getLeft(stmtString);
 	vector<string> usedVariables = ap.getRightVariable(stmtString);
@@ -93,7 +112,7 @@ void Parser::extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine
 
 	//Add Constants
 	for (string constant : usedConstants) {
-		//TODO: Add constants.
+		pkb.addConstant(constant);
 	}
 
 	//Add Variable and Uses.
@@ -104,6 +123,71 @@ void Parser::extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine
 
 	pkb.addAssign(stmtLine, modified, prefixExpression);
 }
+
+void Parser::extractReadEntity(std::string &stmtString, PKB &pkb, int stmtLine) {
+	ReadParser rp;
+	string modified = rp.parseReadStmt(stmtString);
+
+	pkb.addModifies(stmtLine, modified);
+	pkb.addVariable(modified);
+}
+
+void Parser::extractPrintEntity(std::string &stmtString, PKB &pkb, int stmtLine) {
+	PrintParser pp;
+	string used = pp.parsePrintStmt(stmtString);
+
+	pkb.addUses(stmtLine, used);
+	pkb.addVariable(used);
+}
+
+void Parser::extractWhileEntity(std::string &stmtString, PKB &pkb, int stmtLine, vector<Statement> stmtLst) {
+	WhileParser wp = WhileParser(stmtLine, stmtString, stmtLst, pkb);
+	vector<string> constants = wp.getConstants();
+	vector<string> variables = wp.getVariables();
+
+	for (string variable : variables) {
+		pkb.addVariable(variable);
+		pkb.addUses(stmtLine, variable);
+	}
+
+	for (string constant : constants) {
+		pkb.addConstant(constant);
+	}
+	
+	wp.parseStmtLst();
+}
+
+void Parser::extractIfEntity(std::string &stmtString, PKB &pkb, int stmtLine, vector<Statement> stmtLst) {
+	IfParser ip = IfParser(stmtLine, stmtString, stmtLst, pkb);
+	vector<string> constants = ip.getConstants();
+	vector<string> variables = ip.getVariables();
+
+	for (string variable : variables) {
+		pkb.addVariable(variable);
+		pkb.addUses(stmtLine, variable);
+	}
+
+	for (string constant : constants) {
+		pkb.addConstant(constant);
+	}
+
+
+	ip.parseStmtLst();
+}
+
+void Parser::extractElseEntity(std::string &stmtString, PKB &pkb, int stmtLine, vector<Statement> stmtLst) {
+	ElseParser ep = ElseParser(stmtLine, stmtString, stmtLst, pkb);
+	ep.parseStmtLst();
+}
+
+void Parser::extractProcedureEntity(std::string &stmtString, PKB &pkb, vector<Statement> stmtLst) {
+	ProcedureParser pp;
+	string procName = pp.parseProcName(stmtString);
+	pkb.addProc(procName);
+
+	pp.parseStmtLst(stmtLst, pkb);
+}
+
 
 void Parser::populateStmtList(Statement stmt, PKB pkb) {
 	int stmtLine = stmt.getStmtNum();
