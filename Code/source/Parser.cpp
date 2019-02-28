@@ -33,8 +33,8 @@ int Parser::parse(vector<Statement> stmtLst, int parent, PKB pkb) {
 
 		int currStmtLine = stmt.getStmtNum();
 
-		//Add Follow relation if is not the very first line.
-		if (prevStmtLine != 0) {
+		//Add Follow relation if is not the very first line or if not an else statement
+		if (prevStmtLine != 0 && stmt.getType() != 7) {
 			pkb.addFollow(prevStmtLine, currStmtLine);
 		}
 
@@ -88,13 +88,13 @@ void Parser::populateDesignEntities(Statement stmt, PKB pkb) {
 	case 6: {
 		//IfStatement
 		vector<Statement> ifStmtLst = stmt.getStmtLst();
-		extractWhileEntity(stmtString, pkb, stmtLine, ifStmtLst);
+		extractIfEntity(stmtString, pkb, stmtLine, ifStmtLst);
 		break;
 	}
 	case 7: {
 		//ElseStmt 
 		vector<Statement> elseStmtLst = stmt.getStmtLst();
-		extractWhileEntity(stmtString, pkb, stmtLine, elseStmtLst);
+		extractElseEntity(stmtString, pkb, stmtLine, elseStmtLst);
 		break;
 	}
 	case 8: {		//Procedure

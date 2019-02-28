@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\AssignParser.h" />
+    <ClInclude Include="..\source\ConditionalExp.h" />
     <ClInclude Include="..\source\ElseParser.h" />
     <ClInclude Include="..\source\ExpressionUtil.h" />
     <ClInclude Include="..\source\IfParser.h" />

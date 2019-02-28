@@ -38,10 +38,9 @@ void TestWrapper::parse(std::string filename) {
 			Preprocesser preprocesser = Preprocesser(contents);
 			vector<Statement> procList = preprocesser.getProcLst();
 			parser.parse(procList, 0, pkb);
-			PostProcessor::process(pkb);
 		}
-		catch (string exception) {
-			std::cout << "Exception Occurred: " << exception << std::endl;
+		catch (...) {
+			std::cout << "Exception Occurred: " << std::endl;
 		}
 	}
 
