@@ -2,6 +2,8 @@
 #include "PKB.h"
 #include "Preprocesser.h"
 #include "Parser.h"
+#include "QueryParser.h"
+#include "PostProcessor.h"
 
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
@@ -27,6 +29,7 @@ void TestWrapper::parse(std::string filename) {
 
 	try {
 		parser.parse(procList, 0, pkb);
+		PostProcessor::process(pkb);
 	}
 	catch (string exception) {
 		std::cout << "Exception Occurred: " << exception << std::endl;
@@ -37,6 +40,8 @@ void TestWrapper::parse(std::string filename) {
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 // call your evaluator to evaluate the query here
   // ...code to evaluate query...
+	string np = QueryParser::parse(query);
+	results.push_back(np);
 
   // store the answers to the query in the results list (it is initially empty)
   // each result must be a string.
