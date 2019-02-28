@@ -112,7 +112,7 @@ void Parser::extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine
 
 	//Add Constants
 	for (string constant : usedConstants) {
-		//TODO: Add constants.
+		pkb.addConstant(constant);
 	}
 
 	//Add Variable and Uses.
@@ -151,7 +151,7 @@ void Parser::extractWhileEntity(std::string &stmtString, PKB &pkb, int stmtLine,
 	}
 
 	for (string constant : constants) {
-		//PKB Add Constants
+		pkb.addConstant(constant);
 	}
 	
 	wp.parseStmtLst();
@@ -168,7 +168,7 @@ void Parser::extractIfEntity(std::string &stmtString, PKB &pkb, int stmtLine, ve
 	}
 
 	for (string constant : constants) {
-		//PKB Add Constants
+		pkb.addConstant(constant);
 	}
 
 
