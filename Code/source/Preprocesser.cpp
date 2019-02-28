@@ -37,7 +37,7 @@ vector<Statement> Preprocesser::getProcLst() {
 void Preprocesser::error(int t) {
 	string s1 = "Pre-processing error, incorrect syntax for ";
 	string s2 = (t == 0) ? "procedure" : (t == 1) ? "if/else, while" : "assign, call, print, read";
-	throw "\n" + s1 + s2 + "\n";
+	//throw "\n" + s1 + s2 + "\n";
 }
 
 /* constructor

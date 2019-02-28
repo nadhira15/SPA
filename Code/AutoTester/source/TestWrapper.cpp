@@ -22,12 +22,11 @@ TestWrapper::TestWrapper() {
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
 	PKB pkb = PKB();
-	Preprocesser preprocesser = Preprocesser(filename);
 	Parser parser = Parser();
 
-	vector<Statement> procList = preprocesser.getProcLst();
-
 	try {
+		Preprocesser preprocesser = Preprocesser(filename);
+		vector<Statement> procList = preprocesser.getProcLst();
 		parser.parse(procList, 0, pkb);
 		PostProcessor::process(pkb);
 	}
