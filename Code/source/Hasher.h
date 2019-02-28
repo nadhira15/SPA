@@ -5,8 +5,11 @@
 
 using namespace std;
 
-// These self-defined hashers use Szudzik's function found in 
-//https://stackoverflow.com/questions/919612/mapping-two-integers-to-one-in-a-unique-and-deterministic-way
+/*
+	These self-defined hashers are used by the PKB to hash pair containers to be stored
+	in unordered_set. They use Szudzik's function found in 
+	https://stackoverflow.com/questions/919612/mapping-two-integers-to-one-in-a-unique-and-deterministic-way
+*/
 struct intPairhash {
 public:
 	template <typename T, typename U>
