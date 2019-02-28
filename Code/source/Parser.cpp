@@ -43,8 +43,13 @@ int Parser::parse(vector<Statement> stmtLst, int parent, PKB pkb) {
 			pkb.addParent(parent ,currStmtLine);
 		}
 
+		//Add VariableName, Constants, and Procedure name into PKB.
 		populateDesignEntities(stmt, pkb);
-	}
+		
+		//Update previous statement line.
+		prevStmtLine = currStmtLine;
+
+		}
 	
 	return 0;
 }
