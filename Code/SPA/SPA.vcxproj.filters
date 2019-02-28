@@ -61,8 +61,8 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\source\QueryEvaluator.cpp">
-	  <Filter>Source Files</Filter>
-	</CLCompile>
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\IfParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
