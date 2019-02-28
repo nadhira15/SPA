@@ -22,6 +22,7 @@
     <ClCompile Include="..\source\PrintParser.cpp" />
     <ClCompile Include="..\source\ProcedureParser.cpp" />
     <ClCompile Include="..\source\Preprocesser.cpp" />
+    <ClCompile Include="..\source\QueryEvaluator.cpp" />
     <ClCompile Include="..\source\ReadParser.cpp" />
     <ClCompile Include="..\source\Statement.cpp" />
     <ClCompile Include="..\source\StringUtil.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="..\source\PrintParser.h" />
     <ClInclude Include="..\source\ProcedureParser.h" />
     <ClInclude Include="..\source\Preprocesser.h" />
+    <ClInclude Include="..\source\QueryEvaluator.h" />
     <ClInclude Include="..\source\ReadParser.h" />
     <ClInclude Include="..\source\Statement.h" />
     <ClInclude Include="..\source\StringUtil.h" />
@@ -92,6 +94,8 @@
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BrowseInformation>true</BrowseInformation>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>

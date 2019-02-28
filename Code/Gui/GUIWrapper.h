@@ -5,6 +5,8 @@
 #include <iostream>
 #include <list>
 
+#include "PKB.h"
+
 
 class GUIWrapper {
  public:

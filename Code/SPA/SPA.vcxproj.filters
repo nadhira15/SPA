@@ -60,6 +60,9 @@
     <ClCompile Include="..\source\Statement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\QueryEvaluator.cpp">
+	  <Filter>Source Files</Filter>
+	</CLCompile>
     <ClCompile Include="..\source\IfParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -122,6 +125,9 @@
     <ClInclude Include="..\source\Statement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\QueryEvaluator.h">
+	  <Filter>Header Files</Filter>
+	</ClInclude>
     <ClInclude Include="..\source\IfParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
