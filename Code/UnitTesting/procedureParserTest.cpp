@@ -18,9 +18,8 @@ namespace UnitTesting
 
 		TEST_METHOD(testInvalidInput)
 		{
-			std::string result = ProcedureParser::parseProcName("procedure 2day");
-			std::string expected = "failed";
-			Assert::AreEqual(expected, result);
+			bool result = ProcedureParser::verifyProcName("procedure 2day");
+			Assert::IsTrue(result);
 		}
 
 		TEST_METHOD(testVerifyProcName)
