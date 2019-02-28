@@ -23,16 +23,28 @@ TestWrapper::TestWrapper() {
 void TestWrapper::parse(std::string filename) {
 	PKB pkb = PKB();
 	Parser parser = Parser();
+	
+	std::FILE* fptr = std::fopen(filename.c_str(), "r");
+	if (fptr) {
+		std::fseek(fptr, 0, SEEK_END);
+		size_t len = std::ftell(fptr);
+		std::fseek(fptr, 0, SEEK_SET);
+		std::string contents(len + 1, '\0');
+		std::fread(&contents[0], 1, len, fptr);
+		fclose(fptr);
 
-	try {
-		Preprocesser preprocesser = Preprocesser(filename);
-		vector<Statement> procList = preprocesser.getProcLst();
-		parser.parse(procList, 0, pkb);
-		PostProcessor::process(pkb);
+		try {
+
+			Preprocesser preprocesser = Preprocesser(contents);
+			vector<Statement> procList = preprocesser.getProcLst();
+			parser.parse(procList, 0, pkb);
+			PostProcessor::process(pkb);
+		}
+		catch (string exception) {
+			std::cout << "Exception Occurred: " << exception << std::endl;
+		}
 	}
-	catch (string exception) {
-		std::cout << "Exception Occurred: " << exception << std::endl;
-	}
+
 }
 
 // method to evaluating a query
