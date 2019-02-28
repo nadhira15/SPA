@@ -91,7 +91,6 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 	string relation = suchThatCondition[0].first;
 	string firstArgument = suchThatCondition[0].second.first;
 	string secondArgument = suchThatCondition[0].second.second;
-	string selectedVarType;
 	string firstArgumentType;
 	string secondArgumentType;
 	for (vector<pair<string, string>>::size_type i = 0; i != declarations.size(); i++) {
