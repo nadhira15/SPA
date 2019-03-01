@@ -13,6 +13,7 @@ using namespace std;
 #include "PKB.h"
 #include "QueryEvaluator.h"	
 #include "LexicalToken.h"
+#include "ExpressionUtil.h"
 
 /*
 The main evaluator function of the query
@@ -49,8 +50,18 @@ unordered_set<int> QueryEvaluator::filterPatternCondition(vector<pair<string, pa
 		bool isExclusive = true;
 		string variable, expr;
 
-		if (RHSpattern[0] == '_' && RHSpattern[RHSpattern.length() - 1] == '_') {
+		if (LHSpattern[0] == '"') {
+			LHSpattern = LHSpattern.substr(1, LHSpattern.length() - 2);
+		}
+
+		if (RHSpattern[0] == '_' && RHSpattern[RHSpattern.length() - 1] == '_' && RHSpattern.length() != 1) {
+			RHSpattern = RHSpattern.substr(1, RHSpattern.length() - 2);
 			isExclusive = false;
+		}
+
+		if (RHSpattern[0] == '"') {
+			RHSpattern = RHSpattern.substr(1, RHSpattern.length() - 2);
+			RHSpattern = ExpressionUtil::convertInfixToPrefix(RHSpattern);
 		}
 
 		if (LHSpattern[0] == '_') {
@@ -497,9 +508,15 @@ into one string
 */
 string QueryEvaluator::setToString(unordered_set<string> setOfString) {
 	stringstream ss;
+	bool firstElement = true;
 	for (unordered_set<string>::iterator it = setOfString.begin(); it != setOfString.end(); ++it) {
+		if (firstElement) {
+			firstElement = false;
+		}
+		else {
+			ss << ",";
+		}
 		ss << *it;
-		ss << ", ";
 	}
 
 	string s = ss.str();
