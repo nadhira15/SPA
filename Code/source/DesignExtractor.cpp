@@ -64,7 +64,7 @@ void DesignExtractor::processParentStar()
 
 		unordered_set<int> allDescendents;
 		//Has a Child Stm
-		if (!directChildStm.empty) {
+		if (!directChildStm.empty()) {
 			for (int childStm : directChildStm) {
 				unordered_set<int> descendents = pkb.getAllDescendants(childStm);
 				for (int descendent : descendents) {
@@ -79,14 +79,38 @@ void DesignExtractor::processUsesProcedures()
 {
 }
 
-void DesignExtractor::processUsesContainers()
-{
-}
-
 void DesignExtractor::processModifiesProcedures()
 {
 }
 
 void DesignExtractor::processModifiesContainers()
 {
+	int stmtNum = pkb.getTotalStmNo();
+
+	for (int i = 1; i <= stmtNum; i++) {
+		int currLine = i;
+		unordered_set<int> descendents = pkb.getAllDescendants(currLine);
+		for (int descendent : descendents) {
+			//unordered_set<string> modifiedList = pkb.getModifiedVar(descendent);
+			//for (string modifiedVar : modifiedList) {
+			//	pkb.addModifies(currLine, modifiedVar);
+			//}
+		}
+	}
+}
+
+void DesignExtractor::processUsesContainers()
+{
+	int stmtNum = pkb.getTotalStmNo();
+
+	for (int i = 0; i <= stmtNum; i++) {
+		int currLine = i;
+		unordered_set<int> descendents = pkb.getAllDescendants(currLine);
+		for (int descendent : descendents) {
+			unordered_set<string> usedList = pkb.getUsedVar(descendent);
+			for (string usedVariable : usedList) {
+				pkb.addUses(currLine, usedVariable);
+			}
+		}
+	}
 }

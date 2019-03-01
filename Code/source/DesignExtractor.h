@@ -6,7 +6,7 @@ using namespace std;
 
 class DesignExtractor {
 public:
-	static void extractDesigns(PKB pkb);
+	static void extractDesigns(PKB storage);
 
 private:
 	static PKB pkb;
