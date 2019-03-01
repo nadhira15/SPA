@@ -34,10 +34,11 @@ void TestWrapper::parse(std::string filename) {
 		fclose(fptr);
 
 		try {
-
 			Preprocesser preprocesser = Preprocesser(contents);
 			vector<Statement> procList = preprocesser.getProcLst();
 			parser.parse(procList, 0, pkb);
+			PostProcessor postprocessor;
+			postprocessor.process(pkb);
 		}
 		catch (...) {
 			std::cout << "Exception Occurred: " << std::endl;
