@@ -41,6 +41,7 @@ void TestWrapper::parse(std::string filename) {
 		}
 		catch (...) {
 			std::cout << "Exception Occurred: " << std::endl;
+			exit(0);
 		}
 	}
 
