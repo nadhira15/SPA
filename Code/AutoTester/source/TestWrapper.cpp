@@ -52,11 +52,9 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
   // ...code to evaluate query...
 
 	string qp = QueryParser::parse(query);
-	if (qp == "error") {
-		qp = "";
+	if (qp != "error" || qp != "") {
+		results.push_back(qp);
 	}
-
-	results.push_back(qp);
 
   // store the answers to the query in the results list (it is initially empty)
   // each result must be a string.
