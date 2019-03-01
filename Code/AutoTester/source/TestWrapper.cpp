@@ -40,8 +40,8 @@ void TestWrapper::parse(std::string filename) {
 			//DesignExtractor de;
 			//de.extractDesigns(pkb);
 		}
-		catch (const std::string& ex) {
-			std::cout << "Exception Occurred: " << ex << std::endl;
+		catch (...) {
+			std::cout << "Exception Occurred: " << std::endl;
 			exit(0);
 		}
 	}
@@ -54,7 +54,7 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
   // ...code to evaluate query...
 
 	string qp = QueryParser::parse(query);
-	if (qp != "error" || qp != "") {
+	if (qp != "error" && qp != "") {
 		results.push_back(qp);
 	}
 
