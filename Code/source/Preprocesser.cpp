@@ -81,6 +81,7 @@ Statement Preprocesser::processProc(int bookmark, int last)
 	//validation: check for last '}' and pass validation to validateProc
 	pos = chunk.find_last_not_of(" \t\f\v\n\r");
 	tmpn = chunk.find('{');
+	// bug: 1 test validation for proc is failing 
 	//if (chunk[pos] != '}') {
 	//	valid = 0;
 	//	error(0);
@@ -116,7 +117,7 @@ vector<Statement> Preprocesser::processLst(int bookmark, int last) {
 			//double check count of '{' and '}'
 			count2++;
 			//reset stopper
-			stopper = i + 1;
+			stopper = i;
 			//end loop by i = last
 			i = last;
 		}
@@ -150,7 +151,7 @@ vector<Statement> Preprocesser::processLst(int bookmark, int last) {
 			stmtlst.push_back(Statement(tmp, processLst(i + 1, last), valid, tmpN));
 			//after execution of previous process {}, return to previous bookmark and i-count
 			i = stopper;
-			bookmark = stopper;
+			bookmark = stopper + 1;
 		}
 		else if (chunk[i] == ';') {
 			tmp = trim(chunk.substr(bookmark, i - bookmark));

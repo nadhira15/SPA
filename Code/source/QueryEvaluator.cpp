@@ -80,7 +80,7 @@ unordered_set<int> QueryEvaluator::filterPatternCondition(vector<pair<string, pa
 }
 
 /*
-The function evaluate the query by evaluating 
+The function evaluates the query by evaluating 
 its such that condition after given the filter 
 result of the Pattern Condition.
 */
@@ -200,7 +200,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 }
 
 /*
-THe functions evaluate the such that conditions 
+THe function evaluates the such that conditions 
 which gives boolean answer
 */
 string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, string secondArgument) {
@@ -357,7 +357,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 				return intSetToStrSet(PKB().getAllFollowers());
 			}
 			else if (LexicalToken::verifyInteger(firstArgument)) {
-				result.insert(to_string(PKB().getNxtStm(stoi(secondArgument))));
+				result.insert(to_string(PKB().getNxtStm(stoi(firstArgument))));
 			}
 			else {
 				return result;
@@ -382,7 +382,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 				return intSetToStrSet(PKB().getAllFollowers());
 			}
 			else if (LexicalToken::verifyInteger(firstArgument)) {
-				return intSetToStrSet(PKB().getAllFollowing(stoi(secondArgument)));
+				return intSetToStrSet(PKB().getAllFollowing(stoi(firstArgument)));
 			}
 			else {
 				return result;
@@ -407,7 +407,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 				return intSetToStrSet(PKB().getAllChildren());
 			}
 			else if (LexicalToken::verifyInteger(firstArgument)) {
-				return intSetToStrSet(PKB().getChildren(stoi(secondArgument)));
+				return intSetToStrSet(PKB().getChildren(stoi(firstArgument)));
 			}
 			else {
 				return result;
@@ -432,7 +432,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 				return intSetToStrSet(PKB().getAllParents());
 			}
 			else if (LexicalToken::verifyInteger(firstArgument)) {
-				return intSetToStrSet(PKB().getAllDescendants(stoi(secondArgument)));
+				return intSetToStrSet(PKB().getAllDescendants(stoi(firstArgument)));
 			}
 			else {
 				return result;
@@ -592,7 +592,7 @@ unordered_set<string> QueryEvaluator::strPairSetToStrSet(unordered_set<pair<stri
 }
 
 /*
-The function retrieve all statements 
+The function retrieves all statements 
 of a given type
 */
 unordered_set<string> QueryEvaluator::getStmts(string s) {
@@ -628,7 +628,7 @@ unordered_set<string> QueryEvaluator::getStmts(string s) {
 }
 
 /*
-The function filter a set of
+The function filters a set of
 strings so that they are in the
 set of all statements of a given
 type.
@@ -647,7 +647,7 @@ unordered_set<string> QueryEvaluator::filterTypeNonTuple(string typeRequired, un
 }
 
 /*
-The function filter the set of strings
+The function filters the set of strings
 of pairs so that the first member and 
 second member is in the set of all 
 statements in a first type and a second
@@ -673,7 +673,7 @@ unordered_set<string> QueryEvaluator::filterTypeTuple(string firstTypeRequired, 
 }
 
 /*
-It fetch out all the first member of
+It fetchs out all the first member of
 all pairs in the set
 */
 unordered_set<string> QueryEvaluator::getFirstParam(unordered_set<string> stringPair) {
@@ -689,7 +689,7 @@ unordered_set<string> QueryEvaluator::getFirstParam(unordered_set<string> string
 }
 
 /*
-It fetch out all the second member
+It fetchs out all the second member
 of all pairs in the set.
 */
 unordered_set<string> QueryEvaluator::getSecondParam(unordered_set<string> stringPair) {
@@ -705,7 +705,7 @@ unordered_set<string> QueryEvaluator::getSecondParam(unordered_set<string> strin
 }
 
 /*
-Find the intersection of 2 sets of string
+Finds the intersection of 2 sets of string
 */
 unordered_set<string> QueryEvaluator::intersection(unordered_set<string> first, unordered_set<string> toContain) {
 	unordered_set<string> result;
