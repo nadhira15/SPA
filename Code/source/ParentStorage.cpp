@@ -18,16 +18,17 @@ ParentStorage::ParentStorage()
 */
 bool ParentStorage::addParent_Child(int parent, int child)
 {
-	// if Parent-Child Pair is already added, return false
+	// if Parent-Child Pair is already added
 	if (!parent_ChildPairList.emplace(pair<int, int>(parent, child)).second)
 	{
 		return false;
 	}
 
-	// if child exist in parentTable and has parent already initialized, return false
+	// if child exist in parentTable and has parent already initialized
 	auto itrpr = parentTable.emplace(child, pRelationships{ parent, {}, {}, {} });
 	if (!itrpr.second && parentTable.find(child)->second.parent != 0)
 	{
+		parent_ChildPairList.erase(pair<int, int>(parent, child));
 		return false;
 	}
 	else if (!itrpr.second)		// if child exist but does not have parent initialized
@@ -120,24 +121,56 @@ bool ParentStorage::containsAnc_Desc(pair<int, int> pair)
 	return anc_DescPairList.find(pair) != anc_DescPairList.end();
 }
 
+/*
+	return the statement that is the parent of the statement specified
+	return 0 if 'stm' is not found
+*/
 int ParentStorage::getParentOf(int stm)
 {
-	return parentTable.find(stm)->second.parent;
+	if (parentTable.find(stm) != parentTable.end())
+	{
+		return parentTable.at(stm).parent;
+	}
+	return 0;
 }
 
+/*
+	return the list of statements that is the children of the statement specified
+	return an empty set if 'stm' is not found
+*/
 unordered_set<int> ParentStorage::getChildrenOf(int stm)
 {
-	return parentTable.find(stm)->second.children;
+	if (parentTable.find(stm) != parentTable.end())
+	{
+		return parentTable.at(stm).children;
+	}
+	return {};
 }
 
+/*
+	return the list of statements that is the ancestor of the statement specified
+	return an empty set if 'stm' is not found
+*/
 unordered_set<int> ParentStorage::getAncestorsOf(int stm)
 {
-	return parentTable.find(stm)->second.ancestors;
+	if (parentTable.find(stm) != parentTable.end())
+	{
+		return parentTable.at(stm).ancestors;
+	}
+	return {};
 }
 
+/*
+	return the list of statements that is the descendants of the statement specified
+	return an empty set if 'stm' is not found
+*/
 unordered_set<int> ParentStorage::getDescendantsOf(int stm)
 {
-	return parentTable.find(stm)->second.descendants;
+	if (parentTable.find(stm) != parentTable.end())
+	{
+		return parentTable.at(stm).descendants;
+	}
+	return {};
 }
 
 unordered_set<int> ParentStorage::getParentList()

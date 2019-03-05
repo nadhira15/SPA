@@ -19,38 +19,40 @@ FollowStorage::FollowStorage()
 */
 bool FollowStorage::addFollowPair(int followed, int follower)
 {
-	// if follows Pair is already added, return false
+	// if follows Pair is already added
 	if (!followPairList.emplace(pair<int, int>(followed, follower)).second)
 	{
 		return false;
 	}
 
-	// if followed exist in followTable and has "next" initialized, return false
-	auto itrpr1 = followTable.emplace(followed, fRelationships{ 0, follower, {}, {} });
-	if (!itrpr1.second && followTable.find(followed)->second.next != 0)
+	if (followTable.find(followed) != followTable.end() &&
+		followTable.find(followed)->second.next != 0)
 	{
+		followPairList.erase(pair<int, int>(followed, follower));
 		return false;
 	}
 
-	// if follower exist in followTable and has "previous" initialized, return false
-	auto itrpr2 = followTable.emplace(follower, fRelationships{ followed, 0, {}, {} });
-	if (!itrpr2.second && followTable.find(follower)->second.previous != 0)
+	if (followTable.find(follower) != followTable.end() &&
+		followTable.find(follower)->second.previous != 0)
 	{
+		followPairList.erase(pair<int, int>(followed, follower));
 		return false;
 	}
 
-	// if a new followed statement, add it to the list of roots
-	if (itrpr1.second)
+	// if followed is a new statement
+	if (followTable.emplace(followed, fRelationships{ 0, follower, {}, {} }).second)
 	{
 		rootList.emplace(followed);
 	}
-	else	// followed is not a statement and does not have "next" initialized
+	else
 	{
-		itrpr1.first->second.next = follower;
+		followTable.find(followed)->second.next = follower;
 	}
-	if (!itrpr2.second)		//follower is not a new statement and does not "previous" initialized
+
+	// if follower is a not new statement
+	if (!followTable.emplace(follower, fRelationships{ followed, 0, {}, {} }).second)
 	{
-		itrpr2.first->second.previous = followed;
+		followTable.find(follower)->second.previous = followed;
 		if (rootList.find(follower) != rootList.end())	//if follower was a root
 		{
 			rootList.erase(follower);
@@ -121,28 +123,56 @@ bool FollowStorage::containsFSPair(pair<int, int> pair)
 	return follow_S_PairList.find(pair) != follow_S_PairList.end();
 }
 
-// return the statement following the statement specified by the index
+/*
+	return the statement following the statement specified
+	return 0 if 'stm' is not found
+*/
 int FollowStorage::getNextOf(int stm)
 {
-	return followTable.at(stm).next;
+	if (followTable.find(stm) != followTable.end())
+	{
+		return followTable.at(stm).next;
+	}
+	return 0;
 }
 
-// return the statement being followed by the statement specified by the index
+/*
+	return the statement followed by the statement specified
+	return 0 if 'stm' is not found
+*/
 int FollowStorage::getPrevOf(int stm)
 {
-	return followTable.at(stm).previous;
+	if (followTable.find(stm) != followTable.end())
+	{
+		return followTable.at(stm).previous;
+	}
+	return 0;
 }
 
-// return a list of statements that is directly/indirectly following the statement specified by index
+/*
+	return a list of statements that is directly/indirectly following the statement specified
+	return an empty set if 'stm' is not found
+*/
 unordered_set<int> FollowStorage::getAllFollowing(int stm)
 {
-	return followTable.at(stm).allNext;
+	if (followTable.find(stm) != followTable.end())
+	{
+		return followTable.at(stm).allNext;
+	}
+	return {};
 }
 
-// return a list of statements that is directly/indirectly followed by the statement specified by index
+/*
+	return a list of statements that is directly/indirectly followed by the statement specified
+	return an empty set if 'stm' is not found
+*/
 unordered_set<int> FollowStorage::getAllFollowedBy(int stm)
 {
-	return followTable.at(stm).allPrevious;
+	if (followTable.find(stm) != followTable.end())
+	{
+		return followTable.at(stm).allPrevious;
+	}
+	return {};
 }
 
 unordered_set<int> FollowStorage::getFollowerList()
