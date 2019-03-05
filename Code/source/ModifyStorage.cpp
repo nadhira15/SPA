@@ -47,22 +47,38 @@ bool ModifyStorage::containsProcVarPair(pair<string, string> pair)
 
 string ModifyStorage::getVarModifiedBy(int stm)
 {
-	return varList_Stm.find(stm)->second;
+	if (varList_Stm.find(stm) != varList_Stm.end())
+	{
+		return varList_Stm.at(stm);
+	}
+	return "";
 }
 
 string ModifyStorage::getVarModifiedBy(string proc)
 {
-	return varList_Proc.find(proc)->second;
+	if (varList_Proc.find(proc) != varList_Proc.end())
+	{
+		return varList_Proc.at(proc);
+	}
+	return "";
 }
 
 unordered_set<int> ModifyStorage::getStmModifying(string variable)
 {
-	return stmLists.find(variable)->second;
+	if (stmLists.find(variable) != stmLists.end())
+	{
+		return stmLists.at(variable);
+	}
+	return {};
 }
 
 unordered_set<string> ModifyStorage::getProcModifying(string variable)
 {
-	return procLists.find(variable)->second;
+	if (procLists.find(variable) != procLists.end())
+	{
+		procLists.at(variable);
+	}
+	return {};
 }
 
 unordered_set<pair<int, string>, intStringhash> ModifyStorage::getStmVarPairs()
