@@ -68,23 +68,45 @@ bool FollowStorage::addFollowPair(int followed, int follower)
 	return true;
 }
 
+/*
+	Sets "allNext" of followed
+	Each followed - follower pair is entered into follow_S_PairList
+	If followed already has a list of followers, it is not replaced and it return false
+*/
 bool FollowStorage::setAllFollowing(int followed, unordered_set<int> followers)
 {
 	if (followTable.find(followed)->second.allNext.size() != 0)
 	{
 		return false;
 	}
+
 	followTable.find(followed)->second.allNext = followers;
+
+	for (auto itr = followers.cbegin; itr != followers.cend; ++itr)
+	{
+		follow_S_PairList.emplace(pair<int, int>(followed, *itr));
+	}
 	return true;
 }
 
+/*
+	Sets "allPrevious" of follower
+	Each followed - follower pair is entered into follow_S_PairList
+	If follower already has a list of followed, it is not replaced and it return false
+*/
 bool FollowStorage::setAllFollowedBy(int follower, unordered_set<int> followed)
 {
 	if (followTable.find(follower)->second.allPrevious.size() != 0)
 	{
 		return false;
 	}
+
 	followTable.find(follower)->second.allPrevious = followed;
+
+	for (auto itr = followed.cbegin; itr != followed.cend; ++itr)
+	{
+		follow_S_PairList.emplace(pair<int, int>(follower, *itr));
+	}
 	return true;
 }
 
