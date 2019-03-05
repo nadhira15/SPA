@@ -60,6 +60,11 @@ bool ParentStorage::addParent_Child(int parent, int child)
 	return true;
 }
 
+/*
+	Sets "ancestors" of the descendant
+	Each ancestor - descendant pair is entered into anc_DescPairList
+	If descendant already has a list of ancestors, it is not replaced and it return false
+*/
 bool ParentStorage::setAncestors(int descendant, unordered_set<int> ancestors)
 {
 	if (parentTable.find(descendant)->second.ancestors.size() != 0)
@@ -67,9 +72,19 @@ bool ParentStorage::setAncestors(int descendant, unordered_set<int> ancestors)
 		return false;
 	}
 	parentTable.find(descendant)->second.ancestors = ancestors;
+
+	for (auto itr = ancestors.begin; itr != ancestors.end; ++itr)
+	{
+		anc_DescPairList.emplace(pair<int, int>(*itr, descendant));
+	}
 	return true;
 }
 
+/*
+	Sets "descendants" of the ancestor
+	Each ancestor - descendant pair is entered into anc_DescPairList
+	If ancestor already has a list of descendants, it is not replaced and it return false
+*/
 bool ParentStorage::setDescendants(int ancestor, unordered_set<int> descendants)
 {
 	if (parentTable.find(ancestor)->second.descendants.size() != 0)
@@ -77,6 +92,11 @@ bool ParentStorage::setDescendants(int ancestor, unordered_set<int> descendants)
 		return false;
 	}
 	parentTable.find(ancestor)->second.descendants = descendants;
+
+	for (auto itr = descendants.begin; itr != descendants.end; ++itr)
+	{
+		anc_DescPairList.emplace(pair<int, int>(ancestor, *itr));
+	}
 	return true;
 }
 
