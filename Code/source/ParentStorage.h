@@ -8,6 +8,13 @@ using namespace std;
 
 #include "Hasher.h"
 
+/*
+	A structure to contain:	The statement's Parent,
+							a list of it's children,
+							a list of ancestors including the direct parent,
+							a list of descendants including its' direct children
+	If such statement or list does not exist, it'll be set to 0 or {} respectively
+*/
 struct pRelationships
 {
 	int parent;
@@ -16,6 +23,9 @@ struct pRelationships
 	unordered_set<int> descendants;
 };
 
+/*
+	A storage class to store the Parent & Parent* relationships of statements
+*/
 class ParentStorage {
 public:
 	ParentStorage();

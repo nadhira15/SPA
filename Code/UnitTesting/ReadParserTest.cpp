@@ -11,16 +11,15 @@ namespace UnitTesting
 
 		TEST_METHOD(testValidInput)
 		{
-			std::string result = ReadParser::parseReadStmt("read var1");
+			std::string result = ReadParser::parseReadStmt("read   var1");
 			std::string expected = "var1";
 			Assert::AreEqual(expected, result);
 		}
 
 		TEST_METHOD(testInvalidInput)
 		{
-			std::string result = ReadParser::parseReadStmt("read 2day");
-			std::string expected = "failed";
-			Assert::AreEqual(expected, result);
+			bool result = ReadParser::verifyReadStmt("read 2day");
+			Assert::IsTrue(result);
 		}
 
 		TEST_METHOD(testVerifyVarcName)
@@ -32,7 +31,7 @@ namespace UnitTesting
 		TEST_METHOD(testVerifyInvalidStmt)
 		{
 			bool result = ReadParser::verifyReadStmt("read compute30Watever");
-			Assert::AreEqual(result, false);
+			Assert::AreEqual(result, true);
 		}
 	};
 }

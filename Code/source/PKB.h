@@ -13,6 +13,12 @@ using namespace std;
 
 enum stmType { read, print, assign, whileStm, ifStm };
 
+/*
+	Accepts data from the Front-End's Parser, sends data to the PostProcessor when called and
+	accepts new data from it as well. PKB will also reply to queries made by the PQL's Query Evaluator.
+	Stores relationships data in their respective Storage classes while other information
+	like procedure name, statement types, statement lists and pattern are stored locally
+*/
 class PKB {
 public:
 	PKB();
@@ -21,7 +27,7 @@ public:
 	void addProc(string procName);
 	void addStatement(int stmNo, stmType type);
 	void addVariable(string name);
-	void addConstant(int value);
+	void addConstant(string value);
 
 	//adding Follows relationships
 	bool addFollow(int stm1, int stm2);
@@ -54,7 +60,7 @@ public:
 	unordered_set<int> getIfStms();
 	unordered_set<int> getWhileStms();
 	unordered_set<string> getVariables();
-	unordered_set<int> getConstants();
+	unordered_set<string> getConstants();
 
 	//For Follows/Follows* relations
 	bool hasFollowRelation();
@@ -112,7 +118,7 @@ private:
 	static string procName;
 	static vector<stmType> stmTypeList;
 	static unordered_set<string> varList;
-	static unordered_set<int> constList;
+	static unordered_set<string> constList;
 	static unordered_set<int> readStmList;
 	static unordered_set<int> printStmList;
 	static unordered_set<int> assignStmList;

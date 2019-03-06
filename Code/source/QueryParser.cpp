@@ -10,13 +10,14 @@
 
 using namespace std;
 
+#include "QueryEvaluator.h"
 #include "QueryParser.h"
 #include "LexicalToken.h"
 
 const string whitespace = " \f\n\r\t\v";
 const unordered_set<string> validVarType = { "stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure" };
 
-string QueryParser::parse(string query) {
+unordered_set<string> QueryParser::parse(string query) {
 	/*
 	Main parser function for input query.
 	Passes the following to query evaluator:
@@ -27,11 +28,13 @@ string QueryParser::parse(string query) {
 	*/
 
 	string errorString;
+	unordered_set<string> result;
 
 	// initial query validation
 	errorString = initialValidation(query);
 	if (errorString != "") {
-		return errorString;
+		result.insert("error");
+		return result;
 	}
 
 	// splitting clauses
@@ -40,7 +43,8 @@ string QueryParser::parse(string query) {
 	// validating clauses
 	errorString = validateClauses(clauses);
 	if (errorString != "") {
-		return errorString;
+		result.insert("error");
+		return result;
 	}
 
 	// parsing declarations
@@ -54,7 +58,8 @@ string QueryParser::parse(string query) {
 	// validating declarations
 	errorString = validateDeclarations(declarations);
 	if (errorString != "") {
-		return errorString;
+		result.insert("error");
+		return result;
 	}
 
 	// parsing "Select" statement
@@ -73,11 +78,11 @@ string QueryParser::parse(string query) {
 	if (suchThatIndex == -1 && patternIndex == -1) {
 		selectedVar = splitSelectParameter(selectStatement);
 	}
-	else if (suchThatIndex == -1 && patternIndex != -1) {
+	else if (suchThatIndex != -1 && patternIndex == -1) {
 		selectedVar = splitSelectParameter(selectStatement.substr(0, suchThatIndex));
 		suchThatCondition = splitSuchThatCondition(selectStatement.substr(suchThatIndex));
 	}
-	else if (suchThatIndex != -1 && patternIndex == 1) {
+	else if (suchThatIndex == -1 && patternIndex != -1) {
 		selectedVar = splitSelectParameter(selectStatement.substr(0, patternIndex));
 		patternCondition = splitPatternCondition(selectStatement.substr(patternIndex));
 	}
@@ -95,22 +100,25 @@ string QueryParser::parse(string query) {
 	// validating 'Select' parameter
 	errorString = validateSelectedVar(selectedVar, declarationsMap);
 	if (errorString != "") {
-		return errorString;
+		result.insert("error");
+		return result;
 	}
 
 	// validating 'such that' parameter
 	errorString = validateSuchThatParam(suchThatCondition, declarationsMap);
 	if (errorString != "") {
-		return errorString;
+		result.insert("error");
+		return result;
 	}
 
 	// validating 'pattern' parameter
 	errorString = validatePatternParam(patternCondition, declarationsMap);
 	if (errorString != "") {
-		return errorString;
+		result.insert("error");
+		return result;
 	}
 
-	string result = evaluateSelectConditions(declarations, selectedVar, suchThatCondition, patternCondition);
+	result = evaluateSelectConditions(declarations, selectedVar, suchThatCondition, patternCondition);
 
 	return result;
 }
@@ -225,7 +233,7 @@ string QueryParser::validateDeclarations(vector<pair<string, string>> declaratio
 	- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
 	*/
 
-	for (int i = 0; i < declarations.size(); i++) {
+	for (size_t i = 0; i < declarations.size(); i++) {
 		if (validVarType.find(declarations[i].first) == validVarType.end()) {
 			return "invalid query";
 		}
@@ -431,13 +439,11 @@ string QueryParser::validatePatternParam(vector<pair<string, pair<string, string
 	return "";
 }
 
-string QueryParser::evaluateSelectConditions(vector<pair<string, string>> declarations, 
+unordered_set<string> QueryParser::evaluateSelectConditions(vector<pair<string, string>> declarations, 
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {
-	
-	// TODO: call query evaluator
 
-	return "";
+	return QueryEvaluator::evaluateQuery(declarations, selectedVar, suchThatCondition, patternCondition);
 }
 
 string QueryParser::removeAllWhitespaces(string s) {

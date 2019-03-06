@@ -1,4 +1,9 @@
 #include "TestWrapper.h"
+#include "PKB.h"
+#include "Preprocesser.h"
+#include "Parser.h"
+#include "QueryParser.h"
+#include "PostProcessor.h"
 
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
@@ -9,24 +14,51 @@ AbstractWrapper* WrapperFactory::createWrapper() {
 // Do not modify the following line
 volatile bool TestWrapper::GlobalStop = false;
 
-
-
 // a default constructor
 TestWrapper::TestWrapper() {
-  // create any objects here as instance variables of this class
-  // as well as any initialization required for your spa program
+	
 }
 
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
-  // call your parser to do the parsing
-  // ...rest of your code...
+	PKB pkb = PKB();
+	Parser parser = Parser();
+	
+	std::FILE* fptr = std::fopen(filename.c_str(), "r");
+	if (fptr) {
+		std::fseek(fptr, 0, SEEK_END);
+		size_t len = std::ftell(fptr);
+		std::fseek(fptr, 0, SEEK_SET);
+		std::string contents(len + 1, '\0');
+		std::fread(&contents[0], 1, len, fptr);
+		fclose(fptr);
+
+		try {
+
+			Preprocesser preprocesser = Preprocesser(contents);
+			vector<Statement> procList = preprocesser.getProcLst();
+			parser.parse(procList, 0, pkb);
+		}
+		catch (...) {
+			std::cout << "Exception Occurred: " << std::endl;
+			exit(0);
+		}
+	}
+
 }
 
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 // call your evaluator to evaluate the query here
   // ...code to evaluate query...
+
+	unordered_set<string> qp = QueryParser::parse(query);
+	if (qp.count("error") == 0 && qp.size() != 0) {
+		for (unordered_set<string>::iterator it = qp.begin(); it != qp.end(); ++it) {
+			string pointer = *it;
+			results.push_back(pointer);
+		}
+	}
 
   // store the answers to the query in the results list (it is initially empty)
   // each result must be a string.

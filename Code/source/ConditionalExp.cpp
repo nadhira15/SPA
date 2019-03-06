@@ -2,8 +2,10 @@
 #include <string>
 #include <regex>
 #include"ConditionalExp.h"
+#include "LexicalToken.h"
 
 using namespace std;
+using namespace LexicalToken;
 
 std::vector<string> expressions;
 std::vector<string> variables;
@@ -33,8 +35,7 @@ bool ConditionalExp::verifyConditionalExp(std::string statement) {
 }
 
 bool ConditionalExp::populateVector(std::string expression) {
-	std::regex variableRegex("[a-zA-Z]+\\d*");
-	std::regex constantRegex("((?![a-zA-Z])\\d+(?![a-zA-Z]))");
+	std::regex termRegex("(\\w+)");
 	std::regex formular("(!?[\\(\\s]*(?:[a-zA-Z]+\\d*)|(?:\\d+))\\s*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\s]*((?:[a-zA-Z]+\\d*)|(?:\\d+))[\\(\\s\\)]*(([\\(\\s\\)]*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\s\\)]*(([a-zA-Z]+\\d*)|(\\d+)))*[\\(\\s\\)]*)");
 	//verify brackets
 	int count = 0;
@@ -53,12 +54,18 @@ bool ConditionalExp::populateVector(std::string expression) {
 		std::string toGetConstants = expression;
 		std::smatch variableMatch;
 		std::smatch constantMatch;
-		while (std::regex_search(toGetVariables, variableMatch, variableRegex)) {
-			variables.push_back(variableMatch.str(0));
+		while (std::regex_search(toGetVariables, variableMatch, termRegex)) {
+			string var = variableMatch.str(0);
+			if (verifyName(var)) {
+				variables.push_back(var);
+			}
 			toGetVariables = variableMatch.suffix().str();
 		}
-		while (std::regex_search(toGetConstants, constantMatch, constantRegex)) {
-			constants.push_back(constantMatch.str(0));
+		while (std::regex_search(toGetConstants, constantMatch, termRegex)) {
+			string constant = constantMatch.str(0);
+			if (verifyInteger(constant)) {
+				constants.push_back(constant);
+			}
 			toGetConstants = constantMatch.suffix().str();
 		}
 		return true;

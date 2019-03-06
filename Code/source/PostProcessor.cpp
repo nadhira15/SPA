@@ -1,5 +1,7 @@
 #include "PostProcessor.h"
 
+PKB PostProcessor::pkb;
+
 void PostProcessor::process(PKB storage)
 {
 	pkb = storage;
