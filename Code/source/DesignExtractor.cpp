@@ -17,6 +17,7 @@ void DesignExtractor::processFollowStar()
 {
 	int stmtNum = pkb.getTotalStmNo();
 
+	//Process stmt list s where Follow*(index, s) is true
 	for (int i = stmtNum - 1; i >= 0; i--) {
 		int currStmt = i;
 		int directFollowStm = pkb.getNxtStm(currStmt);
@@ -24,10 +25,11 @@ void DesignExtractor::processFollowStar()
 		if (directFollowStm != 0) {
 			unordered_set<int> followedByStar = pkb.getAllFollowedBy(directFollowStm);
 			followedByStar.insert(directFollowStm);
-			pkb.setStmFollowedBy(currStmt, followedByStar);
+			pkb.setFollowers(currStmt, followedByStar);
 		}
 	}
 
+	//Process stmt list s where Follow*(s, index) is true
 	for (int i = 1; i <= stmtNum; i++) {
 		int currStmt = i;
 		int directPrvStm = pkb.getPrvStm(currStmt);
@@ -36,7 +38,7 @@ void DesignExtractor::processFollowStar()
 		if (directPrvStm != 0) {
 			unordered_set<int>  followStar = pkb.getAllFollowing(directPrvStm);
 			followStar.insert(directPrvStm);
-			pkb.setFollowers(currStmt, followStar);
+			pkb.setStmFollowedBy(currStmt, followStar);
 		}
 	}
 
@@ -77,10 +79,12 @@ void DesignExtractor::processParentStar()
 
 void DesignExtractor::processUsesProcedures()
 {
+	//TODO: Implement for Iteration 2
 }
 
 void DesignExtractor::processModifiesProcedures()
 {
+	//TODO: Implement for Iteration 2
 }
 
 void DesignExtractor::processModifiesContainers()

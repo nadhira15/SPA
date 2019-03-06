@@ -23,6 +23,7 @@ TestWrapper::TestWrapper() {
 void TestWrapper::parse(std::string filename) {
 	PKB pkb = PKB();
 	Parser parser = Parser();
+	DesignExtractor de = DesignExtractor();
 	
 	std::FILE* fptr = std::fopen(filename.c_str(), "r");
 	if (fptr) {
@@ -37,8 +38,7 @@ void TestWrapper::parse(std::string filename) {
 			Preprocesser preprocesser = Preprocesser(contents);
 			vector<Statement> procList = preprocesser.getProcLst();
 			parser.parse(procList, 0, pkb);
-			//DesignExtractor de;
-			//de.extractDesigns(pkb);
+			de.extractDesigns(pkb);
 		}
 		catch (...) {
 			std::cout << "Exception Occurred: " << std::endl;
