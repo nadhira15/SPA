@@ -84,7 +84,7 @@ bool FollowStorage::setAllFollowing(int followed, unordered_set<int> followers)
 
 	followTable.find(followed)->second.allNext = followers;
 
-	for (auto itr = followers.cbegin; itr != followers.cend; ++itr)
+	for (auto itr = followers.cbegin(); itr != followers.cend(); ++itr)
 	{
 		follow_S_PairList.emplace(pair<int, int>(followed, *itr));
 	}
@@ -105,7 +105,7 @@ bool FollowStorage::setAllFollowedBy(int follower, unordered_set<int> followed)
 
 	followTable.find(follower)->second.allPrevious = followed;
 
-	for (auto itr = followed.cbegin; itr != followed.cend; ++itr)
+	for (auto itr = followed.cbegin(); itr != followed.cend(); ++itr)
 	{
 		follow_S_PairList.emplace(pair<int, int>(follower, *itr));
 	}
