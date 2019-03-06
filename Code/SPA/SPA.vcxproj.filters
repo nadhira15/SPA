@@ -60,9 +60,6 @@
     <ClCompile Include="..\source\Preprocesser.cpp">
       <Filter>Source Files\PreProcessor</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\PostProcessor.cpp">
-      <Filter>Source Files\DesignExtractor</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\PrintParser.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
@@ -165,9 +162,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\PrintParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\PostProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\ConditionalExp.h">
