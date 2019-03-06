@@ -85,7 +85,8 @@ void PostProcessor::traverseFamilyTree(int curr, unordered_set<int> ancestry,
 	ancTable.emplace(curr, ancestry);
 	ancestry.emplace(curr);
 
-	for (auto child = pkb.getAllChildren().begin(); child != pkb.getAllChildren().end(); ++child)
+	unordered_set<int> children = pkb.getChildren(curr);
+	for (auto child = children.begin(); child != children.end(); ++child)
 	{
 		traverseFamilyTree(*child, ancestry, ancTable, descTable);
 	}
