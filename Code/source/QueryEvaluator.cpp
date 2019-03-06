@@ -120,7 +120,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 	string certainty = isSuchThatTrivial(relation, firstArgument, secondArgument);
 
 	if (certainty == "false") {
-		evaluation.insert("none");
+		return evaluation;
 	}
 	else if ((certainty == "true") || (suchThatCondition.size() == 0)) {
 		if ((selectedVar[0] != patternSynonym) || (patternSynonym.size() == 0)) {
@@ -131,7 +131,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 	else if (certainty == "not trivial") {
 		unordered_set<string> suchThatResult = evaluateSuchThat(relation, firstArgument, secondArgument);
 		if (suchThatResult.size() == 0) {
-			evaluation.insert("none");
+			return evaluation;
 		}
 		if (patternSynonym.size() == 0) {
 			if (selectedVar[0] == firstArgument) {
@@ -156,7 +156,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 			firstArgument != patternSynonym &&
 			secondArgument != patternSynonym) {
 			if (afterPatternFilter.size() == 0) {
-				evaluation.insert("none");
+				return evaluation;
 			}
 			return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, getAllStms(), "");
 		}
@@ -211,6 +211,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().getPrvStm(stoi(secondArgument)) > 0);
 			}
+			else if (firstArgument == secondArgument) {
+				return "false";
+			}
 			return "not trivial";
 		}
 		else if (LexicalToken::verifyInteger(firstArgument)) {
@@ -231,6 +234,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			}
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().getPrvStm(stoi(secondArgument)) > 0);
+			}
+			else if (firstArgument == secondArgument) {
+				return "false";
 			}
 			return "not trivial";
 		}
@@ -253,6 +259,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().isChild(stoi(secondArgument)) > 0);
 			}
+			else if (firstArgument == secondArgument) {
+				return "false";
+			}
 			return "not trivial";
 		}
 		else if (LexicalToken::verifyInteger(firstArgument)) {
@@ -273,6 +282,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			}
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().isChild(stoi(secondArgument)) > 0);
+			}
+			else if (firstArgument == secondArgument) {
+				return "false";
 			}
 			return "not trivial";
 		}
