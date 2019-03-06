@@ -74,7 +74,7 @@ bool ParentStorage::setAncestors(int descendant, unordered_set<int> ancestors)
 	}
 	parentTable.find(descendant)->second.ancestors = ancestors;
 
-	for (auto itr = ancestors.begin; itr != ancestors.end; ++itr)
+	for (auto itr = ancestors.cbegin(); itr != ancestors.cend(); ++itr)
 	{
 		anc_DescPairList.emplace(pair<int, int>(*itr, descendant));
 	}
@@ -94,7 +94,7 @@ bool ParentStorage::setDescendants(int ancestor, unordered_set<int> descendants)
 	}
 	parentTable.find(ancestor)->second.descendants = descendants;
 
-	for (auto itr = descendants.begin; itr != descendants.end; ++itr)
+	for (auto itr = descendants.cbegin(); itr != descendants.cend(); ++itr)
 	{
 		anc_DescPairList.emplace(pair<int, int>(ancestor, *itr));
 	}
