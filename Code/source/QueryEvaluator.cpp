@@ -18,18 +18,17 @@ using namespace std;
 /*
 The main evaluator function of the query
 */
-string QueryEvaluator::evaluateQuery(vector<pair<string, string>> declarations,
+unordered_set<string> QueryEvaluator::evaluateQuery(vector<pair<string, string>> declarations,
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {
 	if (patternCondition.size() == 0) {
-		return setToString(filterSuchThatCondition(declarations, selectedVar, suchThatCondition, getAllStms(), ""));
+		return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, getAllStms(), "");
 	}
 	unordered_set<int> afterPatternFilter = filterPatternCondition(patternCondition);
 	string patternSynonym = patternCondition[0].first;
 
-	unordered_set<string> afterSuchThatFilter = filterSuchThatCondition(declarations, selectedVar, 
+	return filterSuchThatCondition(declarations, selectedVar, 
 		suchThatCondition, afterPatternFilter, patternSynonym);
-	return setToString(afterSuchThatFilter);
 }
 
 /*
@@ -121,7 +120,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 	string certainty = isSuchThatTrivial(relation, firstArgument, secondArgument);
 
 	if (certainty == "false") {
-		evaluation.insert("none");
+		return evaluation;
 	}
 	else if ((certainty == "true") || (suchThatCondition.size() == 0)) {
 		if ((selectedVar[0] != patternSynonym) || (patternSynonym.size() == 0)) {
@@ -132,7 +131,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 	else if (certainty == "not trivial") {
 		unordered_set<string> suchThatResult = evaluateSuchThat(relation, firstArgument, secondArgument);
 		if (suchThatResult.size() == 0) {
-			evaluation.insert("none");
+			return evaluation;
 		}
 		if (patternSynonym.size() == 0) {
 			if (selectedVar[0] == firstArgument) {
@@ -157,7 +156,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 			firstArgument != patternSynonym &&
 			secondArgument != patternSynonym) {
 			if (afterPatternFilter.size() == 0) {
-				evaluation.insert("none");
+				return evaluation;
 			}
 			return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, getAllStms(), "");
 		}
@@ -212,6 +211,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().getPrvStm(stoi(secondArgument)) > 0);
 			}
+			else if (firstArgument == secondArgument) {
+				return "false";
+			}
 			return "not trivial";
 		}
 		else if (LexicalToken::verifyInteger(firstArgument)) {
@@ -232,6 +234,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			}
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().getPrvStm(stoi(secondArgument)) > 0);
+			}
+			else if (firstArgument == secondArgument) {
+				return "false";
 			}
 			return "not trivial";
 		}
@@ -254,6 +259,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().isChild(stoi(secondArgument)) > 0);
 			}
+			else if (firstArgument == secondArgument) {
+				return "false";
+			}
 			return "not trivial";
 		}
 		else if (LexicalToken::verifyInteger(firstArgument)) {
@@ -274,6 +282,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			}
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().isChild(stoi(secondArgument)) > 0);
+			}
+			else if (firstArgument == secondArgument) {
+				return "false";
 			}
 			return "not trivial";
 		}
@@ -500,27 +511,6 @@ unordered_set<int> QueryEvaluator::getAllStms() {
 	}
 
 	return allStms;
-}
-
-/*
-The function transforms a set of strings 
-into one string
-*/
-string QueryEvaluator::setToString(unordered_set<string> setOfString) {
-	stringstream ss;
-	bool firstElement = true;
-	for (unordered_set<string>::iterator it = setOfString.begin(); it != setOfString.end(); ++it) {
-		if (firstElement) {
-			firstElement = false;
-		}
-		else {
-			ss << ",";
-		}
-		ss << *it;
-	}
-
-	string s = ss.str();
-	return s;
 }
 
 /*

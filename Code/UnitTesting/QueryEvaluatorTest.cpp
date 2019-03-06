@@ -10,14 +10,6 @@ namespace UnitTesting
 	{
 	public:
 
-		TEST_METHOD(setToString_success) 
-		{
-			unordered_set<string> nonEmptyString ({"1", "2", "3"});
-			string result = QueryEvaluator::setToString(nonEmptyString);
-			string toCompare = "1, 2, 3, ";
-			Assert::AreEqual(result.compare(toCompare), 0);
-		}
-
 		TEST_METHOD(intSetToStrSet_empty_success)
 		{
 			unordered_set<int> emptyIntSet;

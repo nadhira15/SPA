@@ -12,7 +12,7 @@ using namespace std;
 class QueryEvaluator
 {
 public:
-	static string evaluateQuery(vector<pair<string, string>> declarations,
+	static unordered_set<string> evaluateQuery(vector<pair<string, string>> declarations,
 		vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 		vector<pair<string, pair<string, string>>> patternCondition);
 	static unordered_set<int> filterPatternCondition(vector<pair<string, pair<string, string>>> patternCondition);
@@ -21,7 +21,6 @@ public:
 	static string isSuchThatTrivial(string relation, string firstArgument, string secondArgument);
 	static unordered_set<string> evaluateSuchThat(string relation, string firstArgument, string secondArgument);
 	static unordered_set<int> getAllStms();
-	static string setToString(unordered_set<string> setOfString);
 	static unordered_set<string> intSetToStrSet(unordered_set<int> intList);
 	static string truthValue(bool boolean);
 	static unordered_set<string> intPairSetToStrSet(unordered_set<pair<int, int>, intPairhash> intPairSet);

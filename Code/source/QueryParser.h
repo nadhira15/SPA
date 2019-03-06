@@ -10,7 +10,7 @@ using namespace std;
 
 class QueryParser {
 public:
-	static string parse(string query);
+	static unordered_set<string> parse(string query);
 
 	static string initialValidation(string query);
 	static vector<string> splitClauses(string query);
@@ -23,7 +23,7 @@ public:
 	static string validateSelectedVar(vector<string> selectedVar, unordered_map<string, string> declarationsMap);
 	static string validateSuchThatParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap);
 	static string validatePatternParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap);
-	static string evaluateSelectConditions(vector<pair<string, string>> declarations,
+	static unordered_set<string> evaluateSelectConditions(vector<pair<string, string>> declarations,
 		vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 		vector<pair<string, pair<string, string>>> patternCondition);
 	static string removeAllWhitespaces(string s);
