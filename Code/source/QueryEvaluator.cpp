@@ -211,6 +211,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().getPrvStm(stoi(secondArgument)) > 0);
 			}
+			else if (firstArgument == secondArgument) {
+				return "false";
+			}
 			return "not trivial";
 		}
 		else if (LexicalToken::verifyInteger(firstArgument)) {
@@ -231,6 +234,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			}
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().getPrvStm(stoi(secondArgument)) > 0);
+			}
+			else if (firstArgument == secondArgument) {
+				return "false";
 			}
 			return "not trivial";
 		}
@@ -253,6 +259,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().isChild(stoi(secondArgument)) > 0);
 			}
+			else if (firstArgument == secondArgument) {
+				return "false";
+			}
 			return "not trivial";
 		}
 		else if (LexicalToken::verifyInteger(firstArgument)) {
@@ -273,6 +282,9 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			}
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().isChild(stoi(secondArgument)) > 0);
+			}
+			else if (firstArgument == secondArgument) {
+				return "false";
 			}
 			return "not trivial";
 		}
