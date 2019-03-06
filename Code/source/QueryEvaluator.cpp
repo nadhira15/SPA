@@ -18,18 +18,17 @@ using namespace std;
 /*
 The main evaluator function of the query
 */
-string QueryEvaluator::evaluateQuery(vector<pair<string, string>> declarations,
+unordered_set<string> QueryEvaluator::evaluateQuery(vector<pair<string, string>> declarations,
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {
 	if (patternCondition.size() == 0) {
-		return setToString(filterSuchThatCondition(declarations, selectedVar, suchThatCondition, getAllStms(), ""));
+		return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, getAllStms(), "");
 	}
 	unordered_set<int> afterPatternFilter = filterPatternCondition(patternCondition);
 	string patternSynonym = patternCondition[0].first;
 
-	unordered_set<string> afterSuchThatFilter = filterSuchThatCondition(declarations, selectedVar, 
+	return filterSuchThatCondition(declarations, selectedVar, 
 		suchThatCondition, afterPatternFilter, patternSynonym);
-	return setToString(afterSuchThatFilter);
 }
 
 /*
@@ -500,27 +499,6 @@ unordered_set<int> QueryEvaluator::getAllStms() {
 	}
 
 	return allStms;
-}
-
-/*
-The function transforms a set of strings 
-into one string
-*/
-string QueryEvaluator::setToString(unordered_set<string> setOfString) {
-	stringstream ss;
-	bool firstElement = true;
-	for (unordered_set<string>::iterator it = setOfString.begin(); it != setOfString.end(); ++it) {
-		if (firstElement) {
-			firstElement = false;
-		}
-		else {
-			ss << ",";
-		}
-		ss << *it;
-	}
-
-	string s = ss.str();
-	return s;
 }
 
 /*

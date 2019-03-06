@@ -17,7 +17,7 @@ using namespace std;
 const string whitespace = " \f\n\r\t\v";
 const unordered_set<string> validVarType = { "stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure" };
 
-string QueryParser::parse(string query) {
+unordered_set<string> QueryParser::parse(string query) {
 	/*
 	Main parser function for input query.
 	Passes the following to query evaluator:
@@ -28,11 +28,13 @@ string QueryParser::parse(string query) {
 	*/
 
 	string errorString;
+	unordered_set<string> result;
 
 	// initial query validation
 	errorString = initialValidation(query);
 	if (errorString != "") {
-		return "error";
+		result.insert("error");
+		return result;
 	}
 
 	// splitting clauses
@@ -41,7 +43,8 @@ string QueryParser::parse(string query) {
 	// validating clauses
 	errorString = validateClauses(clauses);
 	if (errorString != "") {
-		return "error";
+		result.insert("error");
+		return result;
 	}
 
 	// parsing declarations
@@ -55,7 +58,8 @@ string QueryParser::parse(string query) {
 	// validating declarations
 	errorString = validateDeclarations(declarations);
 	if (errorString != "") {
-		return "error";
+		result.insert("error");
+		return result;
 	}
 
 	// parsing "Select" statement
@@ -96,22 +100,25 @@ string QueryParser::parse(string query) {
 	// validating 'Select' parameter
 	errorString = validateSelectedVar(selectedVar, declarationsMap);
 	if (errorString != "") {
-		return "error";
+		result.insert("error");
+		return result;
 	}
 
 	// validating 'such that' parameter
 	errorString = validateSuchThatParam(suchThatCondition, declarationsMap);
 	if (errorString != "") {
-		return "error";
+		result.insert("error");
+		return result;
 	}
 
 	// validating 'pattern' parameter
 	errorString = validatePatternParam(patternCondition, declarationsMap);
 	if (errorString != "") {
-		return "error";
+		result.insert("error");
+		return result;
 	}
 
-	string result = evaluateSelectConditions(declarations, selectedVar, suchThatCondition, patternCondition);
+	result = evaluateSelectConditions(declarations, selectedVar, suchThatCondition, patternCondition);
 
 	return result;
 }
@@ -432,7 +439,7 @@ string QueryParser::validatePatternParam(vector<pair<string, pair<string, string
 	return "";
 }
 
-string QueryParser::evaluateSelectConditions(vector<pair<string, string>> declarations, 
+unordered_set<string> QueryParser::evaluateSelectConditions(vector<pair<string, string>> declarations, 
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {
 
