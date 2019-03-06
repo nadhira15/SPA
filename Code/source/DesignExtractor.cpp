@@ -2,6 +2,8 @@
 
 PKB DesignExtractor::pkb;
 
+/* The main public function that calls other function to populate different design entities in the PKB.
+ */
 void DesignExtractor::extractDesigns(PKB storage)
 {
 	pkb = storage;
@@ -13,6 +15,9 @@ void DesignExtractor::extractDesigns(PKB storage)
 	processModifiesContainers();
 }
 
+/*
+ * Processes the Follow* Design Entitiy in the SPA requirement.
+ */
 void DesignExtractor::processFollowStar()
 {
 	int stmtNum = pkb.getTotalStmNo();
@@ -44,6 +49,9 @@ void DesignExtractor::processFollowStar()
 
 }
 
+/*
+ * Processes the Parent* Design Entitiy in the SPA requirement.
+ */
 void DesignExtractor::processParentStar()
 {
 	int stmtNum = pkb.getTotalStmNo();
@@ -87,6 +95,10 @@ void DesignExtractor::processModifiesProcedures()
 	//TODO: Implement for Iteration 2
 }
 
+/*
+ * Processes the the variables that are MODIFIED in Containing Statement so that the While/If Statement
+ * also MODIFY these variables.
+ */
 void DesignExtractor::processModifiesContainers()
 {
 	int stmtNum = pkb.getTotalStmNo();
@@ -103,6 +115,10 @@ void DesignExtractor::processModifiesContainers()
 	}
 }
 
+/*
+ * Processes the the variables that are USED in Containing Statement so that the While/If Statement
+ * also USE these variables.
+ */
 void DesignExtractor::processUsesContainers()
 {
 	int stmtNum = pkb.getTotalStmNo();
