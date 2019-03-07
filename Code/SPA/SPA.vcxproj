@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\source\AssignParser.cpp" />
     <ClCompile Include="..\source\ConditionalExp.cpp" />
+    <ClCompile Include="..\source\DesignExtractor.cpp" />
     <ClCompile Include="..\source\ElseParser.cpp" />
     <ClCompile Include="..\source\ExpressionUtil.cpp" />
     <ClCompile Include="..\source\IfParser.cpp" />
@@ -32,11 +33,11 @@
     <ClCompile Include="..\source\ParentStorage.cpp" />
     <ClCompile Include="..\source\UseStorage.cpp" />
     <ClCompile Include="..\source\ModifyStorage.cpp" />
-    <ClCompile Include="..\source\PostProcessor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\AssignParser.h" />
     <ClInclude Include="..\source\ConditionalExp.h" />
+    <ClInclude Include="..\source\DesignExtractor.h" />
     <ClInclude Include="..\source\ElseParser.h" />
     <ClInclude Include="..\source\ExpressionUtil.h" />
     <ClInclude Include="..\source\IfParser.h" />
@@ -57,7 +58,6 @@
     <ClInclude Include="..\source\UseStorage.h" />
     <ClInclude Include="..\source\ModifyStorage.h" />
     <ClInclude Include="..\source\Hasher.h" />
-    <ClInclude Include="..\source\PostProcessor.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>
