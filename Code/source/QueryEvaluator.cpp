@@ -22,60 +22,45 @@ unordered_set<string> QueryEvaluator::evaluateQuery(vector<pair<string, string>>
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {
 	if (patternCondition.size() == 0) {
-		return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, getAllStms(), "");
+		return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, patternCondition);
 	}
-	unordered_set<int> afterPatternFilter = filterPatternCondition(patternCondition);
-	string patternSynonym = patternCondition[0].first;
+	unordered_set<string> afterPatternFilter = filterPatternCondition(patternCondition);
 
 	return filterSuchThatCondition(declarations, selectedVar, 
-		suchThatCondition, afterPatternFilter, patternSynonym);
+		suchThatCondition, patternCondition);
 }
 
 /*
 It filters the assignment statements
 that fulfill the pattern.
 */
-unordered_set<int> QueryEvaluator::filterPatternCondition(vector<pair<string, pair<string, string>>> patternCondition) {
+unordered_set<string> QueryEvaluator::filterPatternCondition(vector<pair<string, pair<string, string>>> patternCondition) {
 	if (patternCondition.size() == 0) {
-		return PKB().getAssignStms();
+		return getStmts("assign");
 	}
 
-	unordered_set<int> result;
-	vector<int> PKBresult;
+	string patternSynonym = patternCondition[0].first;
+	string leftArgument = patternCondition[0].second.first;
+	string rightArgument = patternCondition[0].second.second;
 
-	for (int i = 0; i < patternCondition.size(); i++) {
-		string LHSpattern = patternCondition[i].second.first;
-		string RHSpattern = patternCondition[i].second.second;
-		bool isExclusive = true;
-		string variable, expr;
-
-		if (LHSpattern[0] == '"') {
-			LHSpattern = LHSpattern.substr(1, LHSpattern.length() - 2);
+	if (rightArgument.size() == 1) {
+		if (leftArgument == "_") {
+			return getStmts("assign");
+		} 
+		else if (leftArgument[0] == '"') {
+			return intVecToStrSet(PKB().findPattern(leftArgument, "", false));
 		}
-
-		if (RHSpattern[0] == '_' && RHSpattern[RHSpattern.length() - 1] == '_' && RHSpattern.length() != 1) {
-			RHSpattern = RHSpattern.substr(1, RHSpattern.length() - 2);
-			isExclusive = false;	
-		}
-
-		if (RHSpattern[0] == '"') {
-			RHSpattern = RHSpattern.substr(1, RHSpattern.length() - 2);
-			RHSpattern = ExpressionUtil::convertInfixToPrefix(RHSpattern);
-		}
-
-		if (LHSpattern[0] == '_') {
-			PKBresult = PKB().findPattern(RHSpattern, isExclusive);
-		}
-		else {
-			PKBresult = PKB().findPattern(LHSpattern, RHSpattern, isExclusive);
-		}
+		return intStrVecToStrSet(PKB().findPatternPairs("", false));
 	}
-
-	for (int i = 0; i < PKBresult.size(); i++) {
-		result.insert(PKBresult[i]);
+	else {
+		if (leftArgument == "_") {
+			return intVecToStrSet(PKB().findPattern(rightArgument, false));
+		}
+		else if (leftArgument[0] == '"') {
+			return intVecToStrSet(PKB().findPattern(leftArgument, rightArgument, false));
+		}
+		return intStrVecToStrSet(PKB().findPatternPairs(rightArgument, false));
 	}
-
-	return result;
 }
 
 /*
@@ -84,19 +69,20 @@ its such that condition after given the filter
 result of the Pattern Condition.
 */
 unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string, string>> declarations, vector<string> selectedVar,
-	vector<pair<string, pair<string, string>>> suchThatCondition, unordered_set<int> afterPatternFilter, string patternSynonym) {
+	vector<pair<string, pair<string, string>>> suchThatCondition, vector<pair<string, pair<string, string>>> patternCondition) {
 	
 	string selectedVarType;
+	unordered_set<string> afterPatternFilter = filterPatternCondition(patternCondition);
 	for (vector<pair<string, string>>::size_type i = 0; i != declarations.size(); i++) {
 		if (declarations[i].second == selectedVar[0]) {
 			selectedVarType = declarations[i].first;
 		}
 	}
 	if (suchThatCondition.size() == 0) {
-		if ((selectedVar[0] != patternSynonym) || (patternSynonym.size() == 0)) {
+		if (patternCondition.size() == 0 || (selectedVar[0] != patternCondition[0].first)) {
 			return getStmts(selectedVarType);
 		}
-		return intSetToStrSet(afterPatternFilter);
+		return afterPatternFilter;
 	}
 	string relation = suchThatCondition[0].first;
 	string firstArgument = suchThatCondition[0].second.first;
@@ -116,39 +102,103 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 	if (firstArgumentType == "procedure") {
 		firstArgument = PKB().getProcName();
 	}
-	unordered_set<string> evaluation;
+	unordered_set<string> emptyResult;
 	string certainty = isSuchThatTrivial(relation, firstArgument, secondArgument);
 
 	if (certainty == "false") {
-		return evaluation;
+		return emptyResult;
 	}
 	else if ((certainty == "true") || (suchThatCondition.size() == 0)) {
-		if ((selectedVar[0] != patternSynonym) || (patternSynonym.size() == 0)) {
+		if (patternCondition.size() == 0 || (selectedVar[0] != patternCondition[0].first)) {
 			return getStmts(selectedVarType);
 		}
-		return intSetToStrSet(afterPatternFilter);
+		return afterPatternFilter;
 	}
 	else if (certainty == "not trivial") {
 		unordered_set<string> suchThatResult = evaluateSuchThat(relation, firstArgument, secondArgument);
 		if (suchThatResult.size() == 0) {
-			return evaluation;
+			return emptyResult;
 		}
-		if (patternSynonym.size() == 0) {
+		if (patternCondition.size() == 0) {
 			if (selectedVar[0] == firstArgument) {
 				if (secondArgumentType == "") {
-					return filterTypeNonTuple(firstArgumentType, suchThatResult);
+					return filterType(firstArgumentType, suchThatResult);
 				} 
-				return getFirstParam(filterTypeTuple(firstArgumentType, 
+				return getFirstParam(filterType(firstArgumentType, 
 					secondArgumentType, 
 					suchThatResult));
 			}
 			if (selectedVar[0] == secondArgument) {
 				if (firstArgumentType == "") {
-					return filterTypeNonTuple(secondArgumentType, suchThatResult);
+					return filterType(secondArgumentType, suchThatResult);
 				}
-				return getSecondParam(filterTypeTuple(firstArgumentType,
+				return getSecondParam(filterType(firstArgumentType,
 					secondArgumentType,
 					suchThatResult));
+			}
+			return getStmts(selectedVarType);
+		}
+
+		string patternSynonym = patternCondition[0].first;
+		string patternLeft = patternCondition[0].second.first;
+		vector<pair<string, pair<string, string>>> emptyPattern;
+		unordered_set<string> fulfillingVar;
+		unordered_set<string> fulfillingAssign;
+		if (selectedVar[0] != patternLeft &&
+			firstArgument != patternLeft &&
+			secondArgument != patternLeft) {
+			if (afterPatternFilter.size() == 0) {
+				return emptyResult;
+			}
+			return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, emptyPattern);
+		}
+		if (secondArgument == patternLeft) {
+			if (firstArgumentType == "") {
+				fulfillingVar = intersection(
+					filterType(firstArgumentType, suchThatResult), getSecondParam(afterPatternFilter)
+				);
+				if (fulfillingVar.size() == 0) {
+					return emptyResult;
+				}
+				if (selectedVar[0] == patternLeft) {
+					return fulfillingVar;
+				}
+				return getStmts(selectedVarType);
+			}
+			fulfillingVar = intersection(
+				filterType(firstArgumentType, secondArgumentType, suchThatResult), getSecondParam(afterPatternFilter)
+			);
+			if (fulfillingVar.size() == 0) {
+				return emptyResult;
+			}
+			if (selectedVar[0] == patternLeft) {
+				return fulfillingVar;
+			}
+			if (selectedVar[0] == firstArgument) {
+				if (firstArgument == patternSynonym) {
+					return getFirstParam(
+						intersection(
+							filterType(firstArgumentType, secondArgumentType, suchThatResult),
+							getSecondParam(afterPatternFilter)
+						)
+					);
+				}
+				return getOtherPair(2, filterType(firstArgumentType, secondArgumentType, suchThatResult),
+					fulfillingVar);
+			}
+			if (selectedVar[0] == patternSynonym) {
+				return getOtherPair(2, afterPatternFilter, fulfillingVar);
+			}
+			if (firstArgument == patternSynonym) {
+				fulfillingAssign = getFirstParam(
+					intersection(
+						filterType(firstArgumentType, secondArgumentType, suchThatResult),
+						getSecondParam(afterPatternFilter)
+					));
+				if (fulfillingAssign.size() == 0) {
+					return emptyResult;
+				}
+				return getStmts(selectedVarType);
 			}
 			return getStmts(selectedVarType);
 		}
@@ -156,46 +206,46 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 			firstArgument != patternSynonym &&
 			secondArgument != patternSynonym) {
 			if (afterPatternFilter.size() == 0) {
-				return evaluation;
+				return emptyResult;
 			}
-			return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, getAllStms(), "");
+			return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, emptyPattern);
 		}
 		if ((firstArgument != patternSynonym) && (secondArgument != patternSynonym)) {
-			return intSetToStrSet(afterPatternFilter);
+			return afterPatternFilter;
 		}
 		if (firstArgument == patternSynonym) {
 			if (selectedVar[0] == patternSynonym) {
 				if (secondArgumentType == "") {
 					return intersection(
-						filterTypeNonTuple(firstArgumentType, suchThatResult), intSetToStrSet(afterPatternFilter));
+						filterType(firstArgumentType, suchThatResult), afterPatternFilter);
 				}
 				return intersection(
 					getFirstParam(
-						filterTypeTuple(firstArgumentType, secondArgumentType, suchThatResult)), 
-					intSetToStrSet(afterPatternFilter));
+						filterType(firstArgumentType, secondArgumentType, suchThatResult)), 
+					afterPatternFilter);
 			}
-			return getOtherPair(1, filterTypeTuple(
+			return getOtherPair(1, filterType(
 				firstArgumentType, secondArgumentType, suchThatResult), 
-				intSetToStrSet(afterPatternFilter));
+				afterPatternFilter);
 		}
 		if (secondArgument == patternSynonym) {
 			if (selectedVar[0] == patternSynonym) {
 				if (firstArgumentType == "") {
-					return intersection(filterTypeNonTuple(
-						secondArgumentType, suchThatResult), intSetToStrSet(afterPatternFilter));
+					return intersection(filterType(
+						secondArgumentType, suchThatResult), afterPatternFilter);
 				}
 				return intersection(
 					getSecondParam(
-						filterTypeTuple(firstArgumentType, secondArgumentType, suchThatResult)), 
-					intSetToStrSet(afterPatternFilter));
+						filterType(firstArgumentType, secondArgumentType, suchThatResult)), 
+					afterPatternFilter);
 			}
-			return getOtherPair(2, filterTypeTuple(
+			return getOtherPair(2, filterType(
 				firstArgumentType, secondArgumentType, suchThatResult), 
-				intSetToStrSet(afterPatternFilter));
+				afterPatternFilter);
 		}
 	}
 
-	return evaluation;
+	return emptyResult;
 }
 
 /*
@@ -461,7 +511,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 			}
 			return intStrSetToStrSet(PKB().getStmVarUsePairs());
 		}
-		if ((firstArgument != "_") && (secondArgument.find("\"")) == string::npos) {
+		if ((firstArgument != "_") && (firstArgument.find("\"")) == string::npos) {
 			if (secondArgument == "_") {
 				return intSetToStrSet(PKB().getStmUsing(""));
 			}
@@ -484,7 +534,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 			}
 			return intStrSetToStrSet(PKB().getStmVarModifyPairs());
 		}
-		if ((firstArgument != "_") && (secondArgument.find("\"") == string::npos)) {
+		if ((firstArgument != "_") && (firstArgument.find("\"") == string::npos)) {
 			if (secondArgument == "_") {
 				return intSetToStrSet(PKB().getStmModifying(""));
 			}
@@ -504,26 +554,52 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 /*
 The function returns the list of all statements.
 */
-unordered_set<int> QueryEvaluator::getAllStms() {
-	unordered_set<int> allStms;
+unordered_set<string> QueryEvaluator::getAllStms() {
+	unordered_set<string> allStms;
 	for (int i = 1; i <= PKB().getTotalStmNo(); i++) {
-		allStms.insert(i);
+		allStms.insert(to_string(i));
 	}
 
 	return allStms;
 }
 
 /*
+The function transforms a vector of integers
+into a set of strings
+*/
+unordered_set<string> QueryEvaluator::intVecToStrSet(vector<int> intVec) {
+	unordered_set<string> strSet;
+	for (vector<int>::size_type i = 0; i != intVec.size(); i++) {
+		strSet.insert(to_string(intVec[i]));
+	}
+
+	return strSet;
+}
+
+/*
+The function transforms a vector of pair of integer and string
+into a set of strings
+*/
+unordered_set<string> QueryEvaluator::intStrVecToStrSet(vector<pair<int, string>> intStrVec) {
+	unordered_set<string> strSet;
+	for (vector<pair<int, string>>::size_type i = 0; i != intStrVec.size(); i++) {
+		strSet.insert(to_string(intStrVec[i].first) + " " + intStrVec[i].second);
+	}
+
+	return strSet;
+}
+
+/*
 The function transforms a set of integers
 into a set of strings
 */
-unordered_set<string> QueryEvaluator::intSetToStrSet(unordered_set<int> intList) {
-	unordered_set<string> strList;
-	for (unordered_set<int>::iterator it = intList.begin(); it != intList.end(); ++it) {
-		strList.insert(to_string(*it));
+unordered_set<string> QueryEvaluator::intSetToStrSet(unordered_set<int> intSet) {
+	unordered_set<string> strSet;
+	for (unordered_set<int>::iterator it = intSet.begin(); it != intSet.end(); ++it) {
+		strSet.insert(to_string(*it));
 	}
 
-	return strList;
+	return strSet;
 }
 
 /*
@@ -588,7 +664,7 @@ of a given type
 unordered_set<string> QueryEvaluator::getStmts(string s) {
 	unordered_set<string> result;
 	if (s == "stmt") {
-		return intSetToStrSet(getAllStms());
+		return getAllStms();
 	}
 	else if (s == "read") {
 		return intSetToStrSet(PKB().getReadStms());
@@ -623,7 +699,7 @@ strings so that they are in the
 set of all statements of a given
 type.
 */
-unordered_set<string> QueryEvaluator::filterTypeNonTuple(string typeRequired, unordered_set<string>toBeFiltered) {
+unordered_set<string> QueryEvaluator::filterType(string typeRequired, unordered_set<string>toBeFiltered) {
 	unordered_set<string> typeRequiredSet = getStmts(typeRequired);
 	unordered_set<string> filteredSet;
 	for (unordered_set<string>::iterator it = toBeFiltered.begin(); it != toBeFiltered.end(); ++it) {
@@ -643,7 +719,7 @@ second member is in the set of all
 statements in a first type and a second
 type respectively.
 */
-unordered_set<string> QueryEvaluator::filterTypeTuple(string firstTypeRequired, string secondTypeRequired,
+unordered_set<string> QueryEvaluator::filterType(string firstTypeRequired, string secondTypeRequired,
 	unordered_set<string> toBeFiltered) {
 	unordered_set<string> firstTypeRequiredSet = getStmts(firstTypeRequired);
 	unordered_set<string> secondTypeRequiredSet = getStmts(secondTypeRequired);
