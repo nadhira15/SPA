@@ -17,9 +17,18 @@ bool UseStorage::addUses(int stm, string variable)
 	{
 		return false;
 	}
-	varLists_Stm.emplace(stm, unordered_set<string>{ variable } );
-	stmLists.emplace(variable, unordered_set<int>{ stm } );
-	stmLists.emplace("", unordered_set<int>{ stm } );
+	if (!varLists_Stm.emplace(stm, unordered_set<string>{ variable }).second)
+	{
+		varLists_Stm.at(stm).emplace(variable);
+	}
+	if (!stmLists.emplace(variable, unordered_set<int>{ stm }).second)
+	{
+		stmLists.at(variable).emplace(stm);
+	}
+	if (!stmLists.emplace("", unordered_set<int>{ stm }).second)
+	{
+		stmLists.at("").emplace(stm);
+	}
 	return true;
 }
 
@@ -29,9 +38,18 @@ bool UseStorage::addUses(string procedure, string variable)
 	{
 		return false;
 	}
-	varLists_Proc.emplace(procedure, unordered_set<string>{ variable });
-	procLists.emplace(variable, unordered_set<string>{ procedure });
-	procLists.emplace("", unordered_set<string>{ procedure });
+	if (!varLists_Proc.emplace(procedure, unordered_set<string>{ variable }).second)
+	{
+		varLists_Proc.at(procedure).emplace(variable);
+	}
+	if (!procLists.emplace(variable, unordered_set<string>{ procedure }).second)
+	{
+		procLists.at(variable).emplace(procedure);
+	}
+	if (!procLists.emplace("", unordered_set<string>{ procedure }).second)
+	{
+		procLists.at("").emplace(procedure);
+	}
 	return true;
 }
 
@@ -47,22 +65,38 @@ bool UseStorage::containsProcVarPair(pair<string, string> pair)
 
 unordered_set<string> UseStorage::getVarUsedBy(int stm)
 {
-	return varLists_Stm.find(stm)->second;
+	if (varLists_Stm.find(stm) != varLists_Stm.end())
+	{
+		return varLists_Stm.at(stm);
+	}
+	return {};
 }
 
 unordered_set<string> UseStorage::getVarUsedBy(string proc)
 {
-	return varLists_Proc.find(proc)->second;
+	if (varLists_Proc.find(proc) != varLists_Proc.end())
+	{
+		return varLists_Proc.at(proc);
+	}
+	return {};
 }
 
 unordered_set<int> UseStorage::getStmUsing(string variable)
 {
-	return stmLists.find(variable)->second;
+	if (stmLists.find(variable) != stmLists.end())
+	{
+		return stmLists.at(variable);
+	}
+	return {};
 }
 
 unordered_set<string> UseStorage::getProcUsing(string variable)
 {
-	return procLists.find(variable)->second;
+	if (procLists.find(variable) != procLists.end())
+	{
+		return procLists.at(variable);
+	}
+	return {};
 }
 
 unordered_set<pair<int, string>, intStringhash> UseStorage::getStmVarPairs()

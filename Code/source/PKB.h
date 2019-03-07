@@ -103,8 +103,8 @@ public:
 	//For Modifies relations
 	bool isModifying(int stm, string variable);
 	bool isModifying(string procedure, string variable);
-	string getModifiedVar(int stm);
-	string getModifiedVar(string procedure);
+	unordered_set<string> getModifiedVar(int stm);
+	unordered_set<string> getModifiedVar(string procedure);
 	unordered_set<int> getStmModifying(string variable);
 	unordered_set<string> getProcModifying(string variable);
 	unordered_set< pair<int, string>, intStringhash> getStmVarModifyPairs();
