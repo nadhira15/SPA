@@ -362,22 +362,22 @@ string QueryParser::validateSuchThatParam(vector<pair<string, pair<string, strin
 		}
 
 		if (relation == "Uses") {
-			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) && !LexicalToken::verifyName(firstArgs) &&
+			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) && !LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2)) &&
 				validFirstArgsUses.find(firstArgsType) == validFirstArgsUses.end()) {
 				return "invalid query";
 			}
 
-			if (secondArgs != "_" && !LexicalToken::verifyInteger(secondArgs) && !LexicalToken::verifyName(secondArgs)) {
+			if (secondArgs != "_" && !LexicalToken::verifyInteger(secondArgs) && !LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) {
 				return "invalid query";
 			}
 		}
 		else if (relation == "Modifies") {
-			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) && !LexicalToken::verifyName(firstArgs) &&
+			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) && !LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2)) &&
 				validFirstArgsModifies.find(firstArgsType) == validFirstArgsModifies.end()) {
 				return "invalid query";
 			}
 
-			if (secondArgs != "_" && !LexicalToken::verifyInteger(secondArgs) && !LexicalToken::verifyName(secondArgs)) {
+			if (secondArgs != "_" && !LexicalToken::verifyInteger(secondArgs) && !LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) {
 				return "invalid query";
 			}
 		}
