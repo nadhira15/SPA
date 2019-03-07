@@ -44,26 +44,32 @@ unordered_set<string> QueryEvaluator::filterPatternCondition(vector<pair<string,
 			return getStmts("assign");
 		} 
 		else if (leftArgument[0] == '"') {
-			return intVecToStrSet(PKB().findPattern(trimQuote(leftArgument), "", false));
+			return intVecToStrSet(PKB().findPattern(trimFrontEnd(leftArgument), "", false));
 		}
 		return intStrVecToStrSet(PKB().findPatternPairs("", false));
 	}
 	else if (rightArgument[0] == '"') {
+		rightArgument = trimFrontEnd(rightArgument);
+		rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
 		if (leftArgument == "_") {
-			return intVecToStrSet(PKB().findPattern(trimQuote(rightArgument), true));
+			return intVecToStrSet(PKB().findPattern(rightArgument, true));
 		}
 		else if (leftArgument[0] == '"') {
-			return intVecToStrSet(PKB().findPattern(trimQuote(leftArgument), trimQuote(rightArgument), true));
+			return intVecToStrSet(PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, true));
 		}
-		return intStrVecToStrSet(PKB().findPatternPairs(trimQuote(rightArgument), true));
+		return intStrVecToStrSet(PKB().findPatternPairs(rightArgument, true));
+	} 
+	else {
+		rightArgument = trimFrontEnd(trimFrontEnd(rightArgument));
+		rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
+		if (leftArgument == "_") {
+			return intVecToStrSet(PKB().findPattern(rightArgument, false));
+		}
+		else if (leftArgument[0] == '"') {
+			return intVecToStrSet(PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, false));
+		}
+		return intStrVecToStrSet(PKB().findPatternPairs(rightArgument, false));
 	}
-	if (leftArgument == "_") {
-		return intVecToStrSet(PKB().findPattern(trimUnderscore(rightArgument), false));
-	}
-	else if (leftArgument[0] == '"') {
-		return intVecToStrSet(PKB().findPattern(trimQuote(leftArgument), trimUnderscore(rightArgument), false));
-	}
-	return intStrVecToStrSet(PKB().findPatternPairs(trimUnderscore(rightArgument), false));
 }
 
 /*
@@ -828,14 +834,7 @@ unordered_set<string> QueryEvaluator::getOtherPair(int position, unordered_set<s
 /*
 Trims quote in front and end of a string.
 */
-string QueryEvaluator::trimQuote(string quotedString) {
+string QueryEvaluator::trimFrontEnd(string quotedString) {
 	return quotedString.substr(1, quotedString.size() - 2);
-}
-
-/*
-Trims underscore and quote in front and end of a string.
-*/
-string QueryEvaluator::trimUnderscore(string quotedString) {
-	return quotedString.substr(2, quotedString.size() - 3);
 }
 
