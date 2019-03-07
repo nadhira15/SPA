@@ -37,7 +37,11 @@ that fulfill the pattern.
 */
 unordered_set<int> QueryEvaluator::filterPatternCondition(vector<pair<string, pair<string, string>>> patternCondition) {
 	if (patternCondition.size() == 0) {
-		return getAllStms();
+		return PKB().getAssignStms();
+	}
+
+	if (patternCondition[0].second.second == "_") {
+		return PKB().getAssignStms();
 	}
 
 	unordered_set<int> result;
