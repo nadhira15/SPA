@@ -17,9 +17,18 @@ bool ModifyStorage::addModifies(int stm, string variable)
 	{
 		return false;
 	}
-	varList_Stm.emplace(stm, variable);
-	stmLists.emplace(variable, unordered_set<int>{ stm });
-	stmLists.emplace("", unordered_set<int>{ stm });
+	if (!varList_Stm.emplace(stm, unordered_set<string>{ variable }).second)
+	{
+		varList_Stm.at(stm).emplace(variable);
+	}
+	if (!stmLists.emplace(variable, unordered_set<int>{ stm }).second)
+	{
+		stmLists.at(variable).emplace(stm);
+	}
+	if (!stmLists.emplace("", unordered_set<int>{ stm }).second)
+	{
+		stmLists.at("").emplace(stm);
+	}
 	return true;
 }
 
@@ -29,9 +38,18 @@ bool ModifyStorage::addModifies(string procedure, string variable)
 	{
 		return false;
 	}
-	varList_Proc.emplace(procedure, variable);
-	procLists.emplace(variable, unordered_set<string>{ procedure });
-	procLists.emplace("", unordered_set<string>{ procedure });
+	if (!varList_Proc.emplace(procedure, unordered_set<string>{ variable }).second)
+	{
+		varList_Proc.at(procedure).emplace(variable);
+	}
+	if (!procLists.emplace(variable, unordered_set<string>{ procedure }).second)
+	{
+		procLists.at(variable).emplace(procedure);
+	}
+	if (!procLists.emplace("", unordered_set<string>{ procedure }).second)
+	{
+		procLists.at("").emplace(procedure);
+	}
 	return true;
 }
 
