@@ -17,9 +17,18 @@ bool UseStorage::addUses(int stm, string variable)
 	{
 		return false;
 	}
-	varLists_Stm.emplace(stm, unordered_set<string>{ variable } );
-	stmLists.emplace(variable, unordered_set<int>{ stm } );
-	stmLists.emplace("", unordered_set<int>{ stm } );
+	if (!varLists_Stm.emplace(stm, unordered_set<string>{ variable }).second)
+	{
+		varLists_Stm.at(stm).emplace(variable);
+	}
+	if (!stmLists.emplace(variable, unordered_set<int>{ stm }).second)
+	{
+		stmLists.at(variable).emplace(stm);
+	}
+	if (!stmLists.emplace("", unordered_set<int>{ stm }).second)
+	{
+		stmLists.at("").emplace(stm);
+	}
 	return true;
 }
 
@@ -29,9 +38,18 @@ bool UseStorage::addUses(string procedure, string variable)
 	{
 		return false;
 	}
-	varLists_Proc.emplace(procedure, unordered_set<string>{ variable });
-	procLists.emplace(variable, unordered_set<string>{ procedure });
-	procLists.emplace("", unordered_set<string>{ procedure });
+	if (!varLists_Proc.emplace(procedure, unordered_set<string>{ variable }).second)
+	{
+		varLists_Proc.at(procedure).emplace(variable);
+	}
+	if (!procLists.emplace(variable, unordered_set<string>{ procedure }).second)
+	{
+		procLists.at(variable).emplace(procedure);
+	}
+	if (!procLists.emplace("", unordered_set<string>{ procedure }).second)
+	{
+		procLists.at("").emplace(procedure);
+	}
 	return true;
 }
 

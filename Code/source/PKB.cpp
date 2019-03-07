@@ -361,12 +361,12 @@ bool PKB::isModifying(string procedure, string variable)
 	return mStore.containsProcVarPair(pair<string, string>(procedure, variable));
 }
 
-string PKB::getModifiedVar(int stm)
+unordered_set<string> PKB::getModifiedVar(int stm)
 {
 	return mStore.getVarModifiedBy(stm);
 }
 
-string PKB::getModifiedVar(string procedure)
+unordered_set<string> PKB::getModifiedVar(string procedure)
 {
 	return mStore.getVarModifiedBy(procedure);
 }
