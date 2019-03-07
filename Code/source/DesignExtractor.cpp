@@ -23,7 +23,7 @@ void DesignExtractor::processFollowStar()
 	int stmtNum = pkb.getTotalStmNo();
 
 	//Process stmt list s where Follow*(index, s) is true
-	for (int i = stmtNum - 1; i >= 0; i--) {
+	for (int i = stmtNum; i >= 1; i--) {
 		int currStmt = i;
 		int directFollowStm = pkb.getNxtStm(currStmt);
 		//Has a Next Stm
@@ -68,7 +68,7 @@ void DesignExtractor::processParentStar()
 		}
 	}
 
-	for (int i = stmtNum - 1; i >= 0; i--) {
+	for (int i = stmtNum; i >= 1; i--) {
 		int currStmt = i;
 		unordered_set<int> directChildStm = pkb.getChildren(i);
 
@@ -103,7 +103,7 @@ void DesignExtractor::processModifiesContainers()
 {
 	int stmtNum = pkb.getTotalStmNo();
 
-	for (int i = 1; i <= stmtNum; i++) {
+	for (int i = stmtNum; i >= 1; i--) {
 		int currLine = i;
 		unordered_set<int> descendents = pkb.getAllDescendants(currLine);
 		for (int descendent : descendents) {
@@ -123,7 +123,7 @@ void DesignExtractor::processUsesContainers()
 {
 	int stmtNum = pkb.getTotalStmNo();
 
-	for (int i = 0; i <= stmtNum; i++) {
+	for (int i = stmtNum; i >= 1; i--) {
 		int currLine = i;
 		unordered_set<int> descendents = pkb.getAllDescendants(currLine);
 		for (int descendent : descendents) {
