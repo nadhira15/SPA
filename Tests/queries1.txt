@@ -1,7 +1,7 @@
 1 - comment
-call c;
-Select c
-none
+while w; if ifs;
+Select w such that Parent(ifs, w)
+3, 6
 5000
 2 - comment
 if ifs;
@@ -188,31 +188,58 @@ assign a;
 Select a such that Modifies (a, "minus2") pattern a (_, _"b"_)
 6
 5000
-45 - comment
-Select a
-none
+45 - Eric's test
+stmt s;
+Select s such that Follows (1, s)
+2
 5000
-46 - comment
-assign a;
-none
+46 - Modify
+stmt s; variable v;
+Select s such that Modifies (9, v)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
 5000
-47 - comment
-assign a;
-Select asd
-none
+47 - Modify
+stmt s; variable v;
+Select s such that Modifies (10, v)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
 5000
 48 - comment
-assign a;
-Select a such that pattern a ("sum", _)
+print pn;
+Select pn such that Uses(12, "sum")
 none
 5000
-49 - comment
+49 - pattern
 assign a;
-Select a such that such that Parent*(7, 8)
+Select a pattern a("minus1", "minus1")
 none
 5000
-50 - comment
-hello h;
-Select h such that Follows(_, _)
-none
+50 - pattern
+assign a;
+Select a pattern a("minus1", _"minus1"_)
+9
+5000
+51 - pattern
+assign a;
+Select a pattern a(_, "minus1/minus2")
+9
+5000
+52 - pattern
+assign a;
+Select a pattern a(_, _)
+3, 5, 6, 8, 9, 10, 12
+5000
+53 - pattern
+assign a;
+Select a pattern a(_, _"minus1'_)
+8, 9
+5000
+54 - Modify
+variable v;
+Select v such that Modifies (10, v)
+minus2
+5000
+55 - Modify
+variable v;
+Select v such that Modifies (9, v)
+minus1
 5000
