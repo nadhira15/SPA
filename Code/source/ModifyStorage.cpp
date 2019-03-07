@@ -2,8 +2,8 @@
 
 unordered_set<pair<int, string>, intStringhash> ModifyStorage::stmVarPairs;
 unordered_set<pair<string, string>, strPairhash> ModifyStorage::procVarPairs;
-unordered_map<int, string> ModifyStorage::varList_Stm;
-unordered_map<string, string> ModifyStorage::varList_Proc;
+unordered_map<int, unordered_set<string>> ModifyStorage::varList_Stm;
+unordered_map<string, unordered_set<string>> ModifyStorage::varList_Proc;
 unordered_map<string, unordered_set<int> > ModifyStorage::stmLists;
 unordered_map<string, unordered_set<string> > ModifyStorage::procLists;
 
@@ -45,22 +45,22 @@ bool ModifyStorage::containsProcVarPair(pair<string, string> pair)
 	return procVarPairs.find(pair) != procVarPairs.end();
 }
 
-string ModifyStorage::getVarModifiedBy(int stm)
+unordered_set<string> ModifyStorage::getVarModifiedBy(int stm)
 {
 	if (varList_Stm.find(stm) != varList_Stm.end())
 	{
 		return varList_Stm.at(stm);
 	}
-	return "";
+	return {};
 }
 
-string ModifyStorage::getVarModifiedBy(string proc)
+unordered_set<string> ModifyStorage::getVarModifiedBy(string proc)
 {
 	if (varList_Proc.find(proc) != varList_Proc.end())
 	{
 		return varList_Proc.at(proc);
 	}
-	return "";
+	return {};
 }
 
 unordered_set<int> ModifyStorage::getStmModifying(string variable)
