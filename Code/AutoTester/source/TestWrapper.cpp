@@ -3,7 +3,7 @@
 #include "Preprocesser.h"
 #include "Parser.h"
 #include "QueryParser.h"
-#include "PostProcessor.h"
+#include "DesignExtractor.h"
 
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
@@ -23,6 +23,7 @@ TestWrapper::TestWrapper() {
 void TestWrapper::parse(std::string filename) {
 	PKB pkb = PKB();
 	Parser parser = Parser();
+	DesignExtractor de = DesignExtractor();
 	
 	std::FILE* fptr = std::fopen(filename.c_str(), "r");
 	if (fptr) {
@@ -34,10 +35,10 @@ void TestWrapper::parse(std::string filename) {
 		fclose(fptr);
 
 		try {
-
 			Preprocesser preprocesser = Preprocesser(contents);
 			vector<Statement> procList = preprocesser.getProcLst();
 			parser.parse(procList, 0, pkb);
+			de.extractDesigns(pkb);
 		}
 		catch (...) {
 			std::cout << "Exception Occurred: " << std::endl;
