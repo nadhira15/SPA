@@ -36,5 +36,7 @@ public:
 	static unordered_set<string> getSecondParam(unordered_set<string> stringPair);
 	static unordered_set<string> intersection(unordered_set<string> first, unordered_set<string> toContain);
 	static unordered_set<string> getOtherPair(int position, unordered_set<string> stringPair, unordered_set<string> toContain);
+	static string trimQuote(string quotedString);
+	static string trimUnderscore(string underscoredString);
 
 };

@@ -21,10 +21,6 @@ The main evaluator function of the query
 unordered_set<string> QueryEvaluator::evaluateQuery(vector<pair<string, string>> declarations,
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {
-	if (patternCondition.size() == 0) {
-		return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, patternCondition);
-	}
-	unordered_set<string> afterPatternFilter = filterPatternCondition(patternCondition);
 
 	return filterSuchThatCondition(declarations, selectedVar, 
 		suchThatCondition, patternCondition);
@@ -48,19 +44,26 @@ unordered_set<string> QueryEvaluator::filterPatternCondition(vector<pair<string,
 			return getStmts("assign");
 		} 
 		else if (leftArgument[0] == '"') {
-			return intVecToStrSet(PKB().findPattern(leftArgument, "", false));
+			return intVecToStrSet(PKB().findPattern(trimQuote(leftArgument), "", false));
 		}
 		return intStrVecToStrSet(PKB().findPatternPairs("", false));
 	}
-	else {
+	else if (rightArgument[0] == '"') {
 		if (leftArgument == "_") {
-			return intVecToStrSet(PKB().findPattern(rightArgument, false));
+			return intVecToStrSet(PKB().findPattern(trimQuote(rightArgument), true));
 		}
 		else if (leftArgument[0] == '"') {
-			return intVecToStrSet(PKB().findPattern(leftArgument, rightArgument, false));
+			return intVecToStrSet(PKB().findPattern(trimQuote(leftArgument), trimQuote(rightArgument), true));
 		}
-		return intStrVecToStrSet(PKB().findPatternPairs(rightArgument, false));
+		return intStrVecToStrSet(PKB().findPatternPairs(trimQuote(rightArgument), true));
 	}
+	if (leftArgument == "_") {
+		return intVecToStrSet(PKB().findPattern(trimUnderscore(rightArgument), false));
+	}
+	else if (leftArgument[0] == '"') {
+		return intVecToStrSet(PKB().findPattern(trimQuote(leftArgument), trimUnderscore(rightArgument), false));
+	}
+	return intStrVecToStrSet(PKB().findPatternPairs(trimUnderscore(rightArgument), false));
 }
 
 /*
@@ -79,7 +82,8 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 		}
 	}
 	if (suchThatCondition.size() == 0) {
-		if (patternCondition.size() == 0 || (selectedVar[0] != patternCondition[0].first)) {
+		if (patternCondition.size() == 0 || 
+			(selectedVar[0] != patternCondition[0].first && afterPatternFilter.size() > 0)) {
 			return getStmts(selectedVarType);
 		}
 		return afterPatternFilter;
@@ -821,5 +825,17 @@ unordered_set<string> QueryEvaluator::getOtherPair(int position, unordered_set<s
 	return result;
 }
 
+/*
+Trims quote in front and end of a string.
+*/
+string QueryEvaluator::trimQuote(string quotedString) {
+	return quotedString.substr(1, quotedString.size() - 2);
+}
 
+/*
+Trims underscore and quote in front and end of a string.
+*/
+string QueryEvaluator::trimUnderscore(string quotedString) {
+	return quotedString.substr(2, quotedString.size() - 3);
+}
 
