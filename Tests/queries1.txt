@@ -1,7 +1,7 @@
 1 - comment
 while w; if ifs;
 Select w such that Parent(ifs, w)
-3, 6
+none
 5000
 2 - comment
 if ifs;
