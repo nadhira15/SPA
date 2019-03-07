@@ -40,10 +40,6 @@ unordered_set<int> QueryEvaluator::filterPatternCondition(vector<pair<string, pa
 		return PKB().getAssignStms();
 	}
 
-	if (patternCondition[0].second.second == "_") {
-		return PKB().getAssignStms();
-	}
-
 	unordered_set<int> result;
 	vector<int> PKBresult;
 
@@ -59,7 +55,7 @@ unordered_set<int> QueryEvaluator::filterPatternCondition(vector<pair<string, pa
 
 		if (RHSpattern[0] == '_' && RHSpattern[RHSpattern.length() - 1] == '_' && RHSpattern.length() != 1) {
 			RHSpattern = RHSpattern.substr(1, RHSpattern.length() - 2);
-			isExclusive = false;
+			isExclusive = false;	
 		}
 
 		if (RHSpattern[0] == '"') {
