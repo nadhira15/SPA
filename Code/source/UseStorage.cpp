@@ -47,22 +47,38 @@ bool UseStorage::containsProcVarPair(pair<string, string> pair)
 
 unordered_set<string> UseStorage::getVarUsedBy(int stm)
 {
-	return varLists_Stm.find(stm)->second;
+	if (varLists_Stm.find(stm) != varLists_Stm.end())
+	{
+		return varLists_Stm.at(stm);
+	}
+	return {};
 }
 
 unordered_set<string> UseStorage::getVarUsedBy(string proc)
 {
-	return varLists_Proc.find(proc)->second;
+	if (varLists_Proc.find(proc) != varLists_Proc.end())
+	{
+		return varLists_Proc.at(proc);
+	}
+	return {};
 }
 
 unordered_set<int> UseStorage::getStmUsing(string variable)
 {
-	return stmLists.find(variable)->second;
+	if (stmLists.find(variable) != stmLists.end())
+	{
+		return stmLists.at(variable);
+	}
+	return {};
 }
 
 unordered_set<string> UseStorage::getProcUsing(string variable)
 {
-	return procLists.find(variable)->second;
+	if (procLists.find(variable) != procLists.end())
+	{
+		return procLists.at(variable);
+	}
+	return {};
 }
 
 unordered_set<pair<int, string>, intStringhash> UseStorage::getStmVarPairs()
