@@ -113,6 +113,7 @@ public:
 	//For Pattern clauses
 	vector<int> findPattern(string variable, string expr, bool isExclusive);
 	vector<int> findPattern(string expr, bool isExclusive);
+	vector<pair<int, string>> findPatternPairs(string expr, bool isExclusive);
 
 private:
 	static string procName;

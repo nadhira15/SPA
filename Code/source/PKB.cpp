@@ -427,3 +427,20 @@ vector<int> PKB::findPattern(string expr, bool isExclusive)
 	}
 	return validStm;
 }
+
+vector<pair<int, string>> PKB::findPatternPairs(string expr, bool isExclusive)
+{
+	vector<pair<int, string>> validPairs;
+	for each (const auto elem in patternList)
+	{
+		if (isExclusive && elem.second.second.compare(expr) == 0)
+		{
+			validPairs.push_back(pair<int, string>(elem.first, elem.second.first));
+		}
+		else if (!isExclusive && elem.second.second.find(expr) != string::npos)
+		{
+			validPairs.push_back(pair<int, string>(elem.first, elem.second.first));
+		}
+	}
+	return validPairs;
+}
