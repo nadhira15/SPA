@@ -8,5 +8,5 @@ public:
 	static std::vector<std::string> getConstants();
 	static bool verifyConditionalExp(const std::string statement);
 private:
-	static bool populateVector(const std::string expression);
+	static void populateVector();
 };
