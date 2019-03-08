@@ -25,6 +25,7 @@ void TestWrapper::parse(std::string filename) {
 	Parser parser = Parser();
 	DesignExtractor de = DesignExtractor();
 	
+	// Opens the file and read into contents.
 	std::FILE* fptr = std::fopen(filename.c_str(), "r");
 	if (fptr) {
 		std::fseek(fptr, 0, SEEK_END);
@@ -35,13 +36,17 @@ void TestWrapper::parse(std::string filename) {
 		fclose(fptr);
 
 		try {
+			//Preprocesses source into a list of Statements
 			Preprocesser preprocesser = Preprocesser(contents);
 			vector<Statement> procList = preprocesser.getProcLst();
+
+			//Parses the list of procedures.
 			parser.parse(procList, 0, pkb);
+
+			//Perform post-parsing Design Extraction.
 			de.extractDesigns(pkb);
-		}
-		catch (...) {
-			std::cout << "Exception Occurred: " << std::endl;
+		} catch (char const* exception) {
+			std::cout << exception << std::flush;
 			exit(0);
 		}
 	}
