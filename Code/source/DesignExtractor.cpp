@@ -56,6 +56,7 @@ void DesignExtractor::processParentStar()
 {
 	int stmtNum = pkb.getTotalStmNo();
 
+	//Process stmt list s where Parent*(s, index) is true.
 	for (int i = 1 ; i <= stmtNum ; i++) {
 		int currStmt = i;
 		int directParentStm = pkb.getParent(i);
@@ -68,6 +69,7 @@ void DesignExtractor::processParentStar()
 		}
 	}
 
+	//Process stmt list s where Parent*(index, s) is true.
 	for (int i = stmtNum; i >= 1; i--) {
 		int currStmt = i;
 		unordered_set<int> directChildStm = pkb.getChildren(i);
@@ -80,7 +82,9 @@ void DesignExtractor::processParentStar()
 				for (int descendent : descendents) {
 					allDescendents.insert(descendent);
 				}
+				allDescendents.insert(childStm);
 			}
+			pkb.setDescendants(i, allDescendents);
 		}
 	}
 }
