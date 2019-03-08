@@ -37,7 +37,7 @@ that fulfill the pattern.
 */
 unordered_set<int> QueryEvaluator::filterPatternCondition(vector<pair<string, pair<string, string>>> patternCondition) {
 	if (patternCondition.size() == 0) {
-		return getAllStms();
+		return PKB().getAssignStms();
 	}
 
 	unordered_set<int> result;
@@ -55,7 +55,7 @@ unordered_set<int> QueryEvaluator::filterPatternCondition(vector<pair<string, pa
 
 		if (RHSpattern[0] == '_' && RHSpattern[RHSpattern.length() - 1] == '_' && RHSpattern.length() != 1) {
 			RHSpattern = RHSpattern.substr(1, RHSpattern.length() - 2);
-			isExclusive = false;
+			isExclusive = false;	
 		}
 
 		if (RHSpattern[0] == '"') {
@@ -326,7 +326,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 				return truthValue(PKB().isModifying(stoi(firstArgument), secondArgument));
 			}
 			else if (secondArgument == "_") {
-				return truthValue(PKB().getModifiedVar(stoi(firstArgument)) != "");
+				return truthValue(PKB().getModifiedVar(stoi(firstArgument)).size() > 0);
 			}
 			return "not trivial";
 		}
@@ -335,7 +335,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 				return truthValue(PKB().isModifying(firstArgument, secondArgument));
 			}
 			else if (secondArgument == "_") {
-				return truthValue(PKB().getModifiedVar(firstArgument) != "");
+				return truthValue(PKB().getModifiedVar(firstArgument).size() > 0);
 			}
 			return "not trivial";
 		}
@@ -477,7 +477,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 	else if (relation == "Modifies") {
 		if ((secondArgument != "_") && (secondArgument.find("\"") == string::npos)) {
 			if ((LexicalToken::verifyInteger(firstArgument)) || firstArgument.find("\"") != string::npos) {
-				result.insert(PKB().getModifiedVar(firstArgument));
+				result = PKB().getModifiedVar(firstArgument);
 			}
 			if (firstArgument == PKB().getProcName()) {
 				return strPairSetToStrSet(PKB().getProcVarModifyPairs());

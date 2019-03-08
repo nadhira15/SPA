@@ -103,8 +103,8 @@ public:
 	//For Modifies relations
 	bool isModifying(int stm, string variable);
 	bool isModifying(string procedure, string variable);
-	string getModifiedVar(int stm);
-	string getModifiedVar(string procedure);
+	unordered_set<string> getModifiedVar(int stm);
+	unordered_set<string> getModifiedVar(string procedure);
 	unordered_set<int> getStmModifying(string variable);
 	unordered_set<string> getProcModifying(string variable);
 	unordered_set< pair<int, string>, intStringhash> getStmVarModifyPairs();
@@ -113,6 +113,7 @@ public:
 	//For Pattern clauses
 	vector<int> findPattern(string variable, string expr, bool isExclusive);
 	vector<int> findPattern(string expr, bool isExclusive);
+	vector<pair<int, string>> findPatternPairs(string expr, bool isExclusive);
 
 private:
 	static string procName;
