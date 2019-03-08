@@ -747,7 +747,7 @@ unordered_set<string> QueryEvaluator::filterType(string firstTypeRequired, strin
 		string pointer = *it;
 		int spaceIndex = pointer.find(" ");
 		string firstParam = pointer.substr(0, spaceIndex);
-		string secondParam = pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 3);
+		string secondParam = pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 1);
 		if ((firstTypeRequiredSet.count(firstParam) == 1) &&
 			(secondTypeRequiredSet.count(secondParam) == 1)) {
 			filteredSet.insert(pointer);
@@ -783,7 +783,7 @@ unordered_set<string> QueryEvaluator::getSecondParam(unordered_set<string> strin
 	for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
 		string pointer = *it;
 		spaceIndex = pointer.find(" ");
-		result.insert(pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 3));
+		result.insert(pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 1));
 	}
 
 	return result;
@@ -822,7 +822,7 @@ unordered_set<string> QueryEvaluator::getOtherPair(int position, unordered_set<s
 			spaceIndex = pointer.find(" ");
 			first = pointer.substr(0, spaceIndex);
 			if (toContain.count(first) == 1) {
-				result.insert(pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 3));
+				result.insert(pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 1));
 			}
 		}
 	}
@@ -830,7 +830,7 @@ unordered_set<string> QueryEvaluator::getOtherPair(int position, unordered_set<s
 		for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
 			string pointer = *it;
 			spaceIndex = pointer.find(" ");
-			first = pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 3);
+			first = pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 1);
 			if (toContain.count(first) == 1) {
 				result.insert(pointer.substr(0, spaceIndex));
 			}
