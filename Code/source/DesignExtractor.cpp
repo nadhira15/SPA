@@ -28,7 +28,7 @@ void DesignExtractor::processFollowStar()
 		int directFollowStm = pkb.getNxtStm(currStmt);
 		//Has a Next Stm
 		if (directFollowStm != 0) {
-			unordered_set<int> followedByStar = pkb.getAllFollowedBy(directFollowStm);
+			unordered_set<int> followedByStar = pkb.getAllFollowing(directFollowStm);
 			followedByStar.insert(directFollowStm);
 			pkb.setFollowers(currStmt, followedByStar);
 		}
@@ -41,7 +41,7 @@ void DesignExtractor::processFollowStar()
 
 		//If have Prev Stm
 		if (directPrvStm != 0) {
-			unordered_set<int>  followStar = pkb.getAllFollowing(directPrvStm);
+			unordered_set<int>  followStar = pkb.getAllFollowedBy(directPrvStm);
 			followStar.insert(directPrvStm);
 			pkb.setStmFollowedBy(currStmt, followStar);
 		}
@@ -107,10 +107,10 @@ void DesignExtractor::processModifiesContainers()
 		int currLine = i;
 		unordered_set<int> descendents = pkb.getAllDescendants(currLine);
 		for (int descendent : descendents) {
-			//unordered_set<string> modifiedList = pkb.getModifiedVar(descendent);
-			//for (string modifiedVar : modifiedList) {
-			//	pkb.addModifies(currLine, modifiedVar);
-			//}
+			unordered_set<string> modifiedList = pkb.getModifiedVar(descendent);
+			for (string modifiedVar : modifiedList) {
+				pkb.addModifies(currLine, modifiedVar);
+			}
 		}
 	}
 }
