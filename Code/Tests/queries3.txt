@@ -51,7 +51,7 @@ Select w such that Parent(w, s)
 10 - Parent
 while w; assign a;
 Select w such that Parent(w, a)
-20, 19, 18, 12, 3, 6
+20, 19, 17, 12, 3, 6
 5000
 11 - Parent*
 while w; assign a;
@@ -106,17 +106,17 @@ Select p such that Follows*(r, p)
 18 - Follows*
 assign a; print p;
 Select a such that Follows*(a, p)
-23
+9, 10, 23
 5000
 19 - Uses
 while w;
 Select w such that Uses(w, "b")
-11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 6, 4
+11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 6, 3
 5000
 20 - Uses
 while w;
 Select w such that Uses(w, "c")
-11, 12, 13, 6, 4
+11, 12, 13, 6, 3
 5000
 21 - Uses
 print p;
@@ -141,10 +141,10 @@ Select w such that Modifies(w, "b")
 25 - Modifies
 while w;
 Select w such that Modifies(w, "c")
-11, 12, 13, 6, 4
+11, 12, 6, 3
 5000
 26 - Modifies
-read r
+read r;
 Select r such that Modifies(r, "x")
 1
 5000
@@ -216,11 +216,11 @@ Select w such that Parent(w, a) pattern a("a", _"b + c"_)
 40 - Parent* and Pattern
 assign a; if ifs;
 Select ifs such that Parent*(ifs, a) pattern a("a", "b + c")
-6
+2
 5000
 41 - Parent* and Pattern
 assign a; while w; variable v;
-Select ifs such that Parent*(w, a) pattern a(v, _"c + b"_)
+Select w such that Parent*(w, a) pattern a(v, _"c + b"_)
 11, 12
 5000
 42 - Follows and Pattern
@@ -246,12 +246,12 @@ Select p such that Follows*(r, p) pattern a(_, _"a * a"_)
 44 - Follows* and Pattern
 assign a; print p;
 Select a such that Follows*(a, p) pattern a(_, _)
-9, 10
+9, 10, 23
 5000
 45 - Uses and Pattern
 assign a; print p; variable v;
 Select p such that Uses(p, v) pattern a(_, _)
-26
+26, 24
 5000
 46 - Uses and Pattern
 assign a;
