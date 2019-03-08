@@ -535,7 +535,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 				return intSetToStrSet(PKB().getStmUsing(""));
 			}
 			else if (secondArgument.find("\"") != string::npos) {
-				return intSetToStrSet(PKB().getStmUsing(secondArgument));
+				return intSetToStrSet(PKB().getStmUsing(trimFrontEnd(secondArgument)));
 			} 
 			else {
 				return result;
@@ -558,7 +558,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 				return intSetToStrSet(PKB().getStmModifying(""));
 			}
 			else if (secondArgument.find("\"") != string::npos) {
-				return intSetToStrSet(PKB().getStmModifying(secondArgument));
+				return intSetToStrSet(PKB().getStmModifying(trimFrontEnd(secondArgument)));
 			}
 			else {
 				return result;
