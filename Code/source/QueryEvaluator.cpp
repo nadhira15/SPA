@@ -31,10 +31,6 @@ It filters the assignment statements
 that fulfill the pattern.
 */
 unordered_set<string> QueryEvaluator::filterPatternCondition(vector<pair<string, pair<string, string>>> patternCondition) {
-	if (patternCondition.size() == 0) {
-		return getStmts("assign");
-	}
-
 	string patternSynonym = patternCondition[0].first;
 	string leftArgument = patternCondition[0].second.first;
 	string rightArgument = patternCondition[0].second.second;
@@ -80,19 +76,29 @@ result of the Pattern Condition.
 unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string, string>> declarations, vector<string> selectedVar,
 	vector<pair<string, pair<string, string>>> suchThatCondition, vector<pair<string, pair<string, string>>> patternCondition) {
 	
+	unordered_set<string> emptyResult;
 	string selectedVarType;
-	unordered_set<string> afterPatternFilter = filterPatternCondition(patternCondition);
+	unordered_set<string> afterPatternFilter;
 	for (vector<pair<string, string>>::size_type i = 0; i != declarations.size(); i++) {
 		if (declarations[i].second == selectedVar[0]) {
 			selectedVarType = declarations[i].first;
 		}
 	}
 	if (suchThatCondition.size() == 0) {
-		if (patternCondition.size() == 0 || 
-			(selectedVar[0] != patternCondition[0].first && afterPatternFilter.size() > 0)) {
+		if (patternCondition.size() == 0) {
 			return getStmts(selectedVarType);
 		}
-		return afterPatternFilter;
+		afterPatternFilter = filterPatternCondition(patternCondition);
+		if (afterPatternFilter.size() == 0) {
+			return emptyResult;
+		}
+		if (selectedVar[0] == patternCondition[0].first) {
+			if (patternCondition[0].second.first[0] == '"') {
+				return afterPatternFilter;
+			}
+			return getFirstParam(afterPatternFilter);
+		}
+		return getStmts(selectedVarType);
 	}
 	string relation = suchThatCondition[0].first;
 	string firstArgument = suchThatCondition[0].second.first;
@@ -112,17 +118,26 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 	if (firstArgumentType == "procedure") {
 		firstArgument = PKB().getProcName();
 	}
-	unordered_set<string> emptyResult;
 	string certainty = isSuchThatTrivial(relation, firstArgument, secondArgument);
 
 	if (certainty == "false") {
 		return emptyResult;
 	}
-	else if ((certainty == "true") || (suchThatCondition.size() == 0)) {
-		if (patternCondition.size() == 0 || (selectedVar[0] != patternCondition[0].first)) {
+	else if (certainty == "true") {
+		if (patternCondition.size() == 0) {
 			return getStmts(selectedVarType);
 		}
-		return afterPatternFilter;
+		afterPatternFilter = filterPatternCondition(patternCondition);
+		if (afterPatternFilter.size() == 0) {
+			return emptyResult;
+		}
+		if (selectedVar[0] == patternCondition[0].first) {
+			if (patternCondition[0].second.first[0] == '"') {
+				return afterPatternFilter;
+			}
+			return getFirstParam(afterPatternFilter);
+		}
+		return getStmts(selectedVarType);
 	}
 	else if (certainty == "not trivial") {
 		unordered_set<string> suchThatResult = evaluateSuchThat(relation, firstArgument, secondArgument);
@@ -148,21 +163,13 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 			}
 			return getStmts(selectedVarType);
 		}
-
+		afterPatternFilter = filterPatternCondition(patternCondition);
 		string patternSynonym = patternCondition[0].first;
 		string patternLeft = patternCondition[0].second.first;
 		vector<pair<string, pair<string, string>>> emptyPattern;
 		unordered_set<string> fulfillingVar;
 		unordered_set<string> fulfillingAssign;
-		if (selectedVar[0] != patternLeft &&
-			firstArgument != patternLeft &&
-			secondArgument != patternLeft) {
-			if (afterPatternFilter.size() == 0) {
-				return emptyResult;
-			}
-			return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, emptyPattern);
-		}
-		if (secondArgument == patternLeft) {
+		if (patternLeft[0] == '"' && secondArgument == patternLeft) {
 			if (firstArgumentType == "") {
 				fulfillingVar = intersection(
 					filterType(firstArgumentType, suchThatResult), getSecondParam(afterPatternFilter)
@@ -176,7 +183,8 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 				return getStmts(selectedVarType);
 			}
 			fulfillingVar = intersection(
-				filterType(firstArgumentType, secondArgumentType, suchThatResult), getSecondParam(afterPatternFilter)
+				filterType(firstArgumentType, secondArgumentType, suchThatResult), 
+				getSecondParam(afterPatternFilter)
 			);
 			if (fulfillingVar.size() == 0) {
 				return emptyResult;
@@ -212,6 +220,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 			}
 			return getStmts(selectedVarType);
 		}
+		
 		if (selectedVar[0] != patternSynonym && 
 			firstArgument != patternSynonym &&
 			secondArgument != patternSynonym) {
@@ -221,37 +230,37 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 			return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, emptyPattern);
 		}
 		if ((firstArgument != patternSynonym) && (secondArgument != patternSynonym)) {
-			return afterPatternFilter;
+			return getAssign(afterPatternFilter);
 		}
 		if (firstArgument == patternSynonym) {
 			if (selectedVar[0] == patternSynonym) {
 				if (secondArgumentType == "") {
 					return intersection(
-						filterType(firstArgumentType, suchThatResult), afterPatternFilter);
+						filterType(firstArgumentType, suchThatResult), getAssign(afterPatternFilter));
 				}
 				return intersection(
 					getFirstParam(
 						filterType(firstArgumentType, secondArgumentType, suchThatResult)), 
-					afterPatternFilter);
+					getAssign(afterPatternFilter));
 			}
 			return getOtherPair(1, filterType(
 				firstArgumentType, secondArgumentType, suchThatResult), 
-				afterPatternFilter);
+				getAssign(afterPatternFilter));
 		}
 		if (secondArgument == patternSynonym) {
 			if (selectedVar[0] == patternSynonym) {
 				if (firstArgumentType == "") {
 					return intersection(filterType(
-						secondArgumentType, suchThatResult), afterPatternFilter);
+						secondArgumentType, suchThatResult), getAssign(afterPatternFilter));
 				}
 				return intersection(
 					getSecondParam(
 						filterType(firstArgumentType, secondArgumentType, suchThatResult)), 
-					afterPatternFilter);
+					getAssign(afterPatternFilter));
 			}
 			return getOtherPair(2, filterType(
 				firstArgumentType, secondArgumentType, suchThatResult), 
-				afterPatternFilter);
+				getAssign(afterPatternFilter));
 		}
 	}
 
@@ -830,6 +839,26 @@ unordered_set<string> QueryEvaluator::getOtherPair(int position, unordered_set<s
 
 	return result;
 }
+
+/*
+Retrieves the assign statements
+arguments after pattern filtering
+*/
+unordered_set<string> QueryEvaluator::getAssign(unordered_set<string> afterPatternFilter) {
+	unordered_set<string> result;
+	for (unordered_set<string>::iterator it = afterPatternFilter.begin(); it != afterPatternFilter.end(); ++it) {
+		string pointer = *it;
+		if (pointer.find(" ") != string::npos) {
+			result.insert(pointer.substr(0, pointer.find(" ")));
+		}
+		else {
+			result.insert(pointer);
+		}
+	}
+
+	return result;
+}
+
 
 /*
 Trims quote in front and end of a string.
