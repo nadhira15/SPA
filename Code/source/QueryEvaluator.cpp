@@ -63,18 +63,8 @@ unordered_set<int> QueryEvaluator::filterPatternCondition(vector<pair<string, pa
 			RHSpattern = ExpressionUtil::convertInfixToPrefix(RHSpattern);
 		}
 
-		if (RHSpattern == "_") {
-			isExclusive = false;
-		}
-
-		if (LHSpattern == "_" && RHSpattern == "_") {
-			return PKB().getAssignStms();
-		}
-		else if (LHSpattern == "_") {
+		if (LHSpattern[0] == '_') {
 			PKBresult = PKB().findPattern(RHSpattern, isExclusive);
-		}
-		else if (RHSpattern == "_") {
-			PKBresult = PKB().findPattern(LHSpattern, "", isExclusive);
 		}
 		else {
 			PKBresult = PKB().findPattern(LHSpattern, RHSpattern, isExclusive);
