@@ -337,10 +337,10 @@ string QueryParser::validateSuchThatParam(vector<pair<string, pair<string, strin
 	*/
 
 	unordered_set<string> validRelation = { "Parent", "Parent*", "Follows", "Follows*", "Uses", "Modifies" };
-	unordered_set<string> validArgs = { "stmt", "read", "print", "while", "if", "assign" };
+	unordered_set<string> validArgs = { "stmt", "read", "print", "while", "if", "assign", "call" };
 	unordered_set<string> validFirstArgsParent = { "stmt", "while", "if" };
-	unordered_set<string> validFirstArgsUses = { "stmt", "print", "while", "if", "procedure", "call" };
-	unordered_set<string> validFirstArgsModifies = { "stmt", "read", "while", "if", "procedure", "call" };
+	unordered_set<string> validFirstArgsUses = { "stmt", "print", "while", "if", "procedure", "assign", "call" };
+	unordered_set<string> validFirstArgsModifies = { "stmt", "read", "while", "if", "procedure", "assign", "call" };
 
 	for (int i = 0; i < param.size(); i++) {
 		string relation = param[i].first;
@@ -362,46 +362,82 @@ string QueryParser::validateSuchThatParam(vector<pair<string, pair<string, strin
 		}
 
 		if (relation == "Uses") {
-			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) && !LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2)) &&
-				validFirstArgsUses.find(firstArgsType) == validFirstArgsUses.end()) {
+			if (LexicalToken::verifyInteger(firstArgs) ||
+				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
+				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validFirstArgsUses.find(firstArgsType) != validFirstArgsUses.end()))) {
+				// valid first args
+			}
+			else {
 				return "invalid query";
 			}
 
-			if (secondArgs != "_" && !LexicalToken::verifyInteger(secondArgs) && !LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) {
+			if (secondArgs == "_" ||
+				LexicalToken::verifyInteger(secondArgs) ||
+				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
+				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs))) {
+				// valid second args
+			}
+			else {
 				return "invalid query";
 			}
 		}
 		else if (relation == "Modifies") {
-			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) && !LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2)) &&
-				validFirstArgsModifies.find(firstArgsType) == validFirstArgsModifies.end()) {
+			if (LexicalToken::verifyInteger(firstArgs) ||
+				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
+				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validFirstArgsModifies.find(firstArgsType) != validFirstArgsModifies.end()))) {
+				// valid first args
+			}
+			else {
 				return "invalid query";
 			}
 
-			if (secondArgs != "_" && !LexicalToken::verifyInteger(secondArgs) && !LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) {
+			if (secondArgs == "_" ||
+				LexicalToken::verifyInteger(secondArgs) ||
+				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
+				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs))) {
+				// valid first args
+			}
+			else {
 				return "invalid query";
 			}
 		}
 		else if (relation == "Parent" || relation == "Parent*") {
-			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) &&
-				validFirstArgsParent.find(firstArgsType) == validFirstArgsParent.end()) {
+			if (firstArgs == "_" ||
+				LexicalToken::verifyInteger(firstArgs) ||
+				validFirstArgsParent.find(firstArgsType) != validFirstArgsParent.end()) {
+				// valid query
+			}
+			else {
 				return "invalid query";
 			}
 
-			if (secondArgs != "_" && !LexicalToken::verifyInteger(secondArgs) && 
-				validArgs.find(secondArgsType) == validArgs.end()) {
+			if (secondArgs == "_" ||
+				LexicalToken::verifyInteger(secondArgs) ||
+				validArgs.find(secondArgsType) != validArgs.end()) {
+				// valid query
+			}
+			else {
 				return "invalid query";
 			}
 		}
 		else {
 			// relation == Follows | Follows*
 
-			if (firstArgs != "_" && !LexicalToken::verifyInteger(firstArgs) &&
-				validArgs.find(firstArgsType) == validArgs.end()) {
+			if (firstArgs == "_" ||
+				LexicalToken::verifyInteger(firstArgs) ||
+				validArgs.find(firstArgsType) != validArgs.end()) {
+				// valid query
+			}
+			else {
 				return "invalid query";
 			}
 
-			if (secondArgs != "_" && !LexicalToken::verifyInteger(secondArgs) &&
-				validArgs.find(secondArgsType) == validArgs.end()) {
+			if (secondArgs == "_" ||
+				LexicalToken::verifyInteger(secondArgs) ||
+				validArgs.find(secondArgsType) != validArgs.end()) {
+				// valid query
+			}
+			else {
 				return "invalid query";
 			}
 		}

@@ -146,7 +146,7 @@ none
 36 - comment
 assign a; if ifs;
 Select a such that Follows (ifs, a) pattern a ("minus2", _"sum"_)
-none
+10
 5000
 37 - comment
 assign a; if ifs;
@@ -206,7 +206,7 @@ Select s such that Modifies (10, v)
 48 - comment
 print pn;
 Select pn such that Uses(12, "sum")
-none
+4, 13
 5000
 49 - pattern
 assign a;
@@ -242,4 +242,64 @@ minus2
 variable v;
 Select v such that Modifies (9, v)
 minus1
+5000
+56 - FollowStar
+stmt s;
+Select s such that Follows* (1, s)
+2, 3, 4, 5, 6, 7, 10, 11, 13
+5000
+57 - FollowStar
+stmt s;
+Select s such that Follows* (5, s)
+6, 7, 10, 11, 13
+5000
+58 - FollowStar
+stmt s;
+Select s such that Follows* (9, s)
+none
+5000
+59 - FollowStar
+stmt s;
+Select s such that Follows* (s, 1)
+none
+5000
+60 - FollowStar
+stmt s;
+Select s such that Follows* (s, 5)
+1, 2, 3, 4
+5000
+61 - FollowStar
+stmt s;
+Select s such that Follows* (s, 9)
+none
+5000
+62 - ParentStar
+stmt s;
+Select s such that Parent* (1, s)
+none
+5000
+63 - ParentStar
+stmt s;
+Select s such that Parent* (5, s)
+none
+5000
+64 - ParentStar
+stmt s;
+Select s such that Parent* (9, s)
+none
+5000
+65 - ParentStar
+stmt s;
+Select s such that Parent* (s, 1)
+none
+5000
+66 - ParentStar
+stmt s;
+Select s such that Parent* (s, 5)
+none
+5000
+67 - ParentStar
+stmt s;
+Select s such that Parent* (s, 9)
+7
 5000

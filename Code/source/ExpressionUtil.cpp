@@ -13,7 +13,11 @@ using namespace StringUtil;
 regex terms("(\\w+)");
 regex validExpression("^(?:\\(*\\s*(\\w+)\\s*\\)*)(?:\\s*[+\\*\\-%\\/]\\s*(?:\\(*\\s*(\\w+)\\s*\\)*))*$");
 
-//Convert Infix Expressions into Prefix expression for easier string matching
+/* Converts an Infix Expression into a Postfix Expression.
+ * Preconditon: The Infix Expression must be a valid infixExpression. Perform a check by calling
+ *			    verifyInfixExpression prior to calling this function.
+ * Output: The Postfix Expression.
+ */
 string ExpressionUtil::convertInfixToPrefix(string expression) {
 	expressionPreprocess(expression);
 
@@ -95,10 +99,15 @@ string ExpressionUtil::convertInfixToPrefix(string expression) {
 		operandStack.push(subexpre);
 	}
 			
-	return operandStack.top();
+	return " " + operandStack.top() + " ";
 
 }
 
+/* This function performs white space cleaning of an infix expression.
+ * Precondition: Any infix expression
+ * Output: The infix expression will now have no white space except a single space inbetween
+ *         every operator.
+ */
 void ExpressionUtil::expressionPreprocess(std::string &expression)
 {
 	//Remove every single whitespace
@@ -139,6 +148,11 @@ void ExpressionUtil::expressionPreprocess(std::string &expression)
 	}
 }
 
+/* Returns the variables that can be found in the given infix Expression.
+ * Preconditon: The Infix Expression must be a valid infixExpression. Perform a check by calling
+ *			    verifyInfixExpression prior to calling this function.
+ * Output: The list of Variables found in the expression.
+ */
 vector<string> ExpressionUtil::getVariables(string infixExpression) {
 	smatch result;
 	vector<string> variableVector;
@@ -154,6 +168,11 @@ vector<string> ExpressionUtil::getVariables(string infixExpression) {
 	return variableVector;
 }
 
+/* Returns the constants that can be found in the given infix Expression.
+ * Preconditon: The Infix Expression must be a valid infixExpression. Perform a check by calling
+ *			    verifyInfixExpression prior to calling this function.
+ * Output: The list of Constants found in the expression.
+ */
 vector<string> ExpressionUtil::getConstants(string infixExpression) {
 	smatch result;
 	vector<string> constantVector;
@@ -169,7 +188,11 @@ vector<string> ExpressionUtil::getConstants(string infixExpression) {
 	return constantVector;
 }
 
-//Check if expression given is a valid Infix expression. Perform this step before running convert to Infix.
+/* Takes in the expression as an argument and returns true if valid.
+ * it also checks that all constants and variables inside are valid.
+ * Perform this step before converting to InfixExpression or
+ * extracting variables and constants.
+ */
 bool ExpressionUtil::verifyInfixExpression(string infixExpression) {
 	if (regex_match(infixExpression, validExpression)) {
 		if (checkParenthesis(infixExpression)) {
@@ -194,7 +217,9 @@ bool ExpressionUtil::verifyInfixExpression(string infixExpression) {
 	}
 }
 
-//Checks if there is matching parenthesis.
+/* Checks if there is matching parenthesis. Returns true as long as for every
+ * Left bracket, there is a matching right bracket further down the string.
+ */
 bool ExpressionUtil::checkParenthesis(string infixExpression) {
 	stack<char> bracketStack;
 
@@ -231,6 +256,9 @@ int ExpressionUtil::getPriority(string p)
 	return 0;
 }
 
+/* Checks if the character is an operator. Returns true if it is not an alphabet or digit.
+ * Otherwise returns false;
+ */
 bool ExpressionUtil::isOperator(char c)
 {
 	return (!isalpha(c) && !isdigit(c));

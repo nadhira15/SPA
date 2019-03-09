@@ -46,7 +46,7 @@ namespace UnitTesting
 		TEST_METHOD(testAssignGetInfixExpression)
 		{
 			std::string testStatement = "p=x+6/2+200";
-			std::string parseExpected = "+ + x / 6 2 200";
+			std::string parseExpected = " + + x / 6 2 200 ";
 			AssignParser ap;
 
 			std::string output = ap.getPrefixExpression(testStatement);
