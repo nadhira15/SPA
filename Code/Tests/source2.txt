@@ -11,7 +11,7 @@ procedure TestB {
       b = sum + divide;
       while(b<=times){
         a = a - sum;
-        if( a == div )then {
+        if((!(a > div + 2 / (a + 2)) || (a <= div)) || (!((a / div >= 2) && (a + div < 2)) && ((a - div) != (a * (div + a) - (div - a)/2 + a % div))))then {
           div = 2;
           sum = times * a;
         } else {
