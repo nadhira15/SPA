@@ -123,13 +123,43 @@ variable v;
 Select v such that Modifies(1, v)
 a
 5000
-26 - Modifies assign
+26 - Modifies print
+print pn;
+Select pn such that Modifies(pn, _)
+none
+5000
+27 - Modifies assign
 variable v;
 Select v such that Modifies(4, v)
 minus
+5000
+28 - Modifiedby read
+read rd;
+Select rd such that Modifies(rd, _)
+1, 2
+5000
+29 - Modifies assign
+variable v;
+Select v such that Modifies(8, v)
+c
+5000
+30 - Modifies assign
+variable v;
+Select v such that Modifies(17, v)
+a
 5000
 31 - Uses assign
 variable v;
 Select v such that Uses(40, v)
 b, div
+5000
+32 - Patterns
+assign a;
+Select a pattern a(_, _"div + mins"_)
+none
+5000
+33 - Patterns
+assign a;
+Select a pattern a(_, _"times * div"_)
+21
 5000
