@@ -33,14 +33,13 @@ IfParser::IfParser(int stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb1)
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
 	string cond_expr = stmt.substr(i + 1, j - i - 1);
-	ConditionalExp generator = ConditionalExp();
 	//check for empty statementlst
 	bool valid1 = !stmtlst.empty();
 	//validate conditional expression and return all uses variable
-	bool valid2 = generator.verifyConditionalExp(cond_expr);
+	bool valid2 = ConditionalExp::verifyConditionalExp(cond_expr);
 	if (valid1 && valid2) {
-		var = generator.getVariables();
-		c = generator.getConstants();
+		var = ConditionalExp::getVariables();
+		c = ConditionalExp::getConstants();
 		pkb = pkb1;
 		stmtLst = stmtlst;
 		stmtNum = stmtNo;

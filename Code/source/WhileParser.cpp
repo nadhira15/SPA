@@ -34,12 +34,11 @@ WhileParser::WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst
 	int j = stmt.rfind(')');
 	string cond_expr = stmt.substr(i + 1, j - i - 1);
 	bool valid1 = !stmtlst.empty();
-	ConditionalExp generator = ConditionalExp();
 	//validate conditional expression and return all uses variable
-	bool valid2 = generator.verifyConditionalExp(cond_expr);
+	bool valid2 = ConditionalExp::verifyConditionalExp(cond_expr);
 	if (valid1 && valid2) {
-		var = generator.getVariables();
-		c = generator.getConstants();
+		var = ConditionalExp::getVariables();
+		c = ConditionalExp::getConstants();
 		pkb = pkb1;
 		stmtLst = stmtlst;
 		stmtNum = stmtNo;
