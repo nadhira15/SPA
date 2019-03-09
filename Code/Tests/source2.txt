@@ -5,22 +5,22 @@ procedure TestB {
   minus = a - b;
   times = a * b;
   div = b / a;
-  if (minus == times) then {
+  if( minus == times  )  then{
     c = sum + times * a * b - divide * minus;
-    if (a == b) then {
+    if  (a==b)then  {
       b = sum + divide;
-      while (b <= times) {
+      while(b<=times){
         a = a - sum;
-        if (a == div) then {
+        if((!(a > div + 2 / (a + 2)) || (a <= div)) || (!((a / div >= 2) && (a + div < 2)) && ((a - div) != (a * (div + a) - (div - a)/2 + a % div))))then {
           div = 2;
           sum = times * a;
         } else {
           a = times;
         }
       }
-    } else {
+    }else{
       a = div / 2;
-      if (a >= div) then {
+      if(a>=div)then{
         a = a;
       } else {
         while (b != div) {
@@ -35,9 +35,9 @@ procedure TestB {
     c = sum - 2 * minus;
     minus = b - a;
     d = times * sum + divide;
-    while (sum > minus) {
+    while  (sum > minus)  {
       sum = sum - 1;
-      if (a == b) then {
+      if(a  ==b)then{
         b = sum + divide;
         while (b <= times) {
           a = a - sum;
