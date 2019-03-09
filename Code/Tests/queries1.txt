@@ -206,7 +206,7 @@ Select s such that Modifies (10, v)
 48 - comment
 print pn;
 Select pn such that Uses(12, "sum")
-none
+4, 12
 5000
 49 - pattern
 assign a;
