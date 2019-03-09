@@ -146,7 +146,7 @@ none
 36 - comment
 assign a; if ifs;
 Select a such that Follows (ifs, a) pattern a ("minus2", _"sum"_)
-none
+10
 5000
 37 - comment
 assign a; if ifs;
