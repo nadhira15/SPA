@@ -159,146 +159,141 @@ Select v such that Uses(50, v)
 none
 5000
 33 - comments
-variable v;
-Select v such that Uses("procedure", v)
-a, b, c, d, f, g, k, i, j, p, q, e, h, m, read, l, x, while, procedure, if, statement, print, call
-5000
-34 - comments
 assign a;
 Select a such that Modifies(a, "a")
 20, 27
 5000
-35 - comments
+34 - comments
 variable v;
 Select v such that Modifies(1, v)
 a, d, i, j, p, m
 5000
-36 - comments
+35 - comments
 procedure p;
 Select p such that Modifies(p, "nonExisting")
 none
 5000
-37 - comments
+36 - comments
 variable v;
 Select v such that Modifies(90, v)
 none
 5000
-38 - comments
+37 - comments
 procedure p;
 Select p such that Modifies(_, "call")
 none
 5000
-39 - comments
+38 - comments
 assign a;
 Select a pattern a(_, "a")
 none
 5000
-40 - comments
+39 - comments
 assign a;
 Select a pattern a(_, "a - k")
 none
 5000
-41 - comments
+40 - comments
 assign a;
 Select a pattern a(, _"a"_)
 23
 5000
-42 - comments
+41 - comments
 assign a;
 Select a pattern a(_, _"f%a"_)
 23
 5000
-43 - comments
+42 - comments
 assign a;
 Select a pattern a("a", _"d* k"_)
 27
 5000
-44 - comments
+43 - comments
 assign a;
 Select a pattern a("procedure", _)
 30
 5000
-45 - comments
+44 - comments
 variable v; assign a;
 Select v pattern a(v, _"k"_)
 d, j, m, a, print
 5000
-46 - comments
+45 - comments
 variable v; assign a;
 Select a pattern a(v, _)
 20, 21, 22, 23, 27, 29, 30, 32, 33
 5000
-47 - comments
+46 - comments
 stmt s; assign a;
 Select s pattern a(_, _)
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34
 5000
-48 - comments
+47 - comments
 stmt a;
 Select a pattern a("m", _)
 none
 5000
-49 - comments
+48 - comments
 stmt s;
 Select s such that Follows*(1, 17)
 none
 5000
-50 - comments
+49 - comments
 stmt s;
 Select s such that Follows*(s, 25)
 1, 24
 5000
-51 - comments
+50 - comments
 assign a;
 Select a such that Follows*(25, a)
 27, 29, 30
 5000
-52 - comments
+51 - comments
 while while;
 Select while such that Follows*(while, _)
 none
 5000
-53 - comments
+52 - comments
 if if;
 Select if such that Follows*(_, if)
 31
 5000
-54 - comments
+53 - comments
 variable v;
 Select v such that Follows*(_, 22)
 a, b, c, d, f, g, k, i, j, p, q, e, h, m, read, l, x, while, procedure, if, statement, print, call, then
 5000
-55 - comments
+54 - comments
 procedure p;
 Select p such that Follows*(30, _)
 procedure
 5000
-56 - comments
+55 - comments
 constant c;
 Select c such that Follows*(_, _)
 0, 9, 4, 1, 341242, 8248, 7
 5000
-57 - comments
+56 - comments
 stmt s; while w;
 Select s such that Follows*(s, w)
 none
 5000
-58 - comments
+57 - comments
 stmt s; while w;
 Select c such that Follows*(w, s)
 none
 5000
-59 - comments
+58 - comments
 assign a;
 Select a such that Parent*(9, 10)
 none
 5000
-60 - comments
+59 - comments
 stmt if23;
 Select if23 such that Parent*(1, if23)
 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
 5000
-61 - comments
+60 - comments
 stmt gr3a7;
 Select gr3a7 such that Parent*(gr3a7, 17)
 1, 4, 5, 6, 10, 11, 12, 13, 14, 16
