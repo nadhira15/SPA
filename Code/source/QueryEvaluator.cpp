@@ -523,7 +523,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 	else if (relation == "Uses") {
 		if ((secondArgument != "_") && (secondArgument.find("\"") == string::npos)) {
 			if (LexicalToken::verifyInteger(firstArgument)) {
-				return PKB().getUsedVar(firstArgument);
+				return PKB().getUsedVar(stoi(firstArgument));
 			} 
 			else if (firstArgument.find("\"") != string::npos) {
 				return PKB().getUsedVar(trimFrontEnd(firstArgument));
@@ -549,7 +549,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 	else if (relation == "Modifies") {
 		if ((secondArgument != "_") && (secondArgument.find("\"") == string::npos)) {
 			if (LexicalToken::verifyInteger(firstArgument)) {
-				return PKB().getModifiedVar(firstArgument);
+				return PKB().getModifiedVar(stoi(firstArgument));
 
 			}
 			else if (firstArgument.find("\"") != string::npos) {
