@@ -371,7 +371,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 	else if (relation == "Uses") {
 		if (LexicalToken::verifyInteger(firstArgument)) {
 			if (secondArgument.find("\"") != string::npos) {
-				return truthValue(PKB().isUsing(stoi(firstArgument), secondArgument));
+				return truthValue(PKB().isUsing(stoi(firstArgument), trimFrontEnd(secondArgument)));
 			}
 			else if (secondArgument == "_") {
 				return truthValue(PKB().getUsedVar(stoi(firstArgument)).size() > 0);
@@ -380,10 +380,10 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 		}
 		else if (firstArgument.find("\"") != string::npos) {
 			if (secondArgument.find("\"") != string::npos) {
-				return truthValue(PKB().isUsing(firstArgument, secondArgument));
+				return truthValue(PKB().isUsing(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument)));
 			}
 			else if (secondArgument == "_") {
-				return truthValue(PKB().getUsedVar(firstArgument).size() > 0);
+				return truthValue(PKB().getUsedVar(trimFrontEnd(firstArgument)).size() > 0);
 			}
 			return "not trivial";
 		}
@@ -392,7 +392,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 	else if (relation == "Modifies") {
 		if (LexicalToken::verifyInteger(firstArgument)) {
 			if (secondArgument.find("\"") != string::npos) {
-				return truthValue(PKB().isModifying(stoi(firstArgument), secondArgument));
+				return truthValue(PKB().isModifying(stoi(firstArgument), trimFrontEnd(secondArgument)));
 			}
 			else if (secondArgument == "_") {
 				return truthValue(PKB().getModifiedVar(stoi(firstArgument)).size() > 0);
@@ -401,10 +401,10 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 		}
 		else if (firstArgument.find("\"") != string::npos) {
 			if (secondArgument.find("\"") != string::npos) {
-				return truthValue(PKB().isModifying(firstArgument, secondArgument));
+				return truthValue(PKB().isModifying(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument)));
 			}
 			else if (secondArgument == "_") {
-				return truthValue(PKB().getModifiedVar(firstArgument).size() > 0);
+				return truthValue(PKB().getModifiedVar(trimFrontEnd(firstArgument)).size() > 0);
 			}
 			return "not trivial";
 		}
@@ -522,9 +522,12 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 	}
 	else if (relation == "Uses") {
 		if ((secondArgument != "_") && (secondArgument.find("\"") == string::npos)) {
-			if ((LexicalToken::verifyInteger(firstArgument)) || firstArgument.find("\"") != string::npos) {
-				return PKB().getUsedVar(firstArgument);
+			if (LexicalToken::verifyInteger(firstArgument)) {
+				return PKB().getUsedVar(stoi(firstArgument));
 			} 
+			else if (firstArgument.find("\"") != string::npos) {
+				return PKB().getUsedVar(trimFrontEnd(firstArgument));
+			}
 			if (firstArgument == PKB().getProcName()) {
 				return strPairSetToStrSet(PKB().getProcVarUsePairs());
 			}
@@ -545,8 +548,12 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 	}
 	else if (relation == "Modifies") {
 		if ((secondArgument != "_") && (secondArgument.find("\"") == string::npos)) {
-			if ((LexicalToken::verifyInteger(firstArgument)) || firstArgument.find("\"") != string::npos) {
-				result = PKB().getModifiedVar(firstArgument);
+			if (LexicalToken::verifyInteger(firstArgument)) {
+				return PKB().getModifiedVar(stoi(firstArgument));
+
+			}
+			else if (firstArgument.find("\"") != string::npos) {
+				return PKB().getModifiedVar(trimFrontEnd(firstArgument));
 			}
 			if (firstArgument == PKB().getProcName()) {
 				return strPairSetToStrSet(PKB().getProcVarModifyPairs());
