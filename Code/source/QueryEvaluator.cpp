@@ -98,6 +98,9 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 			}
 			return getFirstParam(afterPatternFilter);
 		}
+		if (selectedVar[0] == patternCondition[0].second.first) {
+			return getSecondParam(afterPatternFilter);
+		}
 		return getStmts(selectedVarType);
 	}
 	string relation = suchThatCondition[0].first;
@@ -141,25 +144,30 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 	}
 	else if (certainty == "not trivial") {
 		unordered_set<string> suchThatResult = evaluateSuchThat(relation, firstArgument, secondArgument);
+		if (firstArgumentType != "" && secondArgumentType == "") {
+			suchThatResult = filterType(firstArgumentType, suchThatResult);
+		}
+		else if (firstArgumentType == "" && secondArgumentType != "") {
+			suchThatResult = filterType(secondArgumentType, suchThatResult);
+		} 
+		else if (firstArgumentType != "" && secondArgumentType != "") {
+			suchThatResult = filterType(firstArgumentType, secondArgumentType, suchThatResult);
+		}
 		if (suchThatResult.size() == 0) {
 			return emptyResult;
 		}
 		if (patternCondition.size() == 0) {
 			if (selectedVar[0] == firstArgument) {
 				if (secondArgumentType == "") {
-					return filterType(firstArgumentType, suchThatResult);
+					return suchThatResult;
 				} 
-				return getFirstParam(filterType(firstArgumentType, 
-					secondArgumentType, 
-					suchThatResult));
+				return getFirstParam(suchThatResult);
 			}
 			if (selectedVar[0] == secondArgument) {
 				if (firstArgumentType == "") {
-					return filterType(secondArgumentType, suchThatResult);
+					return suchThatResult;
 				}
-				return getSecondParam(filterType(firstArgumentType,
-					secondArgumentType,
-					suchThatResult));
+				return getSecondParam(suchThatResult);
 			}
 			return getStmts(selectedVarType);
 		}
@@ -172,7 +180,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 		if (patternLeft[0] != '"' && secondArgument == patternLeft) {
 			if (firstArgumentType == "") {
 				fulfillingVar = intersection(
-					filterType(firstArgumentType, suchThatResult), getSecondParam(afterPatternFilter)
+					suchThatResult, getSecondParam(afterPatternFilter)
 				);
 				if (fulfillingVar.size() == 0) {
 					return emptyResult;
@@ -183,8 +191,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 				return getStmts(selectedVarType);
 			}
 			fulfillingVar = intersection(
-				filterType(firstArgumentType, secondArgumentType, suchThatResult), 
-				getSecondParam(afterPatternFilter)
+				suchThatResult, getSecondParam(afterPatternFilter)
 			);
 			if (fulfillingVar.size() == 0) {
 				return emptyResult;
@@ -195,13 +202,11 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 			if (selectedVar[0] == firstArgument) {
 				if (firstArgument == patternSynonym) {
 					return getFirstParam(
-						intersection(
-							filterType(firstArgumentType, secondArgumentType, suchThatResult),
-							getSecondParam(afterPatternFilter)
+						intersection(suchThatResult, getSecondParam(afterPatternFilter)
 						)
 					);
 				}
-				return getOtherPair(2, filterType(firstArgumentType, secondArgumentType, suchThatResult),
+				return getOtherPair(2, suchThatResult,
 					fulfillingVar);
 			}
 			if (selectedVar[0] == patternSynonym) {
@@ -209,10 +214,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 			}
 			if (firstArgument == patternSynonym) {
 				fulfillingAssign = getFirstParam(
-					intersection(
-						filterType(firstArgumentType, secondArgumentType, suchThatResult),
-						getSecondParam(afterPatternFilter)
-					));
+					intersection(suchThatResult, getSecondParam(afterPatternFilter)));
 				if (fulfillingAssign.size() == 0) {
 					return emptyResult;
 				}
@@ -235,32 +237,22 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 		if (firstArgument == patternSynonym) {
 			if (selectedVar[0] == patternSynonym) {
 				if (secondArgumentType == "") {
-					return intersection(
-						filterType(firstArgumentType, suchThatResult), getAssign(afterPatternFilter));
+					return intersection(suchThatResult, getAssign(afterPatternFilter));
 				}
 				return intersection(
-					getFirstParam(
-						filterType(firstArgumentType, secondArgumentType, suchThatResult)), 
-					getAssign(afterPatternFilter));
+					getFirstParam(suchThatResult), getAssign(afterPatternFilter));
 			}
-			return getOtherPair(1, filterType(
-				firstArgumentType, secondArgumentType, suchThatResult), 
-				getAssign(afterPatternFilter));
+			return getOtherPair(1, suchThatResult, getAssign(afterPatternFilter));
 		}
 		if (secondArgument == patternSynonym) {
 			if (selectedVar[0] == patternSynonym) {
 				if (firstArgumentType == "") {
-					return intersection(filterType(
-						secondArgumentType, suchThatResult), getAssign(afterPatternFilter));
+					return intersection(suchThatResult, getAssign(afterPatternFilter));
 				}
 				return intersection(
-					getSecondParam(
-						filterType(firstArgumentType, secondArgumentType, suchThatResult)), 
-					getAssign(afterPatternFilter));
+					getSecondParam(suchThatResult), getAssign(afterPatternFilter));
 			}
-			return getOtherPair(2, filterType(
-				firstArgumentType, secondArgumentType, suchThatResult), 
-				getAssign(afterPatternFilter));
+			return getOtherPair(2, suchThatResult, getAssign(afterPatternFilter));
 		}
 	}
 
@@ -280,10 +272,6 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().getPrvStm(stoi(secondArgument)) > 0);
 			}
-			else if (firstArgument == secondArgument) {
-				return "false";
-			}
-			return "not trivial";
 		}
 		else if (LexicalToken::verifyInteger(firstArgument)) {
 			if (secondArgument == "_") {
@@ -291,10 +279,11 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
  			}
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().getNxtStm(stoi(firstArgument)) == stoi(secondArgument));
-			}
-			return "not trivial";
+			};
 		}
-		return "not trivial";
+		else if (firstArgument == secondArgument) {
+			return "false";
+		}
 	}
 	else if (relation == "Follows*") {
 		if (firstArgument == "_") {
@@ -304,10 +293,6 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().getPrvStm(stoi(secondArgument)) > 0);
 			}
-			else if (firstArgument == secondArgument) {
-				return "false";
-			}
-			return "not trivial";
 		}
 		else if (LexicalToken::verifyInteger(firstArgument)) {
 			if (secondArgument == "_") {
@@ -316,9 +301,10 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().hasFollow_S_Pair(stoi(firstArgument), stoi(secondArgument)));
 			}
-			return "not trivial";
 		}
-		return "not trivial";
+		else if (firstArgument == secondArgument) {
+			return "false";
+		}
 	}
 	else if (relation == "Parent") {
 		if (firstArgument == "_") {
@@ -328,21 +314,18 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().isChild(stoi(secondArgument)) > 0);
 			}
-			else if (firstArgument == secondArgument) {
-				return "false";
-			}
-			return "not trivial";
 		}
 		else if (LexicalToken::verifyInteger(firstArgument)) {
 			if (secondArgument == "_") {
 				return truthValue(PKB().isParent(stoi(firstArgument)) > 0);
 			}
 			else if (LexicalToken::verifyInteger(secondArgument)) {
-				return truthValue(PKB().getParent(stoi(firstArgument)) == stoi(secondArgument));
+				return truthValue(PKB().getParent(stoi(secondArgument)) == stoi(firstArgument));
 			}
-			return "not trivial";
 		}
-		return "not trivial";
+		else if (firstArgument == secondArgument) {
+			return "false";
+		}
 	}
 	else if (relation == "Parent*") {
 		if (firstArgument == "_") {
@@ -352,10 +335,6 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().isChild(stoi(secondArgument)) > 0);
 			}
-			else if (firstArgument == secondArgument) {
-				return "false";
-			}
-			return "not trivial";
 		}
 		else if (LexicalToken::verifyInteger(firstArgument)) {
 			if (secondArgument == "_") {
@@ -364,9 +343,10 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (LexicalToken::verifyInteger(secondArgument)) {
 				return truthValue(PKB().hasAncDescPair(stoi(firstArgument), stoi(secondArgument)));
 			}
-			return "not trivial";
 		}
-	return "not trivial";
+		else if (firstArgument == secondArgument) {
+			return "false";
+		}
 	}
 	else if (relation == "Uses") {
 		if (LexicalToken::verifyInteger(firstArgument)) {
@@ -376,7 +356,6 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (secondArgument == "_") {
 				return truthValue(PKB().getUsedVar(stoi(firstArgument)).size() > 0);
 			}
-			return "not trivial";
 		}
 		else if (firstArgument.find("\"") != string::npos) {
 			if (secondArgument.find("\"") != string::npos) {
@@ -385,9 +364,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (secondArgument == "_") {
 				return truthValue(PKB().getUsedVar(trimFrontEnd(firstArgument)).size() > 0);
 			}
-			return "not trivial";
 		}
-		return "not trivial";
 	}
 	else if (relation == "Modifies") {
 		if (LexicalToken::verifyInteger(firstArgument)) {
@@ -397,7 +374,6 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (secondArgument == "_") {
 				return truthValue(PKB().getModifiedVar(stoi(firstArgument)).size() > 0);
 			}
-			return "not trivial";
 		}
 		else if (firstArgument.find("\"") != string::npos) {
 			if (secondArgument.find("\"") != string::npos) {
@@ -406,9 +382,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 			else if (secondArgument == "_") {
 				return truthValue(PKB().getModifiedVar(trimFrontEnd(firstArgument)).size() > 0);
 			}
-			return "not trivial";
 		}
-		return "not trivial";
 	}
 
 	return "not trivial";
@@ -509,7 +483,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 		}
 		if (secondArgument != "_" && !LexicalToken::verifyInteger(secondArgument)) {
 			if (firstArgument == "_") {
-				return intSetToStrSet(PKB().getAllParents());
+				return intSetToStrSet(PKB().getAllChildren());
 			}
 			else if (LexicalToken::verifyInteger(firstArgument)) {
 				return intSetToStrSet(PKB().getAllDescendants(stoi(firstArgument)));

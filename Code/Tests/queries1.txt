@@ -503,272 +503,272 @@ while w; assign a;
 Select a such that Parent(w, a)
 12
 5000
-101 - ParentStar
+102 - ParentStar
 procedure proc; while w; assign a;
 Select proc such that Parent(w, a)
 TestA
 5000
-102 - ParentStar
+103 - ParentStar
 stmt s;
 Select s such that Parent*(s, s)
 none
 5000
-103 - Uses
+104 - Uses
 constant c;
 Select c such that Uses(6, "b")
 1, 2
 5000
-104 - Uses
+105 - Uses
 constant c;
 Select c such that Uses(7, "b")
 none
 5000
-105 - Uses
+106 - Uses
 print p;
 Select p such that Uses(6, _)
 4, 13
 5000
-106 - Uses
+107 - Uses
 print p;
 Select p such that Uses(1, _)
 none
 5000
-107 - Uses
+108 - Uses
 variable v;
 Select v such that Uses(6, v)
 a, b
 5000
-108 - Uses
+109 - Uses
 read r; variable v;
 Select r such that Uses(6, v)
 1, 2
 5000
-109 - Uses
+110 - Uses
 assign a;
 Select a such that Uses(a, "minus1")
 8, 9
 5000
-110 - Uses
+111 - Uses
 while w; assign a;
-Select w such that Uses(a, "minus")
+Select w such that Uses(a, "minus1")
 11
 5000
-110 - Uses
+112 - Uses
 if ifs;
 Select ifs such that Uses(ifs, _)
 7
 5000
-111 - Uses
+113 - Uses
 while w; if ifs;
 Select w such that Uses(ifs, _)
 11
 5000
-112 - Uses
+114 - Uses
 print pn; variable v;
 Select pn such that Uses(pn, v)
 4, 13
 5000
-113 - Uses
+115 - Uses
 print pn; variable v;
 Select v such that Uses(pn, v)
 sum
 5000
-114 - Uses
+116 - Uses
 procedure proc; print pn; variable v;
 Select proc such that Uses(pn, v)
 TestA
 5000
-115 - Modifies
+117 - Modifies
 print pn;
 Select pn such that Modifies(12, "sum")
 4, 13
 5000
-116 - Modifies
+118 - Modifies
 print pn;
 Select pn such that Modifies(10, "sum")
 none
 5000
-117 - Modifies
+119 - Modifies
 assign a; 
 Select a such that Modifies(12, _)
 3, 5, 6, 8, 9, 10, 12
 5000
-118 - Modifies
+120 - Modifies
 assign a;
 Select a such that Modifies(13, _)
 none
 5000
-119 - Modifies
+121 - Modifies
 variable v;
 Select v such that Modifies(12, v)
 sum 
 5000
-120 - Modifies
+122 - Modifies
 if ifs; variable v;
 Select ifs such that Modifies(12, v)
 7
 5000
-121 - Modifies
+123 - Modifies
 read r;
 Select r such that Modifies(r, "b")
 2
 5000
-122 - Modifies
+124 - Modifies
 while w; read r;
 Select w such that Modifies(r, "b")
 11
 5000
-123 - Modifies
+125 - Modifies
 while w;
 Select w such that Modifies(w, _)
 11
 5000
-124 - Modifies 
+126 - Modifies 
 constant c; while w;
 Select c such that Modifies(w, _)
 1, 2
 5000
-125 - Modifies
+127 - Modifies
 if ifs; variable v;
 Select ifs such that Modifies(ifs, v)
 7
 5000
-126 - Modifies
+128 - Modifies
 if ifs; variable v;
 Select v such that Modifies(ifs, v)
 sum, minus1
 5000
-127 - Modifies
+129 - Modifies
 procedure proc; if ifs; variable v;
 Select proc such that Modifies(ifs, v)
 TestA
 5000
-128 - Pattern
+130 - Pattern
 assign a;
 Select a pattern a (_, _)
 3, 5, 6, 8, 9, 10, 12
 5000
-129 - Pattern
+131 - Pattern
 assign a;
 Select a pattern a ("sum", _)
 3, 8, 12
 5000
-130 - Pattern 
+132 - Pattern 
 stmt s; assign a;
 Select s pattern a ("sum", _)
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
 5000
-131 - Pattern
+133 - Pattern
 assign a;
 Select a pattern a (_, "a+b")
 3
 5000
-132 - Pattern
+134 - Pattern
 assign a;
 Select a pattern a (_, "   a   +   b   ")
 3
 5000
-133 - Pattern
+135 - Pattern
 assign a;
 Select a pattern a (_, _"b"_)
 3, 5, 6
 5000
-134 - Pattern 
+136 - Pattern 
 constant c; assign a;
 Select c pattern a (_, _"b"_)
 1, 2
 5000
-135 - Pattern
+137 - Pattern
 assign a;
 Select a pattern a ("minus2", _"sum - 2"_)
 none
 5000
-136 - Pattern
+138 - Pattern
 assign a;
 Select a pattern a ("minus1", _"b"_)
 5
 5000
-137 - Pattern
+139 - Pattern
 constant c; assign a;
 Select c pattern a ("minus1", _"b"_)
 1, 2
 5000
-138 - Pattern
+140 - Pattern
 assign a; variable v;
 Select a pattern a (v, _)
 3, 5, 6, 8, 9, 10, 12
 5000
-139 - Pattern
+141 - Pattern
 assign a; variable v;
 Select v pattern a (v, _)
 sum, minus1, minus2
 5000
-140 - Pattern
+142 - Pattern
 procedure proc; assign a; variable v;
 Select proc pattern a (v, _)
 TestA
 5000
-141 - Pattern
+143 - Pattern
 assign a; variable v;
 Select a pattern a (v, _"b"_)
 3, 5, 6
 5000
-142 - Pattern
+144 - Pattern
 assign a; variable v;
 Select v pattern a (v, _"b"_)
 sum, minus1, minus2
 5000
-143 - Pattern
+145 - Pattern
 procedure proc; assign a; variable v;
 Select proc pattern a (v, _"b"_)
 TestA
 5000
-144 - Follows and Pattern
+146 - Follows and Pattern
 assign a; if ifs;
 Select a such that Follows (ifs, a) pattern a ("minus2", _"sum - 2"_)
 none
 5000
-145 - Follows and Pattern
+147 - Follows and Pattern
 assign a; if ifs;
 Select a such that Follows (ifs, a) pattern a ("minus2", _"sum"_)
 10
 5000
-146 - Parent and Pattern
+148 - Parent and Pattern
 assign a; if ifs;
 Select a such that Parent (ifs, a) pattern a (_, _)
 8, 9
 5000
-147 - comment
+149 - comment
 assign a; if ifs;
 Select a such that Parent (ifs, a) pattern a ("minus2", _)
 none
 5000
-148 - comment
+150 - comment
 assign a; if ifs;
 Select a such that Parent (ifs, a) pattern a ("minus1", _)
 9
 5000
-149 - comment
+151 - comment
 assign a; if ifs;
 Select a such that Parent (ifs, a) pattern a (_, "sum + minus1")
 8
 5000
-150 - comment
+152 - comment
 assign a;
 Select a such that Uses (a, "a") pattern a ("sum", _)
 3
 5000
-151 - comment
+153 - comment
 assign a;
 Select a such that Uses (a, "minus1") pattern a (_, "minus1 / minus2")
 9
 5000
-152 - comment
+154 - comment
 assign a;
 Select a such that Modifies (a, "minus2") pattern a (_, _"x"_)
 none
 5000
-153 - comment
+155 - comment
 assign a;
 Select a such that Modifies (a, "minus2") pattern a (_, _"b"_)
 6
