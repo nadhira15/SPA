@@ -4,13 +4,9 @@
 #include <sstream>
 #include "ConditionalExp.h"
 
-std::string str; //= "!((( variable1 != variable2 + variable3 + (variable4%5))&&( variable5<=    variable6 +200))||(!(((variable7<=variable8+7+0)&&(variable9==variabel10+3-6*9/4))||(!(variable11<=6)||(9<3))))";
+//= "!((( variable1 != variable2 + variable3 + (variable4%5))&&( variable5<=    variable6 +200))||(!(((variable7<=variable8+7+0)&&(variable9==variabel10+3-6*9/4))||(!(variable11<=6)||(9<3))))";
 //std::regex invalid("(^([a-zA-Z]+\\d*) \\s* [<>!=]=|[+\\-*/] succesful$)");
 std::regex formular("\\s*\\(*(!?\\s*\\(*\\s*(?:[a-zA-Z]+\\d*[a-zA-Z]*)|(?:\\d+))\\s*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\s]*((?:[a-zA-Z]+\\d*[a-zA-Z]*)|(?:\\d+))[\\(\\s\\)]*(([\\(\\s\\)]*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\s\\)]*(([a-zA-Z]+\\d*[a-zA-Z]*)|(\\d+)))*[\\(\\s\\)]*)");
-std::vector<std::string>wordVector;
-std::vector<std::string>variableVector;
-std::vector<std::string>variables;
-std::vector<std::string>constants;
 
 
 bool ConditionalExp::verifyConditionalExp(std::string statement) {

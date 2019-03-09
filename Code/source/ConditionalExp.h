@@ -4,9 +4,14 @@
 
 class ConditionalExp {
 public:
-	static std::vector<std::string> getVariables();
-	static std::vector<std::string> getConstants();
-	static bool verifyConditionalExp(const std::string statement);
+	std::vector<std::string> getVariables();
+	std::vector<std::string> getConstants();
+	bool verifyConditionalExp(const std::string statement);
 private:
-	static void populateVector();
+	void populateVector();
+	std::vector<std::string>wordVector;
+	std::vector<std::string>variableVector;
+	std::vector<std::string>variables;
+	std::vector<std::string>constants;
+	std::string str;
 };
