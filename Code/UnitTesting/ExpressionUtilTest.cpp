@@ -13,7 +13,7 @@ namespace UnitTesting
 		TEST_METHOD(convertInfix1Variable)
 		{
 			std::string testStatement = "a";
-			std::string expectedOutput = "a";
+			std::string expectedOutput = " a ";
 			bool validExpression = ExpressionUtil::verifyInfixExpression(testStatement);
 
 			Assert::IsTrue(validExpression);
@@ -63,7 +63,7 @@ namespace UnitTesting
 		TEST_METHOD(test2OperandConversion)
 		{
 			std::string testStatement = "x+6";
-			std::string expectedConvert = "+ x 6";
+			std::string expectedConvert = " + x 6 ";
 
 			std::string output = ExpressionUtil::convertInfixToPrefix(testStatement);
 
@@ -73,7 +73,7 @@ namespace UnitTesting
 		TEST_METHOD(test3OperandConversion)
 		{
 			std::string testStatement = "xy+995+lcz";
-			std::string expectedConvert = "+ + xy 995 lcz";
+			std::string expectedConvert = " + + xy 995 lcz ";
 
 			std::string output = ExpressionUtil::convertInfixToPrefix(testStatement);
 
@@ -83,7 +83,7 @@ namespace UnitTesting
 		TEST_METHOD(test4OperandConversion)
 		{
 			std::string testStatement = "5*95+                vvv/4";
-			std::string expectedConvert = "+ * 5 95 / vvv 4";
+			std::string expectedConvert = " + * 5 95 / vvv 4 ";
 
 			std::string output = ExpressionUtil::convertInfixToPrefix(testStatement);
 
@@ -109,7 +109,7 @@ namespace UnitTesting
 
 
 
-			std::string expectedConvert = "/ * 5 + a b 5";
+			std::string expectedConvert = " / * 5 + a b 5 ";
 
 			std::string output = ExpressionUtil::convertInfixToPrefix(testStatement);
 

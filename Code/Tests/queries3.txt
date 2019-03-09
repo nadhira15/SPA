@@ -116,7 +116,7 @@ Select w such that Uses(w, "b")
 20 - Uses
 while w;
 Select w such that Uses(w, "c")
-11, 12, 13, 6, 3
+11, 12, 6, 3
 5000
 21 - Uses
 print p;
