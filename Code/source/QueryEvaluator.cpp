@@ -169,7 +169,7 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 		vector<pair<string, pair<string, string>>> emptyPattern;
 		unordered_set<string> fulfillingVar;
 		unordered_set<string> fulfillingAssign;
-		if (patternLeft[0] == '"' && secondArgument == patternLeft) {
+		if (patternLeft[0] != '"' && secondArgument == patternLeft) {
 			if (firstArgumentType == "") {
 				fulfillingVar = intersection(
 					filterType(firstArgumentType, suchThatResult), getSecondParam(afterPatternFilter)
