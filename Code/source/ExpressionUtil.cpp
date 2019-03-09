@@ -99,7 +99,7 @@ string ExpressionUtil::convertInfixToPrefix(string expression) {
 		operandStack.push(subexpre);
 	}
 			
-	return operandStack.top();
+	return " " + operandStack.top() + " ";
 
 }
 
