@@ -23,12 +23,12 @@ void DesignExtractor::processFollowStar()
 	int stmtNum = pkb.getTotalStmNo();
 
 	//Process stmt list s where Follow*(index, s) is true
-	for (int i = stmtNum - 1; i >= 0; i--) {
+	for (int i = stmtNum; i >= 1; i--) {
 		int currStmt = i;
 		int directFollowStm = pkb.getNxtStm(currStmt);
 		//Has a Next Stm
 		if (directFollowStm != 0) {
-			unordered_set<int> followedByStar = pkb.getAllFollowedBy(directFollowStm);
+			unordered_set<int> followedByStar = pkb.getAllFollowing(directFollowStm);
 			followedByStar.insert(directFollowStm);
 			pkb.setFollowers(currStmt, followedByStar);
 		}
@@ -41,7 +41,7 @@ void DesignExtractor::processFollowStar()
 
 		//If have Prev Stm
 		if (directPrvStm != 0) {
-			unordered_set<int>  followStar = pkb.getAllFollowing(directPrvStm);
+			unordered_set<int>  followStar = pkb.getAllFollowedBy(directPrvStm);
 			followStar.insert(directPrvStm);
 			pkb.setStmFollowedBy(currStmt, followStar);
 		}
@@ -56,6 +56,7 @@ void DesignExtractor::processParentStar()
 {
 	int stmtNum = pkb.getTotalStmNo();
 
+	//Process stmt list s where Parent*(s, index) is true.
 	for (int i = 1 ; i <= stmtNum ; i++) {
 		int currStmt = i;
 		int directParentStm = pkb.getParent(i);
@@ -68,7 +69,8 @@ void DesignExtractor::processParentStar()
 		}
 	}
 
-	for (int i = stmtNum - 1; i >= 0; i--) {
+	//Process stmt list s where Parent*(index, s) is true.
+	for (int i = stmtNum; i >= 1; i--) {
 		int currStmt = i;
 		unordered_set<int> directChildStm = pkb.getChildren(i);
 
@@ -80,7 +82,9 @@ void DesignExtractor::processParentStar()
 				for (int descendent : descendents) {
 					allDescendents.insert(descendent);
 				}
+				allDescendents.insert(childStm);
 			}
+			pkb.setDescendants(i, allDescendents);
 		}
 	}
 }
@@ -103,14 +107,14 @@ void DesignExtractor::processModifiesContainers()
 {
 	int stmtNum = pkb.getTotalStmNo();
 
-	for (int i = 1; i <= stmtNum; i++) {
+	for (int i = stmtNum; i >= 1; i--) {
 		int currLine = i;
 		unordered_set<int> descendents = pkb.getAllDescendants(currLine);
 		for (int descendent : descendents) {
-			//unordered_set<string> modifiedList = pkb.getModifiedVar(descendent);
-			//for (string modifiedVar : modifiedList) {
-			//	pkb.addModifies(currLine, modifiedVar);
-			//}
+			unordered_set<string> modifiedList = pkb.getModifiedVar(descendent);
+			for (string modifiedVar : modifiedList) {
+				pkb.addModifies(currLine, modifiedVar);
+			}
 		}
 	}
 }
@@ -123,7 +127,7 @@ void DesignExtractor::processUsesContainers()
 {
 	int stmtNum = pkb.getTotalStmNo();
 
-	for (int i = 0; i <= stmtNum; i++) {
+	for (int i = stmtNum; i >= 1; i--) {
 		int currLine = i;
 		unordered_set<int> descendents = pkb.getAllDescendants(currLine);
 		for (int descendent : descendents) {

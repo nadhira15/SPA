@@ -31,7 +31,7 @@ std::string ReadParser::parseReadStmt(const std::string toParse) {
 		}
 	}
 	else {
-		return "Invalid Read Statement";
+		throw "Invalid Read Statement";
 	}
 }
 
