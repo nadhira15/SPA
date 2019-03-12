@@ -54,9 +54,6 @@
     <ClCompile Include="..\source\ReadParser.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Preprocesser.cpp">
-      <Filter>Source Files\PreProcessor</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\PrintParser.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
@@ -99,6 +96,9 @@
     <ClCompile Include="..\source\UseStorage.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\Preprocessor.cpp">
+      <Filter>Source Files\PreProcessor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\PKB.h">
@@ -137,9 +137,6 @@
     <ClInclude Include="..\source\ProcedureParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\Preprocesser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\Statement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -168,6 +165,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\DesignExtractor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Preprocessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

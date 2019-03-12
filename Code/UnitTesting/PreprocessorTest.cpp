@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "Preprocesser.h"
+#include "Preprocessor.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -9,7 +9,7 @@ namespace UnitTesting
 	TEST_CLASS(PreprocesserTest)
 	{
 	public:
-		Preprocesser p = Preprocesser("procedure q { a = b;}");
+		Preprocessor p = Preprocessor("procedure q { a = b;}");
 		// types = { 1 "ASSIGN", 2 "CALL", 3 "READ", 4 "PRINT", 5 "WHILE", 6 "IF", 7 "ELSE", 8 "PROCEDURE" };
 		TEST_METHOD(testValidator)
 		{

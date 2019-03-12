@@ -1,6 +1,6 @@
 #include "TestWrapper.h"
 #include "PKB.h"
-#include "Preprocesser.h"
+#include "Preprocessor.h"
 #include "Parser.h"
 #include "QueryParser.h"
 #include "DesignExtractor.h"
@@ -37,8 +37,9 @@ void TestWrapper::parse(std::string filename) {
 
 		try {
 			//Preprocesses source into a list of Statements
-			Preprocesser preprocesser = Preprocesser(contents);
-			vector<Statement> procList = preprocesser.getProcLst();
+			Preprocessor preprocessor = Preprocessor(contents);
+			preprocessor.process();
+			vector<Statement> procList = preprocessor.getProcLst();
 
 			//Parses the list of procedures.
 			parser.parse(procList, 0, pkb);
