@@ -195,7 +195,7 @@ none
 5000
 40 - comments
 assign a;
-Select a pattern a(, _"a"_)
+Select a pattern a(_, _"a"_)
 23
 5000
 41 - comments
