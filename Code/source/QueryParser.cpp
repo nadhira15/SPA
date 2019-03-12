@@ -15,16 +15,16 @@ using namespace std;
 
 string whitespace = " \f\n\r\t\v";
 
+/*
+Main parser function for input query.
+Passes the following to query evaluator:
+1. vector<pair<string, string>> declarations
+2. vector<string> selectedVar
+3. vector<pair<string, pair<string, string>>> suchThatCondition
+4. vector<pair<string, pair<string, string>>> patternCondition
+*/
 unordered_set<string> QueryParser::parse(string query) {
-	/*
-	Main parser function for input query.
-	Passes the following to query evaluator:
-	1. vector<pair<string, string>> declarations 
-	2. vector<string> selectedVar
-	3. vector<pair<string, pair<string, string>>> suchThatCondition
-	4. vector<pair<string, pair<string, string>>> patternCondition
-	*/
-
+	
 	string errorString;
 	unordered_set<string> result;
 
@@ -121,11 +121,12 @@ unordered_set<string> QueryParser::parse(string query) {
 	return result;
 }
 
+/*
+Splits the query string by char ";".
+Returns a vector<string> consisting of every declaration clauses (without trailing whitespaces) and the "Select" statement
+*/
 vector<string> QueryParser::splitClauses(string query) {
-	/*
-	Splitting the query string by char ";".
-	Returns a vector<string> consisting of every declaration clauses (without trailing whitespaces) and the "Select" statement
-	*/
+	
 	vector<string> output;
 	char delimiter = ';';
 	int startPoint = 0;
@@ -142,12 +143,12 @@ vector<string> QueryParser::splitClauses(string query) {
 	return output;
 }
 
+/*
+Splits each declarations clause by whitespaces.
+Returns a vector<pair<string, string>> consisting of design-entity and synonym
+*/
 vector<pair<string, string>> QueryParser::splitDeclarations(vector<string> clauses) {
-	/*
-	Splitting each declarations clause by whitespaces.
-	Returns a vector<pair<string, string>> consisting of design-entity and synonym
-	*/
-
+	
 	vector<pair<string, string>> output;
 	int clausesSize = clauses.size();
 
@@ -179,12 +180,12 @@ vector<pair<string, string>> QueryParser::splitDeclarations(vector<string> claus
 	return output;
 }
 
+/*
+Splits select clause by whitespaces.
+Returns a vector<string> consisting of design-entity selected
+TODO: implement select boolean and tuples
+*/
 vector<string> QueryParser::splitSelectParameter(string selectStatement) {
-	/*
-	Splitting select clause by whitespaces.
-	Returns a vector<string> consisting of design-entity selected
-	TODO: implement select boolean and tuples
-	*/
 	
 	vector<string> output;
 
@@ -196,11 +197,11 @@ vector<string> QueryParser::splitSelectParameter(string selectStatement) {
 	return output;
 }
 
+/*
+Splits such that clause by open bracket, comma, and close bracket.
+Returns a vector<pair<string, pair<string, string>>> consisting of relation, stmtRef/entRef, stmtRef/entRef
+*/
 vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(string suchThatClause) {
-	/*
-	Splitting such that clause by open bracket, comma, and close bracket.
-	Returns a vector<pair<string, pair<string, string>>> consisting of relation, stmtRef/entRef, stmtRef/entRef
-	*/
 	
 	vector<pair<string, pair<string, string>>> output;
 
@@ -218,11 +219,11 @@ vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(s
 	return output;
 }
 
+/*
+Splits pattern clause by open bracket, comma, and close bracket.
+Returns a vector<pair<string, pair<string, string>>> consisting of design-entity, entRef, expression-spec
+*/
 vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(string patternClause) {
-	/*
-	Splitting pattern clause by open bracket, comma, and close bracket.
-	Returns a vector<pair<string, pair<string, string>>> consisting of design-entity, entRef, expression-spec
-	*/
 	
 	vector<pair<string, pair<string, string>>> output;
 
@@ -240,6 +241,10 @@ vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(st
 	return output;
 }
 
+/*
+Calls QueryEvaluator to evaluate the query result
+Returns a unordered_set<string> consisting of results
+*/
 unordered_set<string> QueryParser::evaluateSelectConditions(vector<pair<string, string>> declarations, 
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {

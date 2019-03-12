@@ -15,14 +15,14 @@ using namespace std;
 
 const unordered_set<string> validVarType = { "stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure" };
 
+/*
+Checks whether the input string is valid:
+- has length more than 0
+- has substring "Select"
+- has declaration
+Output: error message (if any), otherwise empty string
+*/
 string QueryValidator::initialValidation(string query) {
-	/*
-	checks whether the input string is valid:
-	- has length more than 0
-	- has substring "Select"
-	- has declaration
-	output: error message (if any), otherwise empty string
-	*/
 
 	if (query.length() <= 0) {
 		return "invalid query";
@@ -38,13 +38,13 @@ string QueryValidator::initialValidation(string query) {
 	}
 }
 
+/*
+Validates declaration clauses based on following conditions:
+- "Select" clause appears after all declaration clauses
+- Each declaration clause consists of varType and varName
+*/
 string QueryValidator::validateClauses(vector<string> clauses) {
-	/*
-	Validate declaration clauses based on following conditions:
-	- "Select" statement is the last statement
-	- Each declaration clause consists of varType and varName
-	*/
-
+	
 	int clausesSize = clauses.size();
 
 	if (clauses[clausesSize - 1].find("Select") == -1) {
@@ -60,13 +60,13 @@ string QueryValidator::validateClauses(vector<string> clauses) {
 	return "";
 }
 
+/*
+Validates declaration vector based on following conditions:
+- design-entity should be valid
+- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
+*/
 string QueryValidator::validateDeclarations(vector<pair<string, string>> declarations) {
-	/*
-	Validate declaration vector based on following conditions:
-	- design-entity should be valid
-	- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
-	*/
-
+	
 	for (size_t i = 0; i < declarations.size(); i++) {
 		if (validVarType.find(declarations[i].first) == validVarType.end()) {
 			return "invalid query";
@@ -80,13 +80,13 @@ string QueryValidator::validateDeclarations(vector<pair<string, string>> declara
 	return "";
 }
 
+/*
+Validates vector of selected synonym based on following conditions:
+- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
+- synonym should be declared previously
+*/
 string QueryValidator::validateSelectedVar(vector<string> selectedVar, unordered_map<string, string> declarationsMap) {
-	/*
-	Validate vector of selected variable based on following conditions:
-	- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
-	- synonym should be declared previously
-	*/
-
+	
 	for (int i = 0; i < selectedVar.size(); i++) {
 		if (!LexicalToken::verifyName(selectedVar[i])) {
 			return "invalid variable name";
@@ -100,14 +100,14 @@ string QueryValidator::validateSelectedVar(vector<string> selectedVar, unordered
 	return "";
 }
 
-string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
-	/*
-	Validate vector of such that parameter based on following conditions:
-	- valid relation name
-	- for each relation, first and second argument should be valid
+/*
+Validates vector of such that parameter based on following conditions:
+- valid relation name
+- for each relation, first and second argument should be valid
 
-	TODO: implement validation for other relations
-	*/
+TODO: implement validation for other relations
+*/
+string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
 
 	unordered_set<string> validRelation = { "Parent", "Parent*", "Follows", "Follows*", "Uses", "Modifies" };
 	unordered_set<string> validArgs = { "stmt", "read", "print", "while", "if", "assign", "call" };
@@ -122,6 +122,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 		string firstArgsType;
 		string secondArgsType;
 
+		// Initial Validation
 		if (validRelation.find(relation) == validRelation.end()) {
 			return "invalid query";
 		}
@@ -134,7 +135,54 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 			secondArgsType = declarationsMap.find(secondArgs)->second;
 		}
 
-		if (relation == "Uses") {
+		// Switch Cases according to relation
+		if (relation == "Parent" || relation == "Parent*") {
+			
+			// Validating first args
+			if (firstArgs == "_" ||
+				LexicalToken::verifyInteger(firstArgs) ||
+				validFirstArgsParent.find(firstArgsType) != validFirstArgsParent.end()) {
+				// valid first args
+			}
+			else {
+				return "invalid query";
+			}
+
+			// Validating second args
+			if (secondArgs == "_" ||
+				LexicalToken::verifyInteger(secondArgs) ||
+				validArgs.find(secondArgsType) != validArgs.end()) {
+				// valid second args
+			}
+			else {
+				return "invalid query";
+			}
+		} 
+		else if (relation == "Follows" || relation == "Follows*") {
+
+			// Validating first args
+			if (firstArgs == "_" ||
+				LexicalToken::verifyInteger(firstArgs) ||
+				validArgs.find(firstArgsType) != validArgs.end()) {
+				// valid first args
+			}
+			else {
+				return "invalid query";
+			}
+
+			// Validating second args
+			if (secondArgs == "_" ||
+				LexicalToken::verifyInteger(secondArgs) ||
+				validArgs.find(secondArgsType) != validArgs.end()) {
+				// valid second args
+			}
+			else {
+				return "invalid query";
+			}
+		} 
+		else if (relation == "Uses") {
+
+			// Validating first args
 			if (LexicalToken::verifyInteger(firstArgs) ||
 				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
 				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validFirstArgsUses.find(firstArgsType) != validFirstArgsUses.end()))) {
@@ -144,6 +192,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				return "invalid query";
 			}
 
+			// Validating second args
 			if (secondArgs == "_" ||
 				LexicalToken::verifyInteger(secondArgs) ||
 				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
@@ -155,6 +204,8 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 			}
 		}
 		else if (relation == "Modifies") {
+
+			// Validating first args
 			if (LexicalToken::verifyInteger(firstArgs) ||
 				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
 				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validFirstArgsModifies.find(firstArgsType) != validFirstArgsModifies.end()))) {
@@ -164,6 +215,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				return "invalid query";
 			}
 
+			// Validating second args
 			if (secondArgs == "_" ||
 				LexicalToken::verifyInteger(secondArgs) ||
 				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
@@ -174,68 +226,28 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				return "invalid query";
 			}
 		}
-		else if (relation == "Parent" || relation == "Parent*") {
-			if (firstArgs == "_" ||
-				LexicalToken::verifyInteger(firstArgs) ||
-				validFirstArgsParent.find(firstArgsType) != validFirstArgsParent.end()) {
-				// valid query
-			}
-			else {
-				return "invalid query";
-			}
-
-			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
-				validArgs.find(secondArgsType) != validArgs.end()) {
-				// valid query
-			}
-			else {
-				return "invalid query";
-			}
-		}
-		else {
-			// relation == Follows | Follows*
-
-			if (firstArgs == "_" ||
-				LexicalToken::verifyInteger(firstArgs) ||
-				validArgs.find(firstArgsType) != validArgs.end()) {
-				// valid query
-			}
-			else {
-				return "invalid query";
-			}
-
-			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
-				validArgs.find(secondArgsType) != validArgs.end()) {
-				// valid query
-			}
-			else {
-				return "invalid query";
-			}
-		}
 	}
 
 	return "";
 }
 
+/*
+Validates vector of pattern parameter based on following conditions:
+- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
+- synonym should be declared previously
+- synonym should be assign type (assign-synonym)
+- for each pattern clause, first and second argument should be valid
+
+TODO: implement validation for if and while pattern
+*/
 string QueryValidator::validatePatternParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
-	/*
-	Validate vector of pattern parameter based on following conditions:
-	- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
-	- synonym should be declared previously
-	- synonym should be assign type (assign-synonym)
-
-	TODO: implement validation for if and while pattern
-	*/
-
-
+	
 	for (int i = 0; i < param.size(); i++) {
 		string stmt = param[i].first;
 		string firstArgs = param[i].second.first;
 		string secondArgs = param[i].second.second;
 
-		// ASSIGN SYNONYM VALIDATION
+		// Assign synonym validation
 		if (!LexicalToken::verifyName(stmt)) {
 			return "invalid assign synonym";
 		}
@@ -247,24 +259,24 @@ string QueryValidator::validatePatternParam(vector<pair<string, pair<string, str
 			return "statement type is not assign";
 		}
 
-		// FIRST ARGUMENT VALIDATION
+		// First argument validation
 		if (firstArgs == "_" ||
 			(firstArgs[0] != '"' && (declarationsMap.find(firstArgs) != declarationsMap.end()) && ((declarationsMap.find(firstArgs))->second == "variable")) ||
 			(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2)))) {
-			// valid firstArgs
+			// valid first args
 		}
 		else {
-			return "invalid first arguments";
+			return "invalid first args";
 		}
 
-		// SECOND ARGUMENT VALIDATION
+		// Second argument validation
 		if (secondArgs == "_" ||
 			(secondArgs[0] == '_' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(2, secondArgs.length() - 4))) ||
 			(secondArgs[0] == '"' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(1, secondArgs.length() - 2)))) {
-			// valid secondArgs
+			// valid second args
 		}
 		else {
-			return "invalid second arguments";
+			return "invalid second args";
 		}
 
 	}
