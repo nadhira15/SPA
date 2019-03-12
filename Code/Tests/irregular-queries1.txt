@@ -558,3 +558,33 @@ assign a;
 Select a pattern a("_", _)
 none
 5000
+113 - invalid pattern arguments
+assign a;
+Select a pattern a(_, _"")
+none
+5000
+114 - invalid pattern arguments
+assign a;
+Select a pattern a(_""_, _)
+none
+5000
+115 - invalid pattern arguments
+assign a;
+Select a pattern a(_, _""_)
+none
+5000
+116 - invalid pattern arguments
+assign a;
+Select a pattern a(_"1"_, _)
+none
+5000
+117 - invalid pattern arguments
+assign a;
+Select a pattern a(_a_, _)
+none
+5000
+118 - invalid pattern arguments
+assign a;
+Select a pattern a(_, _a_)
+none
+5000

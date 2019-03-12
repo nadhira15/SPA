@@ -185,7 +185,7 @@ namespace UnitTesting
 
 		TEST_METHOD(validatePatternParam_success)
 		{
-			vector<pair<string, pair<string, string>>> param{ {"a", {"'_'", "'x*y+z'"}} };
+			vector<pair<string, pair<string, string>>> param{ {"a", {"_", "\"x*y+z\""}} };
 			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
 			string actual = QueryParser::validatePatternParam(param, declarationsMap);
 			string expected = "";
@@ -194,10 +194,10 @@ namespace UnitTesting
 
 		TEST_METHOD(validatePatternParam_invalidStmtName)
 		{
-			vector<pair<string, pair<string, string>>> param{ {"a_a", {"'_'", "'x*y+z'"}} };
+			vector<pair<string, pair<string, string>>> param{ {"a_a", {"_", "'x*y+z'"}} };
 			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
 			string actual = QueryParser::validatePatternParam(param, declarationsMap);
-			string expected = "invalid variable name";
+			string expected = "invalid assign synonym";
 			Assert::AreEqual(actual == expected, true);
 		}
 
