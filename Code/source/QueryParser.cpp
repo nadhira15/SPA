@@ -13,6 +13,7 @@ using namespace std;
 #include "QueryEvaluator.h"
 #include "QueryParser.h"
 #include "LexicalToken.h"
+#include "ExpressionUtil.h"
 
 const string whitespace = " \f\n\r\t\v";
 const unordered_set<string> validVarType = { "stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure" };
@@ -459,9 +460,12 @@ string QueryParser::validatePatternParam(vector<pair<string, pair<string, string
 
 	for (int i = 0; i < param.size(); i++) {
 		string stmt = param[i].first;
+		string firstArgs = param[i].second.first;
+		string secondArgs = param[i].second.second;
 
+		// ASSIGN SYNONYM VALIDATION
 		if (!LexicalToken::verifyName(stmt)) {
-			return "invalid variable name";
+			return "invalid assign synonym";
 		}
 
 		if (declarationsMap.find(stmt) == declarationsMap.end()) {
@@ -470,6 +474,27 @@ string QueryParser::validatePatternParam(vector<pair<string, pair<string, string
 		else if ((declarationsMap.find(stmt))->second != "assign") {
 			return "statement type is not assign";
 		}
+
+		// FIRST ARGUMENT VALIDATION
+		if (firstArgs == "_" ||
+			(firstArgs[0] != '"' && (declarationsMap.find(firstArgs) != declarationsMap.end()) && ((declarationsMap.find(firstArgs))->second == "variable")) || 
+			(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2)))) {
+			// valid firstArgs
+		}
+		else {
+			return "invalid first arguments";
+		}
+
+		// SECOND ARGUMENT VALIDATION
+		if (secondArgs == "_" ||
+			(secondArgs[0] == '_' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(2, secondArgs.length() - 4))) ||
+			(secondArgs[0] == '"' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(1, secondArgs.length() - 2)))) {
+			// valid secondArgs
+		}
+		else {
+			return "invalid second arguments";
+		}
+
 	}
 
 	return "";
