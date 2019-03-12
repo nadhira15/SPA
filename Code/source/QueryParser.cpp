@@ -14,8 +14,9 @@ using namespace std;
 #include "QueryParser.h"
 #include "LexicalToken.h"
 #include "ExpressionUtil.h"
+#include "StringUtil.h"
 
-const string whitespace = " \f\n\r\t\v";
+string whitespace = " \f\n\r\t\v";
 const unordered_set<string> validVarType = { "stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure" };
 
 unordered_set<string> QueryParser::parse(string query) {
@@ -158,12 +159,12 @@ vector<string> QueryParser::splitClauses(string query) {
 	int endPoint = query.find(delimiter);
 
 	while (endPoint != -1) {
-		output.push_back(removeTrailingWhitespaces(query.substr(startPoint, endPoint - startPoint)));
+		output.push_back(StringUtil::trim(query.substr(startPoint, endPoint - startPoint), whitespace));
 		startPoint = endPoint + 1;
 		endPoint = query.find(delimiter, startPoint);
 	}
 
-	output.push_back(removeTrailingWhitespaces(query.substr(startPoint)));
+	output.push_back(StringUtil::trim(query.substr(startPoint), whitespace));
 
 	return output;
 }
@@ -211,16 +212,16 @@ vector<pair<string, string>> QueryParser::splitDeclarations(vector<string> claus
 			int endPoint = varName.find(delimiter);
 
 			while (endPoint != -1) {
-				string varNameSplitted = removeTrailingWhitespaces(varName.substr(startPoint, endPoint - startPoint));
+				string varNameSplitted = StringUtil::trim(varName.substr(startPoint, endPoint - startPoint), whitespace);
 				output.push_back(make_pair(type, varNameSplitted));
 				startPoint = endPoint + 1;
 				endPoint = varName.find(delimiter, startPoint);
 			}
 
-			output.push_back(make_pair(type, removeTrailingWhitespaces(varName.substr(startPoint))));
+			output.push_back(make_pair(type, StringUtil::trim(varName.substr(startPoint), whitespace)));
 		}
 		else {
-			output.push_back(make_pair(type, removeTrailingWhitespaces(varName)));
+			output.push_back(make_pair(type, StringUtil::trim(varName, whitespace)));
 		}
 	}
 
@@ -257,7 +258,7 @@ vector<string> QueryParser::splitSelectParameter(string selectStatement) {
 	vector<string> output;
 
 	int firstSpace = selectStatement.find_first_of(whitespace);
-	string varName = removeAllWhitespaces(selectStatement.substr(firstSpace));
+	string varName = StringUtil::removeAllWhitespaces(selectStatement.substr(firstSpace));
 
 	output.push_back(varName);
 
@@ -277,9 +278,9 @@ vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(s
 	int closeBracket = suchThatClause.find(")");
 	int strLen = suchThatClause.length();
 
-	string condition = removeAllWhitespaces(suchThatClause.substr(9, openBracket - 9));
-	string firstVar = removeAllWhitespaces(suchThatClause.substr(openBracket + 1, comma - openBracket - 1));
-	string secondVar = removeAllWhitespaces(suchThatClause.substr(comma + 1, closeBracket - comma - 1));
+	string condition = StringUtil::removeAllWhitespaces(suchThatClause.substr(9, openBracket - 9));
+	string firstVar = StringUtil::removeAllWhitespaces(suchThatClause.substr(openBracket + 1, comma - openBracket - 1));
+	string secondVar = StringUtil::removeAllWhitespaces(suchThatClause.substr(comma + 1, closeBracket - comma - 1));
 
 	output.push_back(make_pair(condition, make_pair(firstVar, secondVar)));
 
@@ -299,9 +300,9 @@ vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(st
 	int closeBracket = patternClause.find(")");
 	int strLen = patternClause.length();
 
-	string varName = removeAllWhitespaces(patternClause.substr(7, openBracket - 7));
-	string firstPattern = removeAllWhitespaces(patternClause.substr(openBracket + 1, comma - openBracket - 1));
-	string secondPattern = removeAllWhitespaces(patternClause.substr(comma + 1, closeBracket - comma - 1));
+	string varName = StringUtil::removeAllWhitespaces(patternClause.substr(7, openBracket - 7));
+	string firstPattern = StringUtil::removeAllWhitespaces(patternClause.substr(openBracket + 1, comma - openBracket - 1));
+	string secondPattern = StringUtil::removeAllWhitespaces(patternClause.substr(comma + 1, closeBracket - comma - 1));
 
 	output.push_back(make_pair(varName, make_pair(firstPattern, secondPattern)));
 
@@ -505,15 +506,4 @@ unordered_set<string> QueryParser::evaluateSelectConditions(vector<pair<string, 
 	vector<pair<string, pair<string, string>>> patternCondition) {
 
 	return QueryEvaluator::evaluateQuery(declarations, selectedVar, suchThatCondition, patternCondition);
-}
-
-string QueryParser::removeAllWhitespaces(string s) {
-	s.erase(remove_if(s.begin(), s.end(), isspace), s.end());
-	return s;
-}
-
-string QueryParser::removeTrailingWhitespaces(string s) {
-	string trimRight = s.substr(0, s.find_last_not_of(whitespace) + 1);
-	string trimLeft = trimRight.substr(trimRight.find_first_not_of(whitespace));
-	return trimLeft;
 }
