@@ -13,7 +13,7 @@ using namespace std;
 #include "LexicalToken.h"
 #include "ExpressionUtil.h"
 
-const unordered_set<string> validVarType = { "stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure" };
+const unordered_set<string> validVarType = { "stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "prog_line", "procedure" };
 
 /*
 Checks whether the input string is valid:
