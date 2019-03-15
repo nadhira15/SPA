@@ -281,8 +281,11 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 Validates vector of pattern parameter based on following conditions:
 - synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
 - synonym should be declared previously
-- synonym should be assign type (assign-synonym)
+- synonym should be assign/if/while type
 - for each pattern clause, first and second argument should be valid
+
+Returns Vector<pair<synonym, pair<1st args, 2nd args>>>
+Note: for if pattern, the third args will be removed
 
 TODO: implement validation for if and while pattern
 */
@@ -290,19 +293,20 @@ string QueryValidator::validatePatternParam(vector<pair<string, pair<string, str
 	
 	for (int i = 0; i < param.size(); i++) {
 		string stmt = param[i].first;
+		string stmtType;
 		string firstArgs = param[i].second.first;
 		string secondArgs = param[i].second.second;
 
 		// Assign synonym validation
 		if (!LexicalToken::verifyName(stmt)) {
-			return "invalid assign synonym";
+			return "invalid synonym";
 		}
 
 		if (declarationsMap.find(stmt) == declarationsMap.end()) {
 			return "statement not found";
 		}
-		else if ((declarationsMap.find(stmt))->second != "assign") {
-			return "statement type is not assign";
+		else {
+			stmtType = (declarationsMap.find(stmt))->second;
 		}
 
 		// First argument validation
@@ -316,15 +320,38 @@ string QueryValidator::validatePatternParam(vector<pair<string, pair<string, str
 		}
 
 		// Second argument validation
-		if (secondArgs == "_" ||
-			(secondArgs[0] == '_' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(2, secondArgs.length() - 4))) ||
-			(secondArgs[0] == '"' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(1, secondArgs.length() - 2)))) {
-			// valid second args
+		if (stmtType == "assign") {
+			if (secondArgs == "_" ||
+				(secondArgs[0] == '_' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(2, secondArgs.length() - 4))) ||
+				(secondArgs[0] == '"' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(1, secondArgs.length() - 2)))) {
+				// valid second args
+			}
+			else {
+				return "invalid second args";
+			}
+
+		}
+		else if (stmtType == "if") {
+			if (secondArgs == "_,_") {
+				// valid second args
+			}
+			else {
+				return "invalid second args";
+			}
+
+		}
+		else if (stmtType == "while") {
+			if (secondArgs == "_") {
+				// valid second args
+			}
+			else {
+				return "invalid second args";
+			}
+
 		}
 		else {
-			return "invalid second args";
+			return "statement type is invalid";
 		}
-
 	}
 
 	return "";
