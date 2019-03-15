@@ -109,11 +109,13 @@ TODO: implement validation for other relations
 */
 string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
 
-	unordered_set<string> validRelation = { "Parent", "Parent*", "Follows", "Follows*", "Uses", "Modifies" };
-	unordered_set<string> validArgs = { "stmt", "read", "print", "while", "if", "assign", "call" };
-	unordered_set<string> validFirstArgsParent = { "stmt", "while", "if" };
-	unordered_set<string> validFirstArgsUses = { "stmt", "print", "while", "if", "procedure", "assign", "call" };
-	unordered_set<string> validFirstArgsModifies = { "stmt", "read", "while", "if", "procedure", "assign", "call" };
+	unordered_set<string> validRelation = { "Parent", "Parent*", "Follows", "Follows*", "Uses", "Modifies", "Calls", "Calls*", "Next", "Next*", "Affects", "Affects*" };
+	unordered_set<string> validArgs = { "stmt", "read", "print", "while", "if", "assign", "call", "prog_line" };
+	unordered_set<string> validFirstArgsParent = { "stmt", "while", "if", "prog_line" };
+	unordered_set<string> validFirstArgsUses = { "stmt", "print", "while", "if", "assign", "call", "procedure", "prog_line" };
+	unordered_set<string> validFirstArgsModifies = { "stmt", "read", "while", "if", "assign", "call", "procedure", "prog_line" };
+	unordered_set<string> validArgsCalls = { "procedure" };
+	unordered_set<string> validArgsAffects = { "stmt", "assign", "prog_line" };
 
 	for (int i = 0; i < param.size(); i++) {
 		string relation = param[i].first;
@@ -158,7 +160,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				return "invalid query";
 			}
 		} 
-		else if (relation == "Follows" || relation == "Follows*") {
+		else if (relation == "Follows" || relation == "Follows*" || relation == "Next" || relation == "Next*") {
 
 			// Validating first args
 			if (firstArgs == "_" ||
@@ -221,6 +223,50 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
 				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs))) {
 				// valid first args
+			}
+			else {
+				return "invalid query";
+			}
+		}
+		else if (relation == "Calls" || relation == "Calls*") {
+
+			// Validating first args
+			if (firstArgs == "_" ||
+				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
+				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validArgsCalls.find(firstArgsType) != validArgsCalls.end()))) {
+				// valid first args
+			}
+			else {
+				return "invalid query";
+			}
+
+			// Validating second args
+			if (secondArgs == "_" ||
+				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
+				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs) && (validArgsCalls.find(secondArgsType) != validArgsCalls.end()))) {
+				// valid second args
+			}
+			else {
+				return "invalid query";
+			}
+		}
+		else if (relation == "Affects" || relation == "Affects*") {
+
+			// Validating first args
+			if (firstArgs == "_" ||
+				LexicalToken::verifyInteger(firstArgs) ||
+				(LexicalToken::verifyName(firstArgs) && (validArgsAffects.find(firstArgsType) != validArgsAffects.end()))) {
+				// valid first args
+			}
+			else {
+				return "invalid query";
+			}
+
+			// Validating second args
+			if (secondArgs == "_" ||
+				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyName(secondArgs) && (validArgsAffects.find(secondArgsType) != validArgsAffects.end()))) {
+				// valid second args
 			}
 			else {
 				return "invalid query";
