@@ -4,35 +4,32 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <unordered_set>
 #include <unordered_map>
 
 using namespace std;
 
 #include "QueryEvaluator.h"
 #include "QueryParser.h"
-#include "LexicalToken.h"
-#include "ExpressionUtil.h"
+#include "QueryValidator.h"
+#include "StringUtil.h"
 
-const string whitespace = " \f\n\r\t\v";
-const unordered_set<string> validVarType = { "stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure" };
+string whitespace = " \f\n\r\t\v";
 
+/*
+Main parser function for input query.
+Passes the following to query evaluator:
+1. vector<pair<string, string>> declarations
+2. vector<string> selectedVar
+3. vector<pair<string, pair<string, string>>> suchThatCondition
+4. vector<pair<string, pair<string, string>>> patternCondition
+*/
 unordered_set<string> QueryParser::parse(string query) {
-	/*
-	Main parser function for input query.
-	Passes the following to query evaluator:
-	1. vector<pair<string, string>> declarations 
-	2. vector<string> selectedVar
-	3. vector<pair<string, pair<string, string>>> suchThatCondition
-	4. vector<pair<string, pair<string, string>>> patternCondition
-	*/
-
+	
 	string errorString;
 	unordered_set<string> result;
 
 	// initial query validation
-	errorString = initialValidation(query);
+	errorString = QueryValidator::initialValidation(query);
 	if (errorString != "") {
 		result.insert("error");
 		return result;
@@ -42,7 +39,7 @@ unordered_set<string> QueryParser::parse(string query) {
 	vector<string> clauses = splitClauses(query);
 
 	// validating clauses
-	errorString = validateClauses(clauses);
+	errorString = QueryValidator::validateClauses(clauses);
 	if (errorString != "") {
 		result.insert("error");
 		return result;
@@ -57,7 +54,7 @@ unordered_set<string> QueryParser::parse(string query) {
 	}
 
 	// validating declarations
-	errorString = validateDeclarations(declarations);
+	errorString = QueryValidator::validateDeclarations(declarations);
 	if (errorString != "") {
 		result.insert("error");
 		return result;
@@ -99,21 +96,21 @@ unordered_set<string> QueryParser::parse(string query) {
 	}
 
 	// validating 'Select' parameter
-	errorString = validateSelectedVar(selectedVar, declarationsMap);
+	errorString = QueryValidator::validateSelectedVar(selectedVar, declarationsMap);
 	if (errorString != "") {
 		result.insert("error");
 		return result;
 	}
 
 	// validating 'such that' parameter
-	errorString = validateSuchThatParam(suchThatCondition, declarationsMap);
+	errorString = QueryValidator::validateSuchThatParam(suchThatCondition, declarationsMap);
 	if (errorString != "") {
 		result.insert("error");
 		return result;
 	}
 
 	// validating 'pattern' parameter
-	errorString = validatePatternParam(patternCondition, declarationsMap);
+	errorString = QueryValidator::validatePatternParam(patternCondition, declarationsMap);
 	if (errorString != "") {
 		result.insert("error");
 		return result;
@@ -124,78 +121,34 @@ unordered_set<string> QueryParser::parse(string query) {
 	return result;
 }
 
-string QueryParser::initialValidation(string query) {
-	/* 
-	checks whether the input string is valid:
-	- has length more than 0
-	- has substring "Select"
-	- has declaration
-	output: error message (if any), otherwise empty string
-	*/
-
-	if (query.length() <= 0) {
-		return "invalid query";
-	}
-	else if (query.find("Select") == -1) {
-		return "invalid query";
-	}
-	else if (query.find("Select") == 0) {
-		return "None";
-	}
-	else {
-		return "";
-	}
-}
-
+/*
+Splits the query string by char ";".
+Returns a vector<string> consisting of every declaration clauses (without trailing whitespaces) and the "Select" statement
+*/
 vector<string> QueryParser::splitClauses(string query) {
-	/*
-	Splitting the query string by char ";".
-	Returns a vector<string> consisting of every declaration clauses (without trailing whitespaces) and the "Select" statement
-	*/
+	
 	vector<string> output;
 	char delimiter = ';';
 	int startPoint = 0;
 	int endPoint = query.find(delimiter);
 
 	while (endPoint != -1) {
-		output.push_back(removeTrailingWhitespaces(query.substr(startPoint, endPoint - startPoint)));
+		output.push_back(StringUtil::trim(query.substr(startPoint, endPoint - startPoint), whitespace));
 		startPoint = endPoint + 1;
 		endPoint = query.find(delimiter, startPoint);
 	}
 
-	output.push_back(removeTrailingWhitespaces(query.substr(startPoint)));
+	output.push_back(StringUtil::trim(query.substr(startPoint), whitespace));
 
 	return output;
 }
 
-string QueryParser::validateClauses(vector<string> clauses) {
-	/*
-	Validate declaration clauses based on following conditions:
-	- "Select" statement is the last statement
-	- Each declaration clause consists of varType and varName
-	*/
-
-	int clausesSize = clauses.size();
-
-	if (clauses[clausesSize - 1].find("Select") == -1) {
-		return "invalid query";
-	}
-
-	for (int i = 0; i < clausesSize - 1; i++) {
-		if (clauses[i].find(" ") == -1) {
-			return "invalid query";
-		}
-	}
-
-	return "";
-}
-
+/*
+Splits each declarations clause by whitespaces.
+Returns a vector<pair<string, string>> consisting of design-entity and synonym
+*/
 vector<pair<string, string>> QueryParser::splitDeclarations(vector<string> clauses) {
-	/*
-	Splitting each declarations clause by whitespaces.
-	Returns a vector<pair<string, string>> consisting of design-entity and synonym
-	*/
-
+	
 	vector<pair<string, string>> output;
 	int clausesSize = clauses.size();
 
@@ -211,64 +164,44 @@ vector<pair<string, string>> QueryParser::splitDeclarations(vector<string> claus
 			int endPoint = varName.find(delimiter);
 
 			while (endPoint != -1) {
-				string varNameSplitted = removeTrailingWhitespaces(varName.substr(startPoint, endPoint - startPoint));
+				string varNameSplitted = StringUtil::trim(varName.substr(startPoint, endPoint - startPoint), whitespace);
 				output.push_back(make_pair(type, varNameSplitted));
 				startPoint = endPoint + 1;
 				endPoint = varName.find(delimiter, startPoint);
 			}
 
-			output.push_back(make_pair(type, removeTrailingWhitespaces(varName.substr(startPoint))));
+			output.push_back(make_pair(type, StringUtil::trim(varName.substr(startPoint), whitespace)));
 		}
 		else {
-			output.push_back(make_pair(type, removeTrailingWhitespaces(varName)));
+			output.push_back(make_pair(type, StringUtil::trim(varName, whitespace)));
 		}
 	}
 
 	return output;
 }
 
-string QueryParser::validateDeclarations(vector<pair<string, string>> declarations) {
-	/*
-	Validate declaration vector based on following conditions:
-	- design-entity should be valid
-	- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
-	*/
-
-	for (size_t i = 0; i < declarations.size(); i++) {
-		if (validVarType.find(declarations[i].first) == validVarType.end()) {
-			return "invalid query";
-		}
-
-		if (!LexicalToken::verifyName(declarations[i].second)) {
-			return "invalid query";
-		}
-	}
-
-	return "";
-}
-
+/*
+Splits select clause by whitespaces.
+Returns a vector<string> consisting of design-entity selected
+TODO: implement select boolean and tuples
+*/
 vector<string> QueryParser::splitSelectParameter(string selectStatement) {
-	/*
-	Splitting select clause by whitespaces.
-	Returns a vector<string> consisting of design-entity selected
-	TODO: implement select boolean and tuples
-	*/
 	
 	vector<string> output;
 
 	int firstSpace = selectStatement.find_first_of(whitespace);
-	string varName = removeAllWhitespaces(selectStatement.substr(firstSpace));
+	string varName = StringUtil::removeAllWhitespaces(selectStatement.substr(firstSpace));
 
 	output.push_back(varName);
 
 	return output;
 }
 
+/*
+Splits such that clause by open bracket, comma, and close bracket.
+Returns a vector<pair<string, pair<string, string>>> consisting of relation, stmtRef/entRef, stmtRef/entRef
+*/
 vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(string suchThatClause) {
-	/*
-	Splitting such that clause by open bracket, comma, and close bracket.
-	Returns a vector<pair<string, pair<string, string>>> consisting of relation, stmtRef/entRef, stmtRef/entRef
-	*/
 	
 	vector<pair<string, pair<string, string>>> output;
 
@@ -277,20 +210,20 @@ vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(s
 	int closeBracket = suchThatClause.find(")");
 	int strLen = suchThatClause.length();
 
-	string condition = removeAllWhitespaces(suchThatClause.substr(9, openBracket - 9));
-	string firstVar = removeAllWhitespaces(suchThatClause.substr(openBracket + 1, comma - openBracket - 1));
-	string secondVar = removeAllWhitespaces(suchThatClause.substr(comma + 1, closeBracket - comma - 1));
+	string condition = StringUtil::removeAllWhitespaces(suchThatClause.substr(9, openBracket - 9));
+	string firstVar = StringUtil::removeAllWhitespaces(suchThatClause.substr(openBracket + 1, comma - openBracket - 1));
+	string secondVar = StringUtil::removeAllWhitespaces(suchThatClause.substr(comma + 1, closeBracket - comma - 1));
 
 	output.push_back(make_pair(condition, make_pair(firstVar, secondVar)));
 
 	return output;
 }
 
+/*
+Splits pattern clause by open bracket, comma, and close bracket.
+Returns a vector<pair<string, pair<string, string>>> consisting of design-entity, entRef, expression-spec
+*/
 vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(string patternClause) {
-	/*
-	Splitting pattern clause by open bracket, comma, and close bracket.
-	Returns a vector<pair<string, pair<string, string>>> consisting of design-entity, entRef, expression-spec
-	*/
 	
 	vector<pair<string, pair<string, string>>> output;
 
@@ -299,221 +232,22 @@ vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(st
 	int closeBracket = patternClause.find(")");
 	int strLen = patternClause.length();
 
-	string varName = removeAllWhitespaces(patternClause.substr(7, openBracket - 7));
-	string firstPattern = removeAllWhitespaces(patternClause.substr(openBracket + 1, comma - openBracket - 1));
-	string secondPattern = removeAllWhitespaces(patternClause.substr(comma + 1, closeBracket - comma - 1));
+	string varName = StringUtil::removeAllWhitespaces(patternClause.substr(7, openBracket - 7));
+	string firstPattern = StringUtil::removeAllWhitespaces(patternClause.substr(openBracket + 1, comma - openBracket - 1));
+	string secondPattern = StringUtil::removeAllWhitespaces(patternClause.substr(comma + 1, closeBracket - comma - 1));
 
 	output.push_back(make_pair(varName, make_pair(firstPattern, secondPattern)));
 
 	return output;
 }
 
-string QueryParser::validateSelectedVar(vector<string> selectedVar, unordered_map<string, string> declarationsMap) {
-	/*
-	Validate vector of selected variable based on following conditions:
-	- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
-	- synonym should be declared previously
-	*/
-
-	for (int i = 0; i < selectedVar.size(); i++) {
-		if (!LexicalToken::verifyName(selectedVar[i])) {
-			return "invalid variable name";
-		}
-
-		if (declarationsMap.find(selectedVar[i]) == declarationsMap.end()) {
-			return "selected variable not found";
-		}
-	}
-
-	return "";
-}
-
-string QueryParser::validateSuchThatParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
-	/*
-	Validate vector of such that parameter based on following conditions:
-	- valid relation name
-	- for each relation, first and second argument should be valid
-
-	TODO: implement validation for other relations
-	*/
-
-	unordered_set<string> validRelation = { "Parent", "Parent*", "Follows", "Follows*", "Uses", "Modifies" };
-	unordered_set<string> validArgs = { "stmt", "read", "print", "while", "if", "assign", "call" };
-	unordered_set<string> validFirstArgsParent = { "stmt", "while", "if" };
-	unordered_set<string> validFirstArgsUses = { "stmt", "print", "while", "if", "procedure", "assign", "call" };
-	unordered_set<string> validFirstArgsModifies = { "stmt", "read", "while", "if", "procedure", "assign", "call" };
-
-	for (int i = 0; i < param.size(); i++) {
-		string relation = param[i].first;
-		string firstArgs = param[i].second.first;
-		string secondArgs = param[i].second.second;
-		string firstArgsType;
-		string secondArgsType;
-
-		if (validRelation.find(relation) == validRelation.end()) {
-			return "invalid query";
-		}
-
-		if (declarationsMap.find(firstArgs) != declarationsMap.end()) {
-			firstArgsType = declarationsMap.find(firstArgs)->second;
-		}
-
-		if (declarationsMap.find(secondArgs) != declarationsMap.end()) {
-			secondArgsType = declarationsMap.find(secondArgs)->second;
-		}
-
-		if (relation == "Uses") {
-			if (LexicalToken::verifyInteger(firstArgs) ||
-				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
-				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validFirstArgsUses.find(firstArgsType) != validFirstArgsUses.end()))) {
-				// valid first args
-			}
-			else {
-				return "invalid query";
-			}
-
-			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
-				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
-				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs))) {
-				// valid second args
-			}
-			else {
-				return "invalid query";
-			}
-		}
-		else if (relation == "Modifies") {
-			if (LexicalToken::verifyInteger(firstArgs) ||
-				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
-				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validFirstArgsModifies.find(firstArgsType) != validFirstArgsModifies.end()))) {
-				// valid first args
-			}
-			else {
-				return "invalid query";
-			}
-
-			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
-				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
-				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs))) {
-				// valid first args
-			}
-			else {
-				return "invalid query";
-			}
-		}
-		else if (relation == "Parent" || relation == "Parent*") {
-			if (firstArgs == "_" ||
-				LexicalToken::verifyInteger(firstArgs) ||
-				validFirstArgsParent.find(firstArgsType) != validFirstArgsParent.end()) {
-				// valid query
-			}
-			else {
-				return "invalid query";
-			}
-
-			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
-				validArgs.find(secondArgsType) != validArgs.end()) {
-				// valid query
-			}
-			else {
-				return "invalid query";
-			}
-		}
-		else {
-			// relation == Follows | Follows*
-
-			if (firstArgs == "_" ||
-				LexicalToken::verifyInteger(firstArgs) ||
-				validArgs.find(firstArgsType) != validArgs.end()) {
-				// valid query
-			}
-			else {
-				return "invalid query";
-			}
-
-			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
-				validArgs.find(secondArgsType) != validArgs.end()) {
-				// valid query
-			}
-			else {
-				return "invalid query";
-			}
-		}
-	}
-
-	return "";
-}
-
-string QueryParser::validatePatternParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
-	/*
-	Validate vector of pattern parameter based on following conditions:
-	- synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
-	- synonym should be declared previously
-	- synonym should be assign type (assign-synonym)
-
-	TODO: implement validation for if and while pattern
-	*/
-
-
-	for (int i = 0; i < param.size(); i++) {
-		string stmt = param[i].first;
-		string firstArgs = param[i].second.first;
-		string secondArgs = param[i].second.second;
-
-		// ASSIGN SYNONYM VALIDATION
-		if (!LexicalToken::verifyName(stmt)) {
-			return "invalid assign synonym";
-		}
-
-		if (declarationsMap.find(stmt) == declarationsMap.end()) {
-			return "statement not found";
-		}
-		else if ((declarationsMap.find(stmt))->second != "assign") {
-			return "statement type is not assign";
-		}
-
-		// FIRST ARGUMENT VALIDATION
-		if (firstArgs == "_" ||
-			(firstArgs[0] != '"' && (declarationsMap.find(firstArgs) != declarationsMap.end()) && ((declarationsMap.find(firstArgs))->second == "variable")) || 
-			(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2)))) {
-			// valid firstArgs
-		}
-		else {
-			return "invalid first arguments";
-		}
-
-		// SECOND ARGUMENT VALIDATION
-		if (secondArgs == "_" ||
-			(secondArgs[0] == '_' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(2, secondArgs.length() - 4))) ||
-			(secondArgs[0] == '"' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(1, secondArgs.length() - 2)))) {
-			// valid secondArgs
-		}
-		else {
-			return "invalid second arguments";
-		}
-
-	}
-
-	return "";
-}
-
+/*
+Calls QueryEvaluator to evaluate the query result
+Returns a unordered_set<string> consisting of results
+*/
 unordered_set<string> QueryParser::evaluateSelectConditions(vector<pair<string, string>> declarations, 
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition) {
 
 	return QueryEvaluator::evaluateQuery(declarations, selectedVar, suchThatCondition, patternCondition);
-}
-
-string QueryParser::removeAllWhitespaces(string s) {
-	s.erase(remove_if(s.begin(), s.end(), isspace), s.end());
-	return s;
-}
-
-string QueryParser::removeTrailingWhitespaces(string s) {
-	string trimRight = s.substr(0, s.find_last_not_of(whitespace) + 1);
-	string trimLeft = trimRight.substr(trimRight.find_first_not_of(whitespace));
-	return trimLeft;
 }
