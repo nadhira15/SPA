@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\source\AssignParser.cpp" />
     <ClCompile Include="..\source\ConditionalExp.cpp" />
+    <ClCompile Include="..\source\ContainerUtil.cpp" />
     <ClCompile Include="..\source\DesignExtractor.cpp" />
     <ClCompile Include="..\source\ElseParser.cpp" />
     <ClCompile Include="..\source\ExpressionUtil.cpp" />
@@ -38,6 +39,7 @@
   <ItemGroup>
     <ClInclude Include="..\source\AssignParser.h" />
     <ClInclude Include="..\source\ConditionalExp.h" />
+    <ClInclude Include="..\source\ContainerUtil.h" />
     <ClInclude Include="..\source\DesignExtractor.h" />
     <ClInclude Include="..\source\ElseParser.h" />
     <ClInclude Include="..\source\ExpressionUtil.h" />
