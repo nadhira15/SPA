@@ -32,6 +32,27 @@ namespace UnitTesting
 			Assert::AreEqual(actual == expected, true);
 		}
 
+		TEST_METHOD(splitSelectParameter_boolean_success)
+		{
+			vector<string> actual = QueryParser::splitSelectParameter("Select BOOLEAN");
+			vector<string> expected{ "BOOLEAN" };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitSelectParameter_tupleWithSpace_success)
+		{
+			vector<string> actual = QueryParser::splitSelectParameter("Select <p, q, r>");
+			vector<string> expected{ "p", "q", "r" };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitSelectParameter_tupleWithNoSpace_success)
+		{
+			vector<string> actual = QueryParser::splitSelectParameter("Select <p,q,r>");
+			vector<string> expected{ "p", "q", "r" };
+			Assert::AreEqual(actual == expected, true);
+		}
+
 		TEST_METHOD(splitSuchThatCondition_success)
 		{
 			vector<pair<string, pair<string, string>>> actual = QueryParser::splitSuchThatCondition("such that Parent(a, '_')");
