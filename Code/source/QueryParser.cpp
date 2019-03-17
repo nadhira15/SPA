@@ -102,16 +102,30 @@ unordered_set<string> QueryParser::parse(string query) {
 		return result;
 	}
 
+	// checking select boolean or synonym
+	bool selectBoolean = false;
+	if (selectedVar.size() == 1 && selectedVar[0] == "BOOLEAN") {
+		selectBoolean = true;
+	}
+
 	// validating 'such that' parameter
 	errorString = QueryValidator::validateSuchThatParam(suchThatCondition, declarationsMap);
-	if (errorString != "") {
+	if (errorString == "semantic error" && selectBoolean) {
+		result.insert("false");
+		return result;
+	}
+	else if (errorString != "") {
 		result.insert("error");
 		return result;
 	}
 
 	// validating 'pattern' parameter
 	errorString = QueryValidator::validatePatternParam(patternCondition, declarationsMap);
-	if (errorString != "") {
+	if (errorString == "semantic error" && selectBoolean) {
+		result.insert("false");
+		return result;
+	}
+	else if (errorString != "") {
 		result.insert("error");
 		return result;
 	}
@@ -192,8 +206,18 @@ vector<string> QueryParser::splitSelectParameter(string selectStatement) {
 	int firstSpace = selectStatement.find_first_of(whitespace);
 	string varName = StringUtil::removeAllWhitespaces(selectStatement.substr(firstSpace));
 
-	output.push_back(varName);
+	if (varName.find("<") != -1 && varName.find(">") != -1) {
+		varName = varName.substr(1, varName.length() - 2);
 
+		while (varName.find(",") != -1) {
+			int delimiterComma = varName.find(",");
+			output.push_back(varName.substr(0, delimiterComma));
+			varName = varName.substr(delimiterComma + 1);
+		}		
+	}
+	
+	output.push_back(varName);
+	
 	return output;
 }
 

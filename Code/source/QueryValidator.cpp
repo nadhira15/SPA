@@ -86,13 +86,17 @@ Validates vector of selected synonym based on following conditions:
 - synonym should be declared previously
 */
 string QueryValidator::validateSelectedVar(vector<string> selectedVar, unordered_map<string, string> declarationsMap) {
-	
+
 	for (int i = 0; i < selectedVar.size(); i++) {
+		if (selectedVar[i] == "BOOLEAN" && selectedVar.size() != 1) {
+			return "too many selected variable for boolean";
+		}
+		
 		if (!LexicalToken::verifyName(selectedVar[i])) {
 			return "invalid variable name";
 		}
 
-		if (declarationsMap.find(selectedVar[i]) == declarationsMap.end()) {
+		if (selectedVar[i] != "BOOLEAN" && declarationsMap.find(selectedVar[i]) == declarationsMap.end()) {
 			return "selected variable not found";
 		}
 	}
@@ -104,8 +108,6 @@ string QueryValidator::validateSelectedVar(vector<string> selectedVar, unordered
 Validates vector of such that parameter based on following conditions:
 - valid relation name
 - for each relation, first and second argument should be valid
-
-TODO: implement validation for other relations
 */
 string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
 
@@ -147,7 +149,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 
 			// Validating second args
@@ -157,7 +159,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid second args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 		} 
 		else if (relation == "Follows" || relation == "Follows*" || relation == "Next" || relation == "Next*") {
@@ -169,7 +171,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 
 			// Validating second args
@@ -179,7 +181,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid second args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 		} 
 		else if (relation == "Uses") {
@@ -191,7 +193,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 
 			// Validating second args
@@ -202,7 +204,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid second args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 		}
 		else if (relation == "Modifies") {
@@ -214,7 +216,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 
 			// Validating second args
@@ -225,7 +227,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 		}
 		else if (relation == "Calls" || relation == "Calls*") {
@@ -237,7 +239,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 
 			// Validating second args
@@ -247,7 +249,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid second args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 		}
 		else if (relation == "Affects" || relation == "Affects*") {
@@ -259,7 +261,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 
 			// Validating second args
@@ -269,7 +271,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid second args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 		}
 	}
@@ -286,8 +288,6 @@ Validates vector of pattern parameter based on following conditions:
 
 Returns Vector<pair<synonym, pair<1st args, 2nd args>>>
 Note: for if pattern, the third args will be removed
-
-TODO: implement validation for if and while pattern
 */
 string QueryValidator::validatePatternParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
 	
@@ -316,7 +316,7 @@ string QueryValidator::validatePatternParam(vector<pair<string, pair<string, str
 			// valid first args
 		}
 		else {
-			return "invalid first args";
+			return "semantic error";
 		}
 
 		// Second argument validation
@@ -327,7 +327,7 @@ string QueryValidator::validatePatternParam(vector<pair<string, pair<string, str
 				// valid second args
 			}
 			else {
-				return "invalid second args";
+				return "semantic error";
 			}
 
 		}
@@ -336,7 +336,7 @@ string QueryValidator::validatePatternParam(vector<pair<string, pair<string, str
 				// valid second args
 			}
 			else {
-				return "invalid second args";
+				return "semantic error";
 			}
 
 		}
@@ -345,7 +345,7 @@ string QueryValidator::validatePatternParam(vector<pair<string, pair<string, str
 				// valid second args
 			}
 			else {
-				return "invalid second args";
+				return "semantic error";
 			}
 
 		}
