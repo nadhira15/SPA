@@ -1,21 +1,22 @@
 #pragma once
 
-#include<stdio.h>
+#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <regex>
 #include <vector>
 #include <sstream>
 
-using namespace std;
+#include "ExpressionUtil.h"
+#include "LexicalToken.h"
 
 class AssignParser
 {
 public:
-	string getLeft(string statement);
-	vector<string> getRightVariable(string statement);
-	vector<string> getRightConstant(string statement);
-	string getPrefixExpression(string statement);
+	std::string getLeft(std::string statement);
+	std::vector<std::string> getRightVariable(std::string statement);
+	std::vector<std::string> getRightConstant(std::string statement);
+	std::string getPrefixExpression(std::string statement);
 	AssignParser();
 	~AssignParser();
 
