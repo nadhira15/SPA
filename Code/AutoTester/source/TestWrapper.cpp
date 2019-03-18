@@ -22,7 +22,7 @@ TestWrapper::TestWrapper() {
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
 	PKB pkb = PKB();
-	Parser parser = Parser(pkb);
+	Parser parser = Parser();
 	DesignExtractor de = DesignExtractor();
 	
 	// Opens the file and read into contents.
@@ -41,7 +41,7 @@ void TestWrapper::parse(std::string filename) {
 			vector<Statement> procList = preprocesser.getProcLst();
 
 			//Parses the list of procedures.
-			parser.parse(procList, 0, pkb);
+			parser.parse(procList, 0, "");
 
 			//Perform post-parsing Design Extraction.
 			de.extractDesigns(pkb);
