@@ -29,7 +29,7 @@ private:
 
 	void extractAssignEntity(std::string &stmtString, int stmtLine);
 
-	void extractCallEntity(std::string & stmtString, int stmtLine);
+	void extractCallEntity(std::string & stmtString, int stmtLine, std::string procedure);
 
 	void extractReadEntity(std::string & stmtString, int stmtLine);
 

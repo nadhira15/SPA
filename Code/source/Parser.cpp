@@ -57,7 +57,7 @@ void Parser::populateDesignEntities(Statement stmt, std::string procedure) {
 	}
 	case 2:
 		//Call Statement
-		extractCallEntity(stmtString, stmtLine);
+		extractCallEntity(stmtString, stmtLine, procedure);
 		break;
 	case 3: {
 		//ReadStatement
@@ -87,7 +87,11 @@ void Parser::populateDesignEntities(Statement stmt, std::string procedure) {
 		extractElseEntity(stmtString, stmtLine, elseStmtLst, procedure);
 		break;
 	}
-	case 8: {		//Procedure
+	case 8: {		
+		//Procedure
+		if (!procedure.empty()) {
+			throw "Invalid Syntax, Procedure within Procedure.";
+		}
 		vector<Statement> procStmtLst = stmt.getStmtLst();
 		extractProcedureEntity(stmtString, procStmtLst);
 	}
@@ -119,11 +123,11 @@ void Parser::extractAssignEntity(std::string &stmtString, int stmtLine) {
 	pkb.addAssign(stmtLine, modified, prefixExpression);
 }
 
-void Parser::extractCallEntity(std::string &stmtString, int stmtLine) {
+void Parser::extractCallEntity(std::string &stmtString, int stmtLine, std::string procedure) {
 	CallParser cp;
 	string procedureName = cp.parseCallStmt(stmtString);
 	
-	pkb.addProc(procedureName);
+	//pkb.addCall(procedure, procedureName);
 }
 
 void Parser::extractReadEntity(std::string &stmtString, int stmtLine) {
@@ -143,7 +147,7 @@ void Parser::extractPrintEntity(std::string &stmtString, int stmtLine) {
 }
 
 void Parser::extractWhileEntity(std::string &stmtString, int stmtLine, vector<Statement> stmtLst, std::string procedure) {
-	WhileParser wp = WhileParser(stmtLine, stmtString, stmtLst, pkb);
+	WhileParser wp = WhileParser(stmtLine, stmtString, stmtLst, procedure);
 	vector<string> constants = wp.getConstants();
 	vector<string> variables = wp.getVariables();
 
@@ -160,7 +164,7 @@ void Parser::extractWhileEntity(std::string &stmtString, int stmtLine, vector<St
 }
 
 void Parser::extractIfEntity(std::string &stmtString, int stmtLine, vector<Statement> stmtLst, std::string procedure) {
-	IfParser ip = IfParser(stmtLine, stmtString, stmtLst, pkb);
+	IfParser ip = IfParser(stmtLine, stmtString, stmtLst, procedure);
 	vector<string> constants = ip.getConstants();
 	vector<string> variables = ip.getVariables();
 
@@ -178,7 +182,7 @@ void Parser::extractIfEntity(std::string &stmtString, int stmtLine, vector<State
 }
 
 void Parser::extractElseEntity(std::string &stmtString, int stmtLine, vector<Statement> stmtLst, std::string procedure) {
-	ElseParser ep = ElseParser(stmtLine, stmtString, stmtLst, pkb);
+	ElseParser ep = ElseParser(stmtLine, stmtString, stmtLst, procedure);
 	ep.parseStmtLst();
 }
 
@@ -187,7 +191,7 @@ void Parser::extractProcedureEntity(std::string &stmtString, vector<Statement> s
 	string procName = pp.parseProcName(stmtString);
 	pkb.addProc(procName);
 
-	pp.parseStmtLst(stmtLst, pkb);
+	pp.parseStmtLst(stmtLst, procName);
 }
 
 
