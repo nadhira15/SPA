@@ -1,7 +1,4 @@
 #pragma once
-
-using namespace std;
-
 #include "PKB.h"
 
 /* Design Extractor performs Design Entitiy Extraction for the following relations
@@ -24,8 +21,12 @@ public:
 
 private:
 	static PKB pkb;
+	static void verifyCalledProceduresPresence();
 	static void processFollowStar();
 	static void processParentStar();
+	static void topologicalSortProcedures();
+	static void processCallUses();
+	static void processCallModifies();
 	static void processUsesProcedures();
 	static void processUsesContainers();
 	static void processModifiesProcedures();

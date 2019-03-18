@@ -7,12 +7,45 @@ PKB DesignExtractor::pkb;
 void DesignExtractor::extractDesigns(PKB storage)
 {
 	pkb = storage;
+
+	//Verification
+	verifyCalledProceduresPresence();
+	
+	//Statement-Statement Relationships
 	processFollowStar();
 	processParentStar();
+
+	//Statement/Procedure - Variable Relationships
+	topologicalSortProcedures();
+	processCallUses();
+	processCallModifies();
 	processUsesProcedures();
-	processUsesContainers();
 	processModifiesProcedures();
+	processUsesContainers();
 	processModifiesContainers();
+}
+
+/*
+ *Checks if the procedures found in Call Statements are found inside the procedure list.
+ * Iterates through the list of Call Statements and check if it exist in procedure list.
+ */
+void DesignExtractor::verifyCalledProceduresPresence()
+{
+/*	std::vector<std::string> calledProcedures = pkb.getAllCalledProcedures();
+	std::vector<std::string> procedureList = pkb.getAllProcedures();
+	for (string calledProcedure : calledProcedures) {
+		bool present = false;
+		for (string procedure : procedureList) {
+			if (calledProcedure == procedure) {
+				present = true;
+				break;
+			}
+		}
+		if (present = false) {
+			throw "A procedure that was called does not exist";
+		}
+	}
+*/	
 }
 
 /*
@@ -88,6 +121,9 @@ void DesignExtractor::processParentStar()
 		}
 	}
 }
+
+void DesignExtractor::topologicalSortProcedures();
+
 
 void DesignExtractor::processUsesProcedures()
 {
