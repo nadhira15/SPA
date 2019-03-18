@@ -1,22 +1,5 @@
 #pragma once
-
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
-
-using namespace std;
-
 #include "Parser.h"
-#include "PKB.h"
-#include "Statement.h"
-#include "AssignParser.h"
-#include "ReadParser.h"
-#include "PrintParser.h"
-#include "WhileParser.h"
-#include "IfParser.h"
-#include "ElseParser.h"
-#include "ProcedureParser.h"
 
 Parser::Parser()
 {
@@ -55,19 +38,20 @@ int Parser::parse(vector<Statement> stmtLst, int parent, PKB pkb) {
 }
 
 void Parser::populateDesignEntities(Statement stmt, PKB pkb) {
-	string stmtString = stmt.getString();
+	std::string stmtString = stmt.getString();
 	int stmtLine = stmt.getStmtNum();
 	int stmtType = stmt.getType();
 
 	// 1 "ASSIGN", 2 "CALL", 3 "READ", 4 "PRINT", 5 "WHILE", 6 "IF", 7 "ELSE", 8 "PROCEDURE"
 	switch (stmtType) {
 	case 1: {
+		//Assign Statement
 		extractAssignEntity(stmtString, pkb, stmtLine);
 		break;
 	}
 	case 2:
-		//CallStatement
-		//TODO: Iteration 2
+		//Call Statement
+		extractCallEntity(stmtString, pkb, stmtLine);
 		break;
 	case 3: {
 		//ReadStatement
@@ -106,10 +90,10 @@ void Parser::populateDesignEntities(Statement stmt, PKB pkb) {
 
 void Parser::extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine) {
 	AssignParser ap;
-	string modified = ap.getLeft(stmtString);
-	vector<string> usedVariables = ap.getRightVariable(stmtString);
-	vector<string> usedConstants = ap.getRightConstant(stmtString);
-	string prefixExpression = ap.getPrefixExpression(stmtString);
+	std::string modified = ap.getLeft(stmtString);
+	std::vector<std::string> usedVariables = ap.getRightVariable(stmtString);
+	std::vector<std::string> usedConstants = ap.getRightConstant(stmtString);
+	std::string prefixExpression = ap.getPrefixExpression(stmtString);
 
 	//Add Variable and Modify
 	pkb.addVariable(modified);
@@ -127,6 +111,13 @@ void Parser::extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine
 	}
 
 	pkb.addAssign(stmtLine, modified, prefixExpression);
+}
+
+void Parser::extractCallEntity(std::string &stmtString, PKB &pkb, int stmtLine) {
+	CallParser cp;
+	string procedureName = cp.parseCallStmt(stmtString);
+	
+	pkb.addProc(procedureName);
 }
 
 void Parser::extractReadEntity(std::string &stmtString, PKB &pkb, int stmtLine) {
@@ -206,7 +197,8 @@ void Parser::populateStmtList(Statement stmt, PKB pkb) {
 		break;
 	case 2:
 		//CallStatement
-		//TODO: Iteration 2
+		pkb.addStatement(stmtLine, stmType::call);
+		break;
 	case 3:
 		//ReadStatement
 		pkb.addStatement(stmtLine, stmType::read);

@@ -3,10 +3,16 @@
 #include<stdio.h>
 #include<vector>
 
-using namespace std;
-
 #include "PKB.h"
 #include "Statement.h"
+#include "AssignParser.h"
+#include "CallParser.h"
+#include "ReadParser.h"
+#include "PrintParser.h"
+#include "WhileParser.h"
+#include "IfParser.h"
+#include "ElseParser.h"
+#include "ProcedureParser.h"
 
 class Parser
 {
@@ -17,9 +23,13 @@ public:
 
 	int parse(vector<Statement> stmtLst, int parent, PKB pkb);
 
+private:
+
 	void populateDesignEntities(Statement stmt, PKB pkb);
 
 	void extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine);
+
+	void extractCallEntity(std::string & stmtString, PKB & pkb, int stmtLine);
 
 	void extractReadEntity(std::string & stmtString, PKB & pkb, int stmtLine);
 
