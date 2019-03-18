@@ -88,193 +88,283 @@ if ifs; assign a;
 Select ifs such that Follows(ifs, a)
 2
 5000
-16 - Follows*
+17 - Follows*
 if ifs; assign a;
 Select a such that Follows*(ifs, a)
 9, 10
 5000
-16 - Follows*
+18 - Follows*
 read r; print p;
 Select r such that Follows*(r, p)
 1
 5000
-17 - Follows*
+19 - Follows*
 read r; print p;
 Select p such that Follows*(r, p)
 26
 5000
-18 - Follows*
+20 - Follows*
 assign a; print p;
 Select a such that Follows*(a, p)
 9, 10, 23
 5000
-19 - Uses
+21 - Uses
 while w;
 Select w such that Uses(w, "b")
 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 6, 3
 5000
-20 - Uses
+22 - Uses
 while w;
 Select w such that Uses(w, "c")
 11, 12, 6, 3
 5000
-21 - Uses
+23 - Uses
 print p;
 Select p such that Uses(p, "k")
 26
 5000
-22 - Uses
+24 - Uses
 assign a;
 Select a such that Uses(a, "x")
 4, 10
 5000
-23 - Uses
+25 - Uses
 assign a;
 Select a such that Uses(a, "a")
 4, 7, 10
 5000
-24 - Modifies
+26 - Uses
+while w;
+Select w such that Uses(w, "d")
+none
+5000
+27 - Uses
+while w;
+Select w such that Uses(w, "a")
+3,6
+5000
+28 - Uses
+assign a;
+Select a such that Uses(a, "c")
+25,4,8,9
+5000
+29 - Uses
+assign a;
+Select a such that Uses(a, "k")
+none
+5000
+30 - Uses
+if ifs;
+Select ifs such that Uses(ifs, "k")
+none
+5000
+31 - Uses
+if ifs;
+Select ifs such that Uses(ifs, "b")
+2
+5000  
+32 - Modifies
 while w;
 Select w such that Modifies(w, "b")
 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 5000
-25 - Modifies
+33 - Modifies
 while w;
 Select w such that Modifies(w, "c")
 11, 12, 6, 3
 5000
-26 - Modifies
+34 - Modifies
 read r;
 Select r such that Modifies(r, "x")
 1
 5000
-27 - Modifies
+35 - Modifies
 assign a;
 Select a such that Modifies(a, "x")
 4, 9
 5000
-28 - Modifies
+36 - Modifies
 assign a;
 Select a such that Modifies(a, "a")
 8
 5000
-29 - Pattern
+37 - Modifiesby Read
+read rd;
+Select rd such that Modifies(rd, _)
+1
+5000
+38 - Pattern
 assign a;
 Select a pattern a("x", "x + a + b + a + a + b + a + c")
 4
 5000
-30 - Pattern
+39 - Pattern
 assign a;
 Select a pattern a("x", _"x + a + b"_)
 4
 5000
-31 - Pattern
+40 - Pattern
 assign a;
 Select a pattern a("x", _"b + a + a + b"_)
 none
 5000
-32 - Pattern
+41 - Pattern
 assign a;
 Select a pattern a("c", "1234567890123")
 5
 5000
-33 - Pattern
+42 - Pattern
 assign a;
 Select a pattern a("c", _"123456"_)
 none
 5000
-34 - Pattern
+43 - Pattern
 assign a;
 Select a pattern a("k", "x+a-b+a*a")
 10
 5000
-35 - Pattern
+44 - Pattern
 assign a;
 Select a pattern a("k", _"b+a"_)
 none
 5000
-36 - Pattern
+45 - Pattern
 assign a;
 Select a pattern a("k", _"x+a-b"_)
 10
 5000
-37 - Pattern
+46 - Pattern
 assign a;
 Select a pattern a("k", _"a * a"_)
 10
 5000
-38 - Parent and Pattern
+47 - Pattern
+assign a;
+Select a pattern a("k", _"b  +a*a"_)
+none
+5000
+48 - Parent and Pattern
 assign a, a1; while w;
 Select a such that Parent(w, a1) pattern a("k", _"a * a"_)
 10
 5000
-39 - Parent and Pattern
+49 - Parent and Pattern
 assign a; while w;
 Select w such that Parent(w, a) pattern a("a", _"b + c"_)
 6
 5000
-40 - Parent* and Pattern
+50 - Parent* and Pattern
 assign a; if ifs;
 Select ifs such that Parent*(ifs, a) pattern a("a", "b + c")
 2
 5000
-41 - Parent* and Pattern
+51 - Parent* and Pattern
 assign a; while w; variable v;
 Select w such that Parent*(w, a) pattern a(v, _"c + b"_)
 11, 12
 5000
-42 - Follows and Pattern
+52 - Follows and Pattern
 assign a, a1;
 Select a such that Follows(a, a1) pattern a(_, _"7"_)
 7
 5000
-42 - Follows and Pattern
+53 - Follows and Pattern
 assign a, a1;
 Select a1 such that Follows(a, a1) pattern a(_, _"a-b"_)
 8
 5000
-43 - Follows* and Pattern
+54 - Follows* and Pattern
 assign a; read r;
 Select r such that Follows*(r, a) pattern a(_, _"c"_)
 1
 5000
-44 - Follows* and Pattern
+55 - Follows* and Pattern
 assign a; print p; read r;
 Select p such that Follows*(r, p) pattern a(_, _"a * a"_)
 26
 5000
-44 - Follows* and Pattern
+56 - Follows* and Pattern
 assign a; print p;
 Select a such that Follows*(a, p) pattern a(_, _)
 9, 10, 23
 5000
-45 - Uses and Pattern
+57 - Uses and Pattern
 assign a; print p; variable v;
 Select p such that Uses(p, v) pattern a(_, _)
 26, 24
 5000
-46 - Uses and Pattern
+58 - Uses and Pattern
 assign a;
 Select a such that Uses(a, "c") pattern a("c", _)
 25
 5000
-47 - Uses and Pattern
+59 - Uses and Pattern
 assign a; while w;
 Select w such that Uses(w, "x") pattern a("c", _)
 3
 5000
-48 - Modifies and Pattern
+60 - Modifies and Pattern
 assign a;
 Select a such that Modifies(a, "k") pattern a("k", _)
 10
 5000
-49 - Modifies and Pattern
+61 - Modifies and Pattern
 assign a;
 Select a such that Modifies(a, "k") pattern a(_, _"x"_)
 10
 5000
-50 - Modifies and Pattern
+62 - Modifies and Pattern
 assign a;
 Select a such that Modifies(a, "x") pattern a("x", _"x"_)
 4
+5000
+63 - Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "k") pattern a("k", _"a-b"_)
+none
+5000
+64 - Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "c") pattern a(_, _"a - b"_)
+7
+5000
+65 - Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "c") pattern a(_, _"a- b"_)
+7
+5000
+66 - Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "c") pattern a("c", _"b"_)
+7, 25
+5000
+67 - Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "x") pattern a("_", "x") 
+none
+5000
+68 - Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "a") pattern a("a", " b+c")
+8
+5000
+69 - Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "c") pattern a("c", _"a"_)
+7
+5000
+58 - Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "b") pattern a("b", _)
+21, 22, 23
+5000
+70 - Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "k") pattern a("k", _"a*a"_) 
+10
+5000
+71 - Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "a") pattern a("a", "b+c")
+8
 5000

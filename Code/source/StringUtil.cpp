@@ -51,3 +51,9 @@ std::string StringUtil::trim(std::string& str, std::string& whitespace)
 	return str.substr(strStart, strLength);
 
 }
+
+//Removes all the whitespace in the given string
+std::string StringUtil::removeAllWhitespaces(std::string s) {
+	s.erase(remove_if(s.begin(), s.end(), isspace), s.end());
+	return s;
+}

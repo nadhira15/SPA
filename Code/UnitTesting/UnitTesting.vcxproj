@@ -169,7 +169,8 @@
     <ClCompile Include="PreprocessorTest.cpp" />
     <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="LexicalTokenTest.cpp" />
-    <ClCompile Include="QueryEvaluatorTest.cpp" />
+    <ClCompile Include="ContainerUtilTest.cpp" />
+    <ClCompile Include="QueryValidatorTest.cpp" />
     <ClCompile Include="StatementTest.cpp" />
     <ClCompile Include="ConditionalExpTest.cpp" />
     <ClCompile Include="PrintParserTest.cpp" />

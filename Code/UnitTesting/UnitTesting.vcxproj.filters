@@ -53,7 +53,10 @@
     <ClCompile Include="ReadParserTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QueryEvaluatorTest.cpp">
+    <ClCompile Include="QueryValidatorTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ContainerUtilTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PreprocessorTest.cpp">

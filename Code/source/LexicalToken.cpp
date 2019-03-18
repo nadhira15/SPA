@@ -4,9 +4,10 @@
 using namespace std;
 using namespace LexicalToken;
 
-//Check if string is a NAME Lexical. A Name Lexical starts with a alphabet and is followed by a string of alphanumerical
-//Characters. Returns true if input is suitable as a procedure name or variable name. Returns false otherwise.
-bool LexicalToken::verifyName(std::string name) {
+/*Check if string is a NAME Lexical. A Name Lexical starts with a alphabet and is followed by a string of alphanumerical
+ *Characters. Returns true if input is suitable as a procedure name or variable name. Returns false otherwise.
+ */
+ bool LexicalToken::verifyName(std::string name) {
 
 	//Check if first character is an alphabet
 	if (!isalpha(name[0])) {
@@ -24,17 +25,15 @@ bool LexicalToken::verifyName(std::string name) {
 	return true;
 }
 
-//Checks if string is an integer by trying to convert it into an long variable. If conversion succeeds,
-//then it is a decimal integer and returns true 
+/*Checks if string is an integer by trying checking if every character in the string
+ *is a digit. Returns true if every character is a digit and returns false if 1 of them
+ *is not a digit
+ */
 bool LexicalToken::verifyInteger(std::string number){
-	char* p;
-
-	long checkInteger = strtol(number.c_str(), &p, 10);
-
-	if (*p) {
-		return false;
+	for (size_t i = 0; i < number.length(); i++) {
+		if (!isdigit(number[i])) {
+			return false;
+		}
 	}
-	else {
-		return true;
-	}
+	return true;
 }

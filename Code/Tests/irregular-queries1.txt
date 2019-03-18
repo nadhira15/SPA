@@ -1,0 +1,590 @@
+1 - EXCEPTION no variable declaration
+;
+Select a
+none
+5000
+2 - invalid variable declaration
+hello;
+Select hello
+none
+5000
+3 - invalid variable declaration
+assign;
+Select assign
+none
+5000
+4 - invalid variable declaration
+printp;
+Select p
+none
+5000
+5 - invalid variable declaration
+assign a; a1;
+Select a
+none
+5000
+6 - EXCEPTION invalid variable declaration
+assign a, ;
+Select a
+none
+5000
+7 - invalid design entity
+hello h;
+Select h
+none
+5000
+8 - invalid synonym
+assign 1a2;
+Select 1a2
+none
+5000
+9 - invalid synonym
+assign a_1;
+Select a_1
+none
+5000
+10 - EXCEPTION invalid synonym
+assign a;;
+Select a
+none
+5000
+11 - VALID very long synonym
+print printprintprintprintprintprintprintprintprintprintprintprintprintprint;
+Select printprintprintprintprintprintprintprintprintprintprintprintprintprint
+4, 13
+5000
+12 - VALID synonym same as designEntity
+read read;
+Select read
+1, 2
+5000
+13 - VALID synonym same as designEntity
+print print;
+Select print
+4, 13
+5000
+14 - VALID many unused declarations
+assign a, a1, a2, a3, a4, a5; print p1, p2, p3, p4, p5; read r1, r2, r3, r4, r5; stmt s1, s2, s3, s4, s5; if ifs1, ifs2, ifs3, ifs4, ifs5; while w1, w2, w3, w4, w5;
+Select r4
+1, 2
+5000
+15 - declaration clause ends without semicolon
+assign a
+Select a
+none
+5000
+16 - EXCEPTION no selected synonym
+assign a;
+Select
+none
+5000
+17 - selecting undeclared synonym
+assign a;
+Select a1
+none
+5000
+18 - selecting undeclared synonym
+assign a;
+Select 123
+none
+5000
+19 - no selected synonym
+assign a;
+Select such that Follows(a, 4)
+none
+5000
+20 - no selected synonym
+assign a;
+Select pattern a(_, _)
+none
+5000
+21 - no selected synonym
+assign a;
+such that Follows (a, 4)
+none
+5000
+22 - no selected synonym
+assign a;
+pattern a(_, _)
+none
+5000
+23 - EXCEPTION select clause ended with a semicolon
+assign a;
+Select a such that Follows(a, 4);
+none
+5000
+24 - EXCEPTION no space before selected synonym
+assign a;
+Selecta
+none
+5000
+25 - invalid parent arguments
+assign a;
+Select a such that Parent(a, _)
+none
+5000
+26 - invalid parent arguments
+read r;
+Select r such that Parent(r, _)
+none
+5000
+27 - invalid parent arguments
+print p;
+Select p such that Parent(p, _)
+none
+5000
+28 - invalid parent arguments
+variable v;
+Select v such that Parent(v, _)
+none
+5000
+29 - invalid parent arguments
+variable v;
+Select v such that Parent(_, v)
+none
+5000
+30 - invalid parent arguments
+constant c;
+Select c such that Parent(c, _)
+none
+5000
+31 - invalid parent arguments
+constant c;
+Select c such that Parent(_, c)
+none
+5000
+32 - invalid parent arguments
+procedure pr;
+Select pr such that Parent(pr, _)
+none
+5000
+33 - invalid parent arguments
+procedure pr;
+Select pr such that Parent(_, pr)
+none
+5000
+34 - invalid parent arguments
+stmt s;
+Select s such that Parent("a", _)
+none
+5000
+35 - invalid parent arguments
+stmt s;
+Select s such that Parent(_, "a")
+none
+5000
+36 - invalid parentStar arguments
+assign a;
+Select a such that Parent*(a, _)
+none
+5000
+37 - too many parent arguments
+stmt s;
+Select s such that Parent(1, 2, 3)
+none
+5000
+38 - arguments non existent in source code
+stmt s;
+Select s such that Parent(16, 17)
+none
+5000
+39 - invalid parentStar arguments
+read r;
+Select r such that Parent*(r, _)
+none
+5000
+40 - invalid parentStar arguments
+print p;
+Select p such that Parent*(p, _)
+none
+5000
+41 - invalid parentStar arguments
+variable v;
+Select v such that Parent*(v, _)
+none
+5000
+42 - invalid parentStar arguments
+variable v;
+Select v such that Parent*(_, v)
+none
+5000
+43 - invalid parentStar arguments
+constant c;
+Select c such that Parent*(c, _)
+none
+5000
+44 - invalid parentStar arguments
+constant c;
+Select c such that Parent*(_, c)
+none
+5000
+45 - invalid parentStar arguments
+procedure pr;
+Select pr such that Parent*(pr, _)
+none
+5000
+46 - invalid parentStar arguments
+procedure pr;
+Select pr such that Parent*(_, pr)
+none
+5000
+47 - invalid parentStar arguments
+stmt s;
+Select s such that Parent*("a", _)
+none
+5000
+48 - invalid parentStar arguments
+stmt s;
+Select s such that Parent*(_, "a")
+none
+5000
+49 - too many parentStar arguments
+stmt s;
+Select s such that Parent*(1, 2, 3)
+none
+5000
+50 - arguments non existent in source code
+stmt s;
+Select s such that Parent*(16, 17)
+none
+5000
+51 - invalid follows arguments
+variable v;
+Select v such that Follows(v, _)
+none
+5000
+52 - invalid follows arguments
+variable v;
+Select v such that Follows(_, v)
+none
+5000
+53 - invalid follows arguments
+procedure p;
+Select p such that Follows(p, _)
+none
+5000
+54 - invalid follows arguments
+procedure p;
+Select p such that Follows(_, p)
+none
+5000
+55 - invalid follows arguments
+constant c;
+Select c such that Follows(c, _)
+none
+5000
+56 - invalid follows arguments
+constant c;
+Select c such that Follows(_, c)
+none
+5000
+57 - invalid follows arguments
+assign a;
+Select a such that Follows("a", _)
+none
+5000
+58 - invalid follows arguments
+assign a;
+Select a such that Follows(_, "a")
+none
+5000
+59 - too many follows arguments
+assign a;
+Select a such that Follows(1, 2, 3)
+none
+5000
+60 - arguments non existent in source code
+assign a;
+Select a such that Follows(16, 17)
+none
+5000
+61 - invalid followsStar arguments
+variable v;
+Select v such that Follows*(v, _)
+none
+5000
+62 - invalid followsStar arguments
+variable v;
+Select v such that Follows*(_, v)
+none
+5000
+63 - invalid followsStar arguments
+procedure p;
+Select p such that Follows*(p, _)
+none
+5000
+64 - invalid followsStar arguments
+procedure p;
+Select p such that Follows*(_, p)
+none
+5000
+65 - invalid followsStar arguments
+constant c;
+Select c such that Follows*(c, _)
+none
+5000
+66 - invalid followsStar arguments
+constant c;
+Select c such that Follows*(_, c)
+none
+5000
+67 - invalid followsStar arguments
+assign a;
+Select a such that Follows*("a", _)
+none
+5000
+68 - invalid followsStar arguments
+assign a;
+Select a such that Follows*(_, "a")
+none
+5000
+69 - too many followsStar arguments
+assign a;
+Select a such that Follows*(1, 2, 3)
+none
+5000
+70 - arguments non existent in source code
+assign a;
+Select a such that Follows*(16, 17)
+none
+5000
+71 - invalid uses arguments
+read r;
+Select r such that Uses(r, _)
+none
+5000
+72 - invalid uses arguments
+variable v;
+Select v such that Uses(v, _)
+none
+5000
+73 - invalid uses arguments
+constant c;
+Select c such that Uses(c, _)
+none
+5000
+74 - invalid uses arguments
+stmt s;
+Select s such that Uses(_, _)
+none
+5000
+75 - invalid uses arguments
+stmt s;
+Select s such that Uses(_, s)
+none
+5000
+76 - invalid uses arguments
+read r;
+Select r such that Uses(_, r)
+none
+5000
+77 - invalid uses arguments
+print p;
+Select p such that Uses(_, p)
+none
+5000
+78 - invalid uses arguments
+while w;
+Select w such that Uses(_, w)
+none
+5000
+79 - invalid uses arguments
+if ifs;
+Select ifs such that Uses(_, ifs)
+none
+5000
+80 - invalid uses arguments
+assign a;
+Select a such that Uses(_, a)
+none
+5000
+81 - invalid uses arguments
+call c;
+Select c such that Uses(_, c)
+none
+5000
+82 - invalid uses arguments
+procedure pr;
+Select pr such that Uses(_, pr)
+none
+5000
+83 - too many uses arguments
+stmt s;
+Select s such that Uses(1, 2, 3)
+none
+5000
+84 - arguments non existent in source code
+stmt s;
+Select s such that Uses(16, _)
+none
+5000
+85 - invalid modifies arguments
+print p;
+Select p such that Modifies(p, _)
+none
+5000
+86 - invalid modifies arguments
+variable v;
+Select v such that Modifies(v, _)
+none
+5000
+87 - invalid modifies arguments
+constant c;
+Select c such that Modifies(c, _)
+none
+5000
+88 - invalid modifies arguments
+stmt s;
+Select s such that Modifies(_, _)
+none
+5000
+89 - invalid modifies arguments
+stmt s;
+Select s such that Modifies(_, s)
+none
+5000
+90 - invalid modifies arguments
+read r;
+Select r such that Modifies(_, r)
+none
+5000
+91 - invalid modifies arguments
+print p;
+Select p such that Modifies(_, p)
+none
+5000
+92 - invalid modifies arguments
+while w;
+Select w such that Modifies(_, w)
+none
+5000
+93 - invalid modifies arguments
+if ifs;
+Select ifs such that Modifies(_, ifs)
+none
+5000
+94 - invalid modifies arguments
+assign a;
+Select a such that Modifies(_, a)
+none
+5000
+95 - invalid modifies arguments
+call c;
+Select c such that Modifies(_, c)
+none
+5000
+96 - invalid modifies arguments
+procedure pr;
+Select pr such that Modifies(_, pr)
+none
+5000
+97 - too many modifies arguments
+stmt s;
+Select s such that Modifies(1, 2, 3)
+none
+5000
+98 - arguments non existent in source code
+stmt s;
+Select s such that Modifies(16, _)
+none
+5000
+99 - invalid arguments
+stmt s;
+Select s pattern such that Follows(_, 2)
+none
+5000
+100 - invalid arguments
+stmt s;
+Select s such that pattern a(_, _)
+none
+5000
+101 - invalid pattern arguments
+stmt s;
+Select s pattern s(_, _)
+none
+5000
+102 - invalid pattern arguments
+read r;
+Select r pattern r(_, _)
+none
+5000
+103 - invalid pattern arguments
+print p;
+Select p pattern p(_, _)
+none
+5000
+104 - invalid pattern arguments
+while w;
+Select w pattern w(_, _)
+none
+5000
+105 - invalid pattern arguments
+if ifs;
+Select ifs pattern ifs(_, _)
+none
+5000
+106 - invalid pattern arguments
+call c;
+Select c pattern c(_, _)
+none
+5000
+107 - invalid pattern arguments
+variable v;
+Select v pattern v(_, _)
+none
+5000
+108 - invalid pattern arguments
+constant c;
+Select c pattern c(_, _)
+none
+5000
+109 - invalid pattern arguments
+procedure p;
+Select p pattern p(_, _)
+none
+5000
+110 - invalid pattern arguments
+assign a;
+Select a pattern a1(_, _)
+none
+5000
+111 - VALID long synonym
+assign assignassignassignassignassignassignassignassignassignassignassignassignassignassignassignassignassignassign;
+Select assignassignassignassignassignassignassignassignassignassignassignassignassignassignassignassignassignassign pattern assignassignassignassignassignassignassignassignassignassignassignassignassignassignassignassignassignassign(_, _)
+3, 5, 6, 8, 9, 10, 12
+5000
+112 - invalid pattern arguments
+assign a;
+Select a pattern a("_", _)
+none
+5000
+113 - invalid pattern arguments
+assign a;
+Select a pattern a(_, _"")
+none
+5000
+114 - invalid pattern arguments
+assign a;
+Select a pattern a(_""_, _)
+none
+5000
+115 - invalid pattern arguments
+assign a;
+Select a pattern a(_, _""_)
+none
+5000
+116 - invalid pattern arguments
+assign a;
+Select a pattern a(_"1"_, _)
+none
+5000
+117 - invalid pattern arguments
+assign a;
+Select a pattern a(_a_, _)
+none
+5000
+118 - invalid pattern arguments
+assign a;
+Select a pattern a(_, _a_)
+none
+5000
