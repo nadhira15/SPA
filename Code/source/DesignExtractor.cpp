@@ -10,19 +10,15 @@ void DesignExtractor::extractDesigns(PKB storage)
 
 	//Verification
 	verifyCalledProceduresPresence();
+	verifyAbsenceOfCyclicity();
 	
 	//Statement-Statement Relationships
 	processFollowStar();
 	processParentStar();
 
 	//Statement/Procedure - Variable Relationships
-	topologicalSortProcedures();
-	processCallUses();
-	processCallModifies();
-	processUsesProcedures();
-	processModifiesProcedures();
-	processUsesContainers();
-	processModifiesContainers();
+	vector<string> sortedProcedures = topologicalSortProcedures();
+	processAdvancedUsesAndModifies(sortedProcedures);
 }
 
 /*
@@ -31,8 +27,8 @@ void DesignExtractor::extractDesigns(PKB storage)
  */
 void DesignExtractor::verifyCalledProceduresPresence()
 {
-/*	std::vector<std::string> calledProcedures = pkb.getAllCalledProcedures();
-	std::vector<std::string> procedureList = pkb.getAllProcedures();
+/*	std::unordered_set<std::string> calledProcedures = pkb.getAllCallee();
+	std::unoredred_set<std::string> procedureList = pkb.getProcedures();
 	for (string calledProcedure : calledProcedures) {
 		bool present = false;
 		for (string procedure : procedureList) {
@@ -47,6 +43,11 @@ void DesignExtractor::verifyCalledProceduresPresence()
 	}
 */	
 }
+
+void DesignExtractor::verifyAbsenceOfCyclicity() {
+
+}
+
 
 /*
  * Processes the Follow* Design Entitiy in the SPA requirement.
@@ -122,7 +123,67 @@ void DesignExtractor::processParentStar()
 	}
 }
 
-void DesignExtractor::topologicalSortProcedures();
+vector<string> DesignExtractor::topologicalSortProcedures()
+{
+	/*
+	unordered_set<std::string> procList = pkb.getProcedures();
+	int procListSize = procList.size();
+
+	unordered_set<std::string> visitedProcedures;
+	vector<std::string> sortedProcedures(procListSize);
+
+	for (std::string procedure : procList) {
+		//Try finding if the procedure has already been visited.
+		std::unordered_set<std::string>::const_iterator exist = visitedProcedures.find(procedure);
+
+		//If we have not visited this procedure, visit it.
+		if (exist != visitedProcedures.end()) {
+			DFSRecursive(procedure, visitedProcedures, sortedProcedures);
+		}
+	}
+	*/
+
+	vector<std::string> sortedProcedures(5);
+	return sortedProcedures;
+}
+
+void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::string> &visitedProcedures, vector<std::string> &sortedProcedures) {
+	/*
+	//Marks procedure as visited
+	visitedProcedures.insert(procedure);
+
+	//Get neighbouring procedures.
+	unordered_set<string> adjacentProcedures = pkb.getCallee(procedure);
+
+	//For each neighbouring procedure
+	for (std::string callee : adjacentProcedures) {
+
+		//Check if neighbouring procedure has been visited
+		std::unordered_set<std::string>::const_iterator exist = visitedProcedures.find(callee);
+
+		//If neighbouring procedure has not been visited, visit it.
+		if (exist != visitedProcedures.end()) {
+			DFSRecursive(procedure, visitedProcedures);
+		}
+	}
+
+	//Add procedure to the sortedProcedures.
+	sortedProcedures.push_back(procedure);
+	*/
+}
+
+void DesignExtractor::processAdvancedUsesAndModifies(std::vector<std::string> sortedProcedures) {
+	for (std::string procedure : sortedProcedures) {
+		/*
+		processCallUses(procedure);
+		processCallModifies(procedure);
+		processUsesContainers(procedure);
+		processModifiesContainers(procedure);
+		processUsesProcedures(procedure);
+		processModifiesProcedures(procedure);
+		*/
+	}
+}
 
 
 void DesignExtractor::processUsesProcedures()
