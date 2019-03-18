@@ -2,7 +2,6 @@
 
 std::regex validCallStatement("\\s*call\\s+(\\w+)\\s*");
 
-//take in full statement string
 std::string CallParser::parseCallStmt(std::string toParse) {
 	if (verifyCallStmt(toParse) == false) {
 		throw "Invalid Read Statement";
