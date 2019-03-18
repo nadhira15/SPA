@@ -7,6 +7,7 @@ std::string CallParser::parseCallStmt(std::string toParse) {
 	if (verifyCallStmt(toParse) == false) {
 		throw "Invalid Read Statement";
 	}
+
 	std::smatch matches;
 
 	if (std::regex_match(toParse, matches, validCallStatement)) {
