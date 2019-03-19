@@ -514,13 +514,13 @@ Select p pattern p(_, _)
 none
 5000
 104 - invalid pattern arguments
-while w;
-Select w pattern w(_, _)
+while w; stmt s;
+Select w pattern w(a, _)
 none
 5000
 105 - invalid pattern arguments
-if ifs;
-Select ifs pattern ifs(_, _)
+if ifs; stmt s;
+Select ifs pattern ifs(s, _)
 none
 5000
 106 - invalid pattern arguments
@@ -586,5 +586,515 @@ none
 118 - invalid pattern arguments
 assign a;
 Select a pattern a(_, _a_)
+none
+5000
+119 - invalid Calls arguments
+stmt s;
+Select s such that Calls(s, _)
+none
+5000
+120 - invalid Calls arguments
+read r;
+Select r such that Calls(r, _)
+none
+5000
+121 - invalid Calls arguments
+print p;
+Select p such that Calls(p, _)
+none
+5000
+122 - invalid Calls arguments
+while w;
+Select w such that Calls(w, _)
+none
+5000
+123 - invalid Calls arguments
+if ifs;
+Select ifs such that Calls(ifs, _)
+none
+5000
+124 - invalid Calls arguments
+assign a;
+Select a such that Calls(a, _)
+none
+5000
+125 - invalid Calls arguments
+variable v;
+Select v such that Calls(v, _)
+none
+5000
+126 - invalid Calls arguments
+constant c;
+Select c such that Calls(c, _)
+none
+5000
+127 - invalid Calls arguments
+call c;
+Select c such that Calls(c, _)
+none
+5000
+128 - invalid Calls arguments
+prog_line pl;
+Select pl such that Calls(pl, _)
+none
+5000
+129 - invalid Calls arguments
+stmt s;
+Select s such that Calls(2, _)
+none
+5000
+130 - invalid Calls arguments
+stmt s;
+Select s such that Calls(_, s)
+none
+5000
+131 - invalid Calls arguments
+read r;
+Select r such that Calls(_, r)
+none
+5000
+132 - invalid Calls arguments
+print p;
+Select p such that Calls(_, p)
+none
+5000
+133 - invalid Calls arguments
+while w;
+Select w such that Calls(_, w)
+none
+5000
+134 - invalid Calls arguments
+if ifs;
+Select ifs such that Calls(_, ifs)
+none
+5000
+135 - invalid Calls arguments
+assign a;
+Select a such that Calls(_, a)
+none
+5000
+136 - invalid Calls arguments
+variable v;
+Select v such that Calls(_, v)
+none
+5000
+137 - invalid Calls arguments
+constant c;
+Select c such that Calls(_, c)
+none
+5000
+138 - invalid Calls arguments
+call c;
+Select c such that Calls(_, c)
+none
+5000
+139 - invalid Calls arguments
+prog_line pl;
+Select pl such that Calls(_, pl)
+none
+5000
+140 - invalid Calls arguments
+stmt s;
+Select s such that Calls(_, 5)
+none
+5000
+141 - too many Calls arguments
+stmt s;
+Select s such that Calls(_, _, _)
+none
+5000
+142 - arguments non existent in source code
+stmt s;
+Select s such that Calls(16, _)
+none
+5000
+143 - invalid CallsStar arguments
+stmt s;
+Select s such that Calls*(s, _)
+none
+5000
+144 - invalid CallsStar arguments
+read r;
+Select r such that Calls*(r, _)
+none
+5000
+145 - invalid CallsStar arguments
+print p;
+Select p such that Calls*(p, _)
+none
+5000
+146 - invalid CallsStar arguments
+while w;
+Select w such that Calls*(w, _)
+none
+5000
+147 - invalid CallsStar arguments
+if ifs;
+Select ifs such that Calls*(ifs, _)
+none
+5000
+148 - invalid CallsStar arguments
+assign a;
+Select a such that Calls*(a, _)
+none
+5000
+149 - invalid CallsStar arguments
+variable v;
+Select v such that Calls*(v, _)
+none
+5000
+150 - invalid CallsStar arguments
+constant c;
+Select c such that Calls*(c, _)
+none
+5000
+151 - invalid CallsStar arguments
+call c;
+Select c such that Calls*(c, _)
+none
+5000
+152 - invalid CallsStar arguments
+prog_line pl;
+Select pl such that Calls*(pl, _)
+none
+5000
+153 - invalid CallsStar arguments
+stmt s;
+Select s such that Calls*(2, _)
+none
+5000
+154 - invalid CallsStar arguments
+stmt s;
+Select s such that Calls*(_, s)
+none
+5000
+155 - invalid CallsStar arguments
+read r;
+Select r such that Calls*(_, r)
+none
+5000
+156 - invalid CallsStar arguments
+print p;
+Select p such that Calls*(_, p)
+none
+5000
+157 - invalid CallsStar arguments
+while w;
+Select w such that Calls*(_, w)
+none
+5000
+158 - invalid CallsStar arguments
+if ifs;
+Select ifs such that Calls*(_, ifs)
+none
+5000
+159 - invalid CallsStar arguments
+assign a;
+Select a such that Calls*(_, a)
+none
+5000
+160 - invalid CallsStar arguments
+variable v;
+Select v such that Calls*(_, v)
+none
+5000
+161 - invalid CallsStar arguments
+constant c;
+Select c such that Calls*(_, c)
+none
+5000
+162 - invalid CallsStar arguments
+call c;
+Select c such that Calls*(_, c)
+none
+5000
+163 - invalid CallsStar arguments
+prog_line pl;
+Select pl such that Calls*(_, pl)
+none
+5000
+164 - invalid CallsStar arguments
+stmt s;
+Select s such that Calls*(_, 5)
+none
+5000
+165 - too many CallsStar arguments
+stmt s;
+Select s such that Calls*(_, _, _)
+none
+5000
+166 - arguments non existent in source code
+stmt s;
+Select s such that Calls*(16, _)
+none
+5000
+167 - invalid Next arguments
+variable v;
+Select v such that Next(v, _)
+none
+5000
+168 - invalid Next arguments
+variable v;
+Select v such that Next(_, v)
+none
+5000
+169 - invalid Next arguments
+procedure p;
+Select p such that Next(p, _)
+none
+5000
+170 - invalid Next arguments
+procedure p;
+Select p such that Next(_, p)
+none
+5000
+171 - invalid Next arguments
+constant c;
+Select c such that Next(c, _)
+none
+5000
+172 - invalid Next arguments
+constant c;
+Select c such that Next(_, c)
+none
+5000
+173 - invalid Next arguments
+assign a;
+Select a such that Next("a", _)
+none
+5000
+174 - invalid Next arguments
+assign a;
+Select a such that Next(_, "a")
+none
+5000
+175 - too many Next arguments
+assign a;
+Select a such that Next(1, 2, 3)
+none
+5000
+176 - arguments non existent in source code
+assign a;
+Select a such that Next(16, 17)
+none
+5000
+177 - invalid NextStar arguments
+variable v;
+Select v such that Next*(v, _)
+none
+5000
+178 - invalid NextStar arguments
+variable v;
+Select v such that Next*(_, v)
+none
+5000
+179 - invalid NextStar arguments
+procedure p;
+Select p such that Next*(p, _)
+none
+5000
+180 - invalid NextStar arguments
+procedure p;
+Select p such that Next*(_, p)
+none
+5000
+181 - invalid NextStar arguments
+constant c;
+Select c such that Next*(c, _)
+none
+5000
+182 - invalid NextStar arguments
+constant c;
+Select c such that Next*(_, c)
+none
+5000
+183 - invalid NextStar arguments
+assign a;
+Select a such that Next*("a", _)
+none
+5000
+184 - invalid NextStar arguments
+assign a;
+Select a such that Next*(_, "a")
+none
+5000
+185 - too many NextStar arguments
+assign a;
+Select a such that Next*(1, 2, 3)
+none
+5000
+186 - arguments non existent in source code
+assign a;
+Select a such that Next*(16, 17)
+none
+5000
+187 - invalid Affects arguments
+read r;
+Select r such that Affects(r, _)
+none
+5000
+188 - invalid Affects arguments
+print p;
+Select p such that Affects(p, _)
+none
+5000
+189 - invalid Affects arguments
+while w;
+Select w such that Affects(w, _)
+none
+5000
+190 - invalid Affects arguments
+if ifs;
+Select ifs such that Affects(ifs, _)
+none
+5000
+191 - invalid Affects arguments
+variable v;
+Select v such that Affects(v, _)
+none
+5000
+192 - invalid Affects arguments
+constant c;
+Select c such that Affects(c, _)
+none
+5000
+193 - invalid Affects arguments
+procedure p;
+Select p such that Affects(p, _)
+none
+5000
+194 - invalid Affects arguments
+call c;
+Select c such that Affects(c, _)
+none
+5000
+195 - invalid Affects arguments
+read r;
+Select r such that Affects(_, r)
+none
+5000
+196 - invalid Affects arguments
+print p;
+Select p such that Affects(_, p)
+none
+5000
+197 - invalid Affects arguments
+while w;
+Select w such that Affects(_, w)
+none
+5000
+198 - invalid Affects arguments
+if ifs;
+Select ifs such that Affects(_, ifs)
+none
+5000
+199 - invalid Affects arguments
+variable v;
+Select v such that Affects(_, v)
+none
+5000
+200 - invalid Affects arguments
+constant c;
+Select c such that Affects(_, c)
+none
+5000
+201 - invalid Affects arguments
+procedure p;
+Select p such that Affects(_, p)
+none
+5000
+202 - invalid Affects arguments
+call c;
+Select c such that Affects(_, c)
+none
+5000
+203 - too many Affects arguments
+stmt s;
+Select s such that Affects(_, _, _)
+none
+5000
+204 - invalid AffectsStar arguments
+read r;
+Select r such that Affects*(r, _)
+none
+5000
+205 - invalid AffectsStar arguments
+print p;
+Select p such that Affects*(p, _)
+none
+5000
+206 - invalid AffectsStar arguments
+while w;
+Select w such that Affects*(w, _)
+none
+5000
+207 - invalid AffectsStar arguments
+if ifs;
+Select ifs such that Affects*(ifs, _)
+none
+5000
+208 - invalid AffectsStar arguments
+variable v;
+Select v such that Affects*(v, _)
+none
+5000
+209 - invalid AffectsStar arguments
+constant c;
+Select c such that Affects*(c, _)
+none
+5000
+210 - invalid AffectsStar arguments
+procedure p;
+Select p such that Affects*(p, _)
+none
+5000
+211 - invalid AffectsStar arguments
+call c;
+Select c such that Affects*(c, _)
+none
+5000
+212 - invalid AffectsStar arguments
+read r;
+Select r such that Affects*(_, r)
+none
+5000
+213 - invalid AffectsStar arguments
+print p;
+Select p such that Affects*(_, p)
+none
+5000
+214 - invalid AffectsStar arguments
+while w;
+Select w such that Affects*(_, w)
+none
+5000
+215 - invalid AffectsStar arguments
+if ifs;
+Select ifs such that Affects*(_, ifs)
+none
+5000
+216 - invalid AffectsStar arguments
+variable v;
+Select v such that Affects*(_, v)
+none
+5000
+217 - invalid AffectsStar arguments
+constant c;
+Select c such that Affects*(_, c)
+none
+5000
+218 - invalid AffectsStar arguments
+procedure p;
+Select p such that Affects*(_, p)
+none
+5000
+219 - invalid AffectsStar arguments
+call c;
+Select c such that Affects*(_, c)
+none
+5000
+220 - too many AffectsStar arguments
+stmt s;
+Select s such that Affects*(_, _, _)
 none
 5000

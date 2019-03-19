@@ -773,3 +773,23 @@ assign a;
 Select a such that Modifies (a, "minus2") pattern a (_, _"b"_)
 6
 5000
+156 - select boolean
+assign a;
+Select BOOLEAN such that Parent (a, aa)
+false
+5000
+157 - select boolean
+assign a;
+Select BOOLEAN such that Parent (a, _)
+false
+5000
+158 - select tuple
+assign a, a1;
+Select <a, a1> such that Parent (a, _)
+none
+5000
+159 - select tuple
+assign a, a1; read r;
+Select <a, a1> such that Follows (a, r)
+none
+5000
