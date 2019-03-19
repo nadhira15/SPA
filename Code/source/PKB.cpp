@@ -1,6 +1,5 @@
 #include "PKB.h"
 
-
 string PKB::procName;
 vector<stmType> PKB::stmTypeList;
 unordered_set<string> PKB::varList;
@@ -100,40 +99,40 @@ bool PKB::setDescendants(int stm, unordered_set<int> stmList)
 	return pStore.setDescendants(stm, stmList);
 }
 
-bool PKB::addUses(int stm, string variable)
+bool PKB::addUsesStm(int stm, string variable)
 {
 	if (variable == "")
 	{
 		return false;
 	}
-	return uStore.addUses(stm, variable);
+	return uStore.addUsesStm(stm, variable);
 }
 
-bool PKB::addUses(string procedure, string variable)
+bool PKB::addUsesProc(string procedure, string variable)
 {
 	if (procedure == "" || variable == "")
 	{
 		return false;
 	}
-	return uStore.addUses(procedure, variable);
+	return uStore.addUsesProc(procedure, variable);
 }
 
-bool PKB::addModifies(int stm, string variable)
+bool PKB::addModifiesStm(int stm, string variable)
 {
 	if (variable == "")
 	{
 		return false;
 	}
-	return mStore.addModifies(stm, variable);
+	return mStore.addModifiesStm(stm, variable);
 }
 
-bool PKB::addModifies(string procedure, string variable)
+bool PKB::addModifiesProc(string procedure, string variable)
 {
 	if (procedure == "" || variable == "")
 	{
 		return false;
 	}
-	return mStore.addModifies(procedure, variable);
+	return mStore.addModifiesProc(procedure, variable);
 }
 
 bool PKB::addAssign(int stm, string variable, string expr)
@@ -196,19 +195,19 @@ bool PKB::hasFollowRelation()
 	return !fStore.isEmpty();
 }
 
-bool PKB::hasFollow_S_Pair(int stm1, int stm2)
+bool PKB::hasFollowStarPair(int stm1, int stm2)
 {
-	return fStore.containsFSPair(pair<int, int>(stm1, stm2));
+	return fStore.hasFollowStarPair(pair<int, int>(stm1, stm2));
 }
 
-int PKB::getPrvStm(int stm)
+int PKB::getStmFollowedBy(int stm)
 {
-	return fStore.getPrevOf(stm);
+	return fStore.getStmFollowedBy(stm);
 }
 
-int PKB::getNxtStm(int stm)
+int PKB::getFollower(int stm)
 {
-	return fStore.getNextOf(stm);
+	return fStore.getFollower(stm);
 }
 
 unordered_set<int> PKB::getAllFollowing(int stm)
@@ -223,27 +222,22 @@ unordered_set<int> PKB::getAllFollowedBy(int stm)
 
 unordered_set<int> PKB::getAllFollowers()
 {
-	return fStore.getFollowerList();
+	return fStore.getAllFollowers();
 }
 
 unordered_set<int> PKB::getAllFollowed()
 {
-	return fStore.getFollowedList();
+	return fStore.getAllFollowed();
 }
 
 unordered_set<pair<int, int>, intPairhash> PKB::getFollowPairs()
 {
-	return fStore.getFPairList();
+	return fStore.getFollowPairs();
 }
 
-unordered_set<pair<int, int>, intPairhash> PKB::getFollow_S_Pairs()
+unordered_set<pair<int, int>, intPairhash> PKB::getFollowStarPairs()
 {
-	return fStore.getF_S_PairList();
-}
-
-unordered_set<int> PKB::getFollowRoots()
-{
-	return fStore.getRoots();
+	return fStore.getFollowStarPairs();
 }
 
 bool PKB::hasParentRelation()
@@ -263,52 +257,47 @@ bool PKB::isChild(int stm)
 
 bool PKB::hasAncDescPair(int stm1, int stm2)
 {
-	return pStore.containsAnc_Desc(pair<int, int>(stm1, stm2));
+	return pStore.hasAncDescPair(pair<int, int>(stm1, stm2));
 }
 
 int PKB::getParent(int stm)
 {
-	return pStore.getParentOf(stm);
+	return pStore.getParent(stm);
 }
 
 unordered_set<int> PKB::getChildren(int stm)
 {
-	return pStore.getChildrenOf(stm);
+	return pStore.getChildren(stm);
 }
 
-unordered_set<int> PKB::getAllAncestors(int stm)
+unordered_set<int> PKB::getAncestors(int stm)
 {
-	return pStore.getAncestorsOf(stm);
+	return pStore.getAncestors(stm);
 }
 
-unordered_set<int> PKB::getAllDescendants(int stm)
+unordered_set<int> PKB::getDescendants(int stm)
 {
-	return pStore.getDescendantsOf(stm);
+	return pStore.getDescendants(stm);
 }
 
 unordered_set<int> PKB::getAllParents()
 {
-	return pStore.getParentList();
+	return pStore.getAllParent();
 }
 
 unordered_set<int> PKB::getAllChildren()
 {
-	return pStore.getChildrenList();
+	return pStore.getAllChildren();
 }
 
 unordered_set<pair<int, int>, intPairhash> PKB::getParentChildPairs()
 {
-	return pStore.getParent_ChildList();
+	return pStore.getParentChildPairs();
 }
 
 unordered_set<pair<int, int>, intPairhash> PKB::getAncDescPairs()
 {
-	return pStore.getAnc_DescList();
-}
-
-unordered_set<int> PKB::getParentRoots()
-{
-	return pStore.getRootList();
+	return pStore.getAncDescPair();
 }
 
 bool PKB::isUsing(int stm, string variable)
@@ -321,14 +310,14 @@ bool PKB::isUsing(string procedure, string variable)
 	return uStore.containsProcVarPair(pair<string, string>(procedure, variable));
 }
 
-unordered_set<string> PKB::getUsedVar(int stm)
+unordered_set<string> PKB::getVarUsedByStm(int stm)
 {
-	return uStore.getVarUsedBy(stm);
+	return uStore.getVarUsedByStm(stm);
 }
 
-unordered_set<string> PKB::getUsedVar(string procedure)
+unordered_set<string> PKB::getVarUsedByProc(string procedure)
 {
-	return uStore.getVarUsedBy(procedure);
+	return uStore.getVarUsedByProc(procedure);
 }
 
 unordered_set<int> PKB::getStmUsing(string variable)
@@ -363,12 +352,12 @@ bool PKB::isModifying(string procedure, string variable)
 
 unordered_set<string> PKB::getModifiedVar(int stm)
 {
-	return mStore.getVarModifiedBy(stm);
+	return mStore.getVarModifiedByStm(stm);
 }
 
 unordered_set<string> PKB::getModifiedVar(string procedure)
 {
-	return mStore.getVarModifiedBy(procedure);
+	return mStore.getVarModifiedByProc(procedure);
 }
 
 unordered_set<int> PKB::getStmModifying(string variable)
@@ -391,6 +380,13 @@ unordered_set<pair<string, string>, strPairhash> PKB::getProcVarModifyPairs()
 	return mStore.getProcVarPairs();
 }
 
+/*
+	Search for assign statements with pattern matching
+		- the specified variable ont the left side and
+		- the specified expression on the right side
+	If isExclusive is true, the function finds for an exact match to the specfied expression.
+	If false, it finds for a matching substring instead.
+*/
 vector<int> PKB::findPattern(string variable, string expr, bool isExclusive)
 {
 	vector<int> validStm;
@@ -411,6 +407,12 @@ vector<int> PKB::findPattern(string variable, string expr, bool isExclusive)
 	return validStm;
 }
 
+/*
+	Search for assign statements with pattern matching
+		- the specified expression on the right side
+	If isExclusive is true, the function finds for an exact match to the specfied expression.
+	If false, it finds for a matching substring instead.
+*/
 vector<int> PKB::findPattern(string expr, bool isExclusive)
 {
 	vector<int> validStm;
@@ -428,6 +430,12 @@ vector<int> PKB::findPattern(string expr, bool isExclusive)
 	return validStm;
 }
 
+/*
+	Search for pairs of an assign statement and left-hand side variable with
+		the right side expression matching the specified expression
+	If isExclusive is true, the function finds for an exact match to the specfied expression.
+	If false, it finds for a matching substring instead.
+*/
 vector<pair<int, string>> PKB::findPatternPairs(string expr, bool isExclusive)
 {
 	vector<pair<int, string>> validPairs;

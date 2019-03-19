@@ -14,10 +14,9 @@ using namespace std;
 enum stmType { read, print, assign, whileStm, ifStm };
 
 /*
-	Accepts data from the Front-End's Parser, sends data to the PostProcessor when called and
-	accepts new data from it as well. PKB will also reply to queries made by the PQL's Query Evaluator.
-	Stores relationships data in their respective Storage classes while other information
-	like procedure name, statement types, statement lists and pattern are stored locally
+	Accepts relationship, pattern and other general data from Parser and DesignExtractor and
+	stores them here or into their respective Storage classes.
+	Reply to queries made by the QueryEvaluator.
 */
 class PKB {
 public:
@@ -40,12 +39,12 @@ public:
 	bool setDescendants(int stm, unordered_set<int> stmList);
 
 	//adding Uses relationships
-	bool addUses(int stm, string variable);
-	bool addUses(string procedure, string variable);
+	bool addUsesStm(int stm, string variable);
+	bool addUsesProc(string procedure, string variable);
 
 	//adding Modifies relationships
-	bool addModifies(int stm, string variable);
-	bool addModifies(string procedure, string variable);
+	bool addModifiesStm(int stm, string variable);
+	bool addModifiesProc(string procedure, string variable);
 
 	//adding patterns
 	bool addAssign(int stm, string variable, string expr);
@@ -64,16 +63,15 @@ public:
 
 	//For Follows/Follows* relations
 	bool hasFollowRelation();
-	bool hasFollow_S_Pair(int stm1, int stm2);
-	int getPrvStm(int stm);
-	int getNxtStm(int stm);
+	bool hasFollowStarPair(int stm1, int stm2);
+	int getStmFollowedBy(int stm);
+	int getFollower(int stm);
 	unordered_set<int> getAllFollowing(int stm);
 	unordered_set<int> getAllFollowedBy(int stm);
 	unordered_set<int> getAllFollowers();
 	unordered_set<int> getAllFollowed();
 	unordered_set< pair<int, int>, intPairhash> getFollowPairs();
-	unordered_set< pair<int, int>, intPairhash> getFollow_S_Pairs();
-	unordered_set<int> getFollowRoots();
+	unordered_set< pair<int, int>, intPairhash> getFollowStarPairs();
 
 	//For Parent/Parent* relations
 	bool hasParentRelation();
@@ -82,19 +80,18 @@ public:
 	bool hasAncDescPair(int stm1, int stm2);
 	int getParent(int stm);
 	unordered_set<int> getChildren(int stm);
-	unordered_set<int> getAllAncestors(int stm);
-	unordered_set<int> getAllDescendants(int stm);
+	unordered_set<int> getAncestors(int stm);
+	unordered_set<int> getDescendants(int stm);
 	unordered_set<int> getAllParents();
 	unordered_set<int> getAllChildren();
 	unordered_set< pair<int, int>, intPairhash> getParentChildPairs();
 	unordered_set< pair<int, int>, intPairhash> getAncDescPairs();
-	unordered_set<int> getParentRoots();
 
 	//For Uses relations
 	bool isUsing(int stm, string variable);
 	bool isUsing(string procedure, string variable);
-	unordered_set<string> getUsedVar(int stm);
-	unordered_set<string> getUsedVar(string procedure);
+	unordered_set<string> getVarUsedByStm(int stm);
+	unordered_set<string> getVarUsedByProc(string procedure);
 	unordered_set<int> getStmUsing(string variable);
 	unordered_set<string> getProcUsing(string variable);
 	unordered_set< pair<int, string>, intStringhash> getStmVarUsePairs();

@@ -37,17 +37,16 @@ public:
 	bool isEmpty();
 	bool isParent(int stm);
 	bool isChild(int stm);
-	bool containsAnc_Desc(pair<int, int> pair);
+	bool hasAncDescPair(pair<int, int> pair);
 
-	int getParentOf(int stm);
-	unordered_set<int> getChildrenOf(int stm);
-	unordered_set<int> getAncestorsOf(int stm);
-	unordered_set<int> getDescendantsOf(int stm);
-	unordered_set<int> getParentList();
-	unordered_set<int> getChildrenList();
-	unordered_set< pair<int, int>, intPairhash> getParent_ChildList();
-	unordered_set< pair<int, int>, intPairhash> getAnc_DescList();
-	unordered_set<int> getRootList();
+	int getParent(int stm);
+	unordered_set<int> getChildren(int stm);
+	unordered_set<int> getAncestors(int stm);
+	unordered_set<int> getDescendants(int stm);
+	unordered_set<int> getAllParent();
+	unordered_set<int> getAllChildren();
+	unordered_set< pair<int, int>, intPairhash> getParentChildPairs();
+	unordered_set< pair<int, int>, intPairhash> getAncDescPair();
 
 private:
 	static unordered_map<int, pRelationships> parentTable;
@@ -55,5 +54,4 @@ private:
 	static unordered_set< pair<int, int>, intPairhash> anc_DescPairList;
 	static unordered_set<int> parentList;
 	static unordered_set<int> childrenList;
-	static unordered_set<int> rootList;
 };

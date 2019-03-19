@@ -25,7 +25,7 @@ void DesignExtractor::processFollowStar()
 	//Process stmt list s where Follow*(index, s) is true
 	for (int i = stmtNum; i >= 1; i--) {
 		int currStmt = i;
-		int directFollowStm = pkb.getNxtStm(currStmt);
+		int directFollowStm = pkb.getFollower(currStmt);
 		//Has a Next Stm
 		if (directFollowStm != 0) {
 			unordered_set<int> followedByStar = pkb.getAllFollowing(directFollowStm);
@@ -37,7 +37,7 @@ void DesignExtractor::processFollowStar()
 	//Process stmt list s where Follow*(s, index) is true
 	for (int i = 1; i <= stmtNum; i++) {
 		int currStmt = i;
-		int directPrvStm = pkb.getPrvStm(currStmt);
+		int directPrvStm = pkb.getStmFollowedBy(currStmt);
 
 		//If have Prev Stm
 		if (directPrvStm != 0) {
@@ -63,7 +63,7 @@ void DesignExtractor::processParentStar()
 
 		//If have parent,
 		if (directParentStm != 0) {
-			unordered_set<int> ancestors = pkb.getAllAncestors(directParentStm);
+			unordered_set<int> ancestors = pkb.getAncestors(directParentStm);
 			ancestors.insert(directParentStm);
 			pkb.setAncestors(i, ancestors);
 		}
@@ -78,7 +78,7 @@ void DesignExtractor::processParentStar()
 		//Has a Child Stm
 		if (!directChildStm.empty()) {
 			for (int childStm : directChildStm) {
-				unordered_set<int> descendents = pkb.getAllDescendants(childStm);
+				unordered_set<int> descendents = pkb.getDescendants(childStm);
 				for (int descendent : descendents) {
 					allDescendents.insert(descendent);
 				}
@@ -109,11 +109,11 @@ void DesignExtractor::processModifiesContainers()
 
 	for (int i = stmtNum; i >= 1; i--) {
 		int currLine = i;
-		unordered_set<int> descendents = pkb.getAllDescendants(currLine);
+		unordered_set<int> descendents = pkb.getDescendants(currLine);
 		for (int descendent : descendents) {
 			unordered_set<string> modifiedList = pkb.getModifiedVar(descendent);
 			for (string modifiedVar : modifiedList) {
-				pkb.addModifies(currLine, modifiedVar);
+				pkb.addModifiesStm(currLine, modifiedVar);
 			}
 		}
 	}
@@ -129,11 +129,11 @@ void DesignExtractor::processUsesContainers()
 
 	for (int i = stmtNum; i >= 1; i--) {
 		int currLine = i;
-		unordered_set<int> descendents = pkb.getAllDescendants(currLine);
+		unordered_set<int> descendents = pkb.getDescendants(currLine);
 		for (int descendent : descendents) {
-			unordered_set<string> usedList = pkb.getUsedVar(descendent);
+			unordered_set<string> usedList = pkb.getVarUsedByStm(descendent);
 			for (string usedVariable : usedList) {
-				pkb.addUses(currLine, usedVariable);
+				pkb.addUsesStm(currLine, usedVariable);
 			}
 		}
 	}

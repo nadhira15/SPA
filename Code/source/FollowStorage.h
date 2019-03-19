@@ -9,18 +9,18 @@ using namespace std;
 #include "Hasher.h"
 
 /* 
-	A structure to contain:	the statement being followed directly (previous),
-							it's immediate follower (next),
-							a list of statements that being directly/indirectly followed (allPrevious),
-							a list of statements directly/indirectly following it (allNext)
+	A structure to contain:	the statement being followed directly (followed),
+							it's immediate follower (follower),
+							a list of statements that being directly/indirectly followed (allFollowed),
+							a list of statements directly/indirectly following it (allFollowers)
 	If such statement or list does not exist, it'll be set to 0 or {} respectively
 */
 struct fRelationships
 {
-	int previous;
-	int next;
-	unordered_set<int> allPrevious;
-	unordered_set<int> allNext;
+	int followed;
+	int follower;
+	unordered_set<int> allFollowed;
+	unordered_set<int> allFollowers;
 };
 
 /*
@@ -35,23 +35,21 @@ public:
 	bool setAllFollowedBy(int follower, unordered_set<int> followed);
 
 	bool isEmpty();
-	bool containsFSPair(pair<int, int> pair);
+	bool hasFollowStarPair(pair<int, int> pair);
 
-	int getNextOf(int stm);
-	int getPrevOf(int stm);
+	int getFollower(int stm);
+	int getStmFollowedBy(int stm);
 	unordered_set<int> getAllFollowing(int stm);
 	unordered_set<int> getAllFollowedBy(int stm);
-	unordered_set<int> getFollowerList();
-	unordered_set<int> getFollowedList();
-	unordered_set< pair<int, int>, intPairhash> getFPairList();
-	unordered_set< pair<int, int>, intPairhash> getF_S_PairList();
-	unordered_set<int> getRoots();
+	unordered_set<int> getAllFollowers();
+	unordered_set<int> getAllFollowed();
+	unordered_set< pair<int, int>, intPairhash> getFollowPairs();
+	unordered_set< pair<int, int>, intPairhash> getFollowStarPairs();
 
 private:
 	static unordered_map<int, fRelationships> followTable;
 	static unordered_set< pair<int, int>, intPairhash> followPairList;
-	static unordered_set< pair<int, int>, intPairhash> follow_S_PairList;
+	static unordered_set< pair<int, int>, intPairhash> followStarPairList;
 	static unordered_set<int> followerList;
 	static unordered_set<int> followedList;
-	static unordered_set<int> rootList;
 };
