@@ -51,7 +51,7 @@ public:
 	bool addAssign(int stm, string variable, string expr);
 
 	//general getter methods
-	string getProcName();
+	unordered_set<string> getProcList();
 	int getTotalStmNo();
 	stmType getStmType(int stm);
 	unordered_set<int> getReadStms();
@@ -114,7 +114,7 @@ public:
 	unordered_set<pair<int, string>, intStringhash> findPatternPairs(string expr, bool isExclusive);
 
 private:
-	static string procName;
+	static unordered_set<string> procList;
 	static vector<stmType> stmTypeList;
 	static unordered_set<string> varList;
 	static unordered_set<string> constList;

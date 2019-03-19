@@ -1,6 +1,6 @@
 #include "PKB.h"
 
-string PKB::procName;
+unordered_set<string> PKB::procList;
 vector<stmType> PKB::stmTypeList;
 unordered_set<string> PKB::varList;
 unordered_set<string> PKB::constList;
@@ -22,7 +22,7 @@ PKB::PKB()
 
 void PKB::addProc(string name)
 {
-	procName = name;
+	procList.emplace(name);
 }
 
 void PKB::addStatement(int stmNo, stmType type)
@@ -140,9 +140,9 @@ bool PKB::addAssign(int stm, string variable, string expr)
 	return patternList.emplace(stm, pair<string, string>(variable, expr)).second;
 }
 
-string PKB::getProcName()
+unordered_set<string> PKB::getProcList()
 {
-	return procName;
+	return procList;
 }
 
 int PKB::getTotalStmNo()
