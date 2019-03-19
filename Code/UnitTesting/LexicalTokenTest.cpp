@@ -17,6 +17,24 @@ namespace UnitTesting
 			Assert::AreEqual(true, result);
 		}
 
+		TEST_METHOD(testEmptyVariable)
+		{
+			bool result = LexicalToken::verifyName("");
+			Assert::AreEqual(false, result);
+		}
+
+		TEST_METHOD(testWhitespaceVariable)
+		{
+			bool result = LexicalToken::verifyName(" ");
+			Assert::AreEqual(false, result);
+		}
+
+		TEST_METHOD(testWhitespaceBetweenVariable)
+		{
+			bool result = LexicalToken::verifyName("aasd vasd");
+			Assert::AreEqual(false, result);
+		}
+
 		TEST_METHOD(testInvalidVariable)
 		{
 			bool result = LexicalToken::verifyName("1test");
@@ -32,6 +50,12 @@ namespace UnitTesting
 		TEST_METHOD(testValidInteger)
 		{
 			bool result = LexicalToken::verifyInteger("55");
+			Assert::AreEqual(true, result);
+		}
+
+		TEST_METHOD(testLongValidInteger)
+		{
+			bool result = LexicalToken::verifyInteger("999999999999999999999999999999999999999999999999999999999999999999");
 			Assert::AreEqual(true, result);
 		}
 

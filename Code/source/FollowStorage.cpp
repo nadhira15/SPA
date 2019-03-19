@@ -107,7 +107,7 @@ bool FollowStorage::setAllFollowedBy(int follower, unordered_set<int> followed)
 
 	for (auto itr = followed.cbegin(); itr != followed.cend(); ++itr)
 	{
-		follow_S_PairList.emplace(pair<int, int>(follower, *itr));
+		follow_S_PairList.emplace(pair<int, int>(*itr, follower));
 	}
 	return true;
 }

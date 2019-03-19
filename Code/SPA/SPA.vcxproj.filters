@@ -99,6 +99,12 @@
     <ClCompile Include="..\source\UseStorage.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\QueryValidator.cpp">
+      <Filter>Source Files\ProgramQueryLanguage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ContainerUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\PKB.h">
@@ -168,6 +174,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\DesignExtractor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\QueryValidator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ContainerUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
