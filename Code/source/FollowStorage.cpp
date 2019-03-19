@@ -16,7 +16,7 @@ FollowStorage::FollowStorage()
 						2) the followed statement has another follower stored
 						3) the follower is following another statement
 */
-bool FollowStorage::addFollowPair(int followed, int follower)
+bool FollowStorage::addFollow(int followed, int follower)
 {
 	// if follows Pair is already added
 	if (!followPairList.emplace(pair<int, int>(followed, follower)).second)

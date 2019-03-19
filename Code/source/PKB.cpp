@@ -67,7 +67,7 @@ bool PKB::addFollow(int stm1, int stm2)
 	{
 		return false;
 	}
-	return fStore.addFollowPair(stm1, stm2);
+	return fStore.addFollow(stm1, stm2);
 }
 
 bool PKB::setFollowers(int stm, unordered_set<int> stmList)

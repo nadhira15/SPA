@@ -30,7 +30,7 @@ class FollowStorage {
 public:
 	FollowStorage();
 
-	bool addFollowPair(int followed, int follower);
+	bool addFollow(int followed, int follower);
 	bool setAllFollowing(int followed, unordered_set<int> followers);
 	bool setAllFollowedBy(int follower, unordered_set<int> followed);
 
