@@ -5,7 +5,6 @@ unordered_set< pair<int, int>, intPairhash> ParentStorage::parent_ChildPairList;
 unordered_set< pair<int, int>, intPairhash> ParentStorage::anc_DescPairList;
 unordered_set<int> ParentStorage::parentList;
 unordered_set<int> ParentStorage::childrenList;
-unordered_set<int> ParentStorage::rootList;
 
 ParentStorage::ParentStorage()
 {
@@ -34,24 +33,10 @@ bool ParentStorage::addParent_Child(int parent, int child)
 	else if (!itrpr.second)		// if child exist but does not have parent initialized
 	{
 		itrpr.first->second.parent = parent;
-		if (rootList.find(child) != rootList.end())	//if child was a root
-		{
-			rootList.erase(child);
-			int root = parent;
-			while (parentTable.find(root)->second.parent != 0)	//while root has a parent
-			{
-				root = parentTable.find(root)->second.parent;
-			}
-			rootList.emplace(root);
-		}
 	}
 
 	// if a new parent statement is added into the table, add to the root list
-	if (parentTable.emplace(parent, pRelationships{ 0, {child}, {}, {} }).second)
-	{
-		rootList.emplace(parent);
-	}
-	else
+	if (!parentTable.emplace(parent, pRelationships{ 0, {child}, {}, {} }).second)
 	{
 		parentTable.find(parent)->second.children.emplace(child);
 	}
@@ -191,9 +176,4 @@ unordered_set<pair<int, int>, intPairhash> ParentStorage::getParent_ChildList()
 unordered_set<pair<int, int>, intPairhash> ParentStorage::getAnc_DescList()
 {
 	return anc_DescPairList;
-}
-
-unordered_set<int> ParentStorage::getRootList()
-{
-	return rootList;
 }
