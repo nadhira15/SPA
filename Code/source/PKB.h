@@ -10,6 +10,7 @@ using namespace std;
 #include "ParentStorage.h"
 #include "UseStorage.h"
 #include "ModifyStorage.h"
+#include "Hasher.h"
 
 enum stmType { read, print, assign, whileStm, ifStm };
 
@@ -108,9 +109,9 @@ public:
 	unordered_set< pair<string, string>, strPairhash> getProcVarModifyPairs();
 
 	//For Pattern clauses
-	vector<int> findPattern(string variable, string expr, bool isExclusive);
-	vector<int> findPattern(string expr, bool isExclusive);
-	vector<pair<int, string>> findPatternPairs(string expr, bool isExclusive);
+	unordered_set<int> findPattern(string variable, string expr, bool isExclusive);
+	unordered_set<int> findPattern(string expr, bool isExclusive);
+	unordered_set<pair<int, string>, intStringhash> findPatternPairs(string expr, bool isExclusive);
 
 private:
 	static string procName;

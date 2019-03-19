@@ -387,20 +387,20 @@ unordered_set<pair<string, string>, strPairhash> PKB::getProcVarModifyPairs()
 	If isExclusive is true, the function finds for an exact match to the specfied expression.
 	If false, it finds for a matching substring instead.
 */
-vector<int> PKB::findPattern(string variable, string expr, bool isExclusive)
+unordered_set<int> PKB::findPattern(string variable, string expr, bool isExclusive)
 {
-	vector<int> validStm;
+	unordered_set<int> validStm;
 	for each (const auto elem in patternList)
 	{
 		if (elem.second.first.compare(variable) == 0)
 		{
 			if (isExclusive && elem.second.second.compare(expr) == 0)
 			{
-				validStm.push_back(elem.first);
+				validStm.emplace(elem.first);
 			}
 			else if (!isExclusive && elem.second.second.find(expr) != string::npos)
 			{
-				validStm.push_back(elem.first);
+				validStm.emplace(elem.first);
 			}
 		}
 	}
@@ -413,18 +413,18 @@ vector<int> PKB::findPattern(string variable, string expr, bool isExclusive)
 	If isExclusive is true, the function finds for an exact match to the specfied expression.
 	If false, it finds for a matching substring instead.
 */
-vector<int> PKB::findPattern(string expr, bool isExclusive)
+unordered_set<int> PKB::findPattern(string expr, bool isExclusive)
 {
-	vector<int> validStm;
+	unordered_set<int> validStm;
 	for each (const auto elem in patternList)
 	{
 		if (isExclusive && elem.second.second.compare(expr) == 0)
 		{
-			validStm.push_back(elem.first);
+			validStm.emplace(elem.first);
 		}
 		else if (!isExclusive && elem.second.second.find(expr) != string::npos)
 		{
-			validStm.push_back(elem.first);
+			validStm.emplace(elem.first);
 		}
 	}
 	return validStm;
@@ -436,18 +436,18 @@ vector<int> PKB::findPattern(string expr, bool isExclusive)
 	If isExclusive is true, the function finds for an exact match to the specfied expression.
 	If false, it finds for a matching substring instead.
 */
-vector<pair<int, string>> PKB::findPatternPairs(string expr, bool isExclusive)
+unordered_set<pair<int, string>, intStringhash> PKB::findPatternPairs(string expr, bool isExclusive)
 {
-	vector<pair<int, string>> validPairs;
+	unordered_set<pair<int, string>, intStringhash> validPairs;
 	for each (const auto elem in patternList)
 	{
 		if (isExclusive && elem.second.second.compare(expr) == 0)
 		{
-			validPairs.push_back(pair<int, string>(elem.first, elem.second.first));
+			validPairs.emplace(pair<int, string>(elem.first, elem.second.first));
 		}
 		else if (!isExclusive && elem.second.second.find(expr) != string::npos)
 		{
-			validPairs.push_back(pair<int, string>(elem.first, elem.second.first));
+			validPairs.emplace(pair<int, string>(elem.first, elem.second.first));
 		}
 	}
 	return validPairs;

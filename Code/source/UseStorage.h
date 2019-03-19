@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <utility>
 
+using namespace std;
+
 #include "Hasher.h"
 
 /*
