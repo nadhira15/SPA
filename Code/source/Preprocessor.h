@@ -41,10 +41,10 @@ private:
 	std::vector<Statement> processLst(int bookmark);
 public:
 	//only validators, atring trimmer, getter and Processer is public
-	int validateSemicolon(std::string s);
-	int validateCurvedBrackets(std::string s);
-	int validateProc(std::string s);
-	std::string trim(std::string s);
+	static int validateSemicolon(std::string s);
+	static int validateCurvedBrackets(std::string s);
+	static int validateProc(std::string s);
+	static std::string trim(std::string s);
 	std::vector<Statement> getProcLst();
 	Preprocessor(std::string chunk1);
 	void process();
