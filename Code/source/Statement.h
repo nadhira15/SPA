@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-using namespace std;
+#include <string>
+#include <iostream>
 
 /**** Usage guide
   Statement is a container for the processed source code
@@ -29,17 +30,17 @@ using namespace std;
 
 class Statement {
 private:
-	string extracted_String;
-	vector<Statement> stmtLst;
+	std::string extracted_String;
+	std::vector<Statement> stmtLst;
 	int stmtType;
 	int stmtNum;
 public:
 	//constructors
-	Statement(string s, int type, int stmtNum);
-	Statement(string s, vector<Statement> lst, int type, int stmtNum);
+	Statement(std::string s, int type, int stmtNum);
+	Statement(std::string s, std::vector<Statement> lst, int type, int stmtNum);
 	//getters
-	string getString();
-	vector<Statement> getStmtLst();
+	std::string getString();
+	std::vector<Statement> getStmtLst();
 	int getType(); // 1 "ASSIGN", 2 "CALL", 3 "READ", 4 "PRINT", 5 "WHILE", 6 "IF", 7 "ELSE", 8 "PROCEDURE"
 	int getStmtNum();
 	bool hasStmtLst();

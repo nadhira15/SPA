@@ -1,16 +1,3 @@
-#pragma once
-
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <stack>
-#include <algorithm>
-
-using namespace std;
-
-#include "Statement.h"
-#include "Preprocessor.h"
 
 /**** Usage guide
   Preprocessor will contain:
@@ -33,7 +20,9 @@ using namespace std;
   vector<Statement> procLst = p.getProcLst();
 */
 
-vector<Statement> Preprocessor::getProcLst() {
+#include "Preprocessor.h"
+
+std::vector<Statement> Preprocessor::getProcLst() {
 	return procLst;
 }
 
@@ -41,7 +30,7 @@ vector<Statement> Preprocessor::getProcLst() {
 input: nil
 output: vector<Statement> that contains procedure statements
 */
-Preprocessor::Preprocessor(string chunk1)
+Preprocessor::Preprocessor(std::string chunk1)
 {
 	//take file contents and save as global variable
 	chunk1.erase(chunk1.find('\0'));
@@ -56,8 +45,9 @@ void Preprocessor::process() {
 			procLst.push_back(processProc(bookmark));
 			bookmark = stopper + 1;
 		}
-	} catch (string e) {
-		string s1 = "Pre-processing error, incorrect syntax for ";
+	}
+	catch (std::string e) {
+		std::string s1 = "Pre-processing error, incorrect syntax for ";
 		cout << s1 << e << "! \n";
 	}
 }
@@ -70,11 +60,11 @@ NOTE 'procedure' can only occur once per procedure
 Statement Preprocessor::processProc(int bookmark)
 {
 	int valid;
-	string tmp;
+	std::string tmp;
 	size_t tmpn;
 	int tmpn2;
 	tmpn = chunk.find('{', bookmark);
-	if (tmpn != string::npos) {
+	if (tmpn != std::string::npos) {
 		tmp = trim(chunk.substr(bookmark, tmpn - bookmark));
 		valid = validateProc(tmp); //validate procedure term
 	} else {
@@ -84,7 +74,7 @@ Statement Preprocessor::processProc(int bookmark)
 		throw "procedure";
 	}
 	tmpn2 = stmtNum;
-	vector<Statement> stmtlst = processLst(tmpn + 1);
+	std::vector<Statement> stmtlst = processLst(tmpn + 1);
 	if (stmtlst.empty() || !ifStmt.empty()) {
 		throw "procedure";
 	}
@@ -96,10 +86,10 @@ Statement Preprocessor::processProc(int bookmark)
 input: start, end (usually })
 output: Statement
 */
-vector<Statement> Preprocessor::processLst(int bookmark) {
-	vector<Statement> stmtlst;
+std::vector<Statement> Preprocessor::processLst(int bookmark) {
+	std::vector<Statement> stmtlst;
 	int valid, i, tmpN;
-	string tmp, tmp2;
+	std::string tmp, tmp2;
 	stopper = 0;
 	for (i = bookmark; i < size; i++) {
 		if (chunk[i] == '}') { //end of a {} part
@@ -162,21 +152,21 @@ validation of syntax errors
 errors covered: incorrect syntax
 errors NOT covered: incorrect variables, expression (i.e. *+/-=)
 */
-int Preprocessor::validateSemicolon(string s)
+int Preprocessor::validateSemicolon(std::string s)
 {
 	int result = 0;
 	size_t end;
-	if ((s.find("=") != string::npos) && (s.find("=") == s.rfind("="))) {
+	if ((s.find("=") != std::string::npos) && (s.find("=") == s.rfind("="))) {
 		//ASSIGN is passed as long as it contains 1 "="
 		result = 1;
 	} else {
 		end = s.find(" ");
-		if (end == string::npos) {
+		if (end == std::string::npos) {
 			result = 0;
 		} else {
-			string firstWord = s.substr(0, end);
+			std::string firstWord = s.substr(0, end);
 			s = trim(s.substr(s.find(" "), s.size() - s.find(" ")));
-			if (s.find(" ") == string::npos) {
+			if (s.find(" ") == std::string::npos) {
 				//READ, CALL, PRINT is passed as long as it contains 2 words
 				if (firstWord.compare("call") == 0) result = 2;
 				else if (firstWord.compare("read") == 0) result = 3;
@@ -193,7 +183,7 @@ validation of syntax errors
 errors covered: incorrect syntax for if, while
 errors NOT covered: incorrect variables, expression (i.e. *+/-=), non-alphanumeric characters
 */
-int Preprocessor::validateCurvedBrackets(string s)
+int Preprocessor::validateCurvedBrackets(std::string s)
 {
 	int result = 0;
 	if (s.substr(0, 5).compare("while") == 0) {
@@ -221,14 +211,14 @@ validation of syntax errors
 errors covered: incorrect syntax for procedure
 errors NOT covered: incorrect variables, expression (i.e. *+/-=), non-alphanumeric characters
 */
-int Preprocessor::validateProc(string s)
+int Preprocessor::validateProc(std::string s)
 {
 	int result = 0;
-	string firstWord = s.substr(0, s.find(" "));
+	std::string firstWord = s.substr(0, s.find(" "));
 	if (firstWord.compare("procedure") == 0) {
 		//PROCEDURE is passed as long as it contains 2 words
 		s = trim(s.substr(9, s.size() - 9));
-		if (s.find(" ") == string::npos) result = 8;
+		if (s.find(" ") == std::string::npos) result = 8;
 	}
 	return result;
 }
@@ -239,7 +229,7 @@ adapted from an answer in StackOverflow
 https://stackoverflow.com/questions/44973435/stdptr-fun-replacement-for-c17/44973498#44973498
 to save memory, will change this to void method in future
 */
-string Preprocessor::trim(string s) {
+std::string Preprocessor::trim(std::string s) {
 	s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) {
 		return !isspace(ch);
 	}));

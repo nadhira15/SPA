@@ -1,7 +1,6 @@
 #pragma once
 
-#include <vector>
-#include<stdio.h>
+#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -32,22 +31,22 @@ using namespace std;
 
 class Preprocessor {
 private:
-	string chunk;
+	std::string chunk;
 	int size;
 	int stopper;
 	int stmtNum = 1;
-	vector<Statement> procLst;
-	stack<int> ifStmt;
+	std::vector<Statement> procLst;
+	std::stack<int> ifStmt;
 	Statement processProc(int bookmark);
-	vector<Statement> processLst(int bookmark);
+	std::vector<Statement> processLst(int bookmark);
 public:
 	//only validators, atring trimmer, getter and Processer is public
-	int validateSemicolon(string s);
-	int validateCurvedBrackets(string s);
-	int validateProc(string s);
-	string trim(string s);
-	vector<Statement> getProcLst();
-	Preprocessor(string chunk1);
+	int validateSemicolon(std::string s);
+	int validateCurvedBrackets(std::string s);
+	int validateProc(std::string s);
+	std::string trim(std::string s);
+	std::vector<Statement> getProcLst();
+	Preprocessor(std::string chunk1);
 	void process();
 };
 
