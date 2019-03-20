@@ -12,4 +12,6 @@ namespace StringUtil
 	std::vector<std::string> split(std::string stmt, char delimiter);
 
 	std::string trim(std::string& str, std::string& whitespace);
+
+	std::string removeAllWhitespaces(std::string str);
 }

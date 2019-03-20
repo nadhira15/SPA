@@ -29,7 +29,7 @@ std::string AssignParser::parseLeft(std::string statement) {
 		return left;
 	}
 	else {
-		throw "Invalid Assign Expression!";
+		throw "Invalid Assign Statement! Statement : " + statement;
 	}
 }
 
@@ -43,7 +43,7 @@ std::string AssignParser::parseRight(std::string statement) {
 		return right;
 	}
 	else {
-		throw "Invalid Assign Expression!";
+		throw "Invalid Assign Statement! Statement : " + statement;
 	}
 }
 
@@ -54,7 +54,7 @@ string AssignParser::getLeft(string statement) {
 		return variable;
 	}
 	else {
-		throw "Invalid Variable Name!";
+		throw "Invalid Variable Name! Variable : " + variable;
 	}
 }
 
@@ -68,7 +68,7 @@ vector<string> AssignParser::getRightVariable(string statement) {
 		listVariable = ExpressionUtil::getVariables(expression);
 	}
 	else {
-		throw "Invalid Expression in Assign Statement";
+		throw "Invalid Expression in Assign Statement! Expression : " + expression; 
 	}
 
 	return listVariable;
@@ -85,7 +85,7 @@ vector<string> AssignParser::getRightConstant(string statement) {
 		listConstant = ExpressionUtil::getConstants(expression);
 	}
 	else {
-		throw "Invalid Expression in Assign Statement";
+		throw "Invalid Expression in Assign Statement!Expression : " + expression;
 	}
 
 	return listConstant;
@@ -102,7 +102,7 @@ string AssignParser::getPrefixExpression(string statement) {
 		postfixExpression = ExpressionUtil::convertInfixToPrefix(expression);
 	}
 	else {
-		throw "Invalid Expression in Assign Statement";
+		throw "Invalid Expression in Assign Statement!Expression : " + expression;
 	}
 
 	return postfixExpression;
