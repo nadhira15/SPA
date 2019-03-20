@@ -1,17 +1,4 @@
-#pragma once
-
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <sstream>
-#include "Parser.h"
 #include "ElseParser.h"
-#include "Statement.h"
-#include "PKB.h"
-#include "ConditionalExp.h"
-
-using namespace std;
 
 /* Usage guide for if, else and while parsers:
   

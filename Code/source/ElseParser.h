@@ -1,16 +1,11 @@
 #pragma once
 
 #include <vector>
-#include<stdio.h>
-#include <iostream>
+#include <stdio.h>
 #include <string>
-#include <vector>
-#include <algorithm>
 #include "Statement.h"
 #include "PKB.h"
-#include "ConditionalExp.h"
-
-using namespace std;
+#include "Parser.h"
 
 /* Usage guide for if, else and while parsers:
 
@@ -32,9 +27,9 @@ class ElseParser {
 private:
 	int stmtNum;
 	PKB pkb;
-	vector<Statement> stmtLst;
+	std::vector<Statement> stmtLst;
 public:
-	ElseParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb);
+	ElseParser(int stmtNo, std::string stmt, std::vector<Statement> stmtlst, PKB pkb);
 	void parseStmtLst();
 };
 

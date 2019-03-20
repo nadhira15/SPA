@@ -1,17 +1,4 @@
-#pragma once
-
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <sstream>
-#include "Parser.h"
 #include "WhileParser.h"
-#include "Statement.h"
-#include "PKB.h"
-#include "ConditionalExp.h"
-
-using namespace std;
 
 /* Usage guide for if, else and while parsers:
 
@@ -26,13 +13,13 @@ using namespace std;
 
   getter methods: getVariable, getConstants
   input: null
-  output: vector<string> of variables/constants
+  output: std::vector<std::string> of variables/constants
 */
 
-WhileParser::WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb1) {
+WhileParser::WhileParser(int stmtNo, std::string stmt, std::vector<Statement> stmtlst, PKB pkb1) {
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
-	string cond_expr = stmt.substr(i + 1, j - i - 1);
+	std::string cond_expr = stmt.substr(i + 1, j - i - 1);
 	bool valid1 = !stmtlst.empty();
 	//validate conditional expression and return all uses variable
 	bool valid2 = ConditionalExp::verifyConditionalExp(cond_expr);
@@ -47,11 +34,11 @@ WhileParser::WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst
 	}
 }
 
-vector<string> WhileParser::getVariables() {
+std::vector<std::string> WhileParser::getVariables() {
 	return var;
 }
 
-vector<string> WhileParser::getConstants() {
+std::vector<std::string> WhileParser::getConstants() {
 	return c;
 }
  
