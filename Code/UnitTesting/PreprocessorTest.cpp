@@ -6,7 +6,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTesting
 {
-	TEST_CLASS(PreprocesserTest)
+	TEST_CLASS(PreprocessorTest)
 	{
 	public:
 		Preprocessor p = Preprocessor("procedure q { a = b;}");
