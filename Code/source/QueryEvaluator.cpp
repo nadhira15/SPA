@@ -394,7 +394,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 				return truthValue(result);
 			}
 			else if (secondArgument == "_") {
-				result = PKB().getModifiedVar(stoi(firstArgument)).size() > 0;
+				result = PKB().getVarModifiedByStm(stoi(firstArgument)).size() > 0;
 				return truthValue(result);
 			}
 		}
@@ -404,7 +404,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 				return truthValue(result);
 			}
 			else if (secondArgument == "_") {
-				result = PKB().getModifiedVar(trimFrontEnd(firstArgument)).size() > 0;
+				result = PKB().getVarModifiedByProc(trimFrontEnd(firstArgument)).size() > 0;
 				return truthValue(result);
 			}
 		}
@@ -548,11 +548,11 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 	else if (relation == "Modifies") {
 		if (isSynonym(secondArgument)) {
 			if (isInteger(firstArgument)) {
-				return PKB().getModifiedVar(stoi(firstArgument));
+				return PKB().getVarModifiedByStm(stoi(firstArgument));
 
 			}
 			else if (isQuoted(firstArgument)) {
-				return PKB().getModifiedVar(trimFrontEnd(firstArgument));
+				return PKB().getVarModifiedByProc(trimFrontEnd(firstArgument));
 			}
 			if (firstArgument == PKB().getProcName()) {
 				return ContainerUtil::to_strset(PKB().getProcVarModifyPairs());

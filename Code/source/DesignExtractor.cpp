@@ -111,7 +111,7 @@ void DesignExtractor::processModifiesContainers()
 		int currLine = i;
 		unordered_set<int> descendents = pkb.getDescendants(currLine);
 		for (int descendent : descendents) {
-			unordered_set<string> modifiedList = pkb.getModifiedVar(descendent);
+			unordered_set<string> modifiedList = pkb.getVarModifiedByStm(descendent);
 			for (string modifiedVar : modifiedList) {
 				pkb.addModifiesStm(currLine, modifiedVar);
 			}
