@@ -3,10 +3,16 @@
 #include<stdio.h>
 #include<vector>
 
-using namespace std;
-
 #include "PKB.h"
 #include "Statement.h"
+#include "AssignParser.h"
+#include "CallParser.h"
+#include "ReadParser.h"
+#include "PrintParser.h"
+#include "WhileParser.h"
+#include "IfParser.h"
+#include "ElseParser.h"
+#include "ProcedureParser.h"
 
 class Parser
 {
@@ -15,24 +21,29 @@ public:
 
 	Parser();
 
-	int parse(vector<Statement> stmtLst, int parent, PKB pkb);
+	int parse(vector<Statement> stmtLst, int parent, string procedure);
 
-	void populateDesignEntities(Statement stmt, PKB pkb);
+private:
 
-	void extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine);
+	void populateDesignEntities(Statement stmt, string procedure);
 
-	void extractReadEntity(std::string & stmtString, PKB & pkb, int stmtLine);
+	void extractAssignEntity(std::string &stmtString, int stmtLine);
 
-	void extractPrintEntity(std::string & stmtString, PKB & pkb, int stmtLine);
+	void extractCallEntity(std::string & stmtString, int stmtLine, std::string procedure);
 
-	void extractWhileEntity(std::string & stmtString, PKB & pkb, int stmtLine, vector<Statement> stmtLst);
+	void extractReadEntity(std::string & stmtString, int stmtLine);
 
-	void extractIfEntity(std::string & stmtString, PKB & pkb, int stmtLine, vector<Statement> stmtLst);
+	void extractPrintEntity(std::string & stmtString, int stmtLine);
 
-	void extractElseEntity(std::string & stmtString, PKB & pkb, int stmtLine, vector<Statement> stmtLst);
+	void extractWhileEntity(std::string & stmtString, int stmtLine, vector<Statement> stmtLst, std::string procedure);
 
-	void extractProcedureEntity(std::string & stmtString, PKB & pkb, vector<Statement> stmtLst);
+	void extractIfEntity(std::string & stmtString, int stmtLine, vector<Statement> stmtLst, std::string procedure);
 
-	void populateStmtList(Statement stmt, PKB pkb);
+	void extractElseEntity(std::string & stmtString, int stmtLine, vector<Statement> stmtLst, std::string procedure);
 
+	void extractProcedureEntity(std::string & stmtString, vector<Statement> stmtLst);
+
+	void populateStmtList(Statement stmt);
+
+	PKB pkb;
 };
