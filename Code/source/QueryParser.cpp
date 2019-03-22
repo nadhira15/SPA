@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <limits>
 
 using namespace std;
 
@@ -14,6 +15,7 @@ using namespace std;
 #include "StringUtil.h"
 
 string whitespace = " \f\n\r\t\v";
+int maxInt = numeric_limits<int>::max();
 
 /*
 Main parser function for input query.
@@ -67,33 +69,61 @@ unordered_set<string> QueryParser::parse(string query) {
 	vector<pair<string, pair<string, string>>> suchThatCondition;
 	vector<pair<string, pair<string, string>>> patternCondition;
 
-	//TODO: implement parser for more than 1 such that clause and pattern
-
+	vector<string> suchThatClauses;
+	vector<string> patternClauses;
+	vector<string> withClauses;
 	int suchThatIndex = selectStatement.find("such that");
 	int patternIndex = selectStatement.find("pattern");
-	int selectStatementLen = selectStatement.length();
+	int withIndex = selectStatement.find("with");
+	int andIndex = maxInt;
+	string previousClause;
 
-	if (suchThatIndex == -1 && patternIndex == -1) {
+	vector<int> indexes = { suchThatIndex, patternIndex, withIndex };
+	int nextIndex = getMinimumValue(indexes);
+
+	if (nextIndex == -1) {
 		selectedVar = splitSelectParameter(selectStatement);
 	}
-	else if (suchThatIndex != -1 && patternIndex == -1) {
-		selectedVar = splitSelectParameter(selectStatement.substr(0, suchThatIndex));
-		suchThatCondition = splitSuchThatCondition(selectStatement.substr(suchThatIndex));
+	else {
+		selectedVar = splitSelectParameter(selectStatement.substr(0, nextIndex));
+		selectStatement = selectStatement.substr(nextIndex);
 	}
-	else if (suchThatIndex == -1 && patternIndex != -1) {
-		selectedVar = splitSelectParameter(selectStatement.substr(0, patternIndex));
-		patternCondition = splitPatternCondition(selectStatement.substr(patternIndex));
+
+	while (selectStatement.length() > 0 && nextIndex != -1) {
+		suchThatIndex = selectStatement.substr(1).find("such that");
+		patternIndex = selectStatement.substr(1).find("pattern");
+		withIndex = selectStatement.substr(1).find("with");
+		andIndex = selectStatement.substr(1).find("and");
+		indexes = { suchThatIndex, patternIndex, withIndex, andIndex };
+		nextIndex = getMinimumValue(indexes) + 1;
+		
+		if (nextIndex == 0) {
+			nextIndex = selectStatement.length();
+		}
+
+		// parsing current clause
+		string currentClause = selectStatement.substr(0, nextIndex);
+		if (currentClause.find("such that") != -1 || (currentClause.find("and") != -1 && previousClause == "such that")) {
+			previousClause = "such that";
+			suchThatClauses.push_back(currentClause);
+		}
+		else if (currentClause.find("pattern") != -1 || (currentClause.find("and") != -1 && previousClause == "pattern")) {
+			previousClause = "pattern";
+			patternClauses.push_back(currentClause);
+		}
+		else if (currentClause.find("with") != -1 || (currentClause.find("and") != -1 && previousClause == "with")) {
+			previousClause = "with";
+			withClauses.push_back(currentClause);
+		}
+
+		selectStatement = selectStatement.substr(nextIndex);
 	}
-	else if (suchThatIndex < patternIndex) {
-		selectedVar = splitSelectParameter(selectStatement.substr(0, suchThatIndex));
-		suchThatCondition = splitSuchThatCondition(selectStatement.substr(suchThatIndex, patternIndex - suchThatIndex));
-		patternCondition = splitPatternCondition(selectStatement.substr(patternIndex));
-	}
-	else if (patternIndex < suchThatIndex) {
-		selectedVar = splitSelectParameter(selectStatement.substr(0, patternIndex));
-		patternCondition = splitPatternCondition(selectStatement.substr(patternIndex, suchThatIndex - patternIndex));
-		suchThatCondition = splitSuchThatCondition(selectStatement.substr(patternIndex));
-	}
+
+	suchThatCondition = splitSuchThatCondition(suchThatClauses);
+	patternCondition = splitPatternCondition(patternClauses);
+
+	// TODO::to implement
+	// withCondition = splitWithCondition(withClauses);
 
 	// validating 'Select' parameter
 	errorString = QueryValidator::validateSelectedVar(selectedVar, declarationsMap);
@@ -197,7 +227,6 @@ vector<pair<string, string>> QueryParser::splitDeclarations(vector<string> claus
 /*
 Splits select clause by whitespaces.
 Returns a vector<string> consisting of design-entity selected
-TODO: implement select boolean and tuples
 */
 vector<string> QueryParser::splitSelectParameter(string selectStatement) {
 	
@@ -225,20 +254,22 @@ vector<string> QueryParser::splitSelectParameter(string selectStatement) {
 Splits such that clause by open bracket, comma, and close bracket.
 Returns a vector<pair<string, pair<string, string>>> consisting of relation, stmtRef/entRef, stmtRef/entRef
 */
-vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(string suchThatClause) {
+vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(vector<string> suchThatClause) {
 	
 	vector<pair<string, pair<string, string>>> output;
 
-	int openBracket = suchThatClause.find("(");
-	int comma = suchThatClause.find(",");
-	int closeBracket = suchThatClause.find(")");
-	int strLen = suchThatClause.length();
+	for(int i = 0; i < suchThatClause.size(); i++) {
+		int openBracket = suchThatClause[i].find("(");
+		int comma = suchThatClause[i].find(",");
+		int closeBracket = suchThatClause[i].find(")");
+		int strLen = suchThatClause[i].length();
 
-	string condition = StringUtil::removeAllWhitespaces(suchThatClause.substr(9, openBracket - 9));
-	string firstVar = StringUtil::removeAllWhitespaces(suchThatClause.substr(openBracket + 1, comma - openBracket - 1));
-	string secondVar = StringUtil::removeAllWhitespaces(suchThatClause.substr(comma + 1, closeBracket - comma - 1));
+		string condition = StringUtil::removeAllWhitespaces(suchThatClause[i].substr(9, openBracket - 9));
+		string firstVar = StringUtil::removeAllWhitespaces(suchThatClause[i].substr(openBracket + 1, comma - openBracket - 1));
+		string secondVar = StringUtil::removeAllWhitespaces(suchThatClause[i].substr(comma + 1, closeBracket - comma - 1));
 
-	output.push_back(make_pair(condition, make_pair(firstVar, secondVar)));
+		output.push_back(make_pair(condition, make_pair(firstVar, secondVar)));
+	}
 
 	return output;
 }
@@ -247,20 +278,22 @@ vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(s
 Splits pattern clause by open bracket, comma, and close bracket.
 Returns a vector<pair<string, pair<string, string>>> consisting of design-entity, entRef, expression-spec
 */
-vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(string patternClause) {
+vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(vector<string> patternClause) {
 	
 	vector<pair<string, pair<string, string>>> output;
 
-	int openBracket = patternClause.find("(");
-	int comma = patternClause.find(",");
-	int closeBracket = patternClause.find(")");
-	int strLen = patternClause.length();
+	for (int i = 0; i < patternClause.size(); i++) {
+		int openBracket = patternClause[i].find("(");
+		int comma = patternClause[i].find(",");
+		int closeBracket = patternClause[i].find(")");
+		int strLen = patternClause[i].length();
 
-	string varName = StringUtil::removeAllWhitespaces(patternClause.substr(7, openBracket - 7));
-	string firstPattern = StringUtil::removeAllWhitespaces(patternClause.substr(openBracket + 1, comma - openBracket - 1));
-	string secondPattern = StringUtil::removeAllWhitespaces(patternClause.substr(comma + 1, closeBracket - comma - 1));
+		string varName = StringUtil::removeAllWhitespaces(patternClause[i].substr(7, openBracket - 7));
+		string firstPattern = StringUtil::removeAllWhitespaces(patternClause[i].substr(openBracket + 1, comma - openBracket - 1));
+		string secondPattern = StringUtil::removeAllWhitespaces(patternClause[i].substr(comma + 1, closeBracket - comma - 1));
 
-	output.push_back(make_pair(varName, make_pair(firstPattern, secondPattern)));
+		output.push_back(make_pair(varName, make_pair(firstPattern, secondPattern)));
+	}
 
 	return output;
 }
@@ -274,4 +307,24 @@ unordered_set<string> QueryParser::evaluateSelectConditions(vector<pair<string, 
 	vector<pair<string, pair<string, string>>> patternCondition) {
 
 	return QueryEvaluator::evaluateQuery(declarations, selectedVar, suchThatCondition, patternCondition);
+}
+
+/*
+Get minimum value from the vector args
+*/
+int QueryParser::getMinimumValue(vector<int> indexes) {
+
+	int minIndex = maxInt;
+	for (int i = 0; i < indexes.size(); i++) {
+		if (indexes[i] != -1 && indexes[i] < minIndex) {
+			minIndex = indexes[i];
+		}
+	}
+
+	if (minIndex == maxInt) {
+		return -1;
+	}
+	else {
+		return minIndex;
+	}
 }
