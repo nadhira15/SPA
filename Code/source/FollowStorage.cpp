@@ -10,12 +10,6 @@ FollowStorage::FollowStorage()
 {
 }
 
-/*
-	Adds the follows relation into the various lists in the storage
-	Returns false if	1) the pair is already stored
-						2) the followed statement has another follower stored
-						3) the follower is following another statement
-*/
 bool FollowStorage::addFollow(int followed, int follower)
 {
 	// if follows Pair is already added
@@ -55,11 +49,6 @@ bool FollowStorage::addFollow(int followed, int follower)
 	return true;
 }
 
-/*
-	Sets "allFollowers" of 'followed'
-	Each followed - follower pair is entered into followStarPairList
-	If 'followed' already has a list of followers, it is not replaced and it return false
-*/
 bool FollowStorage::setAllFollowing(int followed, unordered_set<int> followers)
 {
 	if (followTable.find(followed)->second.allFollowers.size() != 0)
@@ -76,11 +65,6 @@ bool FollowStorage::setAllFollowing(int followed, unordered_set<int> followers)
 	return true;
 }
 
-/*
-	Sets "allFollowed" of 'follower'
-	Each followed - follower pair is entered into followStarPairList
-	If 'follower' already has a list of followed, it is not replaced and it return false
-*/
 bool FollowStorage::setAllFollowedBy(int follower, unordered_set<int> followed)
 {
 	if (followTable.find(follower)->second.allFollowed.size() != 0)
@@ -97,22 +81,16 @@ bool FollowStorage::setAllFollowedBy(int follower, unordered_set<int> followed)
 	return true;
 }
 
-// returns true if followTable is empty
 bool FollowStorage::isEmpty()
 {
 	return followTable.size() == 0;
 }
 
-// returns true if the specified follows* pair is found
 bool FollowStorage::hasFollowStarPair(pair<int, int> pair)
 {
 	return followStarPairList.find(pair) != followStarPairList.end();
 }
 
-/*
-	return the statement following 'stm'
-	return 0 if 'stm' is not found
-*/
 int FollowStorage::getFollower(int stm)
 {
 	if (followTable.find(stm) != followTable.end())
@@ -122,10 +100,6 @@ int FollowStorage::getFollower(int stm)
 	return 0;
 }
 
-/*
-	return the statement followed by 'stm'
-	return 0 if 'stm' is not found
-*/
 int FollowStorage::getStmFollowedBy(int stm)
 {
 	if (followTable.find(stm) != followTable.end())
@@ -135,10 +109,6 @@ int FollowStorage::getStmFollowedBy(int stm)
 	return 0;
 }
 
-/*
-	return a list of statements that is directly/indirectly following 'stm'
-	return an empty set if 'stm' is not found
-*/
 unordered_set<int> FollowStorage::getAllFollowing(int stm)
 {
 	if (followTable.find(stm) != followTable.end())
@@ -148,10 +118,6 @@ unordered_set<int> FollowStorage::getAllFollowing(int stm)
 	return {};
 }
 
-/*
-	return a list of statements that is directly/indirectly followed by 'stm'
-	return an empty set if 'stm' is not found
-*/
 unordered_set<int> FollowStorage::getAllFollowedBy(int stm)
 {
 	if (followTable.find(stm) != followTable.end())
@@ -161,25 +127,21 @@ unordered_set<int> FollowStorage::getAllFollowedBy(int stm)
 	return {};
 }
 
-// returns a list of all statements that follows another
 unordered_set<int> FollowStorage::getAllFollowers()
 {
 	return followerList;
 }
 
-// returns a list of all statements that is followed by another
 unordered_set<int> FollowStorage::getAllFollowed()
 {
 	return followedList;
 }
 
-// returns a list of all follows pairs
 unordered_set<pair<int, int>, intPairhash> FollowStorage::getFollowPairs()
 {
 	return followPairList;
 }
 
-// returns a list of all follows* pairs
 unordered_set<pair<int, int>, intPairhash> FollowStorage::getFollowStarPairs()
 {
 	return followStarPairList;

@@ -17,16 +17,52 @@ class UseStorage
 public:
 	UseStorage();
 
+	/*
+		add the Uses relation for a statement into the relevant lists and maps in the storage
+		Returns false if the pair is already exist
+	*/
 	bool addUsesStm(int stm, string variable);
+
+	/*
+		add the Uses relation for a procedure into the relevant lists and maps in the storage
+		Returns false if the pair is already exist
+	*/
 	bool addUsesProc(string procedure, string variable);
 
+	// returns true if the specified <statement, variable> pair is found
 	bool containsStmVarPair(pair<int, string> pair);
+
+	// returns true if the specified <procedure, variable> pair is found
 	bool containsProcVarPair(pair<string, string> pair);
+
+	/*
+		return the list of variables that is used by 'stm'
+		return an empty set if 'stm' is not found
+	*/
 	unordered_set<string> getVarUsedByStm(int stm);
+
+	/*
+		return the list of variables that is used by 'procedure'
+		return an empty set if 'procedure' is not found
+	*/
 	unordered_set<string> getVarUsedByProc(string proc);
+
+	/*
+		return the list of statements that is using 'variable'
+		return an empty set if 'variable' is not found
+	*/
 	unordered_set<int> getStmUsing(string variable);
+
+	/*
+		return the list of procedures that is using 'variable'
+		return an empty set if 'variable' is not found
+	*/
 	unordered_set<string> getProcUsing(string variable);
+
+	// returns a list of all Uses pairs for statements
 	unordered_set< pair<int, string>, intStringhash> getStmVarPairs();
+
+	// returns a list of all Uses pairs for procedures
 	unordered_set< pair<string, string>, strPairhash> getProcVarPairs();
 
 private:

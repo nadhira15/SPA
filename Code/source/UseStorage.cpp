@@ -11,10 +11,6 @@ UseStorage::UseStorage()
 {
 }
 
-/*
-	add the Uses relation for a statement into the relevant lists and maps in the storage
-	Returns false if the pair is already exist
-*/
 bool UseStorage::addUsesStm(int stm, string variable)
 {
 	if (!stmVarPairList.emplace(pair<int, string>(stm, variable)).second)
@@ -36,10 +32,6 @@ bool UseStorage::addUsesStm(int stm, string variable)
 	return true;
 }
 
-/*
-	add the Uses relation for a procedure into the relevant lists and maps in the storage
-	Returns false if the pair is already exist
-*/
 bool UseStorage::addUsesProc(string procedure, string variable)
 {
 	if (!procVarPairList.emplace(pair<string, string>(procedure, variable)).second)
@@ -61,22 +53,16 @@ bool UseStorage::addUsesProc(string procedure, string variable)
 	return true;
 }
 
-// returns true if the specified <statement, variable> pair is found
 bool UseStorage::containsStmVarPair(pair<int, string> pair)
 {
 	return stmVarPairList.find(pair) != stmVarPairList.end();
 }
 
-// returns true if the specified <procedure, variable> pair is found
 bool UseStorage::containsProcVarPair(pair<string, string> pair)
 {
 	return procVarPairList.find(pair) != procVarPairList.end();
 }
 
-/*
-	return the list of variables that is used by 'stm'
-	return an empty set if 'stm' is not found
-*/
 unordered_set<string> UseStorage::getVarUsedByStm(int stm)
 {
 	if (stmToVarMap.find(stm) != stmToVarMap.end())
@@ -86,10 +72,6 @@ unordered_set<string> UseStorage::getVarUsedByStm(int stm)
 	return {};
 }
 
-/*
-	return the list of variables that is used by 'procedure'
-	return an empty set if 'procedure' is not found
-*/
 unordered_set<string> UseStorage::getVarUsedByProc(string procedure)
 {
 	if (procToVarMap.find(procedure) != procToVarMap.end())
@@ -99,10 +81,6 @@ unordered_set<string> UseStorage::getVarUsedByProc(string procedure)
 	return {};
 }
 
-/*
-	return the list of statements that is using 'variable'
-	return an empty set if 'variable' is not found
-*/
 unordered_set<int> UseStorage::getStmUsing(string variable)
 {
 	if (varToStmMap.find(variable) != varToStmMap.end())
@@ -112,10 +90,6 @@ unordered_set<int> UseStorage::getStmUsing(string variable)
 	return {};
 }
 
-/*
-	return the list of procedures that is using 'variable'
-	return an empty set if 'variable' is not found
-*/
 unordered_set<string> UseStorage::getProcUsing(string variable)
 {
 	if (varToProcMap.find(variable) != varToProcMap.end())
@@ -125,13 +99,11 @@ unordered_set<string> UseStorage::getProcUsing(string variable)
 	return {};
 }
 
-// returns a list of all Uses pairs for statements
 unordered_set<pair<int, string>, intStringhash> UseStorage::getStmVarPairs()
 {
 	return stmVarPairList;
 }
 
-// returns a list of all Uses pairs for procedures
 unordered_set<pair<string, string>, strPairhash> UseStorage::getProcVarPairs()
 {
 	return procVarPairList;

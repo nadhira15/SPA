@@ -30,20 +30,68 @@ class FollowStorage {
 public:
 	FollowStorage();
 
+	/*
+		Adds the follows relation into the various lists in the storage
+		Returns false if	1) the pair is already stored
+							2) the followed statement has another follower stored
+							3) the follower is following another statement
+	*/
 	bool addFollow(int followed, int follower);
+
+	/*
+		Sets "allFollowers" of 'followed'
+		Each followed - follower pair is entered into followStarPairList
+		If 'followed' already has a list of followers, it is not replaced and it return false
+	*/
 	bool setAllFollowing(int followed, unordered_set<int> followers);
+
+	/*
+		Sets "allFollowed" of 'follower'
+		Each followed - follower pair is entered into followStarPairList
+		If 'follower' already has a list of followed, it is not replaced and it return false
+	*/
 	bool setAllFollowedBy(int follower, unordered_set<int> followed);
 
+	// returns true if followTable is empty
 	bool isEmpty();
+
+	// returns true if the specified follows* pair is found
 	bool hasFollowStarPair(pair<int, int> pair);
 
+	/*
+		return the statement following 'stm'
+		return 0 if 'stm' is not found
+	*/
 	int getFollower(int stm);
+
+	/*
+		return the statement followed by 'stm'
+		return 0 if 'stm' is not found
+	*/
 	int getStmFollowedBy(int stm);
+
+	/*
+		return a list of statements that is directly/indirectly following 'stm'
+		return an empty set if 'stm' is not found
+	*/
 	unordered_set<int> getAllFollowing(int stm);
+
+	/*
+		return a list of statements that is directly/indirectly followed by 'stm'
+		return an empty set if 'stm' is not found
+	*/
 	unordered_set<int> getAllFollowedBy(int stm);
+
+	// returns a list of all statements that follows another
 	unordered_set<int> getAllFollowers();
+
+	// returns a list of all statements that is followed by another
 	unordered_set<int> getAllFollowed();
+
+	// returns a list of all follows pairs
 	unordered_set< pair<int, int>, intPairhash> getFollowPairs();
+
+	// returns a list of all follows* pairs
 	unordered_set< pair<int, int>, intPairhash> getFollowStarPairs();
 
 private:
