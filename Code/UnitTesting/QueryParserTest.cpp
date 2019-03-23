@@ -55,29 +55,65 @@ namespace UnitTesting
 
 		TEST_METHOD(splitSuchThatCondition_success)
 		{
-			vector<pair<string, pair<string, string>>> actual = QueryParser::splitSuchThatCondition("such that Parent(a, '_')");
-			vector<pair<string, pair<string, string>>> expected{ {"Parent", {"a", "'_'"}} };
+			vector<string> input = { "such that Parent(a, _)" };
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitSuchThatCondition(input);
+			vector<pair<string, pair<string, string>>> expected{ {"Parent", {"a", "_"}} };
 			Assert::AreEqual(actual == expected, true);
 		}
 
 		TEST_METHOD(splitSuchThatCondition_multipleWhitespaces_success)
 		{
-			vector<pair<string, pair<string, string>>> actual = QueryParser::splitSuchThatCondition("such that    Parent    (   a  , '_'  )  ");
-			vector<pair<string, pair<string, string>>> expected{ {"Parent", {"a", "'_'"}} };
+			vector<string> input = { "such that    Parent    (   a  , _  )  " };
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitSuchThatCondition(input);
+			vector<pair<string, pair<string, string>>> expected{ {"Parent", {"a", "_"}} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitSuchThatCondition_multipleClauses_success)
+		{
+			vector<string> input = { "such that Parent(a, _)", "such that Follows(10, 11)", "and Modifies(3, \"sum\"", "and Uses(5, \"a\")", "such that Next*(1, 10)", "and Affects*(4, 10)" };
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitSuchThatCondition(input);
+			vector<pair<string, pair<string, string>>> expected{ {"Parent", {"a", "_"}}, {"Follows", {"10", "11"}}, {"Modifies", {"3", "\"sum\""}}, {"Uses", {"5", "\"a\""}}, {"Next*", {"1", "10"}}, {"Affects*", {"4", "10"}} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitSuchThatCondition_multipleClauses_multipleWhitespaces_success)
+		{
+			vector<string> input = { "such that    Parent(a, _)", "such that Follows    (10, 11)", "and Modifies(   3, \"sum\"", "and Uses(5   , \"a\")", "such that Next*(1,10    )", "and Affects*(4, 10)    " };
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitSuchThatCondition(input);
+			vector<pair<string, pair<string, string>>> expected{ {"Parent", {"a", "_"}}, {"Follows", {"10", "11"}}, {"Modifies", {"3", "\"sum\""}}, {"Uses", {"5", "\"a\""}}, {"Next*", {"1", "10"}}, {"Affects*", {"4", "10"}} };
 			Assert::AreEqual(actual == expected, true);
 		}
 
 		TEST_METHOD(splitPatternCondition_success)
 		{
-			vector<pair<string, pair<string, string>>> actual = QueryParser::splitPatternCondition("pattern a('_', 'x*y+z' )");
-			vector<pair<string, pair<string, string>>> expected{ {"a", {"'_'", "'x*y+z'"}} };
+			vector<string> input = { "pattern a(_, \"x*y+z\")" };
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitPatternCondition(input);
+			vector<pair<string, pair<string, string>>> expected{ {"a", {"_", "\"x*y+z\""}} };
 			Assert::AreEqual(actual == expected, true);
 		}
 
 		TEST_METHOD(splitPatternCondition_multipleWhitespaces_success)
 		{
-			vector<pair<string, pair<string, string>>> actual = QueryParser::splitPatternCondition("pattern   a  ( '_' , 'x*y+z' ) ");
-			vector<pair<string, pair<string, string>>> expected{ {"a", {"'_'", "'x*y+z'"}} };
+			vector<string> input = { "pattern   a  ( _ , \"x*y+z\" ) " };
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitPatternCondition(input);
+			vector<pair<string, pair<string, string>>> expected{ {"a", {"_", "\"x*y+z\""}} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitPatternCondition_multipleClauses_success)
+		{
+			vector<string> input = { "pattern a(_, \"x\")", "pattern a1(_, \"y\")", "and ifs(\"x\", _, _)", "and while1(\"y\", _)", "pattern ifs(_, _, _)" };
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitPatternCondition(input);
+			vector<pair<string, pair<string, string>>> expected{ {"a", {"_", "\"x\""}}, {"a1", {"_", "\"y\""}}, {"ifs", {"\"x\"", "_,_"}}, {"while1", {"\"y\"", "_"}}, {"ifs", {"_", "_,_"}} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitPatternCondition_multipleClauses_multipleWhitespaces_success)
+		{
+			vector<string> input = { "pattern     a(_, \"x\")", "pattern a1    (_, \"y\")", "and ifs(   \"x\", _, _)", "and while1(\"y\"    , _)", "pattern ifs(_, _, _    )" };
+			vector<pair<string, pair<string, string>>> actual = QueryParser::splitPatternCondition(input);
+			vector<pair<string, pair<string, string>>> expected{ {"a", {"_", "\"x\""}}, {"a1", {"_", "\"y\""}}, {"ifs", {"\"x\"", "_,_"}}, {"while1", {"\"y\"", "_"}}, {"ifs", {"_", "_,_"}} };
 			Assert::AreEqual(actual == expected, true);
 		}
 

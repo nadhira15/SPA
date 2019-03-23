@@ -160,6 +160,15 @@ namespace UnitTesting
 			Assert::AreEqual(actual == expected, true);
 		}
 
+		TEST_METHOD(validateSuchThatParam_multipleClauses_success)
+		{
+			vector<pair<string, pair<string, string>>> param{ {"Parent", { "a", "_" }}, { "Follows", {"10", "11"} }, { "Modifies", {"3", "\"sum\""} }, { "Uses", {"5", "\"a\""} }, { "Next*", {"1", "10"} }, { "Affects*", {"4", "10"} } };
+			unordered_map<string, string> declarationsMap = { {"a", "if"}, {"s", "stmt"} };
+			string actual = QueryValidator::validateSuchThatParam(param, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
 		TEST_METHOD(validatePatternParam_success)
 		{
 			vector<pair<string, pair<string, string>>> param{ {"a", {"_", "\"x*y+z\""}} };
@@ -193,6 +202,15 @@ namespace UnitTesting
 			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
 			string actual = QueryValidator::validatePatternParam(param, declarationsMap);
 			string expected = "statement type is invalid";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validatePatternParam_multipleClauses_success)
+		{
+			vector<pair<string, pair<string, string>>> param{ {"a", {"_", "\"x\""}}, {"a1", {"_", "\"y\""}}, {"ifs", {"\"x\"", "_,_"}}, {"while1", {"\"y\"", "_"}}, {"ifs", {"_", "_,_"}} };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"a1", "assign"}, {"ifs", "if"}, {"while1", "while"} };
+			string actual = QueryValidator::validatePatternParam(param, declarationsMap);
+			string expected = "";
 			Assert::AreEqual(actual == expected, true);
 		}
 
