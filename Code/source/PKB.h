@@ -230,10 +230,10 @@ public:
 	// checks if there is at least one Parent relationship
 	bool hasParentRelation();
 
-	// checks if stm is a parent of another
+	// checks if 'stm' is a parent of another
 	bool isParent(int stm);
 
-	// checks if stm is a child of another
+	// checks if 'stm' is a child of another
 	bool isChild(int stm);
 
 	// checks if the relation Parent*(stm1, stm2) exist
@@ -352,6 +352,57 @@ public:
 
 	// returns a list of all Modifies pairs for procedures
 	unordered_set< pair<string, string>, strPairhash> getProcVarModifyPairs();
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Call Getter Methods		/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// checks if there is at least one Call relationship
+	bool hasCallRelation();
+
+	// checks if 'procedure' calls another
+	bool isCaller(string proc);
+
+	// checks if 'procedure' is called by another
+	bool isCallee(string procedure);
+
+	// checks if the relation Call*(proc1, proc2) exist
+	bool hasCallStarPair(string proc1, string proc2);
+
+	/*
+		return the procedure calling 'procedure'
+		return "" if 'procedure' is not found
+	*/
+	unordered_set<string> getCaller(string procedure);
+
+	/*
+		return the procedure called by 'procedure'
+		return {} if 'procedure' is not found
+	*/
+	unordered_set<string> getCallee(string procedure);
+
+	/*
+		return a list of procedures that is directly/indirectly calling 'procedure'
+		return an empty set if 'procedure' is not found
+	*/
+	unordered_set<string> getCallAnc(string procedure);
+
+	/*
+		return a list of procedures that is directly/indirectly called by 'procedure'
+		return an empty set if 'procedure' is not found
+	*/
+	unordered_set<string> getCallDesc(string procedure);
+
+	// returns a list of all procedures that calls another
+	unordered_set<string> getAllCallers();
+
+	// returns a list of all procedures that is called by another
+	unordered_set<string> getAllCallees();
+
+	// returns a list of all call pairs
+	unordered_set< pair<string, string>, strPairhash> getCallPairs();
+
+	// returns a list of all call* pairs
+	unordered_set< pair<string, string>, strPairhash> getCallStarPairs();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Pattern Getter Methods	/////////////////////////////////////////////////////////////////////////

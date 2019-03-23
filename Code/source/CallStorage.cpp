@@ -10,10 +10,6 @@ CallStorage::CallStorage()
 {
 }
 
-/*
-	Adds the call relation into the various lists in the storage
-	Returns false if the pair already exist
-*/
 bool CallStorage::addCall(string caller, string callee)
 {
 	// if Call Pair is already added
@@ -39,11 +35,6 @@ bool CallStorage::addCall(string caller, string callee)
 	return true;
 }
 
-/*
-	Sets "callAnc" of callee
-	Each callAnc - callee pair is entered into callStarPairList
-	If callee already has a list of callAnc, it is not replaced and it return false
-*/
 bool CallStorage::setCallAnc(string callee, unordered_set<string> callAnc)
 {
 	if (callTable.find(callee)->second.callAnc.size() != 0)
@@ -60,11 +51,6 @@ bool CallStorage::setCallAnc(string callee, unordered_set<string> callAnc)
 	return true;
 }
 
-/*
-	Sets "callDesc" of caller
-	Each caller - callDesc pair is entered into callStarPairList
-	If caller already has a list of callDesc, it is not replaced and it return false
-*/
 bool CallStorage::setCallDesc(string caller, unordered_set<string> callDesc)
 {
 	if (callTable.find(caller)->second.callDesc.size() != 0)
@@ -86,7 +72,6 @@ bool CallStorage::isEmpty()
 	return callTable.size() == 0;
 }
 
-// returns true if call* pair is found
 bool CallStorage::hasCallStarPair(pair<string, string> pair)
 {
 	return callStarPairList.find(pair) != callStarPairList.end();
@@ -102,10 +87,6 @@ bool CallStorage::isCallee(string procedure)
 	return calleeList.find(procedure) != calleeList.end();
 }
 
-/*
-	return the procedure calling the procedure specified
-	return "" if 'procedure' is not found
-*/
 unordered_set<string> CallStorage::getCaller(string procedure)
 {
 	if (callTable.find(procedure) != callTable.end())
@@ -115,10 +96,6 @@ unordered_set<string> CallStorage::getCaller(string procedure)
 	return {};
 }
 
-/*
-	return the procedure called by the procedure specified
-	return {} if 'procedure' is not found
-*/
 unordered_set<string> CallStorage::getCallee(string procedure)
 {
 	if (callTable.find(procedure) != callTable.end())
@@ -128,10 +105,6 @@ unordered_set<string> CallStorage::getCallee(string procedure)
 	return {};
 }
 
-/*
-	return a list of procedures that is directly/indirectly calling the procedure specified
-	return an empty set if 'procedure' is not found
-*/
 unordered_set<string> CallStorage::getCallAnc(string procedure)
 {
 	if (callTable.find(procedure) != callTable.end())
@@ -141,10 +114,6 @@ unordered_set<string> CallStorage::getCallAnc(string procedure)
 	return {};
 }
 
-/*
-	return a list of procedures that is directly/indirectly called by the procedure specified
-	return an empty set if 'procedure' is not found
-*/
 unordered_set<string> CallStorage::getCallDesc(string procedure)
 {
 	if (callTable.find(procedure) != callTable.end())

@@ -143,7 +143,7 @@ bool PKB::addAssignPattern(int stm, string variable, string expr)
 
 bool PKB::addCall(string proc1, string proc2)
 {
-	if (proc1.compare("") == 0 || proc2.compare("") == 0)
+	if (proc1 == "" || proc2 == "")
 	{
 		return false;
 	}
@@ -398,6 +398,66 @@ unordered_set<pair<int, string>, intStringhash> PKB::getStmVarModifyPairs()
 unordered_set<pair<string, string>, strPairhash> PKB::getProcVarModifyPairs()
 {
 	return mStore.getProcVarPairs();
+}
+
+bool PKB::hasCallRelation()
+{
+	return !cStore.isEmpty();
+}
+
+bool PKB::isCaller(string procedure)
+{
+	return cStore.isCaller(procedure);
+}
+
+bool PKB::isCallee(string procedure)
+{
+	return cStore.isCallee(procedure);
+}
+
+bool PKB::hasCallStarPair(string proc1, string proc2)
+{
+	return cStore.hasCallStarPair(pair<string, string>(proc1, proc2));
+}
+
+unordered_set<string> PKB::getCaller(string procedure)
+{
+	return cStore.getCaller(procedure);
+}
+
+unordered_set<string> PKB::getCallee(string procedure)
+{
+	return cStore.getCallee(procedure);
+}
+
+unordered_set<string> PKB::getCallAnc(string procedure)
+{
+	return cStore.getCallAnc(procedure);
+}
+
+unordered_set<string> PKB::getCallDesc(string procedure)
+{
+	return cStore.getCallDesc(procedure);
+}
+
+unordered_set<string> PKB::getAllCallers()
+{
+	return cStore.getAllCallers();
+}
+
+unordered_set<string> PKB::getAllCallees()
+{
+	return cStore.getAllCallees();
+}
+
+unordered_set<pair<string, string>, strPairhash> PKB::getCallPairs()
+{
+	return cStore.getCallPairs();
+}
+
+unordered_set<pair<string, string>, strPairhash> PKB::getCallStarPairs()
+{
+	return cStore.getCallStarPairs();
 }
 
 unordered_set<int> PKB::findPattern(string variable, string expr, bool isExclusive)
