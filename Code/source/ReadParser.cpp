@@ -1,16 +1,4 @@
-#include<stdio.h>
-#include<string>
-#include<vector>
-#include<string>
-#include<sstream>
-#include<regex>
-
-using namespace std;
-
 #include"ReadParser.h"
-#include "LexicalToken.h"
-
-using namespace LexicalToken;
 
 //take in full statement string
 std::string ReadParser::parseReadStmt(const std::string toParse) {
@@ -23,7 +11,7 @@ std::string ReadParser::parseReadStmt(const std::string toParse) {
 		std::ssub_match varName = matches[1];
 		std::string name = varName.str();
 
-		if (verifyName(name)) {
+		if (LexicalToken::verifyName(name)) {
 			return name;
 		}
 		else {
