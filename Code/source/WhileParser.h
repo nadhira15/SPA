@@ -34,10 +34,10 @@ private:
 	vector<string> var;
 	vector<string> c;
 	int stmtNum;
-	PKB pkb;
+	string procedure;
 	vector<Statement> stmtLst;
 public:
-	WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb);
+	WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, std::string procedure);
 	vector<string> getVariables();
 	vector<string> getConstants();
 	void parseStmtLst();

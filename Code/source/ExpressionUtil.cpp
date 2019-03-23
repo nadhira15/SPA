@@ -1,32 +1,22 @@
-#include <string>
-#include <regex>
-#include <stack>
 #include "ExpressionUtil.h"
-#include "LexicalToken.h"
-#include "StringUtil.h"
 
-using namespace std;
-using namespace ExpressionUtil;
-using namespace LexicalToken;
-using namespace StringUtil;
-
-regex terms("(\\w+)");
-regex validExpression("^(?:\\(*\\s*(\\w+)\\s*\\)*)(?:\\s*[+\\*\\-%\\/]\\s*(?:\\(*\\s*(\\w+)\\s*\\)*))*$");
+std::regex terms("(\\w+)");
+std::regex validExpression("^(?:\\(*\\s*(\\w+)\\s*\\)*)(?:\\s*[+\\*\\-%\\/]\\s*(?:\\(*\\s*(\\w+)\\s*\\)*))*$");
 
 /* Converts an Infix Expression into a Postfix Expression.
  * Preconditon: The Infix Expression must be a valid infixExpression. Perform a check by calling
  *			    verifyInfixExpression prior to calling this function.
  * Output: The Postfix Expression.
  */
-string ExpressionUtil::convertInfixToPrefix(string expression) {
+std::string ExpressionUtil::convertInfixToPrefix(std::string expression) {
 	expressionPreprocess(expression);
 
-	stack<string> operatorStack;
-	stack<string> operandStack;
+	std::stack<std::string> operatorStack;
+	std::stack<std::string> operandStack;
 
 	//Split by spaces to create substrings.
 	char spaceDelimiter = ' ';
-	vector<string> expressionVector = split(expression, spaceDelimiter);
+	std::vector<std::string> expressionVector = StringUtil::split(expression, spaceDelimiter);
 
 	for (size_t i = 0; i < expressionVector.size(); i++) {
 		//Push opening bracket to operator stack
@@ -39,18 +29,17 @@ string ExpressionUtil::convertInfixToPrefix(string expression) {
 
 			while (!operatorStack.empty() && operatorStack.top() != "(") {
 
-				string operand1 = operandStack.top();
+				std::string operand1 = operandStack.top();
 				operandStack.pop();
 
-				string operand2 = operandStack.top();
+				std::string operand2 = operandStack.top();
 				operandStack.pop();
 
-				string operator1 = operatorStack.top();
+				std::string operator1 = operatorStack.top();
 				operatorStack.pop();
 
 				//form sub-expression
-
-				string subexpre = operator1 + " " + operand2 + " " + operand1;
+				std::string subexpre = operator1 + " " + operand2 + " " + operand1;
 				operandStack.push(subexpre);
 			}
 
@@ -66,17 +55,17 @@ string ExpressionUtil::convertInfixToPrefix(string expression) {
 		//If operator push to operator stack only after performing higher priority operator.
 		else {
 			while (!operatorStack.empty() && getPriority(expressionVector[i]) <= getPriority(operatorStack.top())) {
-				string operand1 = operandStack.top();
+				std::string operand1 = operandStack.top();
 				operandStack.pop();
 
-				string operand2 = operandStack.top();
+				std::string operand2 = operandStack.top();
 				operandStack.pop();
 
-				string operator1 = operatorStack.top();
+				std::string operator1 = operatorStack.top();
 				operatorStack.pop();
 
 				//form sub-expression
-				string subexpre = operator1 + " " + operand2 + " " + operand1;
+				std::string subexpre = operator1 + " " + operand2 + " " + operand1;
 				operandStack.push(subexpre);
 			}
 			operatorStack.push(expressionVector[i]);
@@ -84,18 +73,18 @@ string ExpressionUtil::convertInfixToPrefix(string expression) {
 	}
 
 	while (!operatorStack.empty()) {
-		string operand1 = operandStack.top();
+		std::string operand1 = operandStack.top();
 		operandStack.pop();
 
-		string operand2 = operandStack.top();
+		std::string operand2 = operandStack.top();
 		operandStack.pop();
 
-		string operator1 = operatorStack.top();
+		std::string operator1 = operatorStack.top();
 		operatorStack.pop();
 
 		//form sub-expression
 
-		string subexpre = operator1 + " " + operand2 + " " + operand1;
+		std::string subexpre = operator1 + " " + operand2 + " " + operand1;
 		operandStack.push(subexpre);
 	}
 			
@@ -113,16 +102,16 @@ void ExpressionUtil::expressionPreprocess(std::string &expression)
 	//Remove every single whitespace
 	expression.erase(remove_if(expression.begin(), expression.end(), isspace), expression.end());
 
-	vector<string> operators{ "+", "-", "*", "/", "%" , "(", ")" };
+	std::vector<std::string> operators{ "+", "-", "*", "/", "%" , "(", ")" };
 
 	//Add a space at every occurence of an operator.
-	for (string op : operators) {
+	for (std::string op : operators) {
 		size_t pos = 0;
 		while (true) {
 			pos = expression.find(op, pos);
 
 			//Finishing condition
-			if (pos == string::npos) {
+			if (pos == std::string::npos) {
 				break;
 			}
 
@@ -153,12 +142,12 @@ void ExpressionUtil::expressionPreprocess(std::string &expression)
  *			    verifyInfixExpression prior to calling this function.
  * Output: The list of Variables found in the expression.
  */
-vector<string> ExpressionUtil::getVariables(string infixExpression) {
-	smatch result;
-	vector<string> variableVector;
+std::vector<std::string> ExpressionUtil::getVariables(std::string infixExpression) {
+	std::smatch result;
+	std::vector<std::string> variableVector;
 
-	while (regex_search(infixExpression, result, terms)) {
-		bool isValidName = verifyName(result[0]);
+	while (std::regex_search(infixExpression, result, terms)) {
+		bool isValidName = LexicalToken::verifyName(result[0]);
 		if (isValidName) {
 			variableVector.push_back(result[0]);
 		}
@@ -173,12 +162,12 @@ vector<string> ExpressionUtil::getVariables(string infixExpression) {
  *			    verifyInfixExpression prior to calling this function.
  * Output: The list of Constants found in the expression.
  */
-vector<string> ExpressionUtil::getConstants(string infixExpression) {
-	smatch result;
-	vector<string> constantVector;
+std::vector<std::string> ExpressionUtil::getConstants(std::string infixExpression) {
+	std::smatch result;
+	std::vector<std::string> constantVector;
 
 	while (regex_search(infixExpression, result, terms)) {
-		bool isValidInteger = verifyInteger(result[0]);
+		bool isValidInteger = LexicalToken::verifyInteger(result[0]);
 		if (isValidInteger) {
 			constantVector.push_back(result[0]);
 		}
@@ -193,14 +182,14 @@ vector<string> ExpressionUtil::getConstants(string infixExpression) {
  * Perform this step before converting to InfixExpression or
  * extracting variables and constants.
  */
-bool ExpressionUtil::verifyInfixExpression(string infixExpression) {
+bool ExpressionUtil::verifyInfixExpression(std::string infixExpression) {
 	if (regex_match(infixExpression, validExpression)) {
 		if (checkParenthesis(infixExpression)) {
-			smatch result;
+			std::smatch result;
 
-			while (regex_search(infixExpression, result, terms)) {
-				bool isValidName = verifyName(result[0]);
-				bool isValidInteger = verifyInteger(result[0]);
+			while (std::regex_search(infixExpression, result, terms)) {
+				bool isValidName = LexicalToken::verifyName(result[0]);
+				bool isValidInteger = LexicalToken::verifyInteger(result[0]);
 				if (!isValidName && !isValidInteger) {
 					return false;
 				}
@@ -220,8 +209,8 @@ bool ExpressionUtil::verifyInfixExpression(string infixExpression) {
 /* Checks if there is matching parenthesis. Returns true as long as for every
  * Left bracket, there is a matching right bracket further down the string.
  */
-bool ExpressionUtil::checkParenthesis(string infixExpression) {
-	stack<char> bracketStack;
+bool ExpressionUtil::checkParenthesis(std::string infixExpression) {
+	std::stack<char> bracketStack;
 
 	for (size_t i = 0; i < infixExpression.length(); i++) {
 		if (infixExpression.at(i) == '(') {
@@ -246,7 +235,7 @@ bool ExpressionUtil::checkParenthesis(string infixExpression) {
 }
 
 // Get priority of the operator. If is not a operator return 0.
-int ExpressionUtil::getPriority(string p)
+int ExpressionUtil::getPriority(std::string p)
 {
 	char c = p.c_str()[0];
 	if (c == '-' || c == '+')

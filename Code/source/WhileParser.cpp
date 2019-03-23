@@ -29,7 +29,7 @@ using namespace std;
   output: vector<string> of variables/constants
 */
 
-WhileParser::WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb1) {
+WhileParser::WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, std::string procedure) {
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
 	string cond_expr = stmt.substr(i + 1, j - i - 1);
@@ -39,11 +39,11 @@ WhileParser::WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst
 	if (valid1 && valid2) {
 		var = ConditionalExp::getVariables();
 		c = ConditionalExp::getConstants();
-		pkb = pkb1;
+		this->procedure = procedure;
 		stmtLst = stmtlst;
 		stmtNum = stmtNo;
 	} else {
-		//throw "While statement is not in the right form!\n";
+		throw "While statement is not in the right form!\n";
 	}
 }
 
@@ -56,5 +56,5 @@ vector<string> WhileParser::getConstants() {
 }
  
 void WhileParser::parseStmtLst() {
-	Parser().parse(stmtLst, stmtNum, pkb);
+	Parser().parse(stmtLst, stmtNum, procedure);
 }

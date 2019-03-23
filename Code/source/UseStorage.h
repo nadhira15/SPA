@@ -36,25 +36,27 @@ public:
 	bool containsProcVarPair(pair<string, string> pair);
 
 	/*
-		return the list of variables that is used by 'stm'
+		return a list of variables that is used by 'stm'
 		return an empty set if 'stm' is not found
 	*/
 	unordered_set<string> getVarUsedByStm(int stm);
 
 	/*
-		return the list of variables that is used by 'procedure'
+		return a list of variables that is used by 'procedure'
 		return an empty set if 'procedure' is not found
 	*/
 	unordered_set<string> getVarUsedByProc(string proc);
 
 	/*
-		return the list of statements that is using 'variable'
+		return a list of statements that is using 'variable'
+		returns a list of all statements that used a variable if 'variable' == "" 
 		return an empty set if 'variable' is not found
 	*/
 	unordered_set<int> getStmUsing(string variable);
 
 	/*
-		return the list of procedures that is using 'variable'
+		return a list of procedures that is using 'variable'
+		returns a list of all procedures that used a variable if 'variable' == ""
 		return an empty set if 'variable' is not found
 	*/
 	unordered_set<string> getProcUsing(string variable);
