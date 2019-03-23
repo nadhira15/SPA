@@ -33,10 +33,10 @@ private:
 	vector<string> var;
 	vector<string> c;
 	int stmtNum;
-	PKB pkb;
+	string procedure;
 	vector<Statement> stmtLst;
 public:
-	IfParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, PKB pkb);
+	IfParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, std::string procedure);
 	vector<string> getVariables();
 	vector<string> getConstants();
 	void parseStmtLst();

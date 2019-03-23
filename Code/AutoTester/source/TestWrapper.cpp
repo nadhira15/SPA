@@ -41,7 +41,7 @@ void TestWrapper::parse(std::string filename) {
 			vector<Statement> procList = preprocesser.getProcLst();
 
 			//Parses the list of procedures.
-			parser.parse(procList, 0, pkb);
+			parser.parse(procList, 0, "");
 
 			//Perform post-parsing Design Extraction.
 			de.extractDesigns(pkb);

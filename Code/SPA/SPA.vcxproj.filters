@@ -57,9 +57,6 @@
     <ClCompile Include="..\source\Preprocesser.cpp">
       <Filter>Source Files\PreProcessor</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\PrintParser.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\ModifyStorage.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
@@ -104,6 +101,12 @@
     </ClCompile>
     <ClCompile Include="..\source\ContainerUtil.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\CallParser.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PrintParser.cpp">
+      <Filter>Source Files\Parser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +183,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\ContainerUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\CallParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

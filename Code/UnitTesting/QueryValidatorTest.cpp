@@ -88,6 +88,24 @@ namespace UnitTesting
 			Assert::AreEqual(actual == expected, true);
 		}
 
+		TEST_METHOD(validateSelectedVar_selectBoolean_success)
+		{
+			vector<string> selectedVar = { "BOOLEAN" };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryValidator::validateSelectedVar(selectedVar, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateSelectedVar_selectTuple_success)
+		{
+			vector<string> selectedVar = { "a", "s" };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryValidator::validateSelectedVar(selectedVar, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
 		TEST_METHOD(validateSelectedVar_varNotDeclared)
 		{
 			vector<string> selectedVar = { "b" };
@@ -103,6 +121,15 @@ namespace UnitTesting
 			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
 			string actual = QueryValidator::validateSelectedVar(selectedVar, declarationsMap);
 			string expected = "invalid variable name";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateSelectedVar_selectTupleBoolean)
+		{
+			vector<string> selectedVar = { "a", "BOOLEAN" };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
+			string actual = QueryValidator::validateSelectedVar(selectedVar, declarationsMap);
+			string expected = "too many selected variable for boolean";
 			Assert::AreEqual(actual == expected, true);
 		}
 
@@ -129,7 +156,7 @@ namespace UnitTesting
 			vector<pair<string, pair<string, string>>> param{ {"Parent", { "a", "_" }} };
 			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
 			string actual = QueryValidator::validateSuchThatParam(param, declarationsMap);
-			string expected = "invalid query";
+			string expected = "semantic error";
 			Assert::AreEqual(actual == expected, true);
 		}
 
@@ -147,13 +174,13 @@ namespace UnitTesting
 			vector<pair<string, pair<string, string>>> param{ {"a_a", {"_", "'x*y+z'"}} };
 			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
 			string actual = QueryValidator::validatePatternParam(param, declarationsMap);
-			string expected = "invalid assign synonym";
+			string expected = "invalid synonym";
 			Assert::AreEqual(actual == expected, true);
 		}
 
 		TEST_METHOD(validatePatternParam_stmtNotDeclared)
 		{
-			vector<pair<string, pair<string, string>>> param{ {"b", {"'_'", "'x*y+z'"}} };
+			vector<pair<string, pair<string, string>>> param{ {"b", {"_", "'x*y+z'"}} };
 			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
 			string actual = QueryValidator::validatePatternParam(param, declarationsMap);
 			string expected = "statement not found";
@@ -162,10 +189,10 @@ namespace UnitTesting
 
 		TEST_METHOD(validatePatternParam_stmtTypeNotAssign)
 		{
-			vector<pair<string, pair<string, string>>> param{ {"s", {"'_'", "'x*y+z'"}} };
+			vector<pair<string, pair<string, string>>> param{ {"s", {"_", "'x*y+z'"}} };
 			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
 			string actual = QueryValidator::validatePatternParam(param, declarationsMap);
-			string expected = "statement type is not assign";
+			string expected = "statement type is invalid";
 			Assert::AreEqual(actual == expected, true);
 		}
 
