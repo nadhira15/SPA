@@ -12,7 +12,7 @@ using namespace std;
 #include "ModifyStorage.h"
 #include "Hasher.h"
 
-enum stmType { read, print, assign, whileStm, ifStm };
+enum stmType { read, print, assign, whileStm, ifStm, call};
 
 /*
 	Accepts relationship, pattern and other general data from Parser and DesignExtractor and
@@ -31,8 +31,8 @@ public:
 
 	//adding Follows relationships
 	bool addFollow(int stm1, int stm2);
-	bool setFollowers(int stm, unordered_set<int> stmList);
-	bool setStmFollowedBy(int stm, unordered_set<int> stmList);
+	bool setAllFollowing(int stm, unordered_set<int> stmList);
+	bool setAllFollowedBy(int stm, unordered_set<int> stmList);
 
 	//adding Parent relationships
 	bool addParent(int stm1, int stm2);
@@ -48,7 +48,7 @@ public:
 	bool addModifiesProc(string procedure, string variable);
 
 	//adding patterns
-	bool addAssign(int stm, string variable, string expr);
+	bool addAssignPattern(int stm, string variable, string expr);
 
 	//general getter methods
 	unordered_set<string> getProcList();
@@ -89,8 +89,8 @@ public:
 	unordered_set< pair<int, int>, intPairhash> getAncDescPairs();
 
 	//For Uses relations
-	bool isUsing(int stm, string variable);
-	bool isUsing(string procedure, string variable);
+	bool isStmUsing(int stm, string variable);
+	bool isProcUsing(string procedure, string variable);
 	unordered_set<string> getVarUsedByStm(int stm);
 	unordered_set<string> getVarUsedByProc(string procedure);
 	unordered_set<int> getStmUsing(string variable);
@@ -99,8 +99,8 @@ public:
 	unordered_set< pair<string, string>, strPairhash> getProcVarUsePairs();
 
 	//For Modifies relations
-	bool isModifying(int stm, string variable);
-	bool isModifying(string procedure, string variable);
+	bool isStmModifying(int stm, string variable);
+	bool isProcModifying(string procedure, string variable);
 	unordered_set<string> getVarModifiedByStm(int stm);
 	unordered_set<string> getVarModifiedByProc(string procedure);
 	unordered_set<int> getStmModifying(string variable);

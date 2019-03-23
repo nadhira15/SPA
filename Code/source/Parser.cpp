@@ -126,7 +126,7 @@ void Parser::extractAssignEntity(std::string &stmtString, PKB &pkb, int stmtLine
 		pkb.addUsesStm(stmtLine, variable);
 	}
 
-	pkb.addAssign(stmtLine, modified, prefixExpression);
+	pkb.addAssignPattern(stmtLine, modified, prefixExpression);
 }
 
 void Parser::extractReadEntity(std::string &stmtString, PKB &pkb, int stmtLine) {

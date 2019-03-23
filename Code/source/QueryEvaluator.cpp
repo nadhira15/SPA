@@ -368,7 +368,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 	else if (relation == "Uses") {
 		if (isInteger(firstArgument)) {
 			if (isQuoted(secondArgument)) {
-				result = PKB().isUsing(stoi(firstArgument), trimFrontEnd(secondArgument));
+				result = PKB().isStmUsing(stoi(firstArgument), trimFrontEnd(secondArgument));
 				return truthValue(result);
 			}
 			else if (secondArgument == "_") {
@@ -378,7 +378,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 		}
 		else if (isQuoted(firstArgument)) {
 			if (isQuoted(secondArgument)) {
-				result = PKB().isUsing(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument));
+				result = PKB().isProcUsing(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument));
 				return truthValue(result);
 			}
 			else if (secondArgument == "_") {
@@ -390,7 +390,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 	else if (relation == "Modifies") {
 		if (isInteger(firstArgument)) {
 			if (isQuoted(secondArgument)) {
-				result = PKB().isModifying(stoi(firstArgument), trimFrontEnd(secondArgument));
+				result = PKB().isStmModifying(stoi(firstArgument), trimFrontEnd(secondArgument));
 				return truthValue(result);
 			}
 			else if (secondArgument == "_") {
@@ -400,7 +400,7 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 		}
 		else if (isQuoted(firstArgument)) {
 			if (isQuoted(secondArgument)) {
-				result = PKB().isModifying(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument));
+				result = PKB().isProcModifying(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument));
 				return truthValue(result);
 			}
 			else if (secondArgument == "_") {

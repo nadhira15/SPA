@@ -30,7 +30,7 @@ void DesignExtractor::processFollowStar()
 		if (directFollowStm != 0) {
 			unordered_set<int> followedByStar = pkb.getAllFollowing(directFollowStm);
 			followedByStar.insert(directFollowStm);
-			pkb.setFollowers(currStmt, followedByStar);
+			pkb.setAllFollowing(currStmt, followedByStar);
 		}
 	}
 
@@ -43,7 +43,7 @@ void DesignExtractor::processFollowStar()
 		if (directPrvStm != 0) {
 			unordered_set<int>  followStar = pkb.getAllFollowedBy(directPrvStm);
 			followStar.insert(directPrvStm);
-			pkb.setStmFollowedBy(currStmt, followStar);
+			pkb.setAllFollowedBy(currStmt, followStar);
 		}
 	}
 
