@@ -101,7 +101,6 @@ unordered_set<string> QueryParser::parse(string query) {
 			nextIndex = selectStatement.length();
 		}
 
-		// parsing current clause
 		string currentClause = selectStatement.substr(0, nextIndex);
 		if (currentClause.find("such that") != -1 || (currentClause.find("and") != -1 && previousClause == "such that")) {
 			previousClause = "such that";
@@ -263,8 +262,14 @@ vector<pair<string, pair<string, string>>> QueryParser::splitSuchThatCondition(v
 		int comma = suchThatClause[i].find(",");
 		int closeBracket = suchThatClause[i].find(")");
 		int strLen = suchThatClause[i].length();
+		string condition;
 
-		string condition = StringUtil::removeAllWhitespaces(suchThatClause[i].substr(9, openBracket - 9));
+		if (suchThatClause[i].find("such") != -1) {
+			condition = StringUtil::removeAllWhitespaces(suchThatClause[i].substr(9, openBracket - 9));
+		}
+		else {
+			condition = StringUtil::removeAllWhitespaces(suchThatClause[i].substr(3, openBracket - 3));
+		}
 		string firstVar = StringUtil::removeAllWhitespaces(suchThatClause[i].substr(openBracket + 1, comma - openBracket - 1));
 		string secondVar = StringUtil::removeAllWhitespaces(suchThatClause[i].substr(comma + 1, closeBracket - comma - 1));
 
@@ -287,8 +292,15 @@ vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(ve
 		int comma = patternClause[i].find(",");
 		int closeBracket = patternClause[i].find(")");
 		int strLen = patternClause[i].length();
+		string varName;
 
-		string varName = StringUtil::removeAllWhitespaces(patternClause[i].substr(7, openBracket - 7));
+		if (patternClause[i].find("pattern") != -1) {
+			varName = StringUtil::removeAllWhitespaces(patternClause[i].substr(7, openBracket - 7));
+		}
+		else {
+			varName = StringUtil::removeAllWhitespaces(patternClause[i].substr(3, openBracket - 3));
+		}
+
 		string firstPattern = StringUtil::removeAllWhitespaces(patternClause[i].substr(openBracket + 1, comma - openBracket - 1));
 		string secondPattern = StringUtil::removeAllWhitespaces(patternClause[i].substr(comma + 1, closeBracket - comma - 1));
 
