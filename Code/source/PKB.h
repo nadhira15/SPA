@@ -11,7 +11,7 @@ using namespace std;
 #include "UseStorage.h"
 #include "ModifyStorage.h"
 
-enum stmType { read, print, assign, whileStm, ifStm };
+enum stmType { read, print, call, assign, whileStm, ifStm };
 
 /*
 	Accepts data from the Front-End's Parser, sends data to the PostProcessor when called and
