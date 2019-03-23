@@ -36,25 +36,27 @@ public:
 	bool containsProcVarPair(pair<string, string> pair);
 
 	/*
-		return the list of variables that is modified by 'stm'
+		return a list of variables that is modified by 'stm'
 		return an empty set if 'stm' is not found
 	*/
 	unordered_set<string> getVarModifiedByStm(int stm);
 
 	/*
-		return the list of variables that is modified by 'procedure'
+		return a list of variables that is modified by 'procedure'
 		return an empty set if 'procedure' is not found
 	*/
 	unordered_set<string> getVarModifiedByProc(string proc);
 
 	/*
-		return the list of statements that is modifying 'variable'
+		return a list of statements that modifies 'variable'
+		returns a list of all statements that modifies a variable if 'variable' == "" 
 		return an empty set if 'variable' is not found
 	*/
 	unordered_set<int> getStmModifying(string variable);
 
 	/*
-		return the list of procedures that is modifying 'variable'
+		return a list of procedures that modifies 'variable'
+		returns a list of all procedures that modifies a variable if 'variable' == "" 
 		return an empty set if 'variable' is not found
 	*/
 	unordered_set<string> getProcModifying(string variable);

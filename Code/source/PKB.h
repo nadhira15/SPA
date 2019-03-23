@@ -231,25 +231,25 @@ public:
 	bool hasAncDescPair(int stm1, int stm2);
 
 	/*
-		return the statement that is the parent of 'stm'
+		return a statement that is the parent of 'stm'
 		return 0 if 'stm' is not found
 	*/
 	int getParent(int stm);
 
 	/*
-		return the list of statements that is the children of 'stm'
+		return a list of statements that is the children of 'stm'
 		return an empty set if 'stm' is not found
 	*/
 	unordered_set<int> getChildren(int stm);
 
 	/*
-		return the list of statements that is the ancestors of 'stm'
+		return a list of statements that is the ancestors of 'stm'
 		return an empty set if 'stm' is not found
 	*/
 	unordered_set<int> getAncestors(int stm);
 
 	/*
-		return the list of statements that is the descendants of 'stm'
+		return a list of statements that is the descendants of 'stm'
 		return an empty set if 'stm' is not found
 	*/
 	unordered_set<int> getDescendants(int stm);
@@ -276,25 +276,27 @@ public:
 	bool isProcUsing(string procedure, string variable);
 
 	/*
-		return the list of variables that is used by 'stm'
+		return a list of variables that is used by 'stm'
 		return an empty set if 'stm' is not found
 	*/
 	unordered_set<string> getVarUsedByStm(int stm);
 
 	/*
-		return the list of variables that is used by 'procedure'
+		return a list of variables that is used by 'procedure'
 		return an empty set if 'procedure' is not found
 	*/
 	unordered_set<string> getVarUsedByProc(string procedure);
 
 	/*
-		return the list of statements that is using 'variable'
+		return a list of statements that is using 'variable'
+		returns a list of all statements that used a variable if 'variable' == "" 
 		return an empty set if 'variable' is not found
 	*/
 	unordered_set<int> getStmUsing(string variable);
 
 	/*
-		return the list of procedure that is using 'variable'
+		return a list of procedure that is using 'variable'
+		returns a list of all procedures that used a variable if 'variable' == "" 
 		return an empty set if 'variable' is not found
 	*/
 	unordered_set<string> getProcUsing(string variable);
@@ -315,25 +317,27 @@ public:
 	bool isProcModifying(string procedure, string variable);
 
 	/*
-		return the list of variables that is modified by 'stm'
+		return a list of variables that is modified by 'stm'
 		return an empty set if 'stm' is not found
 	*/
 	unordered_set<string> getVarModifiedByStm(int stm);
 
 	/*
-		return the list of variables that is modified by 'procedure'
+		return a list of variables that is modified by 'procedure'
 		return an empty set if 'procedure' is not found
 	*/
 	unordered_set<string> getVarModifiedByProc(string procedure);
 
 	/*
-		return the list of statements that is modifying 'variable'
+		return a list of statements that modifies 'variable'
+		returns a list of all statements that modifies a variable if 'variable' == "" 
 		return an empty set if 'variable' is not found
 	*/
 	unordered_set<int> getStmModifying(string variable);
 
 	/*
-		return the list of procedures that is modifying 'variable'
+		return a list of procedures that modifies 'variable'
+		returns a list of all procedures that modifies a variable if 'variable' == "" 
 		return an empty set if 'variable' is not found
 	*/
 	unordered_set<string> getProcModifying(string variable);
