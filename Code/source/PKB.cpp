@@ -14,6 +14,7 @@ FollowStorage PKB::fStore;
 ParentStorage PKB::pStore;
 UseStorage PKB::uStore;
 ModifyStorage PKB::mStore;
+CallStorage PKB::cStore;
 unordered_map<int, pair<string, string> > PKB::patternList;
 
 PKB::PKB()
@@ -138,6 +139,25 @@ bool PKB::addModifiesProc(string procedure, string variable)
 bool PKB::addAssignPattern(int stm, string variable, string expr)
 {
 	return patternList.emplace(stm, pair<string, string>(variable, expr)).second;
+}
+
+bool PKB::addCall(string proc1, string proc2)
+{
+	if (proc1.compare("") == 0 || proc2.compare("") == 0)
+	{
+		return false;
+	}
+	return cStore.addCall(proc1, proc2);
+}
+
+bool PKB::setCallAnc(string proc, unordered_set<string> procList)
+{
+	return cStore.setCallAnc(proc, procList);
+}
+
+bool PKB::setCallDesc(string proc, unordered_set<string> procList)
+{
+	return cStore.setCallDesc(proc, procList);
 }
 
 unordered_set<string> PKB::getProcList()

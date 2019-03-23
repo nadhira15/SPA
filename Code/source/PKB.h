@@ -10,6 +10,7 @@ using namespace std;
 #include "ParentStorage.h"
 #include "UseStorage.h"
 #include "ModifyStorage.h"
+#include "CallStorage.h"
 #include "Hasher.h"
 
 enum stmType { read, print, assign, whileStm, ifStm, call};
@@ -136,6 +137,14 @@ public:
 		returns false if 'stm' already exist in the list with another pattern
 	*/
 	bool addAssignPattern(int stm, string variable, string expr);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Calls adder & setter Methods	/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//adding Calls relationships
+	bool addCall(string proc1, string proc2);
+	bool setCallAnc(string proc, unordered_set<string> procList);
+	bool setCallDesc(string proc, unordered_set<string> procList);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//General Getter Methods	/////////////////////////////////////////////////////////////////////////
@@ -387,5 +396,6 @@ private:
 	static ParentStorage pStore;
 	static UseStorage uStore;
 	static ModifyStorage mStore;
+	static CallStorage cStore;
 	static unordered_map<int, pair<string, string> > patternList;
 };
