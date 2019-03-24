@@ -68,6 +68,7 @@ unordered_set<string> QueryParser::parse(string query) {
 	vector<string> selectedVar;
 	vector<pair<string, pair<string, string>>> suchThatCondition;
 	vector<pair<string, pair<string, string>>> patternCondition;
+	vector<pair<string, string>> withCondition;
 
 	vector<string> suchThatClauses;
 	vector<string> patternClauses;
@@ -120,9 +121,7 @@ unordered_set<string> QueryParser::parse(string query) {
 
 	suchThatCondition = splitSuchThatCondition(suchThatClauses);
 	patternCondition = splitPatternCondition(patternClauses);
-
-	// TODO::to implement
-	// withCondition = splitWithCondition(withClauses);
+	withCondition = splitWithCondition(withClauses);
 
 	// validating 'Select' parameter
 	errorString = QueryValidator::validateSelectedVar(selectedVar, declarationsMap);
@@ -159,7 +158,18 @@ unordered_set<string> QueryParser::parse(string query) {
 		return result;
 	}
 
-	result = evaluateSelectConditions(declarations, selectedVar, suchThatCondition, patternCondition);
+	// validating 'with' parameter
+	errorString = QueryValidator::validateWithParam(withCondition, declarationsMap);
+	if (errorString == "semantic error" && selectBoolean) {
+		result.insert("false");
+		return result;
+	}
+	else if (errorString != "") {
+		result.insert("error");
+		return result;
+	}
+
+	result = evaluateSelectConditions(declarations, selectedVar, suchThatCondition, patternCondition, withCondition);
 
 	return result;
 }
@@ -311,12 +321,39 @@ vector<pair<string, pair<string, string>>> QueryParser::splitPatternCondition(ve
 }
 
 /*
+Splits with clause by equal sign.
+Returns a vector<pair<string, string>> consisting of firstRef and secondRef
+*/
+vector<pair<string, string>> QueryParser::splitWithCondition(vector<string> withClause) {
+
+	vector<pair<string, string>> output;
+
+	for (int i = 0; i < withClause.size(); i++) {
+		int equalSign = withClause[i].find("=");
+		int strLen = withClause[i].length();
+		string firstArgs;
+
+		if (withClause[i].find("with") != -1) {
+			firstArgs = StringUtil::removeAllWhitespaces(withClause[i].substr(4, equalSign - 4));
+		}
+		else {
+			firstArgs = StringUtil::removeAllWhitespaces(withClause[i].substr(3, equalSign - 3));
+		}
+		string secondArgs = StringUtil::removeAllWhitespaces(withClause[i].substr(equalSign + 1));
+
+		output.push_back(make_pair(firstArgs, secondArgs));
+	}
+
+	return output;
+}
+
+/*
 Calls QueryEvaluator to evaluate the query result
 Returns a unordered_set<string> consisting of results
 */
 unordered_set<string> QueryParser::evaluateSelectConditions(vector<pair<string, string>> declarations, 
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
-	vector<pair<string, pair<string, string>>> patternCondition) {
+	vector<pair<string, pair<string, string>>> patternCondition, vector<pair<string, string>> withCondition) {
 
 	return QueryEvaluator::evaluateQuery(declarations, selectedVar, suchThatCondition, patternCondition);
 }

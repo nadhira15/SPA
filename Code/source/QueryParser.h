@@ -18,9 +18,13 @@ public:
 	static vector<string> splitSelectParameter(string selectStatement);
 	static vector<pair<string, pair<string, string>>> splitSuchThatCondition(vector<string> suchThatClause);
 	static vector<pair<string, pair<string, string>>> splitPatternCondition(vector<string> patternClause);
-	static unordered_set<string> evaluateSelectConditions(vector<pair<string, string>> declarations,
-		vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
-		vector<pair<string, pair<string, string>>> patternCondition);
+	static vector<pair<string, string>> splitWithCondition(vector<string> withClause);
+	static unordered_set<string> evaluateSelectConditions(
+		vector<pair<string, string>> declarations,
+		vector<string> selectedVar, 
+		vector<pair<string, pair<string, string>>> suchThatCondition,
+		vector<pair<string, pair<string, string>>> patternCondition,
+		vector<pair<string, string>> withCondition);
 
 	static int getMinimumValue(vector<int> indexes);
 };
