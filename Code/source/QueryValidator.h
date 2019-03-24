@@ -17,4 +17,5 @@ public:
 	static string validateSelectedVar(vector<string> selectedVar, unordered_map<string, string> declarationsMap);
 	static string validateSuchThatParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap);
 	static string validatePatternParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap);
+	static string validateWithParam(vector<pair<string, string>> param, unordered_map<string, string> declarationsMap);
 };
