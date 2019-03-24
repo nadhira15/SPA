@@ -117,5 +117,37 @@ namespace UnitTesting
 			Assert::AreEqual(actual == expected, true);
 		}
 
+		TEST_METHOD(splitWithCondition_success)
+		{
+			vector<string> input = { "with a.stmt# = 20" };
+			vector<pair<string, string>> actual = QueryParser::splitWithCondition(input);
+			vector<pair<string, string>> expected{ {"a.stmt#", "20"} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitWithCondition_multipleWhitespaces_success)
+		{
+			vector<string> input = { "with    a.stmt#    =   20   " };
+			vector<pair<string, string>> actual = QueryParser::splitWithCondition(input);
+			vector<pair<string, string>> expected{ {"a.stmt#", "20"} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitWithCondition_multipleClauses_success)
+		{
+			vector<string> input = { "with a.stmt# = 20", "and s.stmt# = 5", "with p.procName = \"proc\"", "and p1.procName = \"proc1\"", "and c.value = 9" };
+			vector<pair<string, string>> actual = QueryParser::splitWithCondition(input);
+			vector<pair<string, string>> expected{ {"a.stmt#", "20"}, {"s.stmt#", "5"}, {"p.procName", "\"proc\""}, {"p1.procName", "\"proc1\""} , {"c.value", "9"} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(splitWithCondition_multipleClauses_multipleWhitespaces_success)
+		{
+			vector<string> input = { "with      a.stmt# = 20", "and s   .stmt# = 5", "with p.    procName = \"proc\"", "and p1.procName     = \"proc1\"", "and c.value =     9" };
+			vector<pair<string, string>> actual = QueryParser::splitWithCondition(input);
+			vector<pair<string, string>> expected{ {"a.stmt#", "20"}, {"s.stmt#", "5"}, {"p.procName", "\"proc\""}, {"p1.procName", "\"proc1\""} , {"c.value", "9"} };
+			Assert::AreEqual(actual == expected, true);
+		}
+
 	};
 }
