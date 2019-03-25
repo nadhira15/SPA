@@ -119,9 +119,6 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 		}
 	}
 
-	if (firstArgumentType == "procedure") {
-		firstArgument = PKB().getProcName();
-	}
 	string certainty = isSuchThatTrivial(relation, firstArgument, secondArgument);
 
 	if (certainty == "false") {
@@ -527,9 +524,6 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 			else if (isQuoted(firstArgument)) {
 				return PKB().getUsedVar(trimFrontEnd(firstArgument));
 			}
-			if (firstArgument == PKB().getProcName()) {
-				return ContainerUtil::to_strset(PKB().getProcVarUsePairs());
-			}
 			return ContainerUtil::to_strset(PKB().getStmVarUsePairs());
 		}
 		if (isSynonym(firstArgument)) {
@@ -553,9 +547,6 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 			}
 			else if (isQuoted(firstArgument)) {
 				return PKB().getModifiedVar(trimFrontEnd(firstArgument));
-			}
-			if (firstArgument == PKB().getProcName()) {
-				return ContainerUtil::to_strset(PKB().getProcVarModifyPairs());
 			}
 			return ContainerUtil::to_strset(PKB().getStmVarModifyPairs());
 		}
@@ -617,9 +608,6 @@ unordered_set<string> QueryEvaluator::getStmts(string s) {
 	}
 	else if (s == "constant") {
 		return PKB().getConstants();
-	}
-	else if (s == "procedure") {
-		result.insert(PKB().getProcName());
 	}
 	return result;
 }
