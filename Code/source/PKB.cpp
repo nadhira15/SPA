@@ -168,20 +168,6 @@ bool PKB::addModifiesProc(string procedure, string variable)
 	return mStore.addModifiesProc(procedure, variable);
 }
 
-bool PKB::addNext(int line1, int line2)
-{
-	if (line2 <= line1 || line1 <= 0 || line2 <= 0)
-	{
-		return false;
-	}
-	return nStore.addNext(line1, line2);
-}
-
-bool PKB::addAssignPattern(int stm, string variable, string expr)
-{
-	return patternList.emplace(stm, pair<string, string>(variable, expr)).second;
-}
-
 bool PKB::addCall(string proc1, string proc2)
 {
 	if (proc1 == "" || proc2 == "")
@@ -199,6 +185,20 @@ bool PKB::setCallAnc(string proc, unordered_set<string> procList)
 bool PKB::setCallDesc(string proc, unordered_set<string> procList)
 {
 	return cStore.setCallDesc(proc, procList);
+}
+
+bool PKB::addNext(int line1, int line2)
+{
+	if (line2 <= line1 || line1 <= 0 || line2 <= 0)
+	{
+		return false;
+	}
+	return nStore.addNext(line1, line2);
+}
+
+bool PKB::addAssignPattern(int stm, string variable, string expr)
+{
+	return patternList.emplace(stm, pair<string, string>(variable, expr)).second;
 }
 
 unordered_set<string> PKB::getProcList()
