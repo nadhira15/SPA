@@ -10,6 +10,8 @@ using namespace std;
 #include "ParentStorage.h"
 #include "UseStorage.h"
 #include "ModifyStorage.h"
+#include "CallStorage.h"
+#include "NextStorage.h"
 #include "Hasher.h"
 
 enum stmType { read, print, assign, whileStm, ifStm, call};
@@ -69,7 +71,7 @@ public:
 	//Parent adder & setter Methods		/////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
-		Adds the parent relation into the various lists in the storage
+		Adds the parent relation into ParentStorage
 		Returns false if	
 			1) the pair is already stored
 			2) the child already has another parent
@@ -127,6 +129,44 @@ public:
 			2) procedure or variable is an empty string
 	*/
 	bool addModifiesProc(string procedure, string variable);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Calls adder & setter Methods	/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/*
+		Adds the call relation into CallStorage
+		Returns false if
+			1) the pair is already stored
+			2) proc1 or proc2 == ""
+	*/
+	bool addCall(string proc1, string proc2);
+
+	/*
+		Sets the list of call ancestors of 'procedure' in CallStorage
+		Each Call* pair is stored as well
+		If 'procedure' already has a list of call ancestors, it is not replaced and it return false
+	*/
+	bool setCallAnc(string procedure, unordered_set<string> procList);
+
+	/*
+		Sets the list of call descendants of 'procedure' in CallStorage
+		Each Call* pair is stored as well
+		If 'procedure' already has a list of call descendants, it is not replaced and it return false
+	*/
+	bool setCallDesc(string procedure, unordered_set<string> procList);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Next adder Methods		/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/*
+		add the follows relation in FollowStorage
+		Returns false if
+			1) the pair is already stored
+			2) the followed statement has another follower stored
+			3) the follower is following another statement
+			4) ln2 <= ln1 or ln1, ln2 <= 0
+	*/
+	bool addFollow(int stm1, int stm2);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Pattern adder Methods			/////////////////////////////////////////////////////////////////////
@@ -221,10 +261,10 @@ public:
 	// checks if there is at least one Parent relationship
 	bool hasParentRelation();
 
-	// checks if stm is a parent of another
+	// checks if 'stm' is a parent of another
 	bool isParent(int stm);
 
-	// checks if stm is a child of another
+	// checks if 'stm' is a child of another
 	bool isChild(int stm);
 
 	// checks if the relation Parent*(stm1, stm2) exist
@@ -349,6 +389,102 @@ public:
 	unordered_set< pair<string, string>, strPairhash> getProcVarModifyPairs();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Call Getter Methods		/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// checks if there is at least one Call relationship
+	bool hasCallRelation();
+
+	// checks if 'procedure' calls another
+	bool isCaller(string proc);
+
+	// checks if 'procedure' is called by another
+	bool isCallee(string procedure);
+
+	// checks if the relation Call*(proc1, proc2) exist
+	bool hasCallStarPair(string proc1, string proc2);
+
+	/*
+		return the procedure calling 'procedure'
+		return "" if 'procedure' is not found
+	*/
+	unordered_set<string> getCaller(string procedure);
+
+	/*
+		return the procedure called by 'procedure'
+		return {} if 'procedure' is not found
+	*/
+	unordered_set<string> getCallee(string procedure);
+
+	/*
+		return a list of procedures that is directly/indirectly calling 'procedure'
+		return an empty set if 'procedure' is not found
+	*/
+	unordered_set<string> getCallAnc(string procedure);
+
+	/*
+		return a list of procedures that is directly/indirectly called by 'procedure'
+		return an empty set if 'procedure' is not found
+	*/
+	unordered_set<string> getCallDesc(string procedure);
+
+	// returns a list of all procedures that calls another
+	unordered_set<string> getAllCallers();
+
+	// returns a list of all procedures that is called by another
+	unordered_set<string> getAllCallees();
+
+	// returns a list of all call pairs
+	unordered_set< pair<string, string>, strPairhash> getCallPairs();
+
+	// returns a list of all call* pairs
+	unordered_set< pair<string, string>, strPairhash> getCallStarPairs();
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Next Getter Methods	/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// checks if there is at least one next relation
+	bool hasNextRelation();
+
+	// checks if the relation Next*(line1, line2) exist
+	bool hasNextStarPair(int line1, int line2);
+
+	/*
+		return the program line to be executed after 'line'
+		return 0 if 'line' is not found
+	*/
+	int getNext(int line);
+
+	/*
+		return the program line to be executed before 'line'
+		return 0 if 'line' is not found
+	*/
+	int getPrev(int line);
+
+	/*
+		return a list of program lines that is directly/indirectly after 'line'
+		return an empty set if 'line' is not found
+	*/
+	unordered_set<int> getAllLnAfter(int line);
+
+	/*
+		return a list of program lines that is directly/indirectly before 'line'
+		return an empty set if 'line' is not found
+	*/
+	unordered_set<int> getAllLnBefore(int line);
+
+	// returns a list of all program lines that is executed after another
+	unordered_set<int> getAllNext();
+
+	// returns a list of all program lines that is before after another
+	unordered_set<int> getAllPrev();
+
+	// returns a list of all next pairs
+	unordered_set< pair<int, int>, intPairhash> getNextPairs();
+
+	// returns a list of all next* pairs
+	unordered_set< pair<int, int>, intPairhash> getNextStarPairs();
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Pattern Getter Methods	/////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
@@ -391,5 +527,7 @@ private:
 	static ParentStorage pStore;
 	static UseStorage uStore;
 	static ModifyStorage mStore;
+	static CallStorage cStore;
+	static NextStorage nStore;
 	static unordered_map<int, pair<string, string> > patternList;
 };
