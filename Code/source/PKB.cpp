@@ -1,6 +1,7 @@
 #include "PKB.h"
 
 unordered_set<string> PKB::procList;
+unordered_map<string, unordered_set<int>> PKB::procStmList;
 vector<stmType> PKB::stmTypeList;
 unordered_set<string> PKB::varList;
 unordered_set<string> PKB::constList;
@@ -30,6 +31,36 @@ void PKB::addProc(string name)
 void PKB::addStatement(int stmNo, stmType type)
 {
 	stmTypeList.assign(stmNo, type);
+
+	switch (type)
+	{
+		case read:
+			readStmList.emplace(stmNo);
+			break;
+		case print:
+			printStmList.emplace(stmNo);
+			break;
+		case assign:
+			assignStmList.emplace(stmNo);
+			break;
+		case whileStm:
+			whileStmList.emplace(stmNo);
+			break;
+		case ifStm:
+			ifStmList.emplace(stmNo);
+			break;
+		default:
+			break;
+	}
+}
+
+void PKB::addStatement(int stmNo, stmType type, string procedure)
+{
+	stmTypeList.assign(stmNo, type);
+	if (!procStmList.emplace(procedure, unordered_set<int>{stmNo}).second)
+	{
+		procStmList.find(procedure)->second.emplace(stmNo);
+	}
 
 	switch (type)
 	{
@@ -173,6 +204,15 @@ bool PKB::setCallDesc(string proc, unordered_set<string> procList)
 unordered_set<string> PKB::getProcList()
 {
 	return procList;
+}
+
+unordered_set<int> PKB::getStmList(string procedure)
+{
+	if (procStmList.find(procedure) != procStmList.end())
+	{
+		return procStmList.at(procedure);
+	}
+	return 
 }
 
 int PKB::getTotalStmNo()
