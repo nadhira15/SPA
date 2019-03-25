@@ -159,14 +159,14 @@ public:
 	//Next adder Methods		/////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
-		add the follows relation in FollowStorage
+		add the next relation in NextStorage
 		Returns false if
 			1) the pair is already stored
-			2) the followed statement has another follower stored
-			3) the follower is following another statement
-			4) ln2 <= ln1 or ln1, ln2 <= 0
+			2) the previous program line has another next program line stored
+			3) the next program line has another previous program line stored
+			4) line2 <= line1 or line1, line2 <= 0
 	*/
-	bool addFollow(int stm1, int stm2);
+	bool addNext(int line1, int line2);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Pattern adder Methods			/////////////////////////////////////////////////////////////////////

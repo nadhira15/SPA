@@ -137,6 +137,15 @@ bool PKB::addModifiesProc(string procedure, string variable)
 	return mStore.addModifiesProc(procedure, variable);
 }
 
+bool PKB::addNext(int line1, int line2)
+{
+	if (line2 <= line1 || line1 <= 0 || line2 <= 0)
+	{
+		return false;
+	}
+	return nStore.addNext(line1, line2);
+}
+
 bool PKB::addAssignPattern(int stm, string variable, string expr)
 {
 	return patternList.emplace(stm, pair<string, string>(variable, expr)).second;
