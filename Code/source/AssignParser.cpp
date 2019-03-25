@@ -1,30 +1,17 @@
 #pragma once
-
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <regex>
-#include <vector>
-#include <sstream>
 #include "AssignParser.h"
-#include "LexicalToken.h"
-#include "ExpressionUtil.h"
-
-using namespace std;
-using namespace LexicalToken;
-using namespace ExpressionUtil;
 
 std::regex assignStmt("^[\\s]*([\\w]+)[\\s]*[=][\\s]*(.+)[\\s]*$");
-vector<string> expressionVariables;
-vector<string> expressionConstants;
-string prefixExpression;
+std::vector<std::string> expressionVariables;
+std::vector<std::string> expressionConstants;
+std::string prefixExpression;
 
 std::string AssignParser::parseLeft(std::string statement) {
 	
 	if (std::regex_match(statement, assignStmt)) {
-		smatch result;
-		regex_search(statement, result, assignStmt);
-		string left = result[1];
+		std::smatch result;
+		std::regex_search(statement, result, assignStmt);
+		std::string left = result[1];
 
 		return left;
 	}
@@ -36,9 +23,9 @@ std::string AssignParser::parseLeft(std::string statement) {
 std::string AssignParser::parseRight(std::string statement) {
 
 	if (std::regex_match(statement, assignStmt)) {
-		smatch result;
-		regex_search(statement, result, assignStmt);
-		string right = result[2];
+		std::smatch result;
+		std::regex_search(statement, result, assignStmt);
+		std::string right = result[2];
 
 		return right;
 	}
@@ -47,9 +34,9 @@ std::string AssignParser::parseRight(std::string statement) {
 	}
 }
 
-string AssignParser::getLeft(string statement) {
-	string variable = parseLeft(statement);
-	bool isValidName = verifyName(variable);
+std::string AssignParser::getLeft(std::string statement) {
+	std::string variable = parseLeft(statement);
+	bool isValidName = LexicalToken::verifyName(variable);
 	if (isValidName) {
 		return variable;
 	}
@@ -58,11 +45,11 @@ string AssignParser::getLeft(string statement) {
 	}
 }
 
-vector<string> AssignParser::getRightVariable(string statement) {
-	string expression = parseRight(statement);
-	bool isValidExpression = verifyInfixExpression(expression);
+std::vector<std::string> AssignParser::getRightVariable(std::string statement) {
+	std::string expression = parseRight(statement);
+	bool isValidExpression = ExpressionUtil::verifyInfixExpression(expression);
 
-	vector<string> listVariable;
+	std::vector<std::string> listVariable;
 	
 	if (isValidExpression) {
 		listVariable = ExpressionUtil::getVariables(expression);
@@ -75,11 +62,11 @@ vector<string> AssignParser::getRightVariable(string statement) {
 
 }
 
-vector<string> AssignParser::getRightConstant(string statement) {
-	string expression = parseRight(statement);
-	bool isValidExpression = verifyInfixExpression(expression);
+std::vector<std::string> AssignParser::getRightConstant(std::string statement) {
+	std::string expression = parseRight(statement);
+	bool isValidExpression = ExpressionUtil::verifyInfixExpression(expression);
 
-	vector<string> listConstant;
+	std::vector<std::string> listConstant;
 
 	if (isValidExpression) {
 		listConstant = ExpressionUtil::getConstants(expression);
@@ -92,11 +79,11 @@ vector<string> AssignParser::getRightConstant(string statement) {
 
 }
 
-string AssignParser::getPrefixExpression(string statement) {
-	string expression = parseRight(statement);
-	bool isValidExpression = verifyInfixExpression(expression);
+std::string AssignParser::getPrefixExpression(std::string statement) {
+	std::string expression = parseRight(statement);
+	bool isValidExpression = ExpressionUtil::verifyInfixExpression(expression);
 
-	string postfixExpression;
+	std::string postfixExpression;
 
 	if (isValidExpression) {
 		postfixExpression = ExpressionUtil::convertInfixToPrefix(expression);

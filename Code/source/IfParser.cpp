@@ -29,7 +29,7 @@ using namespace std;
   output: vector<string> of variables/constants
 */
 
-IfParser::IfParser(int stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb1) {
+IfParser::IfParser(int stmtNo, string stmt, vector<Statement> stmtlst, string procedure) {
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
 	string cond_expr = stmt.substr(i + 1, j - i - 1);
@@ -40,7 +40,7 @@ IfParser::IfParser(int stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb1)
 	if (valid1 && valid2) {
 		var = ConditionalExp::getVariables();
 		c = ConditionalExp::getConstants();
-		pkb = pkb1;
+		this->procedure = procedure;
 		stmtLst = stmtlst;
 		stmtNum = stmtNo;
 	} else {
@@ -57,5 +57,5 @@ vector<string> IfParser::getConstants() {
 }
 
 void IfParser::parseStmtLst() {
-	Parser().parse(stmtLst, stmtNum, pkb);
+	Parser().parse(stmtLst, stmtNum, procedure);
 }

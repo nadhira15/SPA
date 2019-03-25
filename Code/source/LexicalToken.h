@@ -1,8 +1,6 @@
 #pragma once
 #include <string>
 
-using namespace std;
-
 /* Contains a suite of verifiers to check simple Lexical Tokens in accordance
  * to the SPA program. These includes the check on
  * 

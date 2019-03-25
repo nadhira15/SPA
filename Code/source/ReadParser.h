@@ -1,7 +1,9 @@
 #pragma once
-#pragma once
-#include<string>
-#include<vector>
+#include <regex>
+#include <string>
+#include <vector>
+
+#include "LexicalToken.h"
 
 class ReadParser {
 public:
