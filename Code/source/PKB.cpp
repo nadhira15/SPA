@@ -15,6 +15,7 @@ ParentStorage PKB::pStore;
 UseStorage PKB::uStore;
 ModifyStorage PKB::mStore;
 CallStorage PKB::cStore;
+NextStorage PKB::nStore;
 unordered_map<int, pair<string, string> > PKB::patternList;
 
 PKB::PKB()
@@ -458,6 +459,60 @@ unordered_set<pair<string, string>, strPairhash> PKB::getCallPairs()
 unordered_set<pair<string, string>, strPairhash> PKB::getCallStarPairs()
 {
 	return cStore.getCallStarPairs();
+}
+
+bool PKB::hasNextRelation()
+{
+	return !nStore.isEmpty();
+}
+
+bool PKB::hasNextStarPair(int line1, int line2)
+{
+	// call DE
+	return false;
+}
+
+int PKB::getNext(int line)
+{
+	return nStore.getNext(line);
+}
+
+int PKB::getPrev(int line)
+{
+	return nStore.getPrev(line);
+}
+
+unordered_set<int> PKB::getAllLnAfter(int line)
+{
+	// call DE
+	return {};
+}
+
+unordered_set<int> PKB::getAllLnBefore(int line)
+{
+	// call DE
+	return {};
+}
+
+unordered_set<int> PKB::getAllNext()
+{
+	return nStore.getAllNext();
+}
+
+unordered_set<int> PKB::getAllPrev()
+{
+	return nStore.getAllPrev();
+}
+
+unordered_set<pair<int, int>, intPairhash> PKB::getNextPairs()
+{
+	return nStore.getNextPairs();
+}
+
+unordered_set<pair<int, int>, intPairhash> PKB::getNextStarPairs()
+{
+	// call DE
+	return {};
 }
 
 unordered_set<int> PKB::findPattern(string variable, string expr, bool isExclusive)

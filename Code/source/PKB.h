@@ -11,6 +11,7 @@ using namespace std;
 #include "UseStorage.h"
 #include "ModifyStorage.h"
 #include "CallStorage.h"
+#include "NextStorage.h"
 #include "Hasher.h"
 
 enum stmType { read, print, assign, whileStm, ifStm, call};
@@ -70,7 +71,7 @@ public:
 	//Parent adder & setter Methods		/////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
-		Adds the parent relation into the various lists in the storage
+		Adds the parent relation into ParentStorage
 		Returns false if	
 			1) the pair is already stored
 			2) the child already has another parent
@@ -130,6 +131,44 @@ public:
 	bool addModifiesProc(string procedure, string variable);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Calls adder & setter Methods	/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/*
+		Adds the call relation into CallStorage
+		Returns false if
+			1) the pair is already stored
+			2) proc1 or proc2 == ""
+	*/
+	bool addCall(string proc1, string proc2);
+
+	/*
+		Sets the list of call ancestors of 'procedure' in CallStorage
+		Each Call* pair is stored as well
+		If 'procedure' already has a list of call ancestors, it is not replaced and it return false
+	*/
+	bool setCallAnc(string procedure, unordered_set<string> procList);
+
+	/*
+		Sets the list of call descendants of 'procedure' in CallStorage
+		Each Call* pair is stored as well
+		If 'procedure' already has a list of call descendants, it is not replaced and it return false
+	*/
+	bool setCallDesc(string procedure, unordered_set<string> procList);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Next adder Methods		/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/*
+		add the follows relation in FollowStorage
+		Returns false if
+			1) the pair is already stored
+			2) the followed statement has another follower stored
+			3) the follower is following another statement
+			4) ln2 <= ln1 or ln1, ln2 <= 0
+	*/
+	bool addFollow(int stm1, int stm2);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Pattern adder Methods			/////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
@@ -137,14 +176,6 @@ public:
 		returns false if 'stm' already exist in the list with another pattern
 	*/
 	bool addAssignPattern(int stm, string variable, string expr);
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//Calls adder & setter Methods	/////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//adding Calls relationships
-	bool addCall(string proc1, string proc2);
-	bool setCallAnc(string proc, unordered_set<string> procList);
-	bool setCallDesc(string proc, unordered_set<string> procList);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//General Getter Methods	/////////////////////////////////////////////////////////////////////////
@@ -409,6 +440,51 @@ public:
 	unordered_set< pair<string, string>, strPairhash> getCallStarPairs();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Next Getter Methods	/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// checks if there is at least one next relation
+	bool hasNextRelation();
+
+	// checks if the relation Next*(line1, line2) exist
+	bool hasNextStarPair(int line1, int line2);
+
+	/*
+		return the program line to be executed after 'line'
+		return 0 if 'line' is not found
+	*/
+	int getNext(int line);
+
+	/*
+		return the program line to be executed before 'line'
+		return 0 if 'line' is not found
+	*/
+	int getPrev(int line);
+
+	/*
+		return a list of program lines that is directly/indirectly after 'line'
+		return an empty set if 'line' is not found
+	*/
+	unordered_set<int> getAllLnAfter(int line);
+
+	/*
+		return a list of program lines that is directly/indirectly before 'line'
+		return an empty set if 'line' is not found
+	*/
+	unordered_set<int> getAllLnBefore(int line);
+
+	// returns a list of all program lines that is executed after another
+	unordered_set<int> getAllNext();
+
+	// returns a list of all program lines that is before after another
+	unordered_set<int> getAllPrev();
+
+	// returns a list of all next pairs
+	unordered_set< pair<int, int>, intPairhash> getNextPairs();
+
+	// returns a list of all next* pairs
+	unordered_set< pair<int, int>, intPairhash> getNextStarPairs();
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Pattern Getter Methods	/////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
@@ -452,5 +528,6 @@ private:
 	static UseStorage uStore;
 	static ModifyStorage mStore;
 	static CallStorage cStore;
+	static NextStorage nStore;
 	static unordered_map<int, pair<string, string> > patternList;
 };

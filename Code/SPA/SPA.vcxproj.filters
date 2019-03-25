@@ -126,8 +126,8 @@
     <ClCompile Include="..\source\CallStorage.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\CallParser.cpp">
-      <Filter>Source Files\Parser</Filter>
+    <ClCompile Include="..\source\NextStorage.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,8 +209,8 @@
     <ClInclude Include="..\source\CallStorage.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\CallParser.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\source\NextStorage.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
