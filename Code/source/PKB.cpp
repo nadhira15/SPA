@@ -212,7 +212,7 @@ unordered_set<int> PKB::getStmList(string procedure)
 	{
 		return procStmList.at(procedure);
 	}
-	return 
+	return {};
 }
 
 int PKB::getTotalStmNo()
