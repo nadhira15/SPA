@@ -41,7 +41,7 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapv
 	std::unordered_map<std::string, std::vector<std::string>> mapvec;
 	std::vector<std::string> key1Value;
 	std::vector<std::string> key2Value;
-	for (vector<pair<int, std::string>>::size_type i = 0; i != intStrVec.size(); i++) {
+	for (std::vector<std::pair<int, std::string>>::size_type i = 0; i != intStrVec.size(); i++) {
 		key1Value.push_back(to_string(intStrVec[i].first));
 		key2Value.push_back(intStrVec[i].second);
 	}
@@ -62,8 +62,26 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapv
 	std::unordered_set<int> intSet) {
 	std::unordered_map<std::string, std::vector<std::string>> mapvec;
 	std::vector<std::string> keyValue;
-	for (unordered_set<int>::iterator it = intSet.begin(); it != intSet.end(); ++it) {
+	for (std::unordered_set<int>::iterator it = intSet.begin(); it != intSet.end(); ++it) {
 		keyValue.push_back(to_string(*it));
+	}
+	std::pair<std::string, std::vector<std::string>> keyValuePair(key, keyValue);
+	mapvec.insert(keyValuePair);
+
+	return mapvec;
+}
+
+/*
+The function returns a map of string
+to vector of string given a key and
+set of strings
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key,
+	std::unordered_set<std::string> strSet) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> keyValue;
+	for (std::unordered_set<std::string>::iterator it = strSet.begin(); it != strSet.end(); ++it) {
+		keyValue.push_back(*it);
 	}
 	std::pair<std::string, std::vector<std::string>> keyValuePair(key, keyValue);
 	mapvec.insert(keyValuePair);
@@ -81,7 +99,7 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapv
 	std::unordered_map<std::string, std::vector<std::string>> mapvec;
 	std::vector<std::string> key1Value;
 	std::vector<std::string> key2Value;
-	for (unordered_set<pair<int, int>, intPairhash>::iterator it = intPairSet.begin(); it != intPairSet.end(); ++it) {
+	for (std::unordered_set<std::pair<int, int>, intPairhash>::iterator it = intPairSet.begin(); it != intPairSet.end(); ++it) {
 		std::pair<int, int> pointer = *it;
 		key1Value.push_back(to_string(pointer.first));
 		key2Value.push_back(to_string(pointer.second));
@@ -104,7 +122,7 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapv
 	std::unordered_map<std::string, std::vector<std::string>> mapvec;
 	std::vector<std::string> key1Value;
 	std::vector<std::string> key2Value;
-	for (unordered_set<pair<int, std::string>, intPairhash>::iterator it = intStringSet.begin(); it != intStringSet.end(); ++it) {
+	for (std::unordered_set<std::pair<int, std::string>, intPairhash>::iterator it = intStringSet.begin(); it != intStringSet.end(); ++it) {
 		std::pair<int, std::string> pointer = *it;
 		key1Value.push_back(to_string(pointer.first));
 		key2Value.push_back(pointer.second);
@@ -127,7 +145,7 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapv
 	std::unordered_map<std::string, std::vector<std::string>> mapvec;
 	std::vector<std::string> key1Value;
 	std::vector<std::string> key2Value;
-	for (unordered_set<pair<std::string, std::string>, strPairhash>::iterator it = strPairSet.begin(); it != strPairSet.end(); ++it) {
+	for (std::unordered_set<std::pair<std::string, std::string>, strPairhash>::iterator it = strPairSet.begin(); it != strPairSet.end(); ++it) {
 		std::pair<std::string, std::string> pointer = *it;
 		key1Value.push_back(pointer.first);
 		key2Value.push_back(pointer.second);

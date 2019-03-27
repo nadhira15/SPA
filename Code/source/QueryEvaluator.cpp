@@ -8,8 +8,6 @@
 #include <sstream>
 #include <algorithm>
 
-using namespace std;
-
 #include "PKB.h"
 #include "QueryEvaluator.h"	
 #include "LexicalToken.h"
@@ -19,9 +17,10 @@ using namespace std;
 /*
 The main evaluator function of the query
 */
-unordered_set<string> QueryEvaluator::evaluateQuery(vector<pair<string, string>> declarations,
-	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
-	vector<pair<string, pair<string, string>>> patternCondition) {
+std::unordered_set<std::string> QueryEvaluator::evaluateQuery(std::vector<std::pair<std::string, std::string>> declarations,
+	std::vector<std::string> selectedVar, 
+	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
+	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition) {
 
 	return filterSuchThatCondition(declarations, selectedVar, 
 		suchThatCondition, patternCondition);
@@ -31,41 +30,44 @@ unordered_set<string> QueryEvaluator::evaluateQuery(vector<pair<string, string>>
 It filters the assignment statements
 that fulfill the pattern.
 */
-unordered_set<string> QueryEvaluator::filterPatternCondition(vector<pair<string, pair<string, string>>> patternCondition) {
+std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluatePatternCondition(vector<pair<string, pair<string, string>>> patternCondition) {
 	string patternSynonym = patternCondition[0].first;
 	string leftArgument = patternCondition[0].second.first;
 	string rightArgument = patternCondition[0].second.second;
 
-	if (rightArgument.size() == 1) {
+	if (rightArgument == "_") {
 		if (leftArgument == "_") {
-			return getStmts("assign");
+			return ContainerUtil::to_mapvec(patternSynonym, getStmts("assign"));
 		} 
 		else if (isQuoted(leftArgument)) {
-			return ContainerUtil::to_strset(PKB().findPattern(trimFrontEnd(leftArgument), "", false));
+			return ContainerUtil::to_mapvec(patternSynonym, 
+				PKB().findPattern(trimFrontEnd(leftArgument), "", false));
 		}
-		return ContainerUtil::to_strset(PKB().findPatternPairs("", false));
+		return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs("", false));
 	}
 	else if (isQuoted(rightArgument)) {
 		rightArgument = trimFrontEnd(rightArgument);
 		rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
 		if (leftArgument == "_") {
-			return ContainerUtil::to_strset(PKB().findPattern(rightArgument, true));
+			return ContainerUtil::to_mapvec(patternSynonym, PKB().findPattern(rightArgument, true));
 		}
 		else if (isQuoted(leftArgument)) {
-			return ContainerUtil::to_strset(PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, true));
+			return ContainerUtil::to_mapvec(patternSynonym, 
+				PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, true));
 		}
-		return ContainerUtil::to_strset(PKB().findPatternPairs(rightArgument, true));
+		return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs(rightArgument, true));
 	} 
 	else {
 		rightArgument = trimFrontEnd(trimFrontEnd(rightArgument));
 		rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
 		if (leftArgument == "_") {
-			return ContainerUtil::to_strset(PKB().findPattern(rightArgument, false));
+			return ContainerUtil::to_mapvec(patternSynonym, PKB().findPattern(rightArgument, false));
 		}
 		else if (isQuoted(leftArgument)) {
-			return ContainerUtil::to_strset(PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, false));
+			return ContainerUtil::to_mapvec(patternSynonym, 
+				PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, false));
 		}
-		return ContainerUtil::to_strset(PKB().findPatternPairs(rightArgument, false));
+		return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs(rightArgument, false));
 	}
 }
 
@@ -78,184 +80,6 @@ unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string
 	vector<pair<string, pair<string, string>>> suchThatCondition, vector<pair<string, pair<string, string>>> patternCondition) {
 	
 	unordered_set<string> emptyResult;
-	string selectedVarType;
-	unordered_set<string> afterPatternFilter;
-	for (vector<pair<string, string>>::size_type i = 0; i != declarations.size(); i++) {
-		if (declarations[i].second == selectedVar[0]) {
-			selectedVarType = declarations[i].first;
-		}
-	}
-	if (suchThatCondition.size() == 0) {
-		if (patternCondition.size() == 0) {
-			return getStmts(selectedVarType);
-		}
-		afterPatternFilter = filterPatternCondition(patternCondition);
-		if (afterPatternFilter.size() == 0) {
-			return emptyResult;
-		}
-		if (selectedVar[0] == patternCondition[0].first) {
-			if (isQuoted(patternCondition[0].second.first)) {
-				return afterPatternFilter;
-			}
-			return ContainerUtil::getFirstParam(afterPatternFilter);
-		}
-		if (selectedVar[0] == patternCondition[0].second.first) {
-			return ContainerUtil::getSecondParam(afterPatternFilter);
-		}
-		return getStmts(selectedVarType);
-	}
-	string relation = suchThatCondition[0].first;
-	string firstArgument = suchThatCondition[0].second.first;
-	string secondArgument = suchThatCondition[0].second.second;
-	string firstArgumentType;
-	string secondArgumentType;
-	for (vector<pair<string, string>>::size_type i = 0; i != declarations.size(); i++) {
-		if (declarations[i].second == firstArgument) {
-			firstArgumentType = declarations[i].first;
-		}
-
-		if (declarations[i].second == secondArgument) {
-			secondArgumentType = declarations[i].first;
-		}
-	}
-
-	string certainty = isSuchThatTrivial(relation, firstArgument, secondArgument);
-
-	if (certainty == "false") {
-		return emptyResult;
-	}
-	else if (certainty == "true") {
-		if (patternCondition.size() == 0) {
-			return getStmts(selectedVarType);
-		}
-		afterPatternFilter = filterPatternCondition(patternCondition);
-		if (afterPatternFilter.size() == 0) {
-			return emptyResult;
-		}
-		if (selectedVar[0] == patternCondition[0].first) {
-			if (isQuoted(patternCondition[0].second.first)) {
-				return afterPatternFilter;
-			}
-			return ContainerUtil::getFirstParam(afterPatternFilter);
-		}
-		return getStmts(selectedVarType);
-	}
-	else if (certainty == "not trivial") {
-		unordered_set<string> suchThatResult = evaluateSuchThat(relation, firstArgument, secondArgument);
-		if (firstArgumentType != "" && secondArgumentType == "") {
-			suchThatResult = filterType(firstArgumentType, suchThatResult);
-		}
-		else if (firstArgumentType == "" && secondArgumentType != "") {
-			suchThatResult = filterType(secondArgumentType, suchThatResult);
-		} 
-		else if (firstArgumentType != "" && secondArgumentType != "") {
-			suchThatResult = filterType(firstArgumentType, secondArgumentType, suchThatResult);
-		}
-		if (suchThatResult.size() == 0) {
-			return emptyResult;
-		}
-		if (patternCondition.size() == 0) {
-			if (selectedVar[0] == firstArgument) {
-				if (secondArgumentType == "") {
-					return suchThatResult;
-				} 
-				return ContainerUtil::getFirstParam(suchThatResult);
-			}
-			if (selectedVar[0] == secondArgument) {
-				if (firstArgumentType == "") {
-					return suchThatResult;
-				}
-				return ContainerUtil::getSecondParam(suchThatResult);
-			}
-			return getStmts(selectedVarType);
-		}
-		afterPatternFilter = filterPatternCondition(patternCondition);
-		string patternSynonym = patternCondition[0].first;
-		string patternLeft = patternCondition[0].second.first;
-		vector<pair<string, pair<string, string>>> emptyPattern;
-		if (!isQuoted(patternLeft) && secondArgument == patternLeft) {
-			unordered_set<string> fulfillingVar;
-			if (firstArgumentType == "") {
-				fulfillingVar = ContainerUtil::intersection(
-					suchThatResult, 
-					ContainerUtil::getSecondParam(afterPatternFilter)
-				);
-				if (fulfillingVar.size() == 0) {
-					return emptyResult;
-				}
-				if (selectedVar[0] == patternLeft) {
-					return fulfillingVar;
-				}
-				return getStmts(selectedVarType);
-			}
-			if (firstArgument == patternSynonym) {
-				unordered_set<string> fulfillingPair = ContainerUtil::intersection(
-					suchThatResult, afterPatternFilter
-				);
-				if (fulfillingPair.size() == 0) {
-					return emptyResult;
-				}
-				if (selectedVar[0] == firstArgument) {
-					return ContainerUtil::getFirstParam(fulfillingPair);
-				}
-				if (selectedVar[0] == secondArgument) {
-					return ContainerUtil::getSecondParam(fulfillingPair);
-				}
-				return getStmts(selectedVarType);
-			}
-			fulfillingVar = ContainerUtil::intersection(
-				ContainerUtil::getSecondParam(suchThatResult), 
-				ContainerUtil::getSecondParam(afterPatternFilter)
-			);
-			if (fulfillingVar.size() == 0) {
-				return emptyResult;
-			}
-			if (selectedVar[0] == patternLeft) {
-				return fulfillingVar;
-			}
-			if (selectedVar[0] == firstArgument) {
-				return ContainerUtil::getOtherPair(2, suchThatResult, fulfillingVar);
-			}
-			if (selectedVar[0] == patternSynonym) {
-				return ContainerUtil::getOtherPair(2, afterPatternFilter, fulfillingVar);
-			}
-			return getStmts(selectedVarType);
-		}
-		
-		if (selectedVar[0] != patternSynonym && 
-			firstArgument != patternSynonym &&
-			secondArgument != patternSynonym) {
-			if (afterPatternFilter.size() == 0) {
-				return emptyResult;
-			}
-			return filterSuchThatCondition(declarations, selectedVar, suchThatCondition, emptyPattern);
-		}
-		if ((firstArgument != patternSynonym) && (secondArgument != patternSynonym)) {
-			return getAssign(afterPatternFilter);
-		}
-		if (firstArgument == patternSynonym) {
-			if (selectedVar[0] == patternSynonym) {
-				if (secondArgumentType == "") {
-					return ContainerUtil::intersection(suchThatResult, getAssign(afterPatternFilter));
-				}
-				return ContainerUtil::intersection(
-					ContainerUtil::getFirstParam(suchThatResult), 
-					getAssign(afterPatternFilter));
-			}
-			return ContainerUtil::getOtherPair(1, suchThatResult, getAssign(afterPatternFilter));
-		}
-		if (secondArgument == patternSynonym) {
-			if (selectedVar[0] == patternSynonym) {
-				if (firstArgumentType == "") {
-					return ContainerUtil::intersection(suchThatResult, getAssign(afterPatternFilter));
-				}
-				return ContainerUtil::intersection(
-					ContainerUtil::getSecondParam(suchThatResult), 
-					getAssign(afterPatternFilter));
-			}
-			return ContainerUtil::getOtherPair(2, suchThatResult, getAssign(afterPatternFilter));
-		}
-	}
 
 	return emptyResult;
 }

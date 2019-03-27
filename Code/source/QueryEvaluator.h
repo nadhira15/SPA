@@ -16,9 +16,12 @@ public:
 		vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 		vector<pair<string, pair<string, string>>> patternCondition);
 
-	static unordered_set<string> filterPatternCondition(vector<pair<string, pair<string, string>>> patternCondition);
-	static unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> declarations, vector<string> selectedVar,
-		vector<pair<string, pair<string, string>>> suchThatCondition, vector<pair<string, pair<string, string>>> patternCondition);
+	static std::unordered_map<std::string, std::vector<std::string>> evaluatePatternCondition(vector<pair<string,
+		pair<string, string>>> patternCondition);
+	static unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> declarations, 
+		vector<string> selectedVar,
+		vector<pair<string, pair<string, string>>> suchThatCondition, 
+		vector<pair<string, pair<string, string>>> patternCondition);
 
 	static string isSuchThatTrivial(string relation, string firstArgument, string secondArgument);
 	static unordered_set<string> evaluateSuchThat(string relation, string firstArgument, string secondArgument);
