@@ -5,17 +5,11 @@ unordered_set< pair<int, int>, intPairhash> ParentStorage::parent_ChildPairList;
 unordered_set< pair<int, int>, intPairhash> ParentStorage::anc_DescPairList;
 unordered_set<int> ParentStorage::parentList;
 unordered_set<int> ParentStorage::childrenList;
-unordered_set<int> ParentStorage::rootList;
 
 ParentStorage::ParentStorage()
 {
 }
 
-/*
-	Adds the parent relation into the various lists in the storage
-	Returns false if	1) the pair is already stored
-						2) the child already has another parent
-*/
 bool ParentStorage::addParent_Child(int parent, int child)
 {
 	// if Parent-Child Pair is already added
@@ -34,24 +28,10 @@ bool ParentStorage::addParent_Child(int parent, int child)
 	else if (!itrpr.second)		// if child exist but does not have parent initialized
 	{
 		itrpr.first->second.parent = parent;
-		if (rootList.find(child) != rootList.end())	//if child was a root
-		{
-			rootList.erase(child);
-			int root = parent;
-			while (parentTable.find(root)->second.parent != 0)	//while root has a parent
-			{
-				root = parentTable.find(root)->second.parent;
-			}
-			rootList.emplace(root);
-		}
 	}
 
-	// if a new parent statement is added into the table, add to the root list
-	if (parentTable.emplace(parent, pRelationships{ 0, {child}, {}, {} }).second)
-	{
-		rootList.emplace(parent);
-	}
-	else
+	// if parent exist in parentTable
+	if (!parentTable.emplace(parent, pRelationships{ 0, {child}, {}, {} }).second)
 	{
 		parentTable.find(parent)->second.children.emplace(child);
 	}
@@ -61,11 +41,6 @@ bool ParentStorage::addParent_Child(int parent, int child)
 	return true;
 }
 
-/*
-	Sets "ancestors" of the descendant
-	Each ancestor - descendant pair is entered into anc_DescPairList
-	If descendant already has a list of ancestors, it is not replaced and it return false
-*/
 bool ParentStorage::setAncestors(int descendant, unordered_set<int> ancestors)
 {
 	if (parentTable.find(descendant)->second.ancestors.size() != 0)
@@ -81,11 +56,6 @@ bool ParentStorage::setAncestors(int descendant, unordered_set<int> ancestors)
 	return true;
 }
 
-/*
-	Sets "descendants" of the ancestor
-	Each ancestor - descendant pair is entered into anc_DescPairList
-	If ancestor already has a list of descendants, it is not replaced and it return false
-*/
 bool ParentStorage::setDescendants(int ancestor, unordered_set<int> descendants)
 {
 	if (parentTable.find(ancestor)->second.descendants.size() != 0)
@@ -116,16 +86,12 @@ bool ParentStorage::isChild(int stm)
 	return childrenList.find(stm) != childrenList.end();
 }
 
-bool ParentStorage::containsAnc_Desc(pair<int, int> pair)
+bool ParentStorage::hasAncDescPair(pair<int, int> pair)
 {
 	return anc_DescPairList.find(pair) != anc_DescPairList.end();
 }
 
-/*
-	return the statement that is the parent of the statement specified
-	return 0 if 'stm' is not found
-*/
-int ParentStorage::getParentOf(int stm)
+int ParentStorage::getParent(int stm)
 {
 	if (parentTable.find(stm) != parentTable.end())
 	{
@@ -134,11 +100,7 @@ int ParentStorage::getParentOf(int stm)
 	return 0;
 }
 
-/*
-	return the list of statements that is the children of the statement specified
-	return an empty set if 'stm' is not found
-*/
-unordered_set<int> ParentStorage::getChildrenOf(int stm)
+unordered_set<int> ParentStorage::getChildren(int stm)
 {
 	if (parentTable.find(stm) != parentTable.end())
 	{
@@ -147,11 +109,7 @@ unordered_set<int> ParentStorage::getChildrenOf(int stm)
 	return {};
 }
 
-/*
-	return the list of statements that is the ancestor of the statement specified
-	return an empty set if 'stm' is not found
-*/
-unordered_set<int> ParentStorage::getAncestorsOf(int stm)
+unordered_set<int> ParentStorage::getAncestors(int stm)
 {
 	if (parentTable.find(stm) != parentTable.end())
 	{
@@ -160,11 +118,7 @@ unordered_set<int> ParentStorage::getAncestorsOf(int stm)
 	return {};
 }
 
-/*
-	return the list of statements that is the descendants of the statement specified
-	return an empty set if 'stm' is not found
-*/
-unordered_set<int> ParentStorage::getDescendantsOf(int stm)
+unordered_set<int> ParentStorage::getDescendants(int stm)
 {
 	if (parentTable.find(stm) != parentTable.end())
 	{
@@ -173,27 +127,22 @@ unordered_set<int> ParentStorage::getDescendantsOf(int stm)
 	return {};
 }
 
-unordered_set<int> ParentStorage::getParentList()
+unordered_set<int> ParentStorage::getAllParent()
 {
 	return parentList;
 }
 
-unordered_set<int> ParentStorage::getChildrenList()
+unordered_set<int> ParentStorage::getAllChildren()
 {
 	return childrenList;
 }
 
-unordered_set<pair<int, int>, intPairhash> ParentStorage::getParent_ChildList()
+unordered_set<pair<int, int>, intPairhash> ParentStorage::getParentChildPairs()
 {
 	return parent_ChildPairList;
 }
 
-unordered_set<pair<int, int>, intPairhash> ParentStorage::getAnc_DescList()
+unordered_set<pair<int, int>, intPairhash> ParentStorage::getAncDescPair()
 {
 	return anc_DescPairList;
-}
-
-unordered_set<int> ParentStorage::getRootList()
-{
-	return rootList;
 }

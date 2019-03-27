@@ -107,7 +107,7 @@ void Parser::extractAssignEntity(std::string &stmtString, int stmtLine) {
 
 	//Add Variable and Modify
 	pkb.addVariable(modified);
-	pkb.addModifies(stmtLine, modified);
+	pkb.addModifiesStm(stmtLine, modified);
 
 	//Add Constants
 	for (string constant : usedConstants) {
@@ -117,10 +117,10 @@ void Parser::extractAssignEntity(std::string &stmtString, int stmtLine) {
 	//Add Variable and Uses.
 	for (string variable : usedVariables) {
 		pkb.addVariable(variable);
-		pkb.addUses(stmtLine, variable);
+		pkb.addUsesStm(stmtLine, variable);
 	}
 
-	pkb.addAssign(stmtLine, modified, prefixExpression);
+	pkb.addAssignPattern(stmtLine, modified, prefixExpression);
 }
 
 void Parser::extractCallEntity(std::string &stmtString, int stmtLine, std::string procedure) {
@@ -134,7 +134,7 @@ void Parser::extractReadEntity(std::string &stmtString, int stmtLine) {
 	ReadParser rp;
 	string modified = rp.parseReadStmt(stmtString);
 
-	pkb.addModifies(stmtLine, modified);
+	pkb.addModifiesStm(stmtLine, modified);
 	pkb.addVariable(modified);
 }
 
@@ -142,7 +142,7 @@ void Parser::extractPrintEntity(std::string &stmtString, int stmtLine) {
 	PrintParser pp;
 	string used = pp.parsePrintStmt(stmtString);
 
-	pkb.addUses(stmtLine, used);
+	pkb.addUsesStm(stmtLine, used);
 	pkb.addVariable(used);
 }
 
@@ -153,7 +153,7 @@ void Parser::extractWhileEntity(std::string &stmtString, int stmtLine, vector<St
 
 	for (string variable : variables) {
 		pkb.addVariable(variable);
-		pkb.addUses(stmtLine, variable);
+		pkb.addUsesStm(stmtLine, variable);
 	}
 
 	for (string constant : constants) {
@@ -170,7 +170,7 @@ void Parser::extractIfEntity(std::string &stmtString, int stmtLine, vector<State
 
 	for (string variable : variables) {
 		pkb.addVariable(variable);
-		pkb.addUses(stmtLine, variable);
+		pkb.addUsesStm(stmtLine, variable);
 	}
 
 	for (string constant : constants) {
