@@ -117,6 +117,9 @@
     <ClCompile Include="..\source\QueryValidator.cpp">
       <Filter>Source Files\PQL</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\CallParser.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\PrintParser.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="..\source\StringUtil.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\CallParser.h">
+      <Filter>Header Files\Parser</Filter>
     </ClInclude>
     <ClInclude Include="..\source\ContainerUtil.h">
       <Filter>Header Files\Utility</Filter>
