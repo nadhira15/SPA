@@ -272,17 +272,17 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 				return truthValue(PKB().hasFollowRelation());
 			}
 			else if (isInteger(secondArgument)) {
-				result = PKB().getPrvStm(stoi(secondArgument)) > 0;
+				result = PKB().getStmFollowedBy(stoi(secondArgument)) > 0;
 				return truthValue(result);
 			}
 		}
 		else if (isInteger(firstArgument)) {
 			if (secondArgument == "_") {
-				result = PKB().getNxtStm(stoi(firstArgument)) > 0;
+				result = PKB().getFollower(stoi(firstArgument)) > 0;
 				return truthValue(result);
  			}
 			else if (isInteger(secondArgument)) {
-				result = PKB().getNxtStm(stoi(firstArgument)) == stoi(secondArgument);
+				result = PKB().getFollower(stoi(firstArgument)) == stoi(secondArgument);
 				return truthValue(result);
 			};
 		}
@@ -296,17 +296,17 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 				return truthValue(PKB().hasFollowRelation());
 			}
 			else if (isInteger(secondArgument)) {
-				result = PKB().getPrvStm(stoi(secondArgument)) > 0;
+				result = PKB().getStmFollowedBy(stoi(secondArgument)) > 0;
 				return truthValue(result);
 			}
 		}
 		else if (isInteger(firstArgument)) {
 			if (secondArgument == "_") {
-				result = PKB().getNxtStm(stoi(firstArgument)) > 0;
+				result = PKB().getFollower(stoi(firstArgument)) > 0;
 				return truthValue(result);
 			}
 			else if (isInteger(secondArgument)) {
-				result = PKB().hasFollow_S_Pair(stoi(firstArgument), stoi(secondArgument));
+				result = PKB().hasFollowStarPair(stoi(firstArgument), stoi(secondArgument));
 				return truthValue(result);
 			}
 		}
@@ -365,21 +365,21 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 	else if (relation == "Uses") {
 		if (isInteger(firstArgument)) {
 			if (isQuoted(secondArgument)) {
-				result = PKB().isUsing(stoi(firstArgument), trimFrontEnd(secondArgument));
+				result = PKB().isStmUsing(stoi(firstArgument), trimFrontEnd(secondArgument));
 				return truthValue(result);
 			}
 			else if (secondArgument == "_") {
-				result = PKB().getUsedVar(stoi(firstArgument)).size() > 0;
+				result = PKB().getVarUsedByStm(stoi(firstArgument)).size() > 0;
 				return truthValue(result);
 			}
 		}
 		else if (isQuoted(firstArgument)) {
 			if (isQuoted(secondArgument)) {
-				result = PKB().isUsing(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument));
+				result = PKB().isProcUsing(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument));
 				return truthValue(result);
 			}
 			else if (secondArgument == "_") {
-				result = PKB().getUsedVar(trimFrontEnd(firstArgument)).size() > 0;
+				result = PKB().getVarUsedByProc(trimFrontEnd(firstArgument)).size() > 0;
 				return truthValue(result);
 			}
 		}
@@ -387,21 +387,21 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 	else if (relation == "Modifies") {
 		if (isInteger(firstArgument)) {
 			if (isQuoted(secondArgument)) {
-				result = PKB().isModifying(stoi(firstArgument), trimFrontEnd(secondArgument));
+				result = PKB().isStmModifying(stoi(firstArgument), trimFrontEnd(secondArgument));
 				return truthValue(result);
 			}
 			else if (secondArgument == "_") {
-				result = PKB().getModifiedVar(stoi(firstArgument)).size() > 0;
+				result = PKB().getVarModifiedByStm(stoi(firstArgument)).size() > 0;
 				return truthValue(result);
 			}
 		}
 		else if (isQuoted(firstArgument)) {
 			if (isQuoted(secondArgument)) {
-				result = PKB().isModifying(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument));
+				result = PKB().isProcModifying(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument));
 				return truthValue(result);
 			}
 			else if (secondArgument == "_") {
-				result = PKB().getModifiedVar(trimFrontEnd(firstArgument)).size() > 0;
+				result = PKB().getVarModifiedByProc(trimFrontEnd(firstArgument)).size() > 0;
 				return truthValue(result);
 			}
 		}
@@ -422,7 +422,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 				return ContainerUtil::to_strset(PKB().getAllFollowed());
 			}
 			else if (isInteger(secondArgument)) {
-				result.insert(to_string(PKB().getPrvStm(stoi(secondArgument))));
+				result.insert(to_string(PKB().getStmFollowedBy(stoi(secondArgument))));
 			}
 			else {
 				return ContainerUtil::to_strset(PKB().getFollowPairs());
@@ -433,7 +433,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 				return ContainerUtil::to_strset(PKB().getAllFollowers());
 			}
 			else if (isInteger(firstArgument)) {
-				result.insert(to_string(PKB().getNxtStm(stoi(firstArgument))));
+				result.insert(to_string(PKB().getFollower(stoi(firstArgument))));
 			}
 			else {
 				return result;
@@ -450,7 +450,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 				return ContainerUtil::to_strset(PKB().getAllFollowedBy(stoi(secondArgument)));
 			}
 			else {
-				return ContainerUtil::to_strset(PKB().getFollow_S_Pairs());
+				return ContainerUtil::to_strset(PKB().getFollowStarPairs());
 			}
 		}
 		if (isSynonym(secondArgument)) {
@@ -497,7 +497,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 				return ContainerUtil::to_strset(PKB().getAllParents());
 			}
 			else if (isInteger(secondArgument)) {
-				return ContainerUtil::to_strset(PKB().getAllAncestors(stoi(secondArgument)));
+				return ContainerUtil::to_strset(PKB().getAncestors(stoi(secondArgument)));
 			}
 			else {
 				return ContainerUtil::to_strset(PKB().getAncDescPairs());
@@ -508,7 +508,7 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 				return ContainerUtil::to_strset(PKB().getAllChildren());
 			}
 			else if (isInteger(firstArgument)) {
-				return ContainerUtil::to_strset(PKB().getAllDescendants(stoi(firstArgument)));
+				return ContainerUtil::to_strset(PKB().getDescendants(stoi(firstArgument)));
 			}
 			else {
 				return result;
@@ -519,10 +519,10 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 	else if (relation == "Uses") {
 		if (isSynonym(secondArgument)) {
 			if (isInteger(firstArgument)) {
-				return PKB().getUsedVar(stoi(firstArgument));
+				return PKB().getVarUsedByStm(stoi(firstArgument));
 			} 
 			else if (isQuoted(firstArgument)) {
-				return PKB().getUsedVar(trimFrontEnd(firstArgument));
+				return PKB().getVarUsedByProc(trimFrontEnd(firstArgument));
 			}
 			return ContainerUtil::to_strset(PKB().getStmVarUsePairs());
 		}
@@ -542,11 +542,11 @@ unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string f
 	else if (relation == "Modifies") {
 		if (isSynonym(secondArgument)) {
 			if (isInteger(firstArgument)) {
-				return PKB().getModifiedVar(stoi(firstArgument));
+				return PKB().getVarModifiedByStm(stoi(firstArgument));
 
 			}
 			else if (isQuoted(firstArgument)) {
-				return PKB().getModifiedVar(trimFrontEnd(firstArgument));
+				return PKB().getVarModifiedByProc(trimFrontEnd(firstArgument));
 			}
 			return ContainerUtil::to_strset(PKB().getStmVarModifyPairs());
 		}

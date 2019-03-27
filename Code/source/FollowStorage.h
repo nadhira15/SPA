@@ -9,18 +9,18 @@ using namespace std;
 #include "Hasher.h"
 
 /* 
-	A structure to contain:	the statement being followed directly (previous),
-							it's immediate follower (next),
-							a list of statements that being directly/indirectly followed (allPrevious),
-							a list of statements directly/indirectly following it (allNext)
+	A structure to contain:	the statement being followed directly (followed),
+							it's immediate follower (follower),
+							a list of statements that being directly/indirectly followed (allFollowed),
+							a list of statements directly/indirectly following it (allFollowers)
 	If such statement or list does not exist, it'll be set to 0 or {} respectively
 */
 struct fRelationships
 {
-	int previous;
-	int next;
-	unordered_set<int> allPrevious;
-	unordered_set<int> allNext;
+	int followed;
+	int follower;
+	unordered_set<int> allFollowed;
+	unordered_set<int> allFollowers;
 };
 
 /*
@@ -30,28 +30,74 @@ class FollowStorage {
 public:
 	FollowStorage();
 
-	bool addFollowPair(int followed, int follower);
+	/*
+		Adds the follows relation into the various lists in the storage
+		Returns false if	1) the pair is already stored
+							2) the followed statement has another follower stored
+							3) the follower is following another statement
+	*/
+	bool addFollow(int followed, int follower);
+
+	/*
+		Sets "allFollowers" of 'followed'
+		Each followed - follower pair is entered into followStarPairList
+		If 'followed' already has a list of followers, it is not replaced and it return false
+	*/
 	bool setAllFollowing(int followed, unordered_set<int> followers);
+
+	/*
+		Sets "allFollowed" of 'follower'
+		Each followed - follower pair is entered into followStarPairList
+		If 'follower' already has a list of followed, it is not replaced and it return false
+	*/
 	bool setAllFollowedBy(int follower, unordered_set<int> followed);
 
+	// returns true if followTable is empty
 	bool isEmpty();
-	bool containsFSPair(pair<int, int> pair);
 
-	int getNextOf(int stm);
-	int getPrevOf(int stm);
+	// returns true if the specified follows* pair is found
+	bool hasFollowStarPair(pair<int, int> pair);
+
+	/*
+		return the statement following 'stm'
+		return 0 if 'stm' is not found
+	*/
+	int getFollower(int stm);
+
+	/*
+		return the statement followed by 'stm'
+		return 0 if 'stm' is not found
+	*/
+	int getStmFollowedBy(int stm);
+
+	/*
+		return a list of statements that is directly/indirectly following 'stm'
+		return an empty set if 'stm' is not found
+	*/
 	unordered_set<int> getAllFollowing(int stm);
+
+	/*
+		return a list of statements that is directly/indirectly followed by 'stm'
+		return an empty set if 'stm' is not found
+	*/
 	unordered_set<int> getAllFollowedBy(int stm);
-	unordered_set<int> getFollowerList();
-	unordered_set<int> getFollowedList();
-	unordered_set< pair<int, int>, intPairhash> getFPairList();
-	unordered_set< pair<int, int>, intPairhash> getF_S_PairList();
-	unordered_set<int> getRoots();
+
+	// returns a list of all statements that follows another
+	unordered_set<int> getAllFollowers();
+
+	// returns a list of all statements that is followed by another
+	unordered_set<int> getAllFollowed();
+
+	// returns a list of all follows pairs
+	unordered_set< pair<int, int>, intPairhash> getFollowPairs();
+
+	// returns a list of all follows* pairs
+	unordered_set< pair<int, int>, intPairhash> getFollowStarPairs();
 
 private:
 	static unordered_map<int, fRelationships> followTable;
 	static unordered_set< pair<int, int>, intPairhash> followPairList;
-	static unordered_set< pair<int, int>, intPairhash> follow_S_PairList;
+	static unordered_set< pair<int, int>, intPairhash> followStarPairList;
 	static unordered_set<int> followerList;
 	static unordered_set<int> followedList;
-	static unordered_set<int> rootList;
 };

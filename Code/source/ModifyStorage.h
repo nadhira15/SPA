@@ -17,23 +17,61 @@ class ModifyStorage
 public:
 	ModifyStorage();
 
-	bool addModifies(int stm, string variable);
-	bool addModifies(string procedure, string variable);
+	/*
+		add the Modifies relation for a statement into the relevant lists and maps in the storage
+		Returns false if the pair is already exist
+	*/
+	bool addModifiesStm(int stm, string variable);
 
+	/*
+		add the Modifies relation for a procedure into the relevant lists and maps in the storage
+		Returns false if the pair is already exist
+	*/
+	bool addModifiesProc(string procedure, string variable);
+
+	// returns true if the specified <statement, variable> pair is found
 	bool containsStmVarPair(pair<int, string> pair);
+
+	// returns true if the specified <procedure, variable> pair is found
 	bool containsProcVarPair(pair<string, string> pair);
-	unordered_set<string> getVarModifiedBy(int stm);
-	unordered_set<string> getVarModifiedBy(string proc);
+
+	/*
+		return a list of variables that is modified by 'stm'
+		return an empty set if 'stm' is not found
+	*/
+	unordered_set<string> getVarModifiedByStm(int stm);
+
+	/*
+		return a list of variables that is modified by 'procedure'
+		return an empty set if 'procedure' is not found
+	*/
+	unordered_set<string> getVarModifiedByProc(string proc);
+
+	/*
+		return a list of statements that modifies 'variable'
+		returns a list of all statements that modifies a variable if 'variable' == "" 
+		return an empty set if 'variable' is not found
+	*/
 	unordered_set<int> getStmModifying(string variable);
+
+	/*
+		return a list of procedures that modifies 'variable'
+		returns a list of all procedures that modifies a variable if 'variable' == "" 
+		return an empty set if 'variable' is not found
+	*/
 	unordered_set<string> getProcModifying(string variable);
+
+	// returns a list of all Modifies pairs for statements
 	unordered_set< pair<int, string>, intStringhash> getStmVarPairs();
+
+	// returns a list of all Modifies pairs for procedures
 	unordered_set< pair<string, string>, strPairhash> getProcVarPairs();
 
 private:
-	static unordered_set<pair<int, string>, intStringhash> stmVarPairs;
-	static unordered_set<pair<string, string>, strPairhash> procVarPairs;
-	static unordered_map<int, unordered_set<string>> varList_Stm;
-	static unordered_map<string, unordered_set<string>> varList_Proc;
-	static unordered_map<string, unordered_set<int> > stmLists;
-	static unordered_map<string, unordered_set<string> > procLists;
+	static unordered_set<pair<int, string>, intStringhash> stmVarPairList;
+	static unordered_set<pair<string, string>, strPairhash> procVarPairList;
+	static unordered_map<int, unordered_set<string>> stmToVarMap;
+	static unordered_map<string, unordered_set<string>> procToVarMap;
+	static unordered_map<string, unordered_set<int> > varToStmMap;
+	static unordered_map<string, unordered_set<string> > varToProcMap;
 };
