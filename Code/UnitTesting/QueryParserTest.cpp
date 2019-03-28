@@ -20,8 +20,8 @@ namespace UnitTesting
 		TEST_METHOD(splitDeclarations_success)
 		{
 			vector<string> input = { "assign a, a1, a2", "while w", "Select a such that Follows(a,w)" };
-			vector<pair<string, string>> actual = QueryParser::splitDeclarations(input);
-			vector<pair<string, string>> expected{ {"assign", "a"}, {"assign", "a1"}, {"assign", "a2"}, {"while", "w"}};
+			unordered_map<string, string> actual = QueryParser::splitDeclarations(input);
+			unordered_map<string, string> expected{ {"a", "assign"}, {"a1", "assign"}, {"a2", "assign"}, {"w", "while"}};
 			Assert::AreEqual(actual == expected, true);
 		}
 
