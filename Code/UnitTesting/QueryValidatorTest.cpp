@@ -160,6 +160,15 @@ namespace UnitTesting
 			Assert::AreEqual(actual == expected, true);
 		}
 
+		TEST_METHOD(validateSuchThatParam_multipleClauses_success)
+		{
+			vector<pair<string, pair<string, string>>> param{ {"Parent", { "a", "_" }}, { "Follows", {"10", "11"} }, { "Modifies", {"3", "\"sum\""} }, { "Uses", {"5", "\"a\""} }, { "Next*", {"1", "10"} }, { "Affects*", {"4", "10"} } };
+			unordered_map<string, string> declarationsMap = { {"a", "if"}, {"s", "stmt"} };
+			string actual = QueryValidator::validateSuchThatParam(param, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
 		TEST_METHOD(validatePatternParam_success)
 		{
 			vector<pair<string, pair<string, string>>> param{ {"a", {"_", "\"x*y+z\""}} };
@@ -193,6 +202,96 @@ namespace UnitTesting
 			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"s", "stmt"} };
 			string actual = QueryValidator::validatePatternParam(param, declarationsMap);
 			string expected = "statement type is invalid";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validatePatternParam_multipleClauses_success)
+		{
+			vector<pair<string, pair<string, string>>> param{ {"a", {"_", "\"x\""}}, {"a1", {"_", "\"y\""}}, {"ifs", {"\"x\"", "_,_"}}, {"while1", {"\"y\"", "_"}}, {"ifs", {"_", "_,_"}} };
+			unordered_map<string, string> declarationsMap = { {"a", "assign"}, {"a1", "assign"}, {"ifs", "if"}, {"while1", "while"} };
+			string actual = QueryValidator::validatePatternParam(param, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateWithParam_multipleClauses_intNoAttrValue_success)
+		{
+			vector<pair<string, string>> param{ {"2", "5"}, {"pl", "5"}, {"9", "pl"} };
+			unordered_map<string, string> declarationsMap = { {"pl", "prog_line"} };
+			string actual = QueryValidator::validateWithParam(param, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateWithParam_multipleClauses_attrStmtNo_success)
+		{
+			vector<pair<string, string>> param{ {"s.stmt#", "1"}, {"2", "s.stmt#"}, 
+			{"r.stmt#", "1"}, {"2", "r.stmt#"}, {"p.stmt#", "1"}, {"2", "p.stmt#"}, 
+			{"w.stmt#", "1"}, {"2", "w.stmt#"}, {"ifs.stmt#", "1"}, {"2", "ifs.stmt#"}, 
+			{"a.stmt#", "1"}, {"2", "a.stmt#"}, {"c.stmt#", "1"}, {"2", "c.stmt#"}, 
+			{"s.stmt#", "r.stmt#"}, {"r.stmt#", "p.stmt#"}, {"p.stmt#", "w.stmt#"},
+			{"w.stmt#", "ifs.stmt#"}, {"ifs.stmt#", "a.stmt#"}, {"a.stmt#", "c.stmt#"},
+			{"c.stmt#", "s.stmt#"} };
+			unordered_map<string, string> declarationsMap = { {"s", "stmt"}, {"r", "read"}, 
+			{"p", "print"}, {"w", "while"}, {"ifs", "if"}, {"a", "assign"}, {"c", "call"} };
+			string actual = QueryValidator::validateWithParam(param, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateWithParam_multipleClauses_attrValue_success)
+		{
+			vector<pair<string, string>> param{ {"c.value", "1"}, {"2", "c.value"}, {"c1.value", "3"}, {"4", "c1.value"}, {"c.value", "c1.value"} };
+			unordered_map<string, string> declarationsMap = { {"c", "constant"}, {"c1", "constant"} };
+			string actual = QueryValidator::validateWithParam(param, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateWithParam_multipleClauses_strNoAttrValue_success)
+		{
+			vector<pair<string, string>> param{ {"\"hello\"", "\"hello\""}, {"\"asd4\"", "\"asd9\""}, {"\"h3ll0\"", "\"hell0\""} };
+			unordered_map<string, string> declarationsMap = { {"s", "stmt"}, {"p", "procedure"} };
+			string actual = QueryValidator::validateWithParam(param, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateWithParam_multipleClauses_attrProcName_success)
+		{
+			vector<pair<string, string>> param{ {"c.procName", "\"hello0\""}, {"\"hello1\"", "c.procName"}, {"p.procName", "\"hello2\""}, {"\"hello3\"", "p.procName"}, {"c.procName", "p.procName"} };
+			unordered_map<string, string> declarationsMap = { {"c", "call"}, {"p", "procedure"} };
+			string actual = QueryValidator::validateWithParam(param, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateWithParam_multipleClauses_attrVarName_success)
+		{
+			vector<pair<string, string>> param{ {"v.varName", "\"add0\""}, {"\"add1\"", "v.varName"}, 
+			{"r.varName", "\"add2\""}, {"\"add3\"", "r.varName"}, {"p.varName", "\"add4\""}, {"\"add5\"", "p.varName"},
+			{"v.varName", "r.varName"}, {"r.varName", "p.varName"}, {"p.varName", "v.varName"} };
+			unordered_map<string, string> declarationsMap = { {"v", "variable"}, {"r", "read"}, {"p", "print"} };
+			string actual = QueryValidator::validateWithParam(param, declarationsMap);
+			string expected = "";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateWithParam_singleClauses_differentAttrType)
+		{
+			vector<pair<string, string>> param{ {"v.varName", "s.stmt#"} };
+			unordered_map<string, string> declarationsMap = { {"v", "variable"}, {"s", "stmt"} };
+			string actual = QueryValidator::validateWithParam(param, declarationsMap);
+			string expected = "semantic error";
+			Assert::AreEqual(actual == expected, true);
+		}
+
+		TEST_METHOD(validateWithParam_singleClauses_differentType)
+		{
+			vector<pair<string, string>> param{ {"5", "\"hello\""} };
+			unordered_map<string, string> declarationsMap = { {"v", "variable"}, {"s", "stmt"} };
+			string actual = QueryValidator::validateWithParam(param, declarationsMap);
+			string expected = "semantic error";
 			Assert::AreEqual(actual == expected, true);
 		}
 
