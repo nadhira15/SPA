@@ -57,7 +57,7 @@ namespace UnitTesting
 
 		TEST_METHOD(validateDeclarations_success)
 		{
-			vector<pair<string, string>> declarations{ {"assign", "a"}, {"assign", "a1"}, {"assign", "a2"}, {"while", "w"} };
+			unordered_map<string, string> declarations{ {"a", "assign"}, {"a1", "assign"}, {"a2", "assign"}, {"w", "while"} };
 			string actual = QueryValidator::validateDeclarations(declarations);
 			string expected = "";
 			Assert::AreEqual(actual == expected, true);
@@ -65,7 +65,7 @@ namespace UnitTesting
 
 		TEST_METHOD(validateDeclarations_invalidType)
 		{
-			vector<pair<string, string>> declarations{ {"assign", "a"}, {"hello", "h"} };
+			unordered_map<string, string> declarations{ {"a", "assign"}, {"h", "hello"} };
 			string actual = QueryValidator::validateDeclarations(declarations);
 			string expected = "invalid query";
 			Assert::AreEqual(actual == expected, true);
@@ -73,7 +73,7 @@ namespace UnitTesting
 
 		TEST_METHOD(validateDeclarations_invalidName)
 		{
-			vector<pair<string, string>> declarations{ {"assign", "a12_"}, {"hello", "h"} };
+			unordered_map<string, string> declarations{ {"a12_", "assign"}, {"h", "hello"} };
 			string actual = QueryValidator::validateDeclarations(declarations);
 			string expected = "invalid query";
 			Assert::AreEqual(actual == expected, true);
