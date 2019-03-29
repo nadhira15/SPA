@@ -65,14 +65,14 @@ Validates declaration vector based on following conditions:
 - design-entity should be valid
 - synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
 */
-string QueryValidator::validateDeclarations(vector<pair<string, string>> declarations) {
+string QueryValidator::validateDeclarations(unordered_map<string, string> declarations) {
 	
-	for (size_t i = 0; i < declarations.size(); i++) {
-		if (validVarType.find(declarations[i].first) == validVarType.end()) {
+	for (auto x: declarations) {
+		if (validVarType.find(x.second) == validVarType.end()) {
 			return "invalid query";
 		}
 
-		if (!LexicalToken::verifyName(declarations[i].second)) {
+		if (!LexicalToken::verifyName(x.first)) {
 			return "invalid query";
 		}
 	}
@@ -286,7 +286,6 @@ Validates vector of pattern parameter based on following conditions:
 - synonym should be assign/if/while type
 - for each pattern clause, first and second argument should be valid
 
-Returns Vector<pair<synonym, pair<1st args, 2nd args>>>
 Note: for if pattern, the third args will be removed
 */
 string QueryValidator::validatePatternParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
@@ -351,6 +350,232 @@ string QueryValidator::validatePatternParam(vector<pair<string, pair<string, str
 		}
 		else {
 			return "statement type is invalid";
+		}
+	}
+
+	return "";
+}
+
+/*
+Validates vector of with parameter based on following conditions:
+- ...
+*/
+string QueryValidator::validateWithParam(vector<pair<string, string>> param, unordered_map<string, string> declarationsMap) {
+
+	unordered_set<string> intTypeNoRef = { "prog_line" };
+	unordered_set<string> intTypeRefStmtNum = { "stmt", "read", "print", "while", "if", "assign", "call" };
+	unordered_set<string> intTypeRefValue = { "constant" };
+	unordered_set<string> stringTypeRefProcName = { "procedure", "call" };
+	unordered_set<string> stringTypeRefVarName = { "variable", "read", "print" };
+
+	for (int i = 0; i < param.size(); i++) {
+		string firstArgs = param[i].first;
+		string secondArgs = param[i].second;
+		string firstArgsType = "";
+		string secondArgsType = "";
+		string synonym;
+		string synonymType;
+
+		// check firstArgs type(int / string)
+
+		// type: int
+		if (LexicalToken::verifyInteger(firstArgs)) {
+			firstArgsType = "int";
+		}
+		// type: synonym of "prog_line"
+		else if (LexicalToken::verifyName(firstArgs)) {
+			if (declarationsMap.find(firstArgs) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(firstArgs)->second;
+			}
+			else {
+				return "semantic error";
+			}
+			
+			if (intTypeNoRef.find(synonymType) != intTypeNoRef.end()) {
+				firstArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .stmt#
+		else if (firstArgs.find(".stmt#") != -1) {
+			synonym = firstArgs.substr(0, firstArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (intTypeRefStmtNum.find(synonymType) != intTypeRefStmtNum.end()) {
+				firstArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .value
+		else if (firstArgs.find(".value") != -1) {
+			synonym = firstArgs.substr(0, firstArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (intTypeRefValue.find(synonymType) != intTypeRefValue.end()) {
+				firstArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: "IDENT"
+		else if (firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) {
+			firstArgsType = "str";
+		}
+		// type: attrRef with attribute value .procName
+		else if (firstArgs.find(".procName") != -1) {
+			synonym = firstArgs.substr(0, firstArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (stringTypeRefProcName.find(synonymType) != stringTypeRefProcName.end()) {
+				firstArgsType = "str";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .varName
+		else if (firstArgs.find(".varName") != -1) {
+			synonym = firstArgs.substr(0, firstArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (stringTypeRefVarName.find(synonymType) != stringTypeRefVarName.end()) {
+				firstArgsType = "str";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+
+		// check secondArgs type (int/string), exact same logic like firstArgs
+		
+		// type: int
+		if (LexicalToken::verifyInteger(secondArgs)) {
+			secondArgsType = "int";
+		}
+		// type: synonym of "prog_line"
+		else if (LexicalToken::verifyName(secondArgs)) {
+			if (declarationsMap.find(secondArgs) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(secondArgs)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (intTypeNoRef.find(synonymType) != intTypeNoRef.end()) {
+				secondArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .stmt#
+		else if (secondArgs.find(".stmt#") != -1) {
+			synonym = secondArgs.substr(0, secondArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (intTypeRefStmtNum.find(synonymType) != intTypeRefStmtNum.end()) {
+				secondArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .value
+		else if (secondArgs.find(".value") != -1) {
+			synonym = secondArgs.substr(0, secondArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (intTypeRefValue.find(synonymType) != intTypeRefValue.end()) {
+				secondArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: "IDENT"
+		else if (secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) {
+			secondArgsType = "str";
+		}
+		// type: attrRef with attribute value .procName
+		else if (secondArgs.find(".procName") != -1) {
+			synonym = secondArgs.substr(0, secondArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (stringTypeRefProcName.find(synonymType) != stringTypeRefProcName.end()) {
+				secondArgsType = "str";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .varName
+		else if (secondArgs.find(".varName") != -1) {
+			synonym = secondArgs.substr(0, secondArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (stringTypeRefVarName.find(synonymType) != stringTypeRefVarName.end()) {
+				secondArgsType = "str";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		
+		if (firstArgsType == "" || secondArgsType == "" || firstArgsType != secondArgsType) {
+			return "semantic error";
 		}
 	}
 
