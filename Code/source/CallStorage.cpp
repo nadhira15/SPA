@@ -5,6 +5,8 @@ unordered_set< pair<string, string>, strPairhash> CallStorage::callPairList;
 unordered_set< pair<string, string>, strPairhash> CallStorage::callStarPairList;
 unordered_set<string> CallStorage::callerList;
 unordered_set<string> CallStorage::calleeList;
+unordered_map<int, string> CallStorage::stmToProcMap;
+unordered_map<string, unordered_set<int>> CallStorage::procToStmMap;
 
 CallStorage::CallStorage()
 {
@@ -32,6 +34,37 @@ bool CallStorage::addCall(string caller, string callee)
 
 	callerList.emplace(caller);
 	calleeList.emplace(callee);
+	return true;
+}
+
+bool CallStorage::addCall(string caller, string callee, int stm)
+{
+	// if Call Pair is already added
+	if (!callPairList.emplace(pair<string, string>(caller, callee)).second)
+	{
+		return false;
+	}
+
+	// if callee exists
+	if (!callTable.emplace(callee, cRelationships{ {caller}, {}, {}, {} }).second)
+	{
+		callTable.find(callee)->second.caller.emplace(caller);
+		procToStmMap.find(callee)->second.emplace(stm);
+	}
+	else
+	{
+		procToStmMap.emplace(callee, unordered_set<int>{ stm });
+	}
+
+	// if caller exist in callTable
+	if (!callTable.emplace(caller, cRelationships{ {} ,{callee}, {}, {} }).second)
+	{
+		callTable.find(caller)->second.callees.emplace(callee);
+	}
+
+	callerList.emplace(caller);
+	calleeList.emplace(callee);
+	stmToProcMap.emplace(stm, callee);
 	return true;
 }
 
@@ -141,4 +174,22 @@ unordered_set<pair<string, string>, strPairhash> CallStorage::getCallPairs()
 unordered_set<pair<string, string>, strPairhash> CallStorage::getCallStarPairs()
 {
 	return callStarPairList;
+}
+
+string CallStorage::getProcCalledBy(int stm)
+{
+	if (stmToProcMap.find(stm) != stmToProcMap.end())
+	{
+		return stmToProcMap.at(stm);
+	}
+	return "";
+}
+
+unordered_set<int> CallStorage::getStmCalling(string procedure)
+{
+	if (procToStmMap.find(procedure) != procToStmMap.end())
+	{
+		return procToStmMap.at(procedure);
+	}
+	return {};
 }
