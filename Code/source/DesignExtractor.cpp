@@ -183,18 +183,18 @@ void DesignExtractor::processAdvancedUsesAndModifies(std::vector<std::string> so
  * Populates the Uses of Call Statements in SIMPLE
  */
 void DesignExtractor::processUsesCalls(std::string procedure) {
-	//TODO: Implement for Iteration 2
-	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
-	int x;
-	for (int i = 0; i < x; i++) {
-		int currLine = i;
-		stmType type = pkb.getStmType(i);
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
+
+	for (int i = 0; i < procedureStm.size() ; i++) {
+		int currLine = procedureStm.at(i);
+		stmType type = pkb.getStmType(currLine);
+
 		if (type == stmType::call) {
-			std::string procedure; // = pkb.getCalledByStm(i);
+			std::string procedure = pkb.getProcCalledBy(currLine);
 			std::unordered_set<std::string> usedVars = pkb.getVarUsedByProc(procedure);
 
 			for (std::string var : usedVars) {
-				pkb.addUsesStm(i, var);
+				pkb.addUsesStm(currLine, var);
 			}
 		}
 	}
@@ -204,18 +204,18 @@ void DesignExtractor::processUsesCalls(std::string procedure) {
  * Populates the Uses of Modifies Statements in SIMPLE
  */
 void DesignExtractor::processModifiesCalls(std::string procedure) {
-	//TODO: Implement for Iteration 2
-	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
-	int x;
-	for (int i = 0; i < x; i++) {
-		int currLine = i;
-		stmType type = pkb.getStmType(i);
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
+
+	for (int i = 0; i < procedureStm.size(); i++) {
+		int currLine = procedureStm.at(i);
+		stmType type = pkb.getStmType(currLine);
+
 		if (type == stmType::call) {
-			std::string procedure;// = pkb.getCalledByStm(i);
+			std::string procedure = pkb.getProcCalledBy(currLine);
 			std::unordered_set<std::string> modifiedVars = pkb.getVarModifiedByProc(procedure);
 
 			for (std::string var : modifiedVars) {
-				pkb.addModifiesStm(i, var);
+				pkb.addModifiesStm(currLine, var);
 			}
 		}
 	}
@@ -227,13 +227,10 @@ void DesignExtractor::processModifiesCalls(std::string procedure) {
  */
 void DesignExtractor::processModifiesContainers(std::string procedure) {
 	//TODO: Implement for Iteration 2
-	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
-	int start; //= first Stmt
-	int last; //= last Stmt
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
 
-
-	for (int i = last; i >= start; i--) {
-		int currLine = i;
+	for (int i = procedureStm.size() - 1; i >= 0; i--) {
+		int currLine = procedureStm.at(i);
 		unordered_set<int> descendents = pkb.getDescendants(currLine);
 		for (int descendent : descendents) {
 			unordered_set<string> modifiedList = pkb.getVarModifiedByStm(descendent);
@@ -250,12 +247,10 @@ void DesignExtractor::processModifiesContainers(std::string procedure) {
  */
 void DesignExtractor::processUsesContainers(std::string procedure) {
 	//TODO: Implement for Iteration 2
-	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
-	int start; //= first Stmt
-	int last; //= last Stmt
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
 
-	for (int i = last; i >= start; i--) {
-		int currLine = i;
+	for (int i = procedureStm.size() - 1; i >= 0; i--) {
+		int currLine = procedureStm.at(i);
 		unordered_set<int> descendents = pkb.getDescendants(currLine);
 		for (int descendent : descendents) {
 			unordered_set<string> usedList = pkb.getVarUsedByStm(descendent);
@@ -273,12 +268,11 @@ void DesignExtractor::processUsesContainers(std::string procedure) {
 void DesignExtractor::processUsesProcedures(std::string procedure)
 {
 	//TODO: Implement for Iteration 2
-	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
-	int start; //= first Stmt
-	int last; //= last Stmt
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
 
-	for (int i = start; i <= last; i++) {
-		std::unordered_set<std::string> usedList = pkb.getVarUsedByStm(i);
+	for (int i = 0; i < procedureStm.size() ; i++) {
+		int currLine = procedureStm.at(i);
+		std::unordered_set<std::string> usedList = pkb.getVarUsedByStm(currLine);
 
 		for (std::string usedVar : usedList) {
 			pkb.addUsesProc(procedure, usedVar);
@@ -294,11 +288,10 @@ void DesignExtractor::processUsesProcedures(std::string procedure)
 void DesignExtractor::processModifiesProcedures(std::string procedure)
 {
 	//TODO: Implement for Iteration 2
-	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
-	int start; //= first Stmt
-	int last; //= last Stmt
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
 
-	for (int i = start; i <= last; i++) {
+	for (int i = 0; i < procedureStm.size(); i++) {
+		int currLine = procedureStm.at(i);
 		std::unordered_set<std::string> modifiedList = pkb.getVarModifiedByStm(i);
 
 		for (std::string modifiedVar : modifiedList) {
