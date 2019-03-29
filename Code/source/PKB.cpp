@@ -257,6 +257,11 @@ unordered_set<int> PKB::getWhileStms()
 	return whileStmList;
 }
 
+unordered_set<int> PKB::getCallStms()
+{
+	return callStmList;
+}
+
 unordered_set<string> PKB::getVariables()
 {
 	return varList;
