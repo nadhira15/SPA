@@ -1,17 +1,4 @@
-#pragma once
-
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <sstream>
-#include "Parser.h"
 #include "IfParser.h"
-#include "Statement.h"
-#include "PKB.h"
-#include "ConditionalExp.h"
-
-using namespace std;
 
 /* Usage guide for if, else and while parsers:
 
@@ -26,13 +13,13 @@ using namespace std;
 
   getter methods: getVariable, getConstants
   input: null
-  output: vector<string> of variables/constants
+  output: std::vector<std::string> of variables/constants
 */
 
-IfParser::IfParser(int stmtNo, string stmt, vector<Statement> stmtlst, string procedure) {
+IfParser::IfParser(int stmtNo, string stmt, vector<Statement> stmtlst, string proc) {
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
-	string cond_expr = stmt.substr(i + 1, j - i - 1);
+	std::string cond_expr = stmt.substr(i + 1, j - i - 1);
 	//check for empty statementlst
 	bool valid1 = !stmtlst.empty();
 	//validate conditional expression and return all uses variable
@@ -40,7 +27,7 @@ IfParser::IfParser(int stmtNo, string stmt, vector<Statement> stmtlst, string pr
 	if (valid1 && valid2) {
 		var = ConditionalExp::getVariables();
 		c = ConditionalExp::getConstants();
-		this->procedure = procedure;
+		this->procedure = proc;
 		stmtLst = stmtlst;
 		stmtNum = stmtNo;
 	} else {
@@ -48,11 +35,11 @@ IfParser::IfParser(int stmtNo, string stmt, vector<Statement> stmtlst, string pr
 	}
 }
 
-vector<string> IfParser::getVariables() {
+std::vector<std::string> IfParser::getVariables() {
 	return var;
 }
 
-vector<string> IfParser::getConstants() {
+std::vector<std::string> IfParser::getConstants() {
 	return c;
 }
 

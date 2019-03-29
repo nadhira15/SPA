@@ -28,8 +28,26 @@
     <Filter Include="Source Files\PreProcessor">
       <UniqueIdentifier>{838d1f7d-5901-41d5-8dc9-9d539926cfa8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ProgramQueryLanguage">
+    <Filter Include="Header Files\PKB">
+      <UniqueIdentifier>{13f069e0-e954-466b-8505-cd15e8a90e05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser">
+      <UniqueIdentifier>{d5afa46f-8448-45eb-8bec-f22c9552385d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PreProcessor">
+      <UniqueIdentifier>{cac60fc2-d42d-435b-bad2-2c8b04b03f47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DesignExtractor">
+      <UniqueIdentifier>{d5df4c81-6521-4b5c-8f58-d5f722db13d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PQL">
       <UniqueIdentifier>{59c428df-1c3b-48a3-abe2-e4608eb59d89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PQL">
+      <UniqueIdentifier>{e1fc83d8-3017-42ba-af3b-a8d213df8973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{1a3253b3-d885-4a23-b710-7bdbf7a229b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="..\source\ReadParser.cpp">
       <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PrintParser.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
     <ClCompile Include="..\source\Preprocesser.cpp">
       <Filter>Source Files\PreProcessor</Filter>
@@ -82,10 +103,10 @@
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
     <ClCompile Include="..\source\QueryEvaluator.cpp">
-      <Filter>Source Files\ProgramQueryLanguage</Filter>
+      <Filter>Source Files\PQL</Filter>
     </ClCompile>
     <ClCompile Include="..\source\QueryParser.cpp">
-      <Filter>Source Files\ProgramQueryLanguage</Filter>
+      <Filter>Source Files\PQL</Filter>
     </ClCompile>
     <ClCompile Include="..\source\Statement.cpp">
       <Filter>Source Files\PreProcessor</Filter>
@@ -96,11 +117,11 @@
     <ClCompile Include="..\source\UseStorage.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\QueryValidator.cpp">
-      <Filter>Source Files\ProgramQueryLanguage</Filter>
+    <ClCompile Include="..\source\Preprocessor.cpp">
+      <Filter>Source Files\PreProcessor</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\ContainerUtil.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\QueryValidator.cpp">
+      <Filter>Source Files\PQL</Filter>
     </ClCompile>
     <ClCompile Include="..\source\CallParser.cpp">
       <Filter>Source Files\Parser</Filter>
@@ -108,85 +129,106 @@
     <ClCompile Include="..\source\PrintParser.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\ContainerUtil.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\CallStorage.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\NextStorage.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\PKB.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\FollowStorage.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="..\source\ParentStorage.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\UseStorage.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\source\FollowStorage.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="..\source\ModifyStorage.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\Hasher.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\QueryParser.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\source\UseStorage.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="..\source\AssignParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\LexicalToken.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\ExpressionUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\StringUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\ProcedureParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Preprocesser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Statement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\QueryEvaluator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\IfParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\WhileParser.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Parser</Filter>
     </ClInclude>
     <ClInclude Include="..\source\ElseParser.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\IfParser.h">
+      <Filter>Header Files\Parser</Filter>
     </ClInclude>
     <ClInclude Include="..\source\Parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\ReadParser.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Parser</Filter>
     </ClInclude>
     <ClInclude Include="..\source\PrintParser.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Parser</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\ConditionalExp.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\source\ProcedureParser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ReadParser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\WhileParser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Preprocesser.h">
+      <Filter>Header Files\PreProcessor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Statement.h">
+      <Filter>Header Files\PreProcessor</Filter>
     </ClInclude>
     <ClInclude Include="..\source\DesignExtractor.h">
+      <Filter>Header Files\DesignExtractor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\QueryEvaluator.h">
+      <Filter>Header Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\QueryParser.h">
+      <Filter>Header Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\QueryValidator.h">
+      <Filter>Header Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ConditionalExp.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ExpressionUtil.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Hasher.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\LexicalToken.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\StringUtil.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Preprocessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\QueryValidator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\ContainerUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\CallParser.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ContainerUtil.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\CallStorage.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\NextStorage.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

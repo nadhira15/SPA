@@ -1,16 +1,12 @@
 #pragma once
 
 #include <vector>
-#include<stdio.h>
-#include <iostream>
+#include <stdio.h>
 #include <string>
-#include <vector>
-#include <algorithm>
 #include "Statement.h"
 #include "PKB.h"
 #include "ConditionalExp.h"
-
-using namespace std;
+#include "Parser.h"
 
 /* Usage guide for if, else and while parsers:
 
@@ -26,20 +22,20 @@ using namespace std;
 
   getter methods: getVariable, getConstants
   input: null
-  output: vector<string> of variables/constants
+  output: std::vector<string> of variables/constants
 */
 
 class WhileParser {
 private:
-	vector<string> var;
-	vector<string> c;
+	std::vector<std::string> var;
+	std::vector<std::string> c;
 	int stmtNum;
-	string procedure;
-	vector<Statement> stmtLst;
+	std::string procedure;
+	std::vector<Statement> stmtLst;
 public:
-	WhileParser(int stmtNo, std::string stmt, vector<Statement> stmtlst, std::string procedure);
-	vector<string> getVariables();
-	vector<string> getConstants();
+	WhileParser(int stmtNo, std::string stmt, std::vector<Statement> stmtlst, std::string procedure);
+	std::vector<std::string> getVariables();
+	std::vector<std::string> getConstants();
 	void parseStmtLst();
 };
 

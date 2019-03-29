@@ -1,7 +1,7 @@
 #include "PKB.h"
 
-
-string PKB::procName;
+unordered_set<string> PKB::procList;
+unordered_map<string, vector<int>> PKB::procStmList;
 vector<stmType> PKB::stmTypeList;
 unordered_set<string> PKB::varList;
 unordered_set<string> PKB::constList;
@@ -10,11 +10,14 @@ unordered_set<int> PKB::printStmList;
 unordered_set<int> PKB::assignStmList;
 unordered_set<int> PKB::ifStmList;
 unordered_set<int> PKB::whileStmList;
+unordered_set<int> PKB::callStmList;
 
 FollowStorage PKB::fStore;
 ParentStorage PKB::pStore;
 UseStorage PKB::uStore;
 ModifyStorage PKB::mStore;
+CallStorage PKB::cStore;
+NextStorage PKB::nStore;
 unordered_map<int, pair<string, string> > PKB::patternList;
 
 PKB::PKB()
@@ -23,7 +26,7 @@ PKB::PKB()
 
 void PKB::addProc(string name)
 {
-	procName = name;
+	procList.emplace(name);
 }
 
 void PKB::addStatement(int stmNo, stmType type)
@@ -47,6 +50,42 @@ void PKB::addStatement(int stmNo, stmType type)
 		case ifStm:
 			ifStmList.emplace(stmNo);
 			break;
+		case call:
+			callStmList.emplace(stmNo);
+			break;
+		default:
+			break;
+	}
+}
+
+void PKB::addStatement(int stmNo, stmType type, string procedure)
+{
+	stmTypeList.assign(stmNo, type);
+	if (!procStmList.emplace(procedure, vector<int>{stmNo}).second)
+	{
+		procStmList.find(procedure)->second.push_back(stmNo);
+	}
+
+	switch (type)
+	{
+		case read:
+			readStmList.emplace(stmNo);
+			break;
+		case print:
+			printStmList.emplace(stmNo);
+			break;
+		case assign:
+			assignStmList.emplace(stmNo);
+			break;
+		case whileStm:
+			whileStmList.emplace(stmNo);
+			break;
+		case ifStm:
+			ifStmList.emplace(stmNo);
+			break;
+		case call:
+			callStmList.emplace(stmNo);
+			break;
 		default:
 			break;
 	}
@@ -68,15 +107,15 @@ bool PKB::addFollow(int stm1, int stm2)
 	{
 		return false;
 	}
-	return fStore.addFollowPair(stm1, stm2);
+	return fStore.addFollow(stm1, stm2);
 }
 
-bool PKB::setFollowers(int stm, unordered_set<int> stmList)
+bool PKB::setAllFollowing(int stm, unordered_set<int> stmList)
 {
 	return fStore.setAllFollowing(stm, stmList);
 }
 
-bool PKB::setStmFollowedBy(int stm, unordered_set<int> stmList)
+bool PKB::setAllFollowedBy(int stm, unordered_set<int> stmList)
 {
 	return fStore.setAllFollowedBy(stm, stmList);
 }
@@ -100,50 +139,96 @@ bool PKB::setDescendants(int stm, unordered_set<int> stmList)
 	return pStore.setDescendants(stm, stmList);
 }
 
-bool PKB::addUses(int stm, string variable)
+bool PKB::addUsesStm(int stm, string variable)
 {
-	if (variable == "")
+	if (stm <= 0 || variable == "")
 	{
 		return false;
 	}
-	return uStore.addUses(stm, variable);
+	return uStore.addUsesStm(stm, variable);
 }
 
-bool PKB::addUses(string procedure, string variable)
-{
-	if (procedure == "" || variable == "")
-	{
-		return false;
-	}
-	return uStore.addUses(procedure, variable);
-}
-
-bool PKB::addModifies(int stm, string variable)
-{
-	if (variable == "")
-	{
-		return false;
-	}
-	return mStore.addModifies(stm, variable);
-}
-
-bool PKB::addModifies(string procedure, string variable)
+bool PKB::addUsesProc(string procedure, string variable)
 {
 	if (procedure == "" || variable == "")
 	{
 		return false;
 	}
-	return mStore.addModifies(procedure, variable);
+	return uStore.addUsesProc(procedure, variable);
 }
 
-bool PKB::addAssign(int stm, string variable, string expr)
+bool PKB::addModifiesStm(int stm, string variable)
+{
+	if (variable == "")
+	{
+		return false;
+	}
+	return mStore.addModifiesStm(stm, variable);
+}
+
+bool PKB::addModifiesProc(string procedure, string variable)
+{
+	if (procedure == "" || variable == "")
+	{
+		return false;
+	}
+	return mStore.addModifiesProc(procedure, variable);
+}
+
+bool PKB::addCall(string proc1, string proc2)
+{
+	if (proc1 == "" || proc2 == "")
+	{
+		return false;
+	}
+	return cStore.addCall(proc1, proc2);
+}
+
+bool PKB::addCall(string proc1, string proc2, int stmNo)
+{
+	if (proc1 == "" || proc2 == "" || stmNo <= 0)
+	{
+		return false;
+	}
+	return cStore.addCall(proc1, proc2, stmNo);
+}
+
+bool PKB::setCallAnc(string proc, unordered_set<string> procList)
+{
+	return cStore.setCallAnc(proc, procList);
+}
+
+bool PKB::setCallDesc(string proc, unordered_set<string> procList)
+{
+	return cStore.setCallDesc(proc, procList);
+}
+
+bool PKB::addNext(int line1, int line2)
+{
+	if (line2 <= line1 || line1 <= 0 || line2 <= 0)
+	{
+		return false;
+	}
+	return nStore.addNext(line1, line2);
+}
+
+bool PKB::addAssignPattern(int stm, string variable, string expr)
 {
 	return patternList.emplace(stm, pair<string, string>(variable, expr)).second;
 }
 
-string PKB::getProcName()
+unordered_set<string> PKB::getProcList()
 {
-	return procName;
+	return procList;
+}
+
+vector<int> PKB::getStmList(string procedure)
+{
+	if (procStmList.find(procedure) != procStmList.end())
+	{
+		return procStmList.at(procedure);
+	}
+	return {};
 }
 
 int PKB::getTotalStmNo()
@@ -181,6 +266,11 @@ unordered_set<int> PKB::getWhileStms()
 	return whileStmList;
 }
 
+unordered_set<int> PKB::getCallStms()
+{
+	return callStmList;
+}
+
 unordered_set<string> PKB::getVariables()
 {
 	return varList;
@@ -196,19 +286,19 @@ bool PKB::hasFollowRelation()
 	return !fStore.isEmpty();
 }
 
-bool PKB::hasFollow_S_Pair(int stm1, int stm2)
+bool PKB::hasFollowStarPair(int stm1, int stm2)
 {
-	return fStore.containsFSPair(pair<int, int>(stm1, stm2));
+	return fStore.hasFollowStarPair(pair<int, int>(stm1, stm2));
 }
 
-int PKB::getPrvStm(int stm)
+int PKB::getStmFollowedBy(int stm)
 {
-	return fStore.getPrevOf(stm);
+	return fStore.getStmFollowedBy(stm);
 }
 
-int PKB::getNxtStm(int stm)
+int PKB::getFollower(int stm)
 {
-	return fStore.getNextOf(stm);
+	return fStore.getFollower(stm);
 }
 
 unordered_set<int> PKB::getAllFollowing(int stm)
@@ -223,27 +313,22 @@ unordered_set<int> PKB::getAllFollowedBy(int stm)
 
 unordered_set<int> PKB::getAllFollowers()
 {
-	return fStore.getFollowerList();
+	return fStore.getAllFollowers();
 }
 
 unordered_set<int> PKB::getAllFollowed()
 {
-	return fStore.getFollowedList();
+	return fStore.getAllFollowed();
 }
 
 unordered_set<pair<int, int>, intPairhash> PKB::getFollowPairs()
 {
-	return fStore.getFPairList();
+	return fStore.getFollowPairs();
 }
 
-unordered_set<pair<int, int>, intPairhash> PKB::getFollow_S_Pairs()
+unordered_set<pair<int, int>, intPairhash> PKB::getFollowStarPairs()
 {
-	return fStore.getF_S_PairList();
-}
-
-unordered_set<int> PKB::getFollowRoots()
-{
-	return fStore.getRoots();
+	return fStore.getFollowStarPairs();
 }
 
 bool PKB::hasParentRelation()
@@ -263,72 +348,67 @@ bool PKB::isChild(int stm)
 
 bool PKB::hasAncDescPair(int stm1, int stm2)
 {
-	return pStore.containsAnc_Desc(pair<int, int>(stm1, stm2));
+	return pStore.hasAncDescPair(pair<int, int>(stm1, stm2));
 }
 
 int PKB::getParent(int stm)
 {
-	return pStore.getParentOf(stm);
+	return pStore.getParent(stm);
 }
 
 unordered_set<int> PKB::getChildren(int stm)
 {
-	return pStore.getChildrenOf(stm);
+	return pStore.getChildren(stm);
 }
 
-unordered_set<int> PKB::getAllAncestors(int stm)
+unordered_set<int> PKB::getAncestors(int stm)
 {
-	return pStore.getAncestorsOf(stm);
+	return pStore.getAncestors(stm);
 }
 
-unordered_set<int> PKB::getAllDescendants(int stm)
+unordered_set<int> PKB::getDescendants(int stm)
 {
-	return pStore.getDescendantsOf(stm);
+	return pStore.getDescendants(stm);
 }
 
 unordered_set<int> PKB::getAllParents()
 {
-	return pStore.getParentList();
+	return pStore.getAllParent();
 }
 
 unordered_set<int> PKB::getAllChildren()
 {
-	return pStore.getChildrenList();
+	return pStore.getAllChildren();
 }
 
 unordered_set<pair<int, int>, intPairhash> PKB::getParentChildPairs()
 {
-	return pStore.getParent_ChildList();
+	return pStore.getParentChildPairs();
 }
 
 unordered_set<pair<int, int>, intPairhash> PKB::getAncDescPairs()
 {
-	return pStore.getAnc_DescList();
+	return pStore.getAncDescPair();
 }
 
-unordered_set<int> PKB::getParentRoots()
-{
-	return pStore.getRootList();
-}
-
-bool PKB::isUsing(int stm, string variable)
+bool PKB::isStmUsing(int stm, string variable)
 {
 	return uStore.containsStmVarPair(pair<int, string>(stm, variable) );
 }
 
-bool PKB::isUsing(string procedure, string variable)
+bool PKB::isProcUsing(string procedure, string variable)
 {
 	return uStore.containsProcVarPair(pair<string, string>(procedure, variable));
 }
 
-unordered_set<string> PKB::getUsedVar(int stm)
+unordered_set<string> PKB::getVarUsedByStm(int stm)
 {
-	return uStore.getVarUsedBy(stm);
+	return uStore.getVarUsedByStm(stm);
 }
 
-unordered_set<string> PKB::getUsedVar(string procedure)
+unordered_set<string> PKB::getVarUsedByProc(string procedure)
 {
-	return uStore.getVarUsedBy(procedure);
+	return uStore.getVarUsedByProc(procedure);
 }
 
 unordered_set<int> PKB::getStmUsing(string variable)
@@ -351,24 +431,24 @@ unordered_set<pair<string, string>, strPairhash> PKB::getProcVarUsePairs()
 	return uStore.getProcVarPairs();
 }
 
-bool PKB::isModifying(int stm, string variable)
+bool PKB::isStmModifying(int stm, string variable)
 {
 	return mStore.containsStmVarPair(pair<int, string>(stm, variable));
 }
 
-bool PKB::isModifying(string procedure, string variable)
+bool PKB::isProcModifying(string procedure, string variable)
 {
 	return mStore.containsProcVarPair(pair<string, string>(procedure, variable));
 }
 
-unordered_set<string> PKB::getModifiedVar(int stm)
+unordered_set<string> PKB::getVarModifiedByStm(int stm)
 {
-	return mStore.getVarModifiedBy(stm);
+	return mStore.getVarModifiedByStm(stm);
 }
 
-unordered_set<string> PKB::getModifiedVar(string procedure)
+unordered_set<string> PKB::getVarModifiedByProc(string procedure)
 {
-	return mStore.getVarModifiedBy(procedure);
+	return mStore.getVarModifiedByProc(procedure);
 }
 
 unordered_set<int> PKB::getStmModifying(string variable)
@@ -391,55 +471,179 @@ unordered_set<pair<string, string>, strPairhash> PKB::getProcVarModifyPairs()
 	return mStore.getProcVarPairs();
 }
 
-vector<int> PKB::findPattern(string variable, string expr, bool isExclusive)
+bool PKB::hasCallRelation()
 {
-	vector<int> validStm;
+	return !cStore.isEmpty();
+}
+
+bool PKB::isCaller(string procedure)
+{
+	return cStore.isCaller(procedure);
+}
+
+bool PKB::isCallee(string procedure)
+{
+	return cStore.isCallee(procedure);
+}
+
+bool PKB::hasCallStarPair(string proc1, string proc2)
+{
+	return cStore.hasCallStarPair(pair<string, string>(proc1, proc2));
+}
+
+unordered_set<string> PKB::getCaller(string procedure)
+{
+	return cStore.getCaller(procedure);
+}
+
+unordered_set<string> PKB::getCallee(string procedure)
+{
+	return cStore.getCallee(procedure);
+}
+
+unordered_set<string> PKB::getCallAnc(string procedure)
+{
+	return cStore.getCallAnc(procedure);
+}
+
+unordered_set<string> PKB::getCallDesc(string procedure)
+{
+	return cStore.getCallDesc(procedure);
+}
+
+unordered_set<string> PKB::getAllCallers()
+{
+	return cStore.getAllCallers();
+}
+
+unordered_set<string> PKB::getAllCallees()
+{
+	return cStore.getAllCallees();
+}
+
+unordered_set<pair<string, string>, strPairhash> PKB::getCallPairs()
+{
+	return cStore.getCallPairs();
+}
+
+unordered_set<pair<string, string>, strPairhash> PKB::getCallStarPairs()
+{
+	return cStore.getCallStarPairs();
+}
+
+string PKB::getProcCalledBy(int stm)
+{
+	return cStore.getProcCalledBy(stm);
+}
+
+unordered_set<int> PKB::getStmCalling(string procedure)
+{
+	return cStore.getStmCalling(procedure);
+}
+
+bool PKB::hasNextRelation()
+{
+	return !nStore.isEmpty();
+}
+
+bool PKB::hasNextStarPair(int line1, int line2)
+{
+	// call DE
+	return false;
+}
+
+int PKB::getNext(int line)
+{
+	return nStore.getNext(line);
+}
+
+int PKB::getPrev(int line)
+{
+	return nStore.getPrev(line);
+}
+
+unordered_set<int> PKB::getAllLnAfter(int line)
+{
+	// call DE
+	return {};
+}
+
+unordered_set<int> PKB::getAllLnBefore(int line)
+{
+	// call DE
+	return {};
+}
+
+unordered_set<int> PKB::getAllNext()
+{
+	return nStore.getAllNext();
+}
+
+unordered_set<int> PKB::getAllPrev()
+{
+	return nStore.getAllPrev();
+}
+
+unordered_set<pair<int, int>, intPairhash> PKB::getNextPairs()
+{
+	return nStore.getNextPairs();
+}
+
+unordered_set<pair<int, int>, intPairhash> PKB::getNextStarPairs()
+{
+	// call DE
+	return {};
+}
+
+unordered_set<int> PKB::findPattern(string variable, string expr, bool isExclusive)
+{
+	unordered_set<int> validStm;
 	for each (const auto elem in patternList)
 	{
 		if (elem.second.first.compare(variable) == 0)
 		{
 			if (isExclusive && elem.second.second.compare(expr) == 0)
 			{
-				validStm.push_back(elem.first);
+				validStm.emplace(elem.first);
 			}
 			else if (!isExclusive && elem.second.second.find(expr) != string::npos)
 			{
-				validStm.push_back(elem.first);
+				validStm.emplace(elem.first);
 			}
 		}
 	}
 	return validStm;
 }
 
-vector<int> PKB::findPattern(string expr, bool isExclusive)
+unordered_set<int> PKB::findPattern(string expr, bool isExclusive)
 {
-	vector<int> validStm;
+	unordered_set<int> validStm;
 	for each (const auto elem in patternList)
 	{
 		if (isExclusive && elem.second.second.compare(expr) == 0)
 		{
-			validStm.push_back(elem.first);
+			validStm.emplace(elem.first);
 		}
 		else if (!isExclusive && elem.second.second.find(expr) != string::npos)
 		{
-			validStm.push_back(elem.first);
+			validStm.emplace(elem.first);
 		}
 	}
 	return validStm;
 }
 
-vector<pair<int, string>> PKB::findPatternPairs(string expr, bool isExclusive)
+unordered_set<pair<int, string>, intStringhash> PKB::findPatternPairs(string expr, bool isExclusive)
 {
-	vector<pair<int, string>> validPairs;
+	unordered_set<pair<int, string>, intStringhash> validPairs;
 	for each (const auto elem in patternList)
 	{
 		if (isExclusive && elem.second.second.compare(expr) == 0)
 		{
-			validPairs.push_back(pair<int, string>(elem.first, elem.second.first));
+			validPairs.emplace(pair<int, string>(elem.first, elem.second.first));
 		}
 		else if (!isExclusive && elem.second.second.find(expr) != string::npos)
 		{
-			validPairs.push_back(pair<int, string>(elem.first, elem.second.first));
+			validPairs.emplace(pair<int, string>(elem.first, elem.second.first));
 		}
 	}
 	return validPairs;
