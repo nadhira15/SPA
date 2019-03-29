@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "Preprocesser.h"
+#include "Preprocessor.h"
 #include "PKB.h"
 #include "Parser.h"
 #include "DesignExtractor.h"

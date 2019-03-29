@@ -166,10 +166,10 @@ void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::str
 	for (std::string callee : adjacentProcedures) {
 
 		//Check if neighbouring procedure is in currentCallPath
-		std::unordered_set<std::string>::const_iterator exist = pathVisitedProcedure.find(callee);
+		std::unordered_set<std::string>::const_iterator currPath = pathVisitedProcedure.find(callee);
 
 		//If neighbouring procedure is in currentCallPath, detect cyclic Calls.
-		if (exist != visitedProcedures.end()) {
+		if (currPath != visitedProcedures.end()) {
 			throw "Cyclical call detected at Procedure : " + procedure;
 		}
 
@@ -334,7 +334,7 @@ void DesignExtractor::processModifiesProcedures(std::string procedure)
  */
 void DesignExtractor::processCallsStar(std::vector<std::string> sortedProcedures) {
 	//Process procedure list s where Calls*(s, procedure) is true
-	for (int i = sortedProcedures.size - 1; i >= 0; i++) {
+	for (int i = sortedProcedures.size() - 1; i >= 0; i++) {
 		std::string procedure = sortedProcedures.at(i);
 		std::unordered_set<std::string> callerList = pkb.getCaller(procedure);
 
@@ -354,7 +354,7 @@ void DesignExtractor::processCallsStar(std::vector<std::string> sortedProcedures
 	}
 	
 	//Process procedure list s where Calls*(procedure, s) is true.
-	for (int i = 0; i < sortedProcedures.size; i++) {
+	for (int i = 0; i < sortedProcedures.size(); i++) {
 		std::string procedure = sortedProcedures.at(i);
 		std::unordered_set<std::string> calleeList = pkb.getCallee(procedure);
 
