@@ -210,6 +210,9 @@ public:
 	// returns the stored list of while statements
 	unordered_set<int> getWhileStms();
 
+	// returns the stored list of call statements
+	unordered_set<int> getCallStms();
+
 	// returns the stored list of variables
 	unordered_set<string> getVariables();
 
@@ -529,6 +532,7 @@ private:
 	static unordered_set<int> assignStmList;
 	static unordered_set<int> ifStmList;
 	static unordered_set<int> whileStmList;
+	static unordered_set<int> callStmList;
 
 	static FollowStorage fStore;
 	static ParentStorage pStore;

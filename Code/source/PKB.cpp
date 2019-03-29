@@ -10,6 +10,7 @@ unordered_set<int> PKB::printStmList;
 unordered_set<int> PKB::assignStmList;
 unordered_set<int> PKB::ifStmList;
 unordered_set<int> PKB::whileStmList;
+unordered_set<int> PKB::callStmList;
 
 FollowStorage PKB::fStore;
 ParentStorage PKB::pStore;
@@ -49,6 +50,9 @@ void PKB::addStatement(int stmNo, stmType type)
 		case ifStm:
 			ifStmList.emplace(stmNo);
 			break;
+		case call:
+			callStmList.emplace(stmNo);
+			break;
 		default:
 			break;
 	}
@@ -78,6 +82,9 @@ void PKB::addStatement(int stmNo, stmType type, string procedure)
 			break;
 		case ifStm:
 			ifStmList.emplace(stmNo);
+			break;
+		case call:
+			callStmList.emplace(stmNo);
 			break;
 		default:
 			break;
