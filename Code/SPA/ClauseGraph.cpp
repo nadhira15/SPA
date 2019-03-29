@@ -12,39 +12,59 @@ ClauseGraph::ClauseGraph(std::vector<std::pair<std::string, std::pair<std::strin
 }
 
 void ClauseGraph::groupClause() {
-	groupByClauseType("s");
-	groupByClauseType("p");
-	groupByClauseType("w");
+	groupByClauseType(st);
+	groupByClauseType(w);
+	groupByClauseType(p);
+	mapClauses();
 }
 
-void ClauseGraph::groupByClauseType(std::string type) {
+void ClauseGraph::groupByClauseType(clauseType t) {
 	std::vector<std::string> synLst;
-	if (type.compare("s") == 0) {
+	if (t == st) {
 		for (int i = 0; i < suchThatClauses.size(); i++) {
 			synLst = extractSuchThatSyn(i);
-			mapSynonyms(synLst, std::make_pair("s", i));
+			mapSynonyms(synLst, std::make_pair(st, i));
 		}
-	} else if (type.compare("p") == 0) {
+	} else if (t == p) {
 		for (int i = 0; i < patternClauses.size(); i++) {
 			synLst = extractPatternSyn(i);
-			mapSynonyms(synLst, std::make_pair("p", i));
+			mapSynonyms(synLst, std::make_pair(p, i));
 		}
 	} else {
 		for (int i = 0; i < withClauses.size(); i++) {
 			synLst = extractWithSyn(i);
-			mapSynonyms(synLst, std::make_pair("w", i));
+			mapSynonyms(synLst, std::make_pair(w, i));
 		}
 	}
 }
 
-void ClauseGraph::mapSynonyms(std::vector<std::string> synLst, std::pair<std::string, int> cl) {
+void ClauseGraph::mapSynonyms(std::vector<std::string> synLst, std::pair<clauseType, int> cl) {
 	for (std::vector<std::string>::iterator it = synLst.begin(); it != synLst.end(); ++it) {
 		if (synMap.find(*it) == synMap.end()) {
-			std::unordered_set<std::pair<std::string, int>> clauseList;
-			clauseList.insert(cl);
+			//synMap[*it] = std::vector<std::pair<clauseType, int>>();
+			synMap[*it].push_back(cl);
+			clMap[cl].push_back(counter++);
 		} else {
+			//merge clause into group for 1 syn match
+			clMap[cl].push_back(clMap[synMap.at[*it].at(0)]); 
+			//group index for cl0 = group index for cl1
 			synMap.at[*it].insert(cl);
-			//merge group
+		}
+	}
+}
+
+void ClauseGraph::mapClauses(std::vector<std::string> synLst, std::pair<clauseType, int> cl) {
+	for (std::vector<std::string>::iterator it = synLst.begin(); it != synLst.end(); ++it) {
+		if (synMap.find(*it) == synMap.end()) {
+			//synMap[*it] = std::vector<std::pair<clauseType, int>>();
+			synMap[*it].push_back(cl);
+			clMap[cl].push_back(counter++);
+		}
+		else {
+			//merge clause into group for 1 syn match
+			clMap[cl].push_back(clMap[synMap.at[*it].at(0)]);
+			//group index for cl0 = group index for cl1
+			synMap.at[*it].insert(cl);
 		}
 	}
 }
