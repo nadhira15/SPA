@@ -190,7 +190,7 @@ void DesignExtractor::processUsesCalls(std::string procedure) {
 		int currLine = i;
 		stmType type = pkb.getStmType(i);
 		if (type == stmType::call) {
-			std::string procedure = pkb.getCalledByStm(i);
+			std::string procedure; // = pkb.getCalledByStm(i);
 			std::unordered_set<std::string> usedVars = pkb.getVarUsedByProc(procedure);
 
 			for (std::string var : usedVars) {
@@ -211,7 +211,7 @@ void DesignExtractor::processModifiesCalls(std::string procedure) {
 		int currLine = i;
 		stmType type = pkb.getStmType(i);
 		if (type == stmType::call) {
-			std::string procedure = pkb.getCalledByStm(i);
+			std::string procedure;// = pkb.getCalledByStm(i);
 			std::unordered_set<std::string> modifiedVars = pkb.getVarModifiedByProc(procedure);
 
 			for (std::string var : modifiedVars) {
@@ -226,9 +226,13 @@ void DesignExtractor::processModifiesCalls(std::string procedure) {
  * also MODIFY these variables.
  */
 void DesignExtractor::processModifiesContainers(std::string procedure) {
-	int stmtNum = pkb.getTotalStmNo();
+	//TODO: Implement for Iteration 2
+	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
+	int start; //= first Stmt
+	int last; //= last Stmt
 
-	for (int i = stmtNum; i >= 1; i--) {
+
+	for (int i = last; i >= start; i--) {
 		int currLine = i;
 		unordered_set<int> descendents = pkb.getDescendants(currLine);
 		for (int descendent : descendents) {
@@ -245,9 +249,12 @@ void DesignExtractor::processModifiesContainers(std::string procedure) {
  * also USE these variables.
  */
 void DesignExtractor::processUsesContainers(std::string procedure) {
-	int stmtNum = pkb.getTotalStmNo();
+	//TODO: Implement for Iteration 2
+	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
+	int start; //= first Stmt
+	int last; //= last Stmt
 
-	for (int i = stmtNum; i >= 1; i--) {
+	for (int i = last; i >= start; i--) {
 		int currLine = i;
 		unordered_set<int> descendents = pkb.getDescendants(currLine);
 		for (int descendent : descendents) {
@@ -304,8 +311,6 @@ void DesignExtractor::processModifiesProcedures(std::string procedure)
  * Processes the Call* Relationship
  */
 void DesignExtractor::processCallsStar(std::vector<std::string> sortedProcedures) {
-
-
 	//Process procedure list s where Calls*(s, procedure) is true
 	for (int i = sortedProcedures.size - 1; i >= 0; i++) {
 		std::string procedure = sortedProcedures.at(i);
