@@ -145,6 +145,15 @@ public:
 	bool addCall(string proc1, string proc2);
 
 	/*
+		Adds the call relation at statement 'stmNo' into CallStorage
+		Returns false if
+			1) the pair is already stored
+			2) proc1 or proc2 == ""
+			3) stmNo <= 0
+	*/
+	bool addCall(string proc1, string proc2, int stmNo);
+
+	/*
 		Sets the list of call ancestors of 'procedure' in CallStorage
 		Each Call* pair is stored as well
 		If 'procedure' already has a list of call ancestors, it is not replaced and it return false
@@ -218,6 +227,18 @@ public:
 
 	// returns the stored list of constants
 	unordered_set<string> getConstants();
+
+	/*
+		returns the procedure called by 'stm'
+		returns empty string if 'stm' is not found
+	*/
+	string getProcCalledBy(int stm);
+
+	/*
+		returns a list of statements that calls 'procedure'
+		returns an empty set {} if 'procedure' is not found
+	*/
+	unordered_set<int> getStmCalling(string procedure);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Follows Getter Methods	/////////////////////////////////////////////////////////////////////////

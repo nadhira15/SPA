@@ -184,6 +184,15 @@ bool PKB::addCall(string proc1, string proc2)
 	return cStore.addCall(proc1, proc2);
 }
 
+bool PKB::addCall(string proc1, string proc2, int stmNo)
+{
+	if (proc1 == "" || proc2 == "" || stmNo <= 0)
+	{
+		return false;
+	}
+	return cStore.addCall(proc1, proc2, stmNo);
+}
+
 bool PKB::setCallAnc(string proc, unordered_set<string> procList)
 {
 	return cStore.setCallAnc(proc, procList);
@@ -270,6 +279,16 @@ unordered_set<string> PKB::getVariables()
 unordered_set<string> PKB::getConstants()
 {
 	return constList;
+}
+
+string PKB::getProcCalledBy(int stm)
+{
+	return cStore.getProcCalledBy(stm);
+}
+
+unordered_set<int> PKB::getStmCalling(string procedure)
+{
+	return cStore.getStmCalling(procedure);
 }
 
 bool PKB::hasFollowRelation()
