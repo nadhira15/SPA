@@ -48,12 +48,7 @@ unordered_set<string> QueryParser::parse(string query) {
 	}
 
 	// parsing declarations
-	vector<pair<string, string>> declarations = splitDeclarations(clauses);
-
-	unordered_map<string, string> declarationsMap;
-	for (int i = 0; i < declarations.size(); i++) {
-		declarationsMap.insert(make_pair(declarations[i].second, declarations[i].first));
-	}
+	unordered_map<string, string> declarations = splitDeclarations(clauses);
 
 	// validating declarations
 	errorString = QueryValidator::validateDeclarations(declarations);
@@ -124,7 +119,7 @@ unordered_set<string> QueryParser::parse(string query) {
 	withCondition = splitWithCondition(withClauses);
 
 	// validating 'Select' parameter
-	errorString = QueryValidator::validateSelectedVar(selectedVar, declarationsMap);
+	errorString = QueryValidator::validateSelectedVar(selectedVar, declarations);
 	if (errorString != "") {
 		result.insert("error");
 		return result;
@@ -137,7 +132,7 @@ unordered_set<string> QueryParser::parse(string query) {
 	}
 
 	// validating 'such that' parameter
-	errorString = QueryValidator::validateSuchThatParam(suchThatCondition, declarationsMap);
+	errorString = QueryValidator::validateSuchThatParam(suchThatCondition, declarations);
 	if (errorString == "semantic error" && selectBoolean) {
 		result.insert("false");
 		return result;
@@ -148,7 +143,7 @@ unordered_set<string> QueryParser::parse(string query) {
 	}
 
 	// validating 'pattern' parameter
-	errorString = QueryValidator::validatePatternParam(patternCondition, declarationsMap);
+	errorString = QueryValidator::validatePatternParam(patternCondition, declarations);
 	if (errorString == "semantic error" && selectBoolean) {
 		result.insert("false");
 		return result;
@@ -159,7 +154,7 @@ unordered_set<string> QueryParser::parse(string query) {
 	}
 
 	// validating 'with' parameter
-	errorString = QueryValidator::validateWithParam(withCondition, declarationsMap);
+	errorString = QueryValidator::validateWithParam(withCondition, declarations);
 	if (errorString == "semantic error" && selectBoolean) {
 		result.insert("false");
 		return result;
@@ -200,9 +195,9 @@ vector<string> QueryParser::splitClauses(string query) {
 Splits each declarations clause by whitespaces.
 Returns a vector<pair<string, string>> consisting of design-entity and synonym
 */
-vector<pair<string, string>> QueryParser::splitDeclarations(vector<string> clauses) {
+unordered_map<string, string> QueryParser::splitDeclarations(vector<string> clauses) {
 	
-	vector<pair<string, string>> output;
+	unordered_map<string, string> output;
 	int clausesSize = clauses.size();
 
 	for (int i = 0; i < clausesSize - 1; i++) {
@@ -218,15 +213,15 @@ vector<pair<string, string>> QueryParser::splitDeclarations(vector<string> claus
 
 			while (endPoint != -1) {
 				string varNameSplitted = StringUtil::trim(varName.substr(startPoint, endPoint - startPoint), whitespace);
-				output.push_back(make_pair(type, varNameSplitted));
+				output.insert(make_pair(varNameSplitted, type));
 				startPoint = endPoint + 1;
 				endPoint = varName.find(delimiter, startPoint);
 			}
 
-			output.push_back(make_pair(type, StringUtil::trim(varName.substr(startPoint), whitespace)));
+			output.insert(make_pair(StringUtil::trim(varName.substr(startPoint), whitespace), type));
 		}
 		else {
-			output.push_back(make_pair(type, StringUtil::trim(varName, whitespace)));
+			output.insert(make_pair(StringUtil::trim(varName, whitespace), type));
 		}
 	}
 
@@ -351,11 +346,17 @@ vector<pair<string, string>> QueryParser::splitWithCondition(vector<string> with
 Calls QueryEvaluator to evaluate the query result
 Returns a unordered_set<string> consisting of results
 */
-unordered_set<string> QueryParser::evaluateSelectConditions(vector<pair<string, string>> declarations, 
+unordered_set<string> QueryParser::evaluateSelectConditions(unordered_map<string, string> declarations, 
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition, vector<pair<string, string>> withCondition) {
 
-	return QueryEvaluator::evaluateQuery(declarations, selectedVar, suchThatCondition, patternCondition);
+	// just delete 4 lines below and replace the argument for Query Evaluator to declarations
+	vector<pair<string, string>> declarationsVector;
+	for (auto x: declarations) {
+		declarationsVector.push_back(make_pair(x.second, x.first));
+	}
+
+	return QueryEvaluator::evaluateQuery(declarationsVector, selectedVar, suchThatCondition, patternCondition);
 }
 
 /*

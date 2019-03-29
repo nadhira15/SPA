@@ -65,14 +65,14 @@ Validates declaration vector based on following conditions:
 - design-entity should be valid
 - synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
 */
-string QueryValidator::validateDeclarations(vector<pair<string, string>> declarations) {
+string QueryValidator::validateDeclarations(unordered_map<string, string> declarations) {
 	
-	for (size_t i = 0; i < declarations.size(); i++) {
-		if (validVarType.find(declarations[i].first) == validVarType.end()) {
+	for (auto x: declarations) {
+		if (validVarType.find(x.second) == validVarType.end()) {
 			return "invalid query";
 		}
 
-		if (!LexicalToken::verifyName(declarations[i].second)) {
+		if (!LexicalToken::verifyName(x.first)) {
 			return "invalid query";
 		}
 	}
