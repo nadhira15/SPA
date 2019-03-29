@@ -22,11 +22,10 @@ public:
 private:
 	static PKB pkb;
 	static void verifyCalledProceduresPresence();
-	static void verifyAbsenceOfCyclicity();
 	static void processFollowStar();
 	static void processParentStar();
 	static vector<string> topologicalSortProcedures();
-	static void DFSRecursive(std::string procedure, unordered_set<std::string>& visitedProcedures, vector<std::string>& sortedProcedures, unordered_set<std::string> pathVisitedProcedures));
+	static void DFSRecursive(std::string procedure, unordered_set<std::string>& visitedProcedures, vector<std::string>& sortedProcedures, unordered_set<std::string> pathVisitedProcedures);
 	static void processAdvancedUsesAndModifies(std::vector<std::string> sortedProcedures);
 	static void processUsesCalls(std::string procedure);
 	static void processModifiesCalls(std::string procedure);

@@ -10,7 +10,6 @@ void DesignExtractor::extractDesigns(PKB storage)
 
 	//Verification
 	verifyCalledProceduresPresence();
-	verifyAbsenceOfCyclicity();
 	
 	//Statement-Statement Relationships
 	processFollowStar();
@@ -43,11 +42,6 @@ void DesignExtractor::verifyCalledProceduresPresence()
 		}
 	}
 }
-
-void DesignExtractor::verifyAbsenceOfCyclicity() {
-
-}
-
 
 /*
  * Processes the Follow* Design Entitiy in the SPA requirement.
@@ -123,6 +117,13 @@ void DesignExtractor::processParentStar()
 	}
 }
 
+/*
+ * This function performs a topological sort on the unorderedList of procedures.
+ * It returns a vector of procedures in order such that procedures on a lower index will never call
+ * a procedure with a higher index.
+ * For example if TestA calls TestB, and TestB calls TestC, and Test A calls TestC.
+ * A valid toposort result would return {TestC, TestB, TestA} in a vector.
+ */
 vector<string> DesignExtractor::topologicalSortProcedures() {
 	std::unordered_set<std::string> procList = pkb.getProcList();
 	int procListSize = procList.size();
@@ -143,6 +144,14 @@ vector<string> DesignExtractor::topologicalSortProcedures() {
 	return sortedProcedures;
 }
 
+/*
+ * A Recursive Function to perform Depth First Search of a procedure calling.
+ * This DFSRecursive Function requires 4 inputs.
+ * 1) procedure that is being visited.
+ * 2) vistedProcedures: The list of procedures that have been visited in a DFS.
+ * 3) sortedProcedures: The list of procedures that in a toposort order.
+ * 4) pathVisitedProcedure: The list of procedures that have been called in the current DFSRecursive Stack.
+ */
 void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::string> &visitedProcedures, vector<std::string> &sortedProcedures, unordered_set<std::string> pathVisitedProcedure) {
 	//Marks procedure as visited
 	visitedProcedures.insert(procedure);
@@ -169,7 +178,7 @@ void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::str
 
 		//If neighbouring procedure has not been visited, visit it.
 		if (exist == visitedProcedures.end()) {
-			DFSRecursive(procedure, visitedProcedures, sortedProcedures, pathVisitedProcedure);
+			DFSRecursive(callee, visitedProcedures, sortedProcedures, pathVisitedProcedure);
 		}
 	}
 	//Add procedure to the sortedProcedures.
@@ -185,10 +194,15 @@ void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::str
  */
 void DesignExtractor::processAdvancedUsesAndModifies(std::vector<std::string> sortedProcedures) {
 	for (std::string procedure : sortedProcedures) {
+		//Populate Call Statement Uses/Modifies
 		processUsesCalls(procedure);
 		processModifiesCalls(procedure);
+
+		//Populate Container Statement (While/If) Uses/Modifies
 		processUsesContainers(procedure);
 		processModifiesContainers(procedure);
+
+		//Populate Procedure Uses/Modifies
 		processUsesProcedures(procedure);
 		processModifiesProcedures(procedure);
 	}
