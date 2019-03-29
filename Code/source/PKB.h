@@ -228,18 +228,6 @@ public:
 	// returns the stored list of constants
 	unordered_set<string> getConstants();
 
-	/*
-		returns the procedure called by 'stm'
-		returns empty string if 'stm' is not found
-	*/
-	string getProcCalledBy(int stm);
-
-	/*
-		returns a list of statements that calls 'procedure'
-		returns an empty set {} if 'procedure' is not found
-	*/
-	unordered_set<int> getStmCalling(string procedure);
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Follows Getter Methods	/////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -468,6 +456,18 @@ public:
 
 	// returns a list of all call* pairs
 	unordered_set< pair<string, string>, strPairhash> getCallStarPairs();
+
+	/*
+		returns the procedure called by 'stm'
+		returns empty string if 'stm' is not found
+	*/
+	string getProcCalledBy(int stm);
+
+	/*
+		returns a list of statements that calls 'procedure'
+		returns an empty set {} if 'procedure' is not found
+	*/
+	unordered_set<int> getStmCalling(string procedure);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Next Getter Methods	/////////////////////////////////////////////////////////////////////////

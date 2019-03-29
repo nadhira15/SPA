@@ -281,16 +281,6 @@ unordered_set<string> PKB::getConstants()
 	return constList;
 }
 
-string PKB::getProcCalledBy(int stm)
-{
-	return cStore.getProcCalledBy(stm);
-}
-
-unordered_set<int> PKB::getStmCalling(string procedure)
-{
-	return cStore.getStmCalling(procedure);
-}
-
 bool PKB::hasFollowRelation()
 {
 	return !fStore.isEmpty();
@@ -539,6 +529,16 @@ unordered_set<pair<string, string>, strPairhash> PKB::getCallPairs()
 unordered_set<pair<string, string>, strPairhash> PKB::getCallStarPairs()
 {
 	return cStore.getCallStarPairs();
+}
+
+string PKB::getProcCalledBy(int stm)
+{
+	return cStore.getProcCalledBy(stm);
+}
+
+unordered_set<int> PKB::getStmCalling(string procedure)
+{
+	return cStore.getStmCalling(procedure);
 }
 
 bool PKB::hasNextRelation()
