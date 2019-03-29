@@ -19,6 +19,7 @@ void DesignExtractor::extractDesigns(PKB storage)
 	//Statement/Procedure - Variable Relationships
 	vector<string> sortedProcedures = topologicalSortProcedures();
 	processAdvancedUsesAndModifies(sortedProcedures);
+	processCallsStar(sortedProcedures);
 }
 
 /*
@@ -181,17 +182,43 @@ void DesignExtractor::processAdvancedUsesAndModifies(std::vector<std::string> so
 /*
  * Populates the Uses of Call Statements in SIMPLE
  */
-void DesignExtractor::processUsesCalls(std::string procedure)
-{
+void DesignExtractor::processUsesCalls(std::string procedure) {
 	//TODO: Implement for Iteration 2
+	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
+	int x;
+	for (int i = 0; i < x; i++) {
+		int currLine = i;
+		stmType type = pkb.getStmType(i);
+		if (type == stmType::call) {
+			std::string procedure = pkb.getCalledByStm(i);
+			std::unordered_set<std::string> usedVars = pkb.getVarUsedByProc(procedure);
+
+			for (std::string var : usedVars) {
+				pkb.addUsesStm(i, var);
+			}
+		}
+	}
 }
 
 /*
  * Populates the Uses of Modifies Statements in SIMPLE
  */
-void DesignExtractor::processModifiesCalls(std::string procedure)
-{
+void DesignExtractor::processModifiesCalls(std::string procedure) {
 	//TODO: Implement for Iteration 2
+	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
+	int x;
+	for (int i = 0; i < x; i++) {
+		int currLine = i;
+		stmType type = pkb.getStmType(i);
+		if (type == stmType::call) {
+			std::string procedure = pkb.getCalledByStm(i);
+			std::unordered_set<std::string> modifiedVars = pkb.getVarModifiedByProc(procedure);
+
+			for (std::string var : modifiedVars) {
+				pkb.addModifiesStm(i, var);
+			}
+		}
+	}
 }
 
 /*
@@ -217,8 +244,7 @@ void DesignExtractor::processModifiesContainers(std::string procedure) {
  * Processes the the variables that are USED in Containing Statement so that the While/If Statement
  * also USE these variables.
  */
-void DesignExtractor::processUsesContainers(std::string procedure)
-{
+void DesignExtractor::processUsesContainers(std::string procedure) {
 	int stmtNum = pkb.getTotalStmNo();
 
 	for (int i = stmtNum; i >= 1; i--) {
@@ -233,12 +259,90 @@ void DesignExtractor::processUsesContainers(std::string procedure)
 	}
 }
 
+/*
+ * Processes the variables that are USED in a procedure, by checking the use Relation for all Statements belonging
+ * to that procedure.
+ */
 void DesignExtractor::processUsesProcedures(std::string procedure)
 {
 	//TODO: Implement for Iteration 2
+	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
+	int start; //= first Stmt
+	int last; //= last Stmt
+
+	for (int i = start; i <= last; i++) {
+		std::unordered_set<std::string> usedList = pkb.getVarUsedByStm(i);
+
+		for (std::string usedVar : usedList) {
+			pkb.addUsesProc(procedure, usedVar);
+		}
+	}
+
 }
 
+/*
+ * Processes the variables that are MODIFIED in a procedure, by checking the modifying Relation for all Statements belonging
+ * to that procedure.
+ */
 void DesignExtractor::processModifiesProcedures(std::string procedure)
 {
 	//TODO: Implement for Iteration 2
+	std::unordered_set<int> procedureStm = pkb.getStmList(procedure);
+	int start; //= first Stmt
+	int last; //= last Stmt
+
+	for (int i = start; i <= last; i++) {
+		std::unordered_set<std::string> modifiedList = pkb.getVarModifiedByStm(i);
+
+		for (std::string modifiedVar : modifiedList) {
+			pkb.addModifiesProc(procedure, modifiedVar);
+		}
+	}
+}
+
+/*
+ * Processes the Call* Relationship
+ */
+void DesignExtractor::processCallsStar(std::vector<std::string> sortedProcedures) {
+
+
+	//Process procedure list s where Calls*(s, procedure) is true
+	for (int i = sortedProcedures.size - 1; i >= 0; i++) {
+		std::string procedure = sortedProcedures.at(i);
+		std::unordered_set<std::string> callerList = pkb.getCaller(procedure);
+
+		std::unordered_set<std::string> allAncestorCallers;
+
+		//If Someone called this procedure
+		if (!callerList.empty()) {
+			for (std::string caller : callerList) {
+				std::unordered_set<std::string> ancestorCallersList = pkb.getCallAnc(caller);
+				for (std::string ancestorCaller : ancestorCallersList) {
+					allAncestorCallers.insert(ancestorCaller);
+				}
+				allAncestorCallers.insert(caller);
+			}
+			pkb.setCallAnc(procedure, allAncestorCallers);
+		}
+	}
+	
+	//Process procedure list s where Calls*(procedure, s) is true.
+	for (int i = 0; i < sortedProcedures.size; i++) {
+		std::string procedure = sortedProcedures.at(i);
+		std::unordered_set<std::string> calleeList = pkb.getCallee(procedure);
+
+		std::unordered_set<std::string> allDescendentsCallee;
+
+		//If this procedure called something.
+		if (!calleeList.empty()) {
+			for (std::string callee : calleeList) {
+				std::unordered_set<std::string> descendentsCalleeList = pkb.getCallDesc(callee);
+				for (std::string descendentCallee : descendentsCalleeList) {
+					allDescendentsCallee.insert(descendentCallee);
+				}
+				allDescendentsCallee.insert(callee);
+			}
+			pkb.setCallDesc(procedure, allDescendentsCallee);
+		}
+	}
 }

@@ -34,4 +34,6 @@ private:
 	static void processUsesContainers(std::string procedure);
 	static void processModifiesProcedures(std::string procedure);
 	static void processModifiesContainers(std::string procedure);
+	static void processCallsStar(std::vector<std::string> sortedProcedures);
+
 };
