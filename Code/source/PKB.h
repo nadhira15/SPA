@@ -195,8 +195,8 @@ public:
 	// returns the stored list of procedures
 	unordered_set<string> getProcList();
 
-	// returns a list of statements that are in 'procedure'
-	unordered_set<int> getStmList(string procedure);
+	// returns an ordered list of statements that are in 'procedure'
+	vector<int> getStmList(string procedure);
 
 	// returns the total number of statements in the entire program
 	int getTotalStmNo();
@@ -544,7 +544,7 @@ public:
 
 private:
 	static unordered_set<string> procList;
-	static unordered_map<string, unordered_set<int>> procStmList;
+	static unordered_map<string, vector<int>> procStmList;
 	static vector<stmType> stmTypeList;
 	static unordered_set<string> varList;
 	static unordered_set<string> constList;

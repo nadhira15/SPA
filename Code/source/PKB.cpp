@@ -1,7 +1,7 @@
 #include "PKB.h"
 
 unordered_set<string> PKB::procList;
-unordered_map<string, unordered_set<int>> PKB::procStmList;
+unordered_map<string, vector<int>> PKB::procStmList;
 vector<stmType> PKB::stmTypeList;
 unordered_set<string> PKB::varList;
 unordered_set<string> PKB::constList;
@@ -61,9 +61,9 @@ void PKB::addStatement(int stmNo, stmType type)
 void PKB::addStatement(int stmNo, stmType type, string procedure)
 {
 	stmTypeList.assign(stmNo, type);
-	if (!procStmList.emplace(procedure, unordered_set<int>{stmNo}).second)
+	if (!procStmList.emplace(procedure, vector<int>{stmNo}).second)
 	{
-		procStmList.find(procedure)->second.emplace(stmNo);
+		procStmList.find(procedure)->second.push_back(stmNo);
 	}
 
 	switch (type)
@@ -222,7 +222,7 @@ unordered_set<string> PKB::getProcList()
 	return procList;
 }
 
-unordered_set<int> PKB::getStmList(string procedure)
+vector<int> PKB::getStmList(string procedure)
 {
 	if (procStmList.find(procedure) != procStmList.end())
 	{
