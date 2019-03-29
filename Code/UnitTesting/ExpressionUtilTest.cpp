@@ -18,7 +18,7 @@ namespace UnitTesting
 
 			Assert::IsTrue(validExpression);
 
-			string prefixExpr = ExpressionUtil::convertInfixToPrefix(testStatement);
+			std::string prefixExpr = ExpressionUtil::convertInfixToPrefix(testStatement);
 
 
 			Assert::AreEqual(expectedOutput, prefixExpr);
@@ -120,9 +120,9 @@ namespace UnitTesting
 		{
 			std::string testStatement = "5*(a+b) / 5";
 
-			vector<std::string> expectedConstants{ "5", "5" };
+			std::vector<std::string> expectedConstants{ "5", "5" };
 
-			vector<std::string> output = ExpressionUtil::getConstants(testStatement);
+			std::vector<std::string> output = ExpressionUtil::getConstants(testStatement);
 
 			Assert::IsTrue(expectedConstants == output);
 		}
@@ -131,9 +131,9 @@ namespace UnitTesting
 		{
 			std::string testStatement = "5*(ac+bb) / 5";
 
-			vector<std::string> expectedVariables{ "ac", "bb" };	
+			std::vector<std::string> expectedVariables{ "ac", "bb" };
 
-			vector<std::string> output = ExpressionUtil::getVariables(testStatement);
+			std::vector<std::string> output = ExpressionUtil::getVariables(testStatement);
 
 			Assert::IsTrue(expectedVariables == output);
 		}
@@ -142,9 +142,9 @@ namespace UnitTesting
 		{
 			std::string testStatement = "5*(ac+bb) / 5 + (abc1512)";
 
-			vector<std::string> expectedVariables{ "ac", "bb", "abc1512" };
+			std::vector<std::string> expectedVariables{ "ac", "bb", "abc1512" };
 
-			vector<std::string> output = ExpressionUtil::getVariables(testStatement);
+			std::vector<std::string> output = ExpressionUtil::getVariables(testStatement);
 
 			Assert::IsTrue(expectedVariables == output);
 		}

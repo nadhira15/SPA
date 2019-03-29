@@ -26,10 +26,10 @@
 class ElseParser {
 private:
 	int stmtNum;
-	PKB pkb;
+	std::string procedure;
 	std::vector<Statement> stmtLst;
 public:
-	ElseParser(int stmtNo, std::string stmt, std::vector<Statement> stmtlst, PKB pkb);
+	ElseParser(int stmtNo, std::string stmt, std::vector<Statement> stmtlst, std::string procedure);
 	void parseStmtLst();
 };
 

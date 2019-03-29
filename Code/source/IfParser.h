@@ -29,12 +29,12 @@ private:
 	std::vector<std::string> var;
 	std::vector<std::string> c;
 	int stmtNum;
-	PKB pkb;
+	std::string procedure;
 	std::vector<Statement> stmtLst;
 public:
-	IfParser(int stmtNo, std::string stmt, std::vector<Statement> stmtlst, PKB pkb);
-	vector<std::string> getVariables();
-	vector<std::string> getConstants();
+	IfParser(int stmtNo, std::string stmt, std::vector<Statement> stmtlst, std::string procedure);
+	std::vector<std::string> getVariables();
+	std::vector<std::string> getConstants();
 	void parseStmtLst();
 };
 

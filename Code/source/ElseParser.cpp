@@ -16,17 +16,17 @@
   output: vector<string> of variables/constants
 */
 
-ElseParser::ElseParser(int stmtNo, string stmt, vector<Statement> stmtlst, PKB pkb1) {
+ElseParser::ElseParser(int stmtNo, string stmt, vector<Statement> stmtlst, std::string procedure) {
 	bool valid1 = !stmtlst.empty();
 	if (valid1) {
 		stmtNum = stmtNo;
 		stmtLst = stmtlst;
-		pkb = pkb1;
+		this->procedure = procedure;
 	} else {
 		throw "Else if not in the right form! \n";
 	}
 }
 
 void ElseParser::parseStmtLst() {
-	Parser().parse(stmtLst, stmtNum, pkb);
+	Parser().parse(stmtLst, stmtNum, procedure);
 }

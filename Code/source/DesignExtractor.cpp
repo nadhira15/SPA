@@ -7,13 +7,47 @@ PKB DesignExtractor::pkb;
 void DesignExtractor::extractDesigns(PKB storage)
 {
 	pkb = storage;
+
+	//Verification
+	verifyCalledProceduresPresence();
+	verifyAbsenceOfCyclicity();
+	
+	//Statement-Statement Relationships
 	processFollowStar();
 	processParentStar();
-	processUsesProcedures();
-	processUsesContainers();
-	processModifiesProcedures();
-	processModifiesContainers();
+
+	//Statement/Procedure - Variable Relationships
+	vector<string> sortedProcedures = topologicalSortProcedures();
+	processAdvancedUsesAndModifies(sortedProcedures);
 }
+
+/*
+ *Checks if the procedures found in Call Statements are found inside the procedure list.
+ * Iterates through the list of Call Statements and check if it exist in procedure list.
+ */
+void DesignExtractor::verifyCalledProceduresPresence()
+{
+/*	std::unordered_set<std::string> calledProcedures = pkb.getAllCallee();
+	std::unoredred_set<std::string> procedureList = pkb.getProcedures();
+	for (string calledProcedure : calledProcedures) {
+		bool present = false;
+		for (string procedure : procedureList) {
+			if (calledProcedure == procedure) {
+				present = true;
+				break;
+			}
+		}
+		if (present = false) {
+			throw "A procedure that was called does not exist";
+		}
+	}
+*/	
+}
+
+void DesignExtractor::verifyAbsenceOfCyclicity() {
+
+}
+
 
 /*
  * Processes the Follow* Design Entitiy in the SPA requirement.
@@ -25,25 +59,25 @@ void DesignExtractor::processFollowStar()
 	//Process stmt list s where Follow*(index, s) is true
 	for (int i = stmtNum; i >= 1; i--) {
 		int currStmt = i;
-		int directFollowStm = pkb.getNxtStm(currStmt);
+		int directFollowStm = pkb.getFollower(currStmt);
 		//Has a Next Stm
 		if (directFollowStm != 0) {
 			unordered_set<int> followedByStar = pkb.getAllFollowing(directFollowStm);
 			followedByStar.insert(directFollowStm);
-			pkb.setFollowers(currStmt, followedByStar);
+			pkb.setAllFollowing(currStmt, followedByStar);
 		}
 	}
 
 	//Process stmt list s where Follow*(s, index) is true
 	for (int i = 1; i <= stmtNum; i++) {
 		int currStmt = i;
-		int directPrvStm = pkb.getPrvStm(currStmt);
+		int directPrvStm = pkb.getStmFollowedBy(currStmt);
 
 		//If have Prev Stm
 		if (directPrvStm != 0) {
 			unordered_set<int>  followStar = pkb.getAllFollowedBy(directPrvStm);
 			followStar.insert(directPrvStm);
-			pkb.setStmFollowedBy(currStmt, followStar);
+			pkb.setAllFollowedBy(currStmt, followStar);
 		}
 	}
 
@@ -63,7 +97,7 @@ void DesignExtractor::processParentStar()
 
 		//If have parent,
 		if (directParentStm != 0) {
-			unordered_set<int> ancestors = pkb.getAllAncestors(directParentStm);
+			unordered_set<int> ancestors = pkb.getAncestors(directParentStm);
 			ancestors.insert(directParentStm);
 			pkb.setAncestors(i, ancestors);
 		}
@@ -78,7 +112,7 @@ void DesignExtractor::processParentStar()
 		//Has a Child Stm
 		if (!directChildStm.empty()) {
 			for (int childStm : directChildStm) {
-				unordered_set<int> descendents = pkb.getAllDescendants(childStm);
+				unordered_set<int> descendents = pkb.getDescendants(childStm);
 				for (int descendent : descendents) {
 					allDescendents.insert(descendent);
 				}
@@ -88,6 +122,69 @@ void DesignExtractor::processParentStar()
 		}
 	}
 }
+
+vector<string> DesignExtractor::topologicalSortProcedures()
+{
+	/*
+	unordered_set<std::string> procList = pkb.getProcedures();
+	int procListSize = procList.size();
+
+	unordered_set<std::string> visitedProcedures;
+	vector<std::string> sortedProcedures(procListSize);
+
+	for (std::string procedure : procList) {
+		//Try finding if the procedure has already been visited.
+		std::unordered_set<std::string>::const_iterator exist = visitedProcedures.find(procedure);
+
+		//If we have not visited this procedure, visit it.
+		if (exist != visitedProcedures.end()) {
+			DFSRecursive(procedure, visitedProcedures, sortedProcedures);
+		}
+	}
+	*/
+
+	vector<std::string> sortedProcedures(5);
+	return sortedProcedures;
+}
+
+void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::string> &visitedProcedures, vector<std::string> &sortedProcedures) {
+	/*
+	//Marks procedure as visited
+	visitedProcedures.insert(procedure);
+
+	//Get neighbouring procedures.
+	unordered_set<string> adjacentProcedures = pkb.getCallee(procedure);
+
+	//For each neighbouring procedure
+	for (std::string callee : adjacentProcedures) {
+
+		//Check if neighbouring procedure has been visited
+		std::unordered_set<std::string>::const_iterator exist = visitedProcedures.find(callee);
+
+		//If neighbouring procedure has not been visited, visit it.
+		if (exist != visitedProcedures.end()) {
+			DFSRecursive(procedure, visitedProcedures);
+		}
+	}
+
+	//Add procedure to the sortedProcedures.
+	sortedProcedures.push_back(procedure);
+	*/
+}
+
+void DesignExtractor::processAdvancedUsesAndModifies(std::vector<std::string> sortedProcedures) {
+	for (std::string procedure : sortedProcedures) {
+		/*
+		processCallUses(procedure);
+		processCallModifies(procedure);
+		processUsesContainers(procedure);
+		processModifiesContainers(procedure);
+		processUsesProcedures(procedure);
+		processModifiesProcedures(procedure);
+		*/
+	}
+}
+
 
 void DesignExtractor::processUsesProcedures()
 {
@@ -109,11 +206,11 @@ void DesignExtractor::processModifiesContainers()
 
 	for (int i = stmtNum; i >= 1; i--) {
 		int currLine = i;
-		unordered_set<int> descendents = pkb.getAllDescendants(currLine);
+		unordered_set<int> descendents = pkb.getDescendants(currLine);
 		for (int descendent : descendents) {
-			unordered_set<string> modifiedList = pkb.getModifiedVar(descendent);
+			unordered_set<string> modifiedList = pkb.getVarModifiedByStm(descendent);
 			for (string modifiedVar : modifiedList) {
-				pkb.addModifies(currLine, modifiedVar);
+				pkb.addModifiesStm(currLine, modifiedVar);
 			}
 		}
 	}
@@ -129,11 +226,11 @@ void DesignExtractor::processUsesContainers()
 
 	for (int i = stmtNum; i >= 1; i--) {
 		int currLine = i;
-		unordered_set<int> descendents = pkb.getAllDescendants(currLine);
+		unordered_set<int> descendents = pkb.getDescendants(currLine);
 		for (int descendent : descendents) {
-			unordered_set<string> usedList = pkb.getUsedVar(descendent);
+			unordered_set<string> usedList = pkb.getVarUsedByStm(descendent);
 			for (string usedVariable : usedList) {
-				pkb.addUses(currLine, usedVariable);
+				pkb.addUsesStm(currLine, usedVariable);
 			}
 		}
 	}

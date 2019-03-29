@@ -13,7 +13,7 @@ using namespace std;
 #include "LexicalToken.h"
 #include "ExpressionUtil.h"
 
-const unordered_set<string> validVarType = { "stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure" };
+const unordered_set<string> validVarType = { "stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "prog_line", "procedure" };
 
 /*
 Checks whether the input string is valid:
@@ -65,14 +65,14 @@ Validates declaration vector based on following conditions:
 - design-entity should be valid
 - synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
 */
-string QueryValidator::validateDeclarations(vector<pair<string, string>> declarations) {
+string QueryValidator::validateDeclarations(unordered_map<string, string> declarations) {
 	
-	for (size_t i = 0; i < declarations.size(); i++) {
-		if (validVarType.find(declarations[i].first) == validVarType.end()) {
+	for (auto x: declarations) {
+		if (validVarType.find(x.second) == validVarType.end()) {
 			return "invalid query";
 		}
 
-		if (!LexicalToken::verifyName(declarations[i].second)) {
+		if (!LexicalToken::verifyName(x.first)) {
 			return "invalid query";
 		}
 	}
@@ -86,13 +86,17 @@ Validates vector of selected synonym based on following conditions:
 - synonym should be declared previously
 */
 string QueryValidator::validateSelectedVar(vector<string> selectedVar, unordered_map<string, string> declarationsMap) {
-	
+
 	for (int i = 0; i < selectedVar.size(); i++) {
+		if (selectedVar[i] == "BOOLEAN" && selectedVar.size() != 1) {
+			return "too many selected variable for boolean";
+		}
+		
 		if (!LexicalToken::verifyName(selectedVar[i])) {
 			return "invalid variable name";
 		}
 
-		if (declarationsMap.find(selectedVar[i]) == declarationsMap.end()) {
+		if (selectedVar[i] != "BOOLEAN" && declarationsMap.find(selectedVar[i]) == declarationsMap.end()) {
 			return "selected variable not found";
 		}
 	}
@@ -104,16 +108,16 @@ string QueryValidator::validateSelectedVar(vector<string> selectedVar, unordered
 Validates vector of such that parameter based on following conditions:
 - valid relation name
 - for each relation, first and second argument should be valid
-
-TODO: implement validation for other relations
 */
 string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
 
-	unordered_set<string> validRelation = { "Parent", "Parent*", "Follows", "Follows*", "Uses", "Modifies" };
-	unordered_set<string> validArgs = { "stmt", "read", "print", "while", "if", "assign", "call" };
-	unordered_set<string> validFirstArgsParent = { "stmt", "while", "if" };
-	unordered_set<string> validFirstArgsUses = { "stmt", "print", "while", "if", "procedure", "assign", "call" };
-	unordered_set<string> validFirstArgsModifies = { "stmt", "read", "while", "if", "procedure", "assign", "call" };
+	unordered_set<string> validRelation = { "Parent", "Parent*", "Follows", "Follows*", "Uses", "Modifies", "Calls", "Calls*", "Next", "Next*", "Affects", "Affects*" };
+	unordered_set<string> validArgs = { "stmt", "read", "print", "while", "if", "assign", "call", "prog_line" };
+	unordered_set<string> validFirstArgsParent = { "stmt", "while", "if", "prog_line" };
+	unordered_set<string> validFirstArgsUses = { "stmt", "print", "while", "if", "assign", "call", "procedure", "prog_line" };
+	unordered_set<string> validFirstArgsModifies = { "stmt", "read", "while", "if", "assign", "call", "procedure", "prog_line" };
+	unordered_set<string> validArgsCalls = { "procedure" };
+	unordered_set<string> validArgsAffects = { "stmt", "assign", "prog_line" };
 
 	for (int i = 0; i < param.size(); i++) {
 		string relation = param[i].first;
@@ -145,7 +149,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 
 			// Validating second args
@@ -155,10 +159,10 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid second args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 		} 
-		else if (relation == "Follows" || relation == "Follows*") {
+		else if (relation == "Follows" || relation == "Follows*" || relation == "Next" || relation == "Next*") {
 
 			// Validating first args
 			if (firstArgs == "_" ||
@@ -167,7 +171,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 
 			// Validating second args
@@ -177,7 +181,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid second args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 		} 
 		else if (relation == "Uses") {
@@ -189,7 +193,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 
 			// Validating second args
@@ -200,7 +204,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid second args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 		}
 		else if (relation == "Modifies") {
@@ -212,7 +216,7 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
 			}
 
 			// Validating second args
@@ -223,7 +227,51 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 				// valid first args
 			}
 			else {
-				return "invalid query";
+				return "semantic error";
+			}
+		}
+		else if (relation == "Calls" || relation == "Calls*") {
+
+			// Validating first args
+			if (firstArgs == "_" ||
+				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
+				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validArgsCalls.find(firstArgsType) != validArgsCalls.end()))) {
+				// valid first args
+			}
+			else {
+				return "semantic error";
+			}
+
+			// Validating second args
+			if (secondArgs == "_" ||
+				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
+				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs) && (validArgsCalls.find(secondArgsType) != validArgsCalls.end()))) {
+				// valid second args
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		else if (relation == "Affects" || relation == "Affects*") {
+
+			// Validating first args
+			if (firstArgs == "_" ||
+				LexicalToken::verifyInteger(firstArgs) ||
+				(LexicalToken::verifyName(firstArgs) && (validArgsAffects.find(firstArgsType) != validArgsAffects.end()))) {
+				// valid first args
+			}
+			else {
+				return "semantic error";
+			}
+
+			// Validating second args
+			if (secondArgs == "_" ||
+				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyName(secondArgs) && (validArgsAffects.find(secondArgsType) != validArgsAffects.end()))) {
+				// valid second args
+			}
+			else {
+				return "semantic error";
 			}
 		}
 	}
@@ -235,28 +283,29 @@ string QueryValidator::validateSuchThatParam(vector<pair<string, pair<string, st
 Validates vector of pattern parameter based on following conditions:
 - synonym should follow the grammar rule: LETTER (LETTER | DIGIT)*
 - synonym should be declared previously
-- synonym should be assign type (assign-synonym)
+- synonym should be assign/if/while type
 - for each pattern clause, first and second argument should be valid
 
-TODO: implement validation for if and while pattern
+Note: for if pattern, the third args will be removed
 */
 string QueryValidator::validatePatternParam(vector<pair<string, pair<string, string>>> param, unordered_map<string, string> declarationsMap) {
 	
 	for (int i = 0; i < param.size(); i++) {
 		string stmt = param[i].first;
+		string stmtType;
 		string firstArgs = param[i].second.first;
 		string secondArgs = param[i].second.second;
 
 		// Assign synonym validation
 		if (!LexicalToken::verifyName(stmt)) {
-			return "invalid assign synonym";
+			return "invalid synonym";
 		}
 
 		if (declarationsMap.find(stmt) == declarationsMap.end()) {
 			return "statement not found";
 		}
-		else if ((declarationsMap.find(stmt))->second != "assign") {
-			return "statement type is not assign";
+		else {
+			stmtType = (declarationsMap.find(stmt))->second;
 		}
 
 		// First argument validation
@@ -266,19 +315,268 @@ string QueryValidator::validatePatternParam(vector<pair<string, pair<string, str
 			// valid first args
 		}
 		else {
-			return "invalid first args";
+			return "semantic error";
 		}
 
 		// Second argument validation
-		if (secondArgs == "_" ||
-			(secondArgs[0] == '_' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(2, secondArgs.length() - 4))) ||
-			(secondArgs[0] == '"' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(1, secondArgs.length() - 2)))) {
-			// valid second args
+		if (stmtType == "assign") {
+			if (secondArgs == "_" ||
+				(secondArgs[0] == '_' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(2, secondArgs.length() - 4))) ||
+				(secondArgs[0] == '"' && ExpressionUtil::verifyInfixExpression(secondArgs.substr(1, secondArgs.length() - 2)))) {
+				// valid second args
+			}
+			else {
+				return "semantic error";
+			}
+
+		}
+		else if (stmtType == "if") {
+			if (secondArgs == "_,_") {
+				// valid second args
+			}
+			else {
+				return "semantic error";
+			}
+
+		}
+		else if (stmtType == "while") {
+			if (secondArgs == "_") {
+				// valid second args
+			}
+			else {
+				return "semantic error";
+			}
+
 		}
 		else {
-			return "invalid second args";
+			return "statement type is invalid";
+		}
+	}
+
+	return "";
+}
+
+/*
+Validates vector of with parameter based on following conditions:
+- ...
+*/
+string QueryValidator::validateWithParam(vector<pair<string, string>> param, unordered_map<string, string> declarationsMap) {
+
+	unordered_set<string> intTypeNoRef = { "prog_line" };
+	unordered_set<string> intTypeRefStmtNum = { "stmt", "read", "print", "while", "if", "assign", "call" };
+	unordered_set<string> intTypeRefValue = { "constant" };
+	unordered_set<string> stringTypeRefProcName = { "procedure", "call" };
+	unordered_set<string> stringTypeRefVarName = { "variable", "read", "print" };
+
+	for (int i = 0; i < param.size(); i++) {
+		string firstArgs = param[i].first;
+		string secondArgs = param[i].second;
+		string firstArgsType = "";
+		string secondArgsType = "";
+		string synonym;
+		string synonymType;
+
+		// check firstArgs type(int / string)
+
+		// type: int
+		if (LexicalToken::verifyInteger(firstArgs)) {
+			firstArgsType = "int";
+		}
+		// type: synonym of "prog_line"
+		else if (LexicalToken::verifyName(firstArgs)) {
+			if (declarationsMap.find(firstArgs) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(firstArgs)->second;
+			}
+			else {
+				return "semantic error";
+			}
+			
+			if (intTypeNoRef.find(synonymType) != intTypeNoRef.end()) {
+				firstArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .stmt#
+		else if (firstArgs.find(".stmt#") != -1) {
+			synonym = firstArgs.substr(0, firstArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (intTypeRefStmtNum.find(synonymType) != intTypeRefStmtNum.end()) {
+				firstArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .value
+		else if (firstArgs.find(".value") != -1) {
+			synonym = firstArgs.substr(0, firstArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (intTypeRefValue.find(synonymType) != intTypeRefValue.end()) {
+				firstArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: "IDENT"
+		else if (firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) {
+			firstArgsType = "str";
+		}
+		// type: attrRef with attribute value .procName
+		else if (firstArgs.find(".procName") != -1) {
+			synonym = firstArgs.substr(0, firstArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (stringTypeRefProcName.find(synonymType) != stringTypeRefProcName.end()) {
+				firstArgsType = "str";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .varName
+		else if (firstArgs.find(".varName") != -1) {
+			synonym = firstArgs.substr(0, firstArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (stringTypeRefVarName.find(synonymType) != stringTypeRefVarName.end()) {
+				firstArgsType = "str";
+			}
+			else {
+				return "semantic error";
+			}
 		}
 
+		// check secondArgs type (int/string), exact same logic like firstArgs
+		
+		// type: int
+		if (LexicalToken::verifyInteger(secondArgs)) {
+			secondArgsType = "int";
+		}
+		// type: synonym of "prog_line"
+		else if (LexicalToken::verifyName(secondArgs)) {
+			if (declarationsMap.find(secondArgs) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(secondArgs)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (intTypeNoRef.find(synonymType) != intTypeNoRef.end()) {
+				secondArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .stmt#
+		else if (secondArgs.find(".stmt#") != -1) {
+			synonym = secondArgs.substr(0, secondArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (intTypeRefStmtNum.find(synonymType) != intTypeRefStmtNum.end()) {
+				secondArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .value
+		else if (secondArgs.find(".value") != -1) {
+			synonym = secondArgs.substr(0, secondArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (intTypeRefValue.find(synonymType) != intTypeRefValue.end()) {
+				secondArgsType = "int";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: "IDENT"
+		else if (secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) {
+			secondArgsType = "str";
+		}
+		// type: attrRef with attribute value .procName
+		else if (secondArgs.find(".procName") != -1) {
+			synonym = secondArgs.substr(0, secondArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (stringTypeRefProcName.find(synonymType) != stringTypeRefProcName.end()) {
+				secondArgsType = "str";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		// type: attrRef with attribute value .varName
+		else if (secondArgs.find(".varName") != -1) {
+			synonym = secondArgs.substr(0, secondArgs.find("."));
+
+			if (declarationsMap.find(synonym) != declarationsMap.end()) {
+				synonymType = declarationsMap.find(synonym)->second;
+			}
+			else {
+				return "semantic error";
+			}
+
+			if (stringTypeRefVarName.find(synonymType) != stringTypeRefVarName.end()) {
+				secondArgsType = "str";
+			}
+			else {
+				return "semantic error";
+			}
+		}
+		
+		if (firstArgsType == "" || secondArgsType == "" || firstArgsType != secondArgsType) {
+			return "semantic error";
+		}
 	}
 
 	return "";

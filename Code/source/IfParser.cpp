@@ -16,7 +16,7 @@
   output: std::vector<std::string> of variables/constants
 */
 
-IfParser::IfParser(int stmtNo, std::string stmt, std::vector<Statement> stmtlst, PKB pkb1) {
+IfParser::IfParser(int stmtNo, string stmt, vector<Statement> stmtlst, string proc) {
 	int i = stmt.find('(');
 	int j = stmt.rfind(')');
 	std::string cond_expr = stmt.substr(i + 1, j - i - 1);
@@ -27,7 +27,7 @@ IfParser::IfParser(int stmtNo, std::string stmt, std::vector<Statement> stmtlst,
 	if (valid1 && valid2) {
 		var = ConditionalExp::getVariables();
 		c = ConditionalExp::getConstants();
-		pkb = pkb1;
+		this->procedure = proc;
 		stmtLst = stmtlst;
 		stmtNum = stmtNo;
 	} else {
@@ -44,5 +44,5 @@ std::vector<std::string> IfParser::getConstants() {
 }
 
 void IfParser::parseStmtLst() {
-	Parser().parse(stmtLst, stmtNum, pkb);
+	Parser().parse(stmtLst, stmtNum, procedure);
 }

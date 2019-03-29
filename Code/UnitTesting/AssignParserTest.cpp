@@ -24,10 +24,10 @@ namespace UnitTesting
 		TEST_METHOD(testAssignGetExpressionVariable)
 		{
 			std::string testStatement = "p=x+6/gp+abc123abc";
-			vector<std::string> parseExpected{ "x", "gp", "abc123abc" };
+			std::vector<std::string> parseExpected{ "x", "gp", "abc123abc" };
 			AssignParser ap;
 
-			vector<std::string> output = ap.getRightVariable(testStatement);
+			std::vector<std::string> output = ap.getRightVariable(testStatement);
 
 			Assert::IsTrue(parseExpected == output);
 		}
@@ -35,10 +35,10 @@ namespace UnitTesting
 		TEST_METHOD(testAssignGetExpressionConstants)
 		{
 			std::string testStatement = "p=x+6/2+200";
-			vector<std::string> parseExpected{ "6", "2", "200" };
+			std::vector<std::string> parseExpected{ "6", "2", "200" };
 			AssignParser ap;
 
-			vector<std::string> output = ap.getRightConstant(testStatement);
+			std::vector<std::string> output = ap.getRightConstant(testStatement);
 
 			Assert::IsTrue(parseExpected == output);
 		}
