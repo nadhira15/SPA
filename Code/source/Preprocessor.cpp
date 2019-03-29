@@ -1,24 +1,11 @@
-#pragma once
-
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <stack>
-#include <algorithm>
-
-using namespace std;
-
-#include "Statement.h"
-#include "Preprocesser.h"
 
 /**** Usage guide
-  Preprocesser will contain:
+  Preprocessor will contain:
   (1) validate(...): the validator methods to validate statement types (used mainly for testing)
   (2) getProcLst: getter method for the procedure list
-  (3) Preprocesser: constructor method to satrt the processing of source code
+  (3) Preprocessor: constructor method to satrt the processing of source code
 
-  Preprocesser:
+  Preprocessor:
   input: string representing source code
   output: the object
 
@@ -27,77 +14,69 @@ using namespace std;
   output: vector<Statement> representing the vector of procedures in the program
 
   to use:
-  (1) create preprocesser and get procedrue list: Preprocesser(string chunk).getProcLst();
+  (1) create preprocesser and get procedure list: 
+  Preprocessor p = Preprocessor(string chunk);
+  p.process();
+  vector<Statement> procLst = p.getProcLst();
 */
 
-vector<Statement> Preprocesser::getProcLst() {
-	return procLst;
-}
+#include "Preprocessor.h"
 
-void Preprocesser::error(int t) {
-	string s1 = "Pre-processing error, incorrect syntax for ";
-	string s2 = (t == 0) ? "procedure" : (t == 1) ? "if/else, while" : "assign, call, print, read";
-	//throw "\n" + s1 + s2 + "\n";
+std::vector<Statement> Preprocessor::getProcLst() {
+	return procLst;
 }
 
 /* constructor
 input: nil
 output: vector<Statement> that contains procedure statements
 */
-Preprocesser::Preprocesser(string chunk1)
+Preprocessor::Preprocessor(std::string chunk1)
 {
 	//take file contents and save as global variable
-	chunk = chunk1;
-	procLst.push_back(processProc(0, chunk.size()));
-	/* 
-	//bug: if variable name is procedure it will mess up the program
-	size_t prev = chunk.find("procedure "), next;
-	while (prev != string::npos) {
-		next = chunk.find("procedure ", prev + 10);
-		if (next == string::npos) {
-			procLst.push_back(processProc(prev, chunk.size()));
-		}
-		else {
-			procLst.push_back(processProc(prev, next));
-		}
-		prev = next;
-	}
-	*/
+	chunk1.erase(chunk1.find('\0'));
+	chunk = trim(chunk1);
+	size = chunk.size();
 }
+
+void Preprocessor::process() {
+	int bookmark = 0;
+	try {
+		while (stopper < size - 1) { //chunk is trimmed so last item should be }
+			procLst.push_back(processProc(bookmark));
+			bookmark = stopper + 1;
+		}
+	}
+	catch (std::string e) {
+		std::string s1 = "Pre-processing error, incorrect syntax for ";
+		cout << s1 << e << "! \n";
+	}
+}
+
 /*
 input: start, end (not inclusive)
 output: Statement
 NOTE 'procedure' can only occur once per procedure
 */
-Statement Preprocesser::processProc(int bookmark, int last)
+Statement Preprocessor::processProc(int bookmark)
 {
 	int valid;
-	string tmp;
-	size_t tmpn, pos;
+	std::string tmp;
+	size_t tmpn;
 	int tmpn2;
-	//reset counters for '{' and '}'
-	count1 = 1;
-	count2 = 0;
-	//validation: check for last '}' and pass validation to validateProc
-	pos = chunk.find_last_not_of(" \t\f\v\n\r");
-	tmpn = chunk.find('{');
-	// bug: 1 test validation for proc is failing 
-	//if (chunk[pos] != '}') {
-	//	valid = 0;
-	//	error(0);
-		//!!error handling here
-	//} else 
-	if (tmpn != string::npos) {
+	tmpn = chunk.find('{', bookmark);
+	if (tmpn != std::string::npos) {
 		tmp = trim(chunk.substr(bookmark, tmpn - bookmark));
 		valid = validateProc(tmp); //validate procedure term
+	} else {
+		valid = 0; // unable to find '{'
 	}
 	if (valid == 0) {
-		error(0);
+		throw "procedure";
 	}
 	tmpn2 = stmtNum;
-	vector<Statement> stmtlst = processLst(tmpn + 1, pos);
-	if (stmtlst.empty() || count1 != count2 || !ifStmt.empty()) {
-		error(0);
+	std::vector<Statement> stmtlst = processLst(tmpn + 1);
+	if (stmtlst.empty() || !ifStmt.empty()) {
+		throw "procedure";
 	}
 	Statement s = Statement(tmp, stmtlst, valid, tmpn2); //will proceed even with errors
 	return s;
@@ -107,34 +86,30 @@ Statement Preprocesser::processProc(int bookmark, int last)
 input: start, end (usually })
 output: Statement
 */
-vector<Statement> Preprocesser::processLst(int bookmark, int last) {
-	vector<Statement> stmtlst;
+std::vector<Statement> Preprocessor::processLst(int bookmark) {
+	std::vector<Statement> stmtlst;
 	int valid, i, tmpN;
-	string tmp, tmp2;
+	std::string tmp, tmp2;
 	stopper = 0;
-	for (i = bookmark; i < last; i++) {
+	for (i = bookmark; i < size; i++) {
 		if (chunk[i] == '}') { //end of a {} part
-			//double check count of '{' and '}'
-			count2++;
 			//reset stopper
 			stopper = i;
-			//end loop by i = last
-			i = last;
+			//end loop by breaking
+			break;
 		}
 		else if (chunk[i] == '{') {
-			//double check count of '{' and '}'
-			count1++;
 			//return trimmed string of statement
 			tmp = trim(chunk.substr(bookmark, i - bookmark));
 			//check validity
 			valid = validateCurvedBrackets(tmp);
 			//based on results of validation
 			if (valid == 0) {
-				error(1);
+				throw "if/else, while";
 			} else if (valid == 7) {
 				// ELSE statement
 				if (ifStmt.empty()) {
-					error(1);
+					throw "if/else";
 				} else {
 					tmpN = ifStmt.top();
 					ifStmt.pop();
@@ -148,7 +123,7 @@ vector<Statement> Preprocesser::processLst(int bookmark, int last) {
 				tmpN = stmtNum;
 				stmtNum++;
 			}
-			stmtlst.push_back(Statement(tmp, processLst(i + 1, last), valid, tmpN));
+			stmtlst.push_back(Statement(tmp, processLst(i + 1), valid, tmpN));
 			//after execution of previous process {}, return to previous bookmark and i-count
 			i = stopper;
 			bookmark = stopper + 1;
@@ -159,8 +134,7 @@ vector<Statement> Preprocesser::processLst(int bookmark, int last) {
 			tmpN = stmtNum;
 			valid = validateSemicolon(tmp);
 			if (valid == 0) {
-				//ignore this statement
-				error(2);
+				throw "assign, call, print, read";
 			} else {
 				stmtlst.push_back(Statement(tmp, valid, tmpN));
 				stmtNum++;
@@ -178,21 +152,21 @@ validation of syntax errors
 errors covered: incorrect syntax
 errors NOT covered: incorrect variables, expression (i.e. *+/-=)
 */
-int Preprocesser::validateSemicolon(string s)
+int Preprocessor::validateSemicolon(std::string s)
 {
 	int result = 0;
 	size_t end;
-	if ((s.find("=") != string::npos) && (s.find("=") == s.rfind("="))) {
-		//ASSIGN is passed as long as it contains an "="
+	if ((s.find("=") != std::string::npos) && (s.find("=") == s.rfind("="))) {
+		//ASSIGN is passed as long as it contains 1 "="
 		result = 1;
 	} else {
 		end = s.find(" ");
-		if (end == string::npos) {
+		if (end == std::string::npos) {
 			result = 0;
 		} else {
-			string firstWord = s.substr(0, end);
+			std::string firstWord = s.substr(0, end);
 			s = trim(s.substr(s.find(" "), s.size() - s.find(" ")));
-			if (s.find(" ") == string::npos) {
+			if (s.find(" ") == std::string::npos) {
 				//READ, CALL, PRINT is passed as long as it contains 2 words
 				if (firstWord.compare("call") == 0) result = 2;
 				else if (firstWord.compare("read") == 0) result = 3;
@@ -200,7 +174,6 @@ int Preprocesser::validateSemicolon(string s)
 			}
 		}
 	}
-	
 	return result;
 }
 
@@ -210,7 +183,7 @@ validation of syntax errors
 errors covered: incorrect syntax for if, while
 errors NOT covered: incorrect variables, expression (i.e. *+/-=), non-alphanumeric characters
 */
-int Preprocesser::validateCurvedBrackets(string s)
+int Preprocessor::validateCurvedBrackets(std::string s)
 {
 	int result = 0;
 	if (s.substr(0, 5).compare("while") == 0) {
@@ -238,14 +211,14 @@ validation of syntax errors
 errors covered: incorrect syntax for procedure
 errors NOT covered: incorrect variables, expression (i.e. *+/-=), non-alphanumeric characters
 */
-int Preprocesser::validateProc(string s)
+int Preprocessor::validateProc(std::string s)
 {
 	int result = 0;
-	string firstWord = s.substr(0, s.find(" "));
+	std::string firstWord = s.substr(0, s.find(" "));
 	if (firstWord.compare("procedure") == 0) {
 		//PROCEDURE is passed as long as it contains 2 words
 		s = trim(s.substr(9, s.size() - 9));
-		if (s.find(" ") == string::npos) result = 8;
+		if (s.find(" ") == std::string::npos) result = 8;
 	}
 	return result;
 }
@@ -256,7 +229,7 @@ adapted from an answer in StackOverflow
 https://stackoverflow.com/questions/44973435/stdptr-fun-replacement-for-c17/44973498#44973498
 to save memory, will change this to void method in future
 */
-string Preprocesser::trim(string s) {
+std::string Preprocessor::trim(std::string s) {
 	s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) {
 		return !isspace(ch);
 	}));
