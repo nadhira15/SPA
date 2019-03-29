@@ -1,6 +1,7 @@
 #include "PKB.h"
 
 unordered_set<string> PKB::procList;
+unordered_map<string, unordered_set<int>> PKB::procStmList;
 vector<stmType> PKB::stmTypeList;
 unordered_set<string> PKB::varList;
 unordered_set<string> PKB::constList;
@@ -14,6 +15,8 @@ FollowStorage PKB::fStore;
 ParentStorage PKB::pStore;
 UseStorage PKB::uStore;
 ModifyStorage PKB::mStore;
+CallStorage PKB::cStore;
+NextStorage PKB::nStore;
 unordered_map<int, pair<string, string> > PKB::patternList;
 
 PKB::PKB()
@@ -28,6 +31,36 @@ void PKB::addProc(string name)
 void PKB::addStatement(int stmNo, stmType type)
 {
 	stmTypeList.assign(stmNo, type);
+
+	switch (type)
+	{
+		case read:
+			readStmList.emplace(stmNo);
+			break;
+		case print:
+			printStmList.emplace(stmNo);
+			break;
+		case assign:
+			assignStmList.emplace(stmNo);
+			break;
+		case whileStm:
+			whileStmList.emplace(stmNo);
+			break;
+		case ifStm:
+			ifStmList.emplace(stmNo);
+			break;
+		default:
+			break;
+	}
+}
+
+void PKB::addStatement(int stmNo, stmType type, string procedure)
+{
+	stmTypeList.assign(stmNo, type);
+	if (!procStmList.emplace(procedure, unordered_set<int>{stmNo}).second)
+	{
+		procStmList.find(procedure)->second.emplace(stmNo);
+	}
 
 	switch (type)
 	{
@@ -135,6 +168,34 @@ bool PKB::addModifiesProc(string procedure, string variable)
 	return mStore.addModifiesProc(procedure, variable);
 }
 
+bool PKB::addCall(string proc1, string proc2)
+{
+	if (proc1 == "" || proc2 == "")
+	{
+		return false;
+	}
+	return cStore.addCall(proc1, proc2);
+}
+
+bool PKB::setCallAnc(string proc, unordered_set<string> procList)
+{
+	return cStore.setCallAnc(proc, procList);
+}
+
+bool PKB::setCallDesc(string proc, unordered_set<string> procList)
+{
+	return cStore.setCallDesc(proc, procList);
+}
+
+bool PKB::addNext(int line1, int line2)
+{
+	if (line2 <= line1 || line1 <= 0 || line2 <= 0)
+	{
+		return false;
+	}
+	return nStore.addNext(line1, line2);
+}
+
 bool PKB::addAssignPattern(int stm, string variable, string expr)
 {
 	return patternList.emplace(stm, pair<string, string>(variable, expr)).second;
@@ -143,6 +204,15 @@ bool PKB::addAssignPattern(int stm, string variable, string expr)
 unordered_set<string> PKB::getProcList()
 {
 	return procList;
+}
+
+unordered_set<int> PKB::getStmList(string procedure)
+{
+	if (procStmList.find(procedure) != procStmList.end())
+	{
+		return procStmList.at(procedure);
+	}
+	return {};
 }
 
 int PKB::getTotalStmNo()
@@ -378,6 +448,120 @@ unordered_set<pair<int, string>, intStringhash> PKB::getStmVarModifyPairs()
 unordered_set<pair<string, string>, strPairhash> PKB::getProcVarModifyPairs()
 {
 	return mStore.getProcVarPairs();
+}
+
+bool PKB::hasCallRelation()
+{
+	return !cStore.isEmpty();
+}
+
+bool PKB::isCaller(string procedure)
+{
+	return cStore.isCaller(procedure);
+}
+
+bool PKB::isCallee(string procedure)
+{
+	return cStore.isCallee(procedure);
+}
+
+bool PKB::hasCallStarPair(string proc1, string proc2)
+{
+	return cStore.hasCallStarPair(pair<string, string>(proc1, proc2));
+}
+
+unordered_set<string> PKB::getCaller(string procedure)
+{
+	return cStore.getCaller(procedure);
+}
+
+unordered_set<string> PKB::getCallee(string procedure)
+{
+	return cStore.getCallee(procedure);
+}
+
+unordered_set<string> PKB::getCallAnc(string procedure)
+{
+	return cStore.getCallAnc(procedure);
+}
+
+unordered_set<string> PKB::getCallDesc(string procedure)
+{
+	return cStore.getCallDesc(procedure);
+}
+
+unordered_set<string> PKB::getAllCallers()
+{
+	return cStore.getAllCallers();
+}
+
+unordered_set<string> PKB::getAllCallees()
+{
+	return cStore.getAllCallees();
+}
+
+unordered_set<pair<string, string>, strPairhash> PKB::getCallPairs()
+{
+	return cStore.getCallPairs();
+}
+
+unordered_set<pair<string, string>, strPairhash> PKB::getCallStarPairs()
+{
+	return cStore.getCallStarPairs();
+}
+
+bool PKB::hasNextRelation()
+{
+	return !nStore.isEmpty();
+}
+
+bool PKB::hasNextStarPair(int line1, int line2)
+{
+	// call DE
+	return false;
+}
+
+int PKB::getNext(int line)
+{
+	return nStore.getNext(line);
+}
+
+int PKB::getPrev(int line)
+{
+	return nStore.getPrev(line);
+}
+
+unordered_set<int> PKB::getAllLnAfter(int line)
+{
+	// call DE
+	return {};
+}
+
+unordered_set<int> PKB::getAllLnBefore(int line)
+{
+	// call DE
+	return {};
+}
+
+unordered_set<int> PKB::getAllNext()
+{
+	return nStore.getAllNext();
+}
+
+unordered_set<int> PKB::getAllPrev()
+{
+	return nStore.getAllPrev();
+}
+
+unordered_set<pair<int, int>, intPairhash> PKB::getNextPairs()
+{
+	return nStore.getNextPairs();
+}
+
+unordered_set<pair<int, int>, intPairhash> PKB::getNextStarPairs()
+{
+	// call DE
+	return {};
 }
 
 unordered_set<int> PKB::findPattern(string variable, string expr, bool isExclusive)
