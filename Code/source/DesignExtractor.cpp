@@ -124,11 +124,12 @@ void DesignExtractor::processParentStar()
 }
 
 vector<string> DesignExtractor::topologicalSortProcedures() {
-	unordered_set<std::string> procList = pkb.getProcList();
+	std::unordered_set<std::string> procList = pkb.getProcList();
 	int procListSize = procList.size();
 
-	unordered_set<std::string> visitedProcedures;
-	vector<std::string> sortedProcedures(procListSize);
+	std::unordered_set<std::string> visitedProcedures;
+	std::vector<std::string> sortedProcedures(procListSize);
+	std::unordered_set<std::string> pathVisitedProcedure;
 
 	for (std::string procedure : procList) {
 		//Try finding if the procedure has already been visited.
@@ -136,15 +137,18 @@ vector<string> DesignExtractor::topologicalSortProcedures() {
 
 		//If we have not visited this procedure, visit it.
 		if (exist != visitedProcedures.end()) {
-			DFSRecursive(procedure, visitedProcedures, sortedProcedures);
+			DFSRecursive(procedure, visitedProcedures, sortedProcedures, pathVisitedProcedure);
 		}
 	}
 	return sortedProcedures;
 }
 
-void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::string> &visitedProcedures, vector<std::string> &sortedProcedures) {
+void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::string> &visitedProcedures, vector<std::string> &sortedProcedures, unordered_set<std::string> pathVisitedProcedure) {
 	//Marks procedure as visited
 	visitedProcedures.insert(procedure);
+
+	//Add visited procedure to currentCallPath
+	pathVisitedProcedure.insert(procedure);
 
 	//Get neighbouring procedures.
 	unordered_set<string> adjacentProcedures = pkb.getCallee(procedure);
@@ -152,16 +156,27 @@ void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::str
 	//For each neighbouring procedure
 	for (std::string callee : adjacentProcedures) {
 
+		//Check if neighbouring procedure is in currentCallPath
+		std::unordered_set<std::string>::const_iterator exist = pathVisitedProcedure.find(callee);
+
+		//If neighbouring procedure is in currentCallPath, detect cyclic Calls.
+		if (exist != visitedProcedures.end()) {
+			throw "Cyclical call detected at Procedure : " + procedure;
+		}
+
 		//Check if neighbouring procedure has been visited
 		std::unordered_set<std::string>::const_iterator exist = visitedProcedures.find(callee);
 
 		//If neighbouring procedure has not been visited, visit it.
-		if (exist != visitedProcedures.end()) {
-			DFSRecursive(procedure, visitedProcedures, sortedProcedures);
+		if (exist == visitedProcedures.end()) {
+			DFSRecursive(procedure, visitedProcedures, sortedProcedures, pathVisitedProcedure);
 		}
 	}
 	//Add procedure to the sortedProcedures.
 	sortedProcedures.push_back(procedure);
+
+	//Remove procedure from current Call path.
+	pathVisitedProcedure.erase(procedure);
 }
 
 /* 
