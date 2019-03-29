@@ -27,8 +27,8 @@ void DesignExtractor::extractDesigns(PKB storage)
  */
 void DesignExtractor::verifyCalledProceduresPresence()
 {
-/*	std::unordered_set<std::string> calledProcedures = pkb.getAllCallee();
-	std::unoredred_set<std::string> procedureList = pkb.getProcedures();
+	std::unordered_set<std::string> calledProcedures = pkb.getAllCallees();
+	std::unordered_set<std::string> procedureList = pkb.getProcList();
 	for (string calledProcedure : calledProcedures) {
 		bool present = false;
 		for (string procedure : procedureList) {
@@ -41,7 +41,6 @@ void DesignExtractor::verifyCalledProceduresPresence()
 			throw "A procedure that was called does not exist";
 		}
 	}
-*/	
 }
 
 void DesignExtractor::verifyAbsenceOfCyclicity() {
@@ -123,10 +122,8 @@ void DesignExtractor::processParentStar()
 	}
 }
 
-vector<string> DesignExtractor::topologicalSortProcedures()
-{
-	/*
-	unordered_set<std::string> procList = pkb.getProcedures();
+vector<string> DesignExtractor::topologicalSortProcedures() {
+	unordered_set<std::string> procList = pkb.getProcList();
 	int procListSize = procList.size();
 
 	unordered_set<std::string> visitedProcedures;
@@ -141,14 +138,10 @@ vector<string> DesignExtractor::topologicalSortProcedures()
 			DFSRecursive(procedure, visitedProcedures, sortedProcedures);
 		}
 	}
-	*/
-
-	vector<std::string> sortedProcedures(5);
 	return sortedProcedures;
 }
 
 void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::string> &visitedProcedures, vector<std::string> &sortedProcedures) {
-	/*
 	//Marks procedure as visited
 	visitedProcedures.insert(procedure);
 
@@ -163,35 +156,40 @@ void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::str
 
 		//If neighbouring procedure has not been visited, visit it.
 		if (exist != visitedProcedures.end()) {
-			DFSRecursive(procedure, visitedProcedures);
+			DFSRecursive(procedure, visitedProcedures, sortedProcedures);
 		}
 	}
-
 	//Add procedure to the sortedProcedures.
 	sortedProcedures.push_back(procedure);
-	*/
 }
 
+/* 
+ * Performs population of Uses and Modifies for Calls, If/While Container Statements and Procecedures
+ * starting from the leaf node procedures.
+ */
 void DesignExtractor::processAdvancedUsesAndModifies(std::vector<std::string> sortedProcedures) {
 	for (std::string procedure : sortedProcedures) {
-		/*
-		processCallUses(procedure);
-		processCallModifies(procedure);
+		processUsesCalls(procedure);
+		processModifiesCalls(procedure);
 		processUsesContainers(procedure);
 		processModifiesContainers(procedure);
 		processUsesProcedures(procedure);
 		processModifiesProcedures(procedure);
-		*/
 	}
 }
 
-
-void DesignExtractor::processUsesProcedures()
+/*
+ * Populates the Uses of Call Statements in SIMPLE
+ */
+void DesignExtractor::processUsesCalls(std::string procedure)
 {
 	//TODO: Implement for Iteration 2
 }
 
-void DesignExtractor::processModifiesProcedures()
+/*
+ * Populates the Uses of Modifies Statements in SIMPLE
+ */
+void DesignExtractor::processModifiesCalls(std::string procedure)
 {
 	//TODO: Implement for Iteration 2
 }
@@ -200,8 +198,7 @@ void DesignExtractor::processModifiesProcedures()
  * Processes the the variables that are MODIFIED in Containing Statement so that the While/If Statement
  * also MODIFY these variables.
  */
-void DesignExtractor::processModifiesContainers()
-{
+void DesignExtractor::processModifiesContainers(std::string procedure) {
 	int stmtNum = pkb.getTotalStmNo();
 
 	for (int i = stmtNum; i >= 1; i--) {
@@ -220,7 +217,7 @@ void DesignExtractor::processModifiesContainers()
  * Processes the the variables that are USED in Containing Statement so that the While/If Statement
  * also USE these variables.
  */
-void DesignExtractor::processUsesContainers()
+void DesignExtractor::processUsesContainers(std::string procedure)
 {
 	int stmtNum = pkb.getTotalStmNo();
 
@@ -234,4 +231,14 @@ void DesignExtractor::processUsesContainers()
 			}
 		}
 	}
+}
+
+void DesignExtractor::processUsesProcedures(std::string procedure)
+{
+	//TODO: Implement for Iteration 2
+}
+
+void DesignExtractor::processModifiesProcedures(std::string procedure)
+{
+	//TODO: Implement for Iteration 2
 }

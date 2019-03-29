@@ -28,10 +28,10 @@ private:
 	static vector<string> topologicalSortProcedures();
 	static void DFSRecursive(std::string procedure, unordered_set<std::string>& visitedProcedures, vector<std::string>& sortedProcedures);
 	static void processAdvancedUsesAndModifies(std::vector<std::string> sortedProcedures);
-	static void processCallUses();
-	static void processCallModifies();
-	static void processUsesProcedures();
-	static void processUsesContainers();
-	static void processModifiesProcedures();
-	static void processModifiesContainers();
+	static void processUsesCalls(std::string procedure);
+	static void processModifiesCalls(std::string procedure);
+	static void processUsesProcedures(std::string procedure);
+	static void processUsesContainers(std::string procedure);
+	static void processModifiesProcedures(std::string procedure);
+	static void processModifiesContainers(std::string procedure);
 };

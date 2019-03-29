@@ -127,7 +127,7 @@ void Parser::extractCallEntity(std::string &stmtString, int stmtLine, std::strin
 	CallParser cp;
 	string procedureName = cp.parseCallStmt(stmtString);
 	
-	//pkb.addCall(procedure, procedureName);
+	pkb.addCall(procedure, procedureName);
 }
 
 void Parser::extractReadEntity(std::string &stmtString, int stmtLine) {
