@@ -19,13 +19,13 @@ bool NextStorage::addNext(int prev, int next)
 	}
 
 	// if prev already exist in nextTable
-	if (!nextTable.emplace(prev, nRelationships{ {}, { next } }).second)
+	if (!nextTable.emplace(prev, nRelationships{ { next }, {} }).second)
 	{
 		nextTable.find(prev)->second.next.emplace(next);
 	}
 
 	// if next already exist in nextTable
-	if (!nextTable.emplace(next, nRelationships{ { prev }, {} }).second)
+	if (!nextTable.emplace(next, nRelationships{ {}, { prev } }).second)
 	{
 		nextTable.find(next)->second.previous.emplace(prev);
 	}
