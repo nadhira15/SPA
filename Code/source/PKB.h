@@ -174,9 +174,7 @@ public:
 		add the next relation in NextStorage
 		Returns false if
 			1) the pair is already stored
-			2) the previous program line has another next program line stored
-			3) the next program line has another previous program line stored
-			4) line2 <= line1 or line1, line2 <= 0
+			2) line2 <= line1 or line1, line2 <= 0
 	*/
 	bool addNext(int line1, int line2);
 
@@ -479,16 +477,16 @@ public:
 	bool hasNextStarPair(int line1, int line2);
 
 	/*
-		return the program line to be executed after 'line'
-		return 0 if 'line' is not found
+		return a list of program lines that can be executed after 'line'
+		return {} if 'line' is not found
 	*/
-	int getNext(int line);
+	unordered_set<int> getNext(int line);
 
 	/*
-		return the program line to be executed before 'line'
-		return 0 if 'line' is not found
+		return a list of program lines that can be executed before 'line'
+		return {} if 'line' is not found
 	*/
-	int getPrev(int line);
+	unordered_set<int> getPrev(int line);
 
 	/*
 		return a list of program lines that is directly/indirectly after 'line'
