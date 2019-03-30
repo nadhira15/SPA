@@ -174,7 +174,7 @@ public:
 		add the next relation in NextStorage
 		Returns false if
 			1) the pair is already stored
-			2) line2 <= line1 or line1, line2 <= 0
+			2) line1, line2 <= 0
 	*/
 	bool addNext(int line1, int line2);
 
