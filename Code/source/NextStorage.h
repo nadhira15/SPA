@@ -15,8 +15,8 @@ using namespace std;
 */
 struct nRelationships
 {
-	int next;
-	int previous;
+	unordered_set<int> next;
+	unordered_set<int> previous;
 };
 
 /*
@@ -38,16 +38,16 @@ public:
 	bool isEmpty();
 
 	/*
-		return the program line to be executed after 'line'
-		return 0 if 'line' is not found
+		return a list of program lines that can be executed after 'line'
+		return {} if 'line' is not found
 	*/
-	int getNext(int line);
+	unordered_set<int> getNext(int line);
 
 	/*
-		return the program line to be executed before 'line'
-		return 0 if 'line' is not found
+		return a list of program lines that can be executed before 'line'
+		return {} if 'line' is not found
 	*/
-	int getPrev(int line);
+	unordered_set<int> getPrev(int line);
 
 	// returns a list of all program lines that is executed after another
 	unordered_set<int> getAllNext();

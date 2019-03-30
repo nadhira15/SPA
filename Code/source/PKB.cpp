@@ -552,12 +552,12 @@ bool PKB::hasNextStarPair(int line1, int line2)
 	return false;
 }
 
-int PKB::getNext(int line)
+unordered_set<int> PKB::getNext(int line)
 {
 	return nStore.getNext(line);
 }
 
-int PKB::getPrev(int line)
+unordered_set<int> PKB::getPrev(int line)
 {
 	return nStore.getPrev(line);
 }
