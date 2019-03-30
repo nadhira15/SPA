@@ -205,7 +205,7 @@ bool PKB::setCallDesc(string proc, unordered_set<string> procList)
 
 bool PKB::addNext(int line1, int line2)
 {
-	if (line2 <= line1 || line1 <= 0 || line2 <= 0)
+	if (line1 <= 0 || line2 <= 0)
 	{
 		return false;
 	}
