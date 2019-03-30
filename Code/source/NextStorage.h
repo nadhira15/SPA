@@ -29,8 +29,6 @@ public:
 	/*
 		Adds the next relation into the various lists in the storage
 		Returns false if	1) the pair is already stored
-							2) the previous program line has another next program line stored
-							3) the next program line has another previous program line stored
 	*/
 	bool addNext(int prev, int next);
 
