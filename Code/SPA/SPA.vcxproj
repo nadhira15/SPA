@@ -30,6 +30,7 @@
     <ClCompile Include="..\source\QueryEvaluator.cpp" />
     <ClCompile Include="..\source\QueryValidator.cpp" />
     <ClCompile Include="..\source\ReadParser.cpp" />
+    <ClCompile Include="..\source\RunTimeDesignExtractor.cpp" />
     <ClCompile Include="..\source\Statement.cpp" />
     <ClCompile Include="..\source\StringUtil.cpp" />
     <ClCompile Include="..\source\QueryParser.cpp" />
@@ -59,6 +60,7 @@
     <ClInclude Include="..\source\QueryEvaluator.h" />
     <ClInclude Include="..\source\QueryValidator.h" />
     <ClInclude Include="..\source\ReadParser.h" />
+    <ClInclude Include="..\source\RunTimeDesignExtractor.h" />
     <ClInclude Include="..\source\Statement.h" />
     <ClInclude Include="..\source\StringUtil.h" />
     <ClInclude Include="..\source\QueryParser.h" />
