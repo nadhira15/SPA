@@ -14,7 +14,7 @@ using namespace std;
 #include "NextStorage.h"
 #include "Hasher.h"
 
-enum stmType { read, print, assign, whileStm, ifStm, call};
+enum stmType {read, print, assign, whileStm, ifStm, call};
 
 /*
 	Accepts relationship, pattern and other general data from Parser and DesignExtractor and
@@ -31,10 +31,15 @@ public:
 	// add a procedure to procList
 	void addProc(string procName);
 
-	//add statement to its respective StmList and set stmTypeList[stmNo] to type 
+	/*
+		Pre-cond: statements added in must be added in numerical order; no jumps or reversing
+		add statement to its respective StmList and set stmTypeList[stmNo] to type 
+	*/
 	void addStatement(int stmNo, stmType type);
-
-	//add statement to its respective StmLists and set stmTypeList[stmNo] to type 
+	/*
+		Pre-cond: statements added in must be added in numerical order; no jumps or reversing
+		add statement to its respective StmLists and set stmTypeList[stmNo] to type
+	*/
 	void addStatement(int stmNo, stmType type, string procedure);
 
 	// add variable to varList

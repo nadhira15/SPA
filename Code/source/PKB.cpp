@@ -32,8 +32,7 @@ void PKB::addProc(string name)
 
 void PKB::addStatement(int stmNo, stmType type)
 {
-	stmTypeList.assign(stmNo, type);
-
+	stmTypeList.push_back(type);
 	switch (type)
 	{
 		case read:
@@ -61,7 +60,7 @@ void PKB::addStatement(int stmNo, stmType type)
 
 void PKB::addStatement(int stmNo, stmType type, string procedure)
 {
-	stmTypeList.assign(stmNo, type);
+	stmTypeList.push_back(type);
 	if (!procStmList.emplace(procedure, vector<int>{stmNo}).second)
 	{
 		procStmList.find(procedure)->second.push_back(stmNo);
@@ -239,7 +238,7 @@ int PKB::getTotalStmNo()
 
 stmType PKB::getStmType(int stm)
 {
-	return stmTypeList.at(stm);
+	return stmTypeList.at(stm - 1);
 }
 
 unordered_set<int> PKB::getReadStms()
