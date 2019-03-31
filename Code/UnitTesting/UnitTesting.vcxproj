@@ -166,6 +166,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="NextStartTest.cpp" />
     <ClCompile Include="PreprocessorTest.cpp" />
     <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="LexicalTokenTest.cpp" />

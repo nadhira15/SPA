@@ -1,4 +1,5 @@
 #include "PKB.h"
+#include"RunTimeDesignExtractor.h"
 
 unordered_set<string> PKB::procList;
 unordered_map<string, vector<int>> PKB::procStmList;
@@ -549,7 +550,7 @@ bool PKB::hasNextRelation()
 bool PKB::hasNextStarPair(int line1, int line2)
 {
 	// call DE
-	return false;
+	return RunTimeDesignExtractor::extractNextStarPair(line1, line2);
 }
 
 unordered_set<int> PKB::getNext(int line)
