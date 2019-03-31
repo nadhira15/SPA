@@ -23,7 +23,7 @@ namespace UnitTesting
 
 			Assert::AreEqual(result == toCompare, true);
 		}
-		TEST_METHOD(intVecToStrSet_nonEmpty_success)
+		TEST_METHOD(intVecToMapVec_nonEmpty_success)
 		{
 			std::vector<int> nonEmptyIntVec { 1, 2, 3 };
 			std::string key ("key");
@@ -37,7 +37,7 @@ namespace UnitTesting
 			Assert::AreEqual(result == toCompare, true);
 		}
 
-		TEST_METHOD(intStrVecToStrSet_empty_success)
+		TEST_METHOD(intStrVecToMapVec_empty_success)
 		{
 			std::vector<std::pair<int, std::string>> emptyIntStrVec;
 			std::string key1 ("key1");
@@ -53,7 +53,7 @@ namespace UnitTesting
 			Assert::AreEqual(result == toCompare, true);
 		}
 
-		TEST_METHOD(intStrVecToStrSet_nonEmpty_success)
+		TEST_METHOD(intStrVecToMapVec_nonEmpty_success)
 		{
 			std::vector<std::pair<int, std::string>> nonEmptyIntStrVec;
 		    std::pair<int, std::string> firstPair (1, "one");
@@ -74,7 +74,7 @@ namespace UnitTesting
 			Assert::AreEqual(result == toCompare, true);
 		}
 
-		TEST_METHOD(intSetToStrSet_empty_success)
+		TEST_METHOD(intSetToMapVec_empty_success)
 		{
 			std::unordered_set<int> emptyIntSet;
 			std::string key ("key");
@@ -83,10 +83,11 @@ namespace UnitTesting
 			std::unordered_map<std::string, std::vector<string>> toCompare;
 			std::vector<std::string> emptyVec;
 			std::pair<std::string, std::vector<std::string>> keyValuePair (key, emptyVec);
+			toCompare.insert(keyValuePair);
 			Assert::AreEqual(result == toCompare, true);
 		}
 
-		TEST_METHOD(inSetToStrSet_nonEmpty_success)
+		TEST_METHOD(inSetToMapVec_nonEmpty_success)
 		{
 			std::unordered_set<int> nonEmptyIntSet ({ 1, 2, 3 });
 			std::string key ("key");
@@ -99,7 +100,7 @@ namespace UnitTesting
 			}
 		}
 
-		TEST_METHOD(intPairSetToStrSet_empty_success)
+		TEST_METHOD(intPairSetToMapVec_empty_success)
 		{
 			std::unordered_set<pair<int, int>, intPairhash> emptyIntPairSet;
 			std::string key1 ("key1");
@@ -111,11 +112,11 @@ namespace UnitTesting
 			std::pair<std::string, std::vector<std::string>> keyValuePair1 (key1, emptyVec);
 			std::pair<std::string, std::vector<std::string>> keyValuePair2 (key2, emptyVec);
 			toCompare.insert(keyValuePair1);
-			toCompare.insert(keyValuePair1);
+			toCompare.insert(keyValuePair2);
 			Assert::AreEqual(result == toCompare, true);
 		}
 
-		TEST_METHOD(intPairSetToStrSet_nonEmpty_success)
+		TEST_METHOD(intPairSetToMapVec_nonEmpty_success)
 		{
 			std::unordered_set<std::pair<int, int>, intPairhash> nonEmptyIntPairSet;
 			std::pair<int, int> firstPair(1, 2);
@@ -138,7 +139,7 @@ namespace UnitTesting
 			}
 		}
 
-		TEST_METHOD(intStrSetToStrSet_empty_success)
+		TEST_METHOD(intStrSetToMapVec_empty_success)
 		{
 			std::unordered_set<std::pair<int, std::string>, intStringhash> emptyIntStrSet;
 			std::string key1 ("key1");
@@ -147,14 +148,14 @@ namespace UnitTesting
 				key2, emptyIntStrSet);
 			std::unordered_map<std::string, std::vector<string>> toCompare;
 			std::vector<std::string> emptyVec;
-			std::pair<std::string, std::vector<std::string>> keyValuePair1(key1, emptyVec);
-			std::pair<std::string, std::vector<std::string>> keyValuePair2(key2, emptyVec);
+			std::pair<std::string, std::vector<std::string>> keyValuePair1 (key1, emptyVec);
+			std::pair<std::string, std::vector<std::string>> keyValuePair2 (key2, emptyVec);
 			toCompare.insert(keyValuePair1);
-			toCompare.insert(keyValuePair1);
+			toCompare.insert(keyValuePair2);
 			Assert::AreEqual(result == toCompare, true);
 		}
 
-		TEST_METHOD(intStrSetToStrSet_nonEmpty_success)
+		TEST_METHOD(intStrSetToMapVec_nonEmpty_success)
 		{
 			std::unordered_set<std::pair<int, string>, intStringhash> nonEmptyIntStringSet;
 			std::pair<int, string> firstPair (1, "baby");
@@ -177,7 +178,7 @@ namespace UnitTesting
 			}
 		}
 
-		TEST_METHOD(strPairSetToStrSet_empty_success)
+		TEST_METHOD(strPairSetToMapVec_empty_success)
 		{
 			std::unordered_set<std::pair<std::string, std::string>, strPairhash> emptyStrPairSet;
 			std::string key1 ("key1");
@@ -186,22 +187,22 @@ namespace UnitTesting
 				key2, emptyStrPairSet);
 			std::unordered_map<std::string, std::vector<string>> toCompare;
 			std::vector<std::string> emptyVec;
-			std::pair<std::string, std::vector<std::string>> keyValuePair1(key1, emptyVec);
-			std::pair<std::string, std::vector<std::string>> keyValuePair2(key2, emptyVec);
+			std::pair<std::string, std::vector<std::string>> keyValuePair1 (key1, emptyVec);
+			std::pair<std::string, std::vector<std::string>> keyValuePair2 (key2, emptyVec);
 			toCompare.insert(keyValuePair1);
-			toCompare.insert(keyValuePair1);
+			toCompare.insert(keyValuePair2);
 			Assert::AreEqual(result == toCompare, true);
 		}
 
-		TEST_METHOD(strPairSetToStrSet_nonEmpty_success)
+		TEST_METHOD(strPairSetToMapVec_nonEmpty_success)
 		{
 			std::unordered_set<std::pair<string, string>, strPairhash> nonEmptyStrPairSet;
-			std::pair<string, string> firstPair("baby", "shark");
-			std::pair<string, string> secondPair("telling", "lies");
+			std::pair<string, string> firstPair ("baby", "shark");
+			std::pair<string, string> secondPair ("telling", "lies");
 			nonEmptyStrPairSet.insert(firstPair);
 			nonEmptyStrPairSet.insert(secondPair);
-			std::string key1("key1");
-			std::string key2("key2");
+			std::string key1 ("key1");
+			std::string key2 ("key2");
 			std::unordered_map<std::string, std::vector<std::string>> result = ContainerUtil::to_mapvec(key1,
 				key2, nonEmptyStrPairSet);
 			Assert::AreEqual(result.count(key1) == 1, true);
@@ -214,6 +215,31 @@ namespace UnitTesting
 				std::pair<std::string, std::string> currentPair(firstOfPair, secondOfPair);
 				Assert::AreEqual(nonEmptyStrPairSet.count(currentPair) == 1, true);
 			}
+		}
+
+		TEST_METHOD(crossProduct_noEmpty_success)
+		{
+			std::unordered_map<std::string, std::vector<std::string>> oldTable;
+			std::unordered_map<std::string, std::vector<std::string>> toAddTable;
+			std::string key1 ("key1");
+			std::string key2 ("key2");
+			std::string key3 ("key3");
+			std::string key4 ("key4");
+			std::vector<std::string> val1 { "1", "2" };
+			std::vector<std::string> val2 { "3", "4" };
+			std::vector<std::string> val3 { "5", "6" };
+			std::vector<std::string> val4 { "7", "8" };
+			oldTable.insert({ {key1, val1}, {key2, val2} });
+			toAddTable.insert({ { key3, val3 }, { key4, val4 } });
+			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::crossProduct(
+				oldTable, toAddTable);
+			std::unordered_map<std::string, std::vector<std::string>> toCompare;
+			std::vector<std::string> newVal1 { "1", "2", "1", "2" };
+			std::vector<std::string> newVal2 { "3", "4", "3", "4" };
+			std::vector<std::string> newVal3 { "5", "5", "6", "6" };
+			std::vector<std::string> newVal4 { "7", "7", "8", "8" };
+			toCompare.insert({ {key1, newVal1}, {key2, newVal2}, {key3, newVal3}, {key4, newVal4} });
+			Assert::AreEqual(newTable == toCompare, true);
 		}
 	};
 }

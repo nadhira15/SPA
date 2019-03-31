@@ -16,13 +16,43 @@
 
 /*
 The function returns a map of string to
+vector of string given a key and an integer.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key,
+	int n) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> keyValue;
+	keyValue.push_back(to_string(n));
+	std::pair<std::string, std::vector<std::string>> keyValuePair(key, keyValue);
+	mapvec.insert(keyValuePair);
+
+	return mapvec;
+}
+
+/*
+The function returns a map of string to
+vector of string given a key and a string.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key,
+	string s) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> keyValue;
+	keyValue.push_back(s);
+	std::pair<std::string, std::vector<std::string>> keyValuePair(key, keyValue);
+	mapvec.insert(keyValuePair);
+
+	return mapvec;
+}
+
+/*
+The function returns a map of string to
 vector of strings given a key and vector 
 of integers.
 */
 std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key, std::vector<int> intVec) {
 	std::unordered_map<std::string, std::vector<std::string>> mapvec;
 	std::vector<std::string> keyValue;
-	for (vector<int>::size_type i = 0; i != intVec.size(); i++) {
+	for (std::vector<int>::size_type i = 0; i != intVec.size(); i++) {
 		keyValue.push_back(to_string(intVec[i]));
 	}
 	std::pair<std::string, std::vector<std::string>> keyValuePair (key, keyValue);
@@ -156,5 +186,106 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapv
 	mapvec.insert(keyValuePair2);
 
 	return mapvec;
+}
+
+/*
+The function do cross product
+of 2 tables in form of a map
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::crossProduct(
+	std::unordered_map<std::string, std::vector<std::string>> oldTable,
+	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	int oldSize = oldTable.begin()->second.size();
+	int toAddSize = toAddTable.begin()->second.size();
+	if (toAddSize == 0) {
+		return toAddTable;
+	}
+	for (auto columnIt = oldTable.begin(); columnIt != oldTable.end(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (int i = 0; i < toAddSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != oldSize; j++) {
+				newColumn.push_back(columnIt->second[j]);
+			}
+		}
+		std::pair<std::string, std::vector<std::string>> toAddPair(columnIt->first, newColumn);
+		newTable.insert(toAddPair);
+	}
+	for (auto columnIt = toAddTable.begin(); columnIt != toAddTable.end(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (std::vector<std::string>::size_type i = 0; i != toAddSize; i++) {
+			for (int j = 0; j < oldSize; j++) {
+				newColumn.push_back(columnIt->second[i]);
+			}
+		}
+		std::pair<std::string, std::vector<std::string>> toAddPair (columnIt->first, newColumn);
+		newTable.insert(toAddPair);
+	}
+
+	return newTable;
+}
+
+/*
+The function products two tables
+where the second table only contains
+one key and it is also in the first 
+table.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::oneCommonProduct(
+	std::unordered_map<std::string, std::vector<std::string>> oldTable,
+	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	std::string commonKey = toAddTable.begin()->first;
+	int oldSize = oldTable[commonKey].size();
+	int toAddSize = toAddTable[commonKey].size();
+	for (auto columnIt = oldTable.begin(); columnIt != oldTable.begin(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (std::vector<std::string>::size_type i = 0; i != oldSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != toAddSize; i++) {
+				if (oldTable[commonKey][i] == toAddTable[commonKey][j]) {
+					newColumn.push_back(columnIt->second[i]);
+					break;
+				}
+			}
+		}
+		std::pair<std::string, std::vector<std::string>> toAddPair(columnIt->first, newColumn);
+		newTable.insert(toAddPair);
+	}
+
+	return newTable;
+}
+
+/*
+The function products two tables
+where the second table only contains
+two keys and they are also in the 
+first table.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::twoCommonProduct(
+	std::unordered_map<std::string, std::vector<std::string>> oldTable,
+	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	auto it = toAddTable.begin();
+	std::string commonKey1 = it->first;
+	++it;
+	std::string commonKey2 = it->first;
+	int oldSize = oldTable[commonKey1].size();
+	int toAddSize = toAddTable[commonKey1].size();
+	for (auto columnIt = oldTable.begin(); columnIt != oldTable.begin(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (std::vector<std::string>::size_type i = 0; i != oldSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != toAddSize; i++) {
+				if (oldTable[commonKey1][i] == toAddTable[commonKey1][j]
+					&& oldTable[commonKey2][i] == toAddTable[commonKey2][j]) {
+					newColumn.push_back(columnIt->second[i]);
+					break;
+				}
+			}
+		}
+		std::pair<std::string, std::vector<std::string>> toAddPair(columnIt->first, newColumn);
+		newTable.insert(toAddPair);
+	}
+
+	return newTable;
 }
 
