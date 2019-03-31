@@ -129,7 +129,7 @@ vector<string> DesignExtractor::topologicalSortProcedures() {
 	int procListSize = procList.size();
 
 	std::unordered_set<std::string> visitedProcedures;
-	std::vector<std::string> sortedProcedures(procListSize);
+	std::vector<std::string> sortedProcedures;
 	std::unordered_set<std::string> pathVisitedProcedure;
 
 	for (std::string procedure : procList) {
@@ -137,7 +137,7 @@ vector<string> DesignExtractor::topologicalSortProcedures() {
 		std::unordered_set<std::string>::const_iterator exist = visitedProcedures.find(procedure);
 
 		//If we have not visited this procedure, visit it.
-		if (exist != visitedProcedures.end()) {
+		if (exist == visitedProcedures.end()) {
 			DFSRecursive(procedure, visitedProcedures, sortedProcedures, pathVisitedProcedure);
 		}
 	}
