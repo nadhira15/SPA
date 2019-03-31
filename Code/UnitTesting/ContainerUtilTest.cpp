@@ -231,7 +231,7 @@ namespace UnitTesting
 			std::vector<std::string> val4{ "7", "8" };
 			oldTable.insert({ {key1, val1}, {key2, val2} });
 			toAddTable.insert({ { key3, val3 }, { key4, val4 } });
-			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::crossProduct(
+			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::product(
 				oldTable, toAddTable);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> newVal1{ "1", "2", "1", "2" };
@@ -253,7 +253,7 @@ namespace UnitTesting
 			std::vector<std::string> val3{ "2", "3" };
 			oldTable.insert({ {key1, val1}, {key2, val2} });
 			toAddTable.insert({ key1, val3 });
-			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::oneCommonProduct(
+			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::product(
 				oldTable, toAddTable);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> newVal1{ "4", "5" };
@@ -273,7 +273,7 @@ namespace UnitTesting
 			std::vector<std::string> val4{ "7", "8" };
 			oldTable.insert({ {key1, val1}, {key2, val2} });
 			toAddTable.insert({ { key1, val3 }, { key2, val4 } });
-			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::crossProduct(
+			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::product(
 				oldTable, toAddTable);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			toCompare.insert({ {key1, val3}, {key2, val4} });
@@ -292,12 +292,38 @@ namespace UnitTesting
 			std::vector<std::string> val4{ "2", "3", "4" };
 			oldTable.insert({ {key1, val1}, {key2, val2} });
 			toAddTable.insert({ { key3, val3 }, { key1, val4 } });
-			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::mixProduct(
+			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::product(
 				oldTable, toAddTable);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> newVal1{ "2", "3" };
 			std::vector<std::string> newVal2{ "5", "6" };
 			toCompare.insert({ {key1, newVal1}, {key2, newVal2}, {key3, newVal2} });
+			Assert::AreEqual(newTable == toCompare, true);
+		}
+
+		TEST_METHOD(product_noEmpty_success)
+		{
+			std::unordered_map<std::string, std::vector<std::string>> oldTable;
+			std::unordered_map<std::string, std::vector<std::string>> toAddTable;
+			std::string key1("key1");
+			std::string key2("key2");
+			std::string key3("key3");
+			std::string key4("key4");
+			std::vector<std::string> val1{ "1", "1", "2", "3" };
+			std::vector<std::string> val2{ "3", "4", "6", "8" };
+			std::vector<std::string> val3{ "x", "y", "z", "z" };
+			std::vector<std::string> val4{ "1", "2", "4" };
+			std::vector<std::string> val5{ "y", "z", "z" };
+			oldTable.insert({ {key1, val1}, {key2, val2}, {key3, val3} });
+			toAddTable.insert({ { key1, val4 }, { key4, val5 } });
+			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::product(
+				oldTable, toAddTable);
+			std::unordered_map<std::string, std::vector<std::string>> toCompare;
+			std::vector<std::string> newVal1{ "1", "1", "2" };
+			std::vector<std::string> newVal2{ "3", "4", "6" };
+			std::vector<std::string> newVal3{ "x", "y", "z" };
+			std::vector<std::string> newVal4{ "y", "y", "z" };
+			toCompare.insert({ {key1, newVal1}, {key2, newVal2}, {key3, newVal3}, {key4, newVal4} });
 			Assert::AreEqual(newTable == toCompare, true);
 		}
 	};

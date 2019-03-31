@@ -237,11 +237,11 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::oneComm
 	std::string commonKey = toAddTable.begin()->first;
 	int oldSize = oldTable[commonKey].size();
 	int toAddSize = toAddTable[commonKey].size();
-	for (auto columnIt = oldTable.begin(); columnIt != oldTable.begin(); ++columnIt) {
+	for (auto columnIt = oldTable.begin(); columnIt != oldTable.end(); ++columnIt) {
 		std::vector<std::string> newColumn;
 		for (std::vector<std::string>::size_type i = 0; i != oldSize; i++) {
 			for (std::vector<std::string>::size_type j = 0; j != toAddSize; j++) {
-				if (oldTable[commonKey][i] == toAddTable[commonKey][j]) {
+				if (toAddTable[commonKey][j] == oldTable[commonKey][i]) {
 					newColumn.push_back(columnIt->second[i]);
 					break;
 				}
@@ -263,18 +263,18 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::twoComm
 	std::unordered_map<std::string, std::vector<std::string>> oldTable,
 	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
 	std::unordered_map<std::string, std::vector<std::string>> newTable;
-	auto it = toAddTable.begin();
-	std::string commonKey1 = it->first;
-	++it;
-	std::string commonKey2 = it->first;
-	int oldSize = oldTable[commonKey1].size();
-	int toAddSize = toAddTable[commonKey1].size();
-	for (auto columnIt = oldTable.begin(); columnIt != oldTable.begin(); ++columnIt) {
+	std::vector<std::string> commonKeys;
+	for (auto it = toAddTable.begin(); it != toAddTable.end(); ++it) {
+		commonKeys.push_back(it->first);
+	}
+	int oldSize = oldTable[commonKeys[0]].size();
+	int toAddSize = toAddTable[commonKeys[0]].size();
+	for (auto columnIt = oldTable.begin(); columnIt != oldTable.end(); ++columnIt) {
 		std::vector<std::string> newColumn;
 		for (std::vector<std::string>::size_type i = 0; i != oldSize; i++) {
 			for (std::vector<std::string>::size_type j = 0; j != toAddSize; j++) {
-				if (oldTable[commonKey1][i] == toAddTable[commonKey1][j]
-					&& oldTable[commonKey2][i] == toAddTable[commonKey2][j]) {
+				if (toAddTable[commonKeys[0]][j] == oldTable[commonKeys[0]][i]
+					&& toAddTable[commonKeys[1]][j] == oldTable[commonKeys[1]][i]) {
 					newColumn.push_back(columnIt->second[i]);
 					break;
 				}
