@@ -15,73 +15,167 @@
 #include "ContainerUtil.h"
 
 /*
-The main evaluator function of the query
+Projects result of the query 
 */
-std::unordered_set<std::string> QueryEvaluator::evaluateQuery(std::vector<std::pair<std::string, std::string>> declarations,
-	std::vector<std::string> selectedVar, 
+std::unordered_set<std::string> QueryEvaluator::projectResult(
+	std::unordered_map<std::string, std::string> declarations,
+	std::vector<std::string> selectedVar,
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
-	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition) {
-
-	return filterSuchThatCondition(declarations, selectedVar, 
-		suchThatCondition, patternCondition);
-}
-
-/*
-It filters the assignment statements
-that fulfill the pattern.
-*/
-std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluatePatternCondition(vector<pair<string, pair<string, string>>> patternCondition) {
-	string patternSynonym = patternCondition[0].first;
-	string leftArgument = patternCondition[0].second.first;
-	string rightArgument = patternCondition[0].second.second;
-
-	if (rightArgument == "_") {
-		if (leftArgument == "_") {
-			return ContainerUtil::to_mapvec(patternSynonym, getStmts("assign"));
-		} 
-		else if (isQuoted(leftArgument)) {
-			return ContainerUtil::to_mapvec(patternSynonym, 
-				PKB().findPattern(trimFrontEnd(leftArgument), "", false));
+	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
+	std::vector<std::pair<std::string, std::string>> withCondition) {
+	std::unordered_map<std::string, std::vector<std::string>> resultTable = evaluateTable(
+		declarations, suchThatCondition, patternCondition, withCondition);
+	std::unordered_set<std::string> resultSet;
+	if (selectedVar[0] == "BOOLEAN") {
+		if (resultTable.size() == 0 || resultTable.begin()->second.size() == 0) {
+			resultSet.insert("FALSE");
+			return resultSet;
 		}
-		return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs("", false));
+		else {
+			resultSet.insert("TRUE");
+			return resultSet;
+ 		}
 	}
-	else if (isQuoted(rightArgument)) {
-		rightArgument = trimFrontEnd(rightArgument);
-		rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
-		if (leftArgument == "_") {
-			return ContainerUtil::to_mapvec(patternSynonym, PKB().findPattern(rightArgument, true));
-		}
-		else if (isQuoted(leftArgument)) {
-			return ContainerUtil::to_mapvec(patternSynonym, 
-				PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, true));
-		}
-		return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs(rightArgument, true));
-	} 
 	else {
-		rightArgument = trimFrontEnd(trimFrontEnd(rightArgument));
-		rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
-		if (leftArgument == "_") {
-			return ContainerUtil::to_mapvec(patternSynonym, PKB().findPattern(rightArgument, false));
+		if (resultTable.size() == 0 || resultTable.begin()->second.size() == 0) {
+			return resultSet;
 		}
-		else if (isQuoted(leftArgument)) {
-			return ContainerUtil::to_mapvec(patternSynonym, 
-				PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, false));
+		else {
+			std::unordered_map<std::string, std::vector<std::string>> projectTable;
+			std::vector<std::string> notInResult;
+			for (std::vector<std::string>::size_type i = 0; i != selectedVar.size(); i++) {
+				if (resultTable.count(selectedVar[i]) == 0) {
+					notInResult.push_back(selectedVar[i]);
+				}
+				else {
+					projectTable.insert({ selectedVar[i], resultTable[selectedVar[i]] });
+				}
+			}
+			for (std::vector<std::string>::size_type i = 0; i != notInResult.size(); i++) {
+				projectTable = ContainerUtil::crossProduct(projectTable, getStmts(declarations, selectedVar[i]));
+			}
+			for (std::vector<std::string>::size_type i = 0; i != notInResult.size(); i++) {
+				std::string tuple;
+				for (auto columnIt = projectTable.begin(); columnIt != projectTable.end(); ++columnIt) {
+					if (tuple.size() == 0) {
+						tuple = columnIt->second[i];
+					} 
+					else {
+						tuple = tuple + " " + columnIt->second[i];
+					}
+				}
+				resultSet.insert(tuple);
+			}
 		}
-		return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs(rightArgument, false));
+
+		return resultSet;
 	}
 }
 
 /*
-The function evaluates the query by evaluating 
-its such that condition after given the filter 
-result of the Pattern Condition.
+Merge all the results of each clause
 */
-unordered_set<string> QueryEvaluator::filterSuchThatCondition(vector<pair<string, string>> declarations, vector<string> selectedVar,
-	vector<pair<string, pair<string, string>>> suchThatCondition, vector<pair<string, pair<string, string>>> patternCondition) {
-	
-	unordered_set<string> emptyResult;
+std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluateTable(
+	std::unordered_map<std::string, std::string> declarations,
+	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
+	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
+	std::vector<std::pair<std::string, std::string>> withCondition) {
+	std::unordered_map<std::string, std::vector<std::string>> resultTable;
+	std::unordered_map<std::string, std::vector<std::string>> emptyTable;
+	if (suchThatCondition.size() != 0) {
+		for (std::vector<std::pair<std::string, std::pair<std::string, std::string>>>::size_type i = 0;
+			i != suchThatCondition.size();
+			i++) {
+			std::string relation = suchThatCondition[i].first;
+			std::string firstArgument = suchThatCondition[i].second.first;
+			std::string secondArgument = suchThatCondition[i].second.second;
+			std::string trivialness = isSuchThatTrivial(relation, firstArgument, secondArgument);
+			if (trivialness == "false") {
+				return emptyTable;
+			}
+			if (trivialness == "not trivial") {
+				std::unordered_map<std::string, std::vector<std::string>> newTable = evaluateSuchThat(
+					declarations, relation, firstArgument, secondArgument);
+				if (resultTable.size() == 0) {
+					resultTable = newTable;
+				}
+				else if (resultTable.begin()->second.size() == 0) {
+					return emptyTable;
+				}
+				else {
+					resultTable = ContainerUtil::crossProduct(resultTable, newTable);
+				}
+			}
+		}
+	}
+	if (patternCondition.size() != 0) {
+		for (std::vector<std::pair<std::string, std::pair<std::string, std::string>>>::size_type i = 0;
+			i != suchThatCondition.size();
+			i++) {
+			std::unordered_map<std::string, std::vector<std::string>> newTable = evaluatePatternCondition(
+				declarations, patternCondition[i]);
+			if (resultTable.size() == 0) {
+				resultTable = newTable;
+			}
+			else if (resultTable.begin()->second.size() == 0) {
+				return emptyTable;
+			}
+			else {
+				resultTable = ContainerUtil::crossProduct(resultTable, newTable);
+			}
+		}
+	}
+	return resultTable;
+}
 
-	return emptyResult;
+/*
+The function evaluates
+pattern clauses
+*/
+std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluatePatternCondition(
+	std::unordered_map<std::string, std::string> declarations,
+	std::pair<std::string, std::pair<std::string, std::string>> pattern) {
+	std::string patternSynonym = pattern.first;
+	std::string patternType = declarations[patternSynonym];
+	std::string leftArgument = pattern.second.first;
+	std::string rightArgument = pattern.second.second;
+
+	if (patternType == "assign") {
+		if (rightArgument == "_") {
+			if (leftArgument == "_") {
+				return getStmts(declarations, patternSynonym);
+			}
+			else if (isQuoted(leftArgument)) {
+				return ContainerUtil::to_mapvec(patternSynonym,
+					PKB().findPattern(trimFrontEnd(leftArgument), "", false));
+			}
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs("", false));
+		}
+		else if (isQuoted(rightArgument)) {
+			rightArgument = trimFrontEnd(rightArgument);
+			rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
+			if (leftArgument == "_") {
+				return ContainerUtil::to_mapvec(patternSynonym, PKB().findPattern(rightArgument, true));
+			}
+			else if (isQuoted(leftArgument)) {
+				return ContainerUtil::to_mapvec(patternSynonym,
+					PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, true));
+			}
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs(rightArgument, true));
+		}
+		else {
+			rightArgument = trimFrontEnd(trimFrontEnd(rightArgument));
+			rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
+			if (leftArgument == "_") {
+				return ContainerUtil::to_mapvec(patternSynonym, PKB().findPattern(rightArgument, false));
+			}
+			else if (isQuoted(leftArgument)) {
+				return ContainerUtil::to_mapvec(patternSynonym,
+					PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, false));
+			}
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs(rightArgument, false));
+		}
+	}
 }
 
 /*
@@ -238,164 +332,185 @@ string QueryEvaluator::isSuchThatTrivial(string relation, string firstArgument, 
 The function evaluates the non-trivial 
 Such That Conditions.
 */
-unordered_set<string> QueryEvaluator::evaluateSuchThat(string relation, string firstArgument, string secondArgument) {
-	unordered_set<string> result;
+std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluateSuchThat(
+	std::unordered_map<std::string, std::string> declarations,
+	std::string relation, std::string firstArgument, std::string secondArgument) {
+	std::unordered_map<std::string, std::vector<std::string>> tableResult;
 	if (relation == "Follows") {
 		if (isSynonym(firstArgument)) {
 			if (secondArgument == "_") {
-				return ContainerUtil::to_strset(PKB().getAllFollowed());
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllFollowed());
 			}
 			else if (isInteger(secondArgument)) {
-				result.insert(to_string(PKB().getStmFollowedBy(stoi(secondArgument))));
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmFollowedBy(
+					stoi(secondArgument)));
 			}
 			else {
-				return ContainerUtil::to_strset(PKB().getFollowPairs());
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument, 
+					PKB().getFollowPairs());
 			}
 		}
 		if (isSynonym(secondArgument)) {
 			if (firstArgument == "_") {
-				return ContainerUtil::to_strset(PKB().getAllFollowers());
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllFollowers());
 			}
 			else if (isInteger(firstArgument)) {
-				result.insert(to_string(PKB().getFollower(stoi(firstArgument))));
-			}
-			else {
-				return result;
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getFollower(
+					stoi(firstArgument)));
 			}
 		}
-		return result;
 	}
 	else if (relation == "Follows*") {
 		if (isSynonym(firstArgument)) {
 			if (secondArgument == "_") {
-				return ContainerUtil::to_strset(PKB().getAllFollowed());
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllFollowed());
 			}
 			else if (isInteger(secondArgument)) {
-				return ContainerUtil::to_strset(PKB().getAllFollowedBy(stoi(secondArgument)));
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllFollowedBy(
+					stoi(secondArgument)));
 			}
 			else {
-				return ContainerUtil::to_strset(PKB().getFollowStarPairs());
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument, 
+					PKB().getFollowStarPairs());
 			}
 		}
 		if (isSynonym(secondArgument)) {
 			if (firstArgument == "_") {
-				return ContainerUtil::to_strset(PKB().getAllFollowers());
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllFollowers());
 			}
 			else if (isInteger(firstArgument)) {
-				return ContainerUtil::to_strset(PKB().getAllFollowing(stoi(firstArgument)));
-			}
-			else {
-				return result;
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllFollowing(
+					stoi(firstArgument)));
 			}
 		}
-		return result;
 	}
 	if (relation == "Parent") {
 		if (isSynonym(firstArgument)) {
 			if (secondArgument == "_") {
-				return ContainerUtil::to_strset(PKB().getAllParents());
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllParents());
 			}
 			else if (isInteger(secondArgument)) {
-				result.insert(to_string(PKB().getParent(stoi(secondArgument))));
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getParent(
+					stoi(secondArgument)));
 			}
 			else {
-				return ContainerUtil::to_strset(PKB().getParentChildPairs());
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument, 
+					PKB().getParentChildPairs());
 			}
 		}
 		if (isSynonym(secondArgument)) {
 			if (firstArgument == "_") {
-				return ContainerUtil::to_strset(PKB().getAllChildren());
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllChildren());
 			}
 			else if (isInteger(firstArgument)) {
-				return ContainerUtil::to_strset(PKB().getChildren(stoi(firstArgument)));
-			}
-			else {
-				return result;
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getChildren(
+					stoi(firstArgument)));
 			}
 		}
-		return result;
 	}
 	else if (relation == "Parent*") {
 		if (isSynonym(firstArgument)) {
 			if (secondArgument == "_") {
-				return ContainerUtil::to_strset(PKB().getAllParents());
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllParents());
 			}
 			else if (isInteger(secondArgument)) {
-				return ContainerUtil::to_strset(PKB().getAncestors(stoi(secondArgument)));
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAncestors(
+					stoi(secondArgument)));
 			}
 			else {
-				return ContainerUtil::to_strset(PKB().getAncDescPairs());
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument, 
+					PKB().getAncDescPairs());
 			}
 		}
 		if (isSynonym(secondArgument)) {
 			if (firstArgument == "_") {
-				return ContainerUtil::to_strset(PKB().getAllChildren());
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllChildren());
 			}
 			else if (isInteger(firstArgument)) {
-				return ContainerUtil::to_strset(PKB().getDescendants(stoi(firstArgument)));
-			}
-			else {
-				return result;
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getDescendants(
+					stoi(firstArgument)));
 			}
 		}
-		return result;
 	}
 	else if (relation == "Uses") {
 		if (isSynonym(secondArgument)) {
 			if (isInteger(firstArgument)) {
-				return PKB().getVarUsedByStm(stoi(firstArgument));
-			} 
-			else if (isQuoted(firstArgument)) {
-				return PKB().getVarUsedByProc(trimFrontEnd(firstArgument));
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getVarUsedByStm(
+					stoi(firstArgument)));
 			}
-			return ContainerUtil::to_strset(PKB().getStmVarUsePairs());
+			else if (isQuoted(firstArgument)) {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getVarUsedByProc(
+					trimFrontEnd(firstArgument)));
+			}
+			else if (declarations[firstArgument] == "procedure") {
+				return ContainerUtil::to_mapvec(firstArgument, secondArgument, 
+					PKB().getProcVarUsePairs());
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getStmVarUsePairs());
+			}
 		}
 		if (isSynonym(firstArgument)) {
 			if (secondArgument == "_") {
-				return ContainerUtil::to_strset(PKB().getStmUsing(""));
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmUsing(""));
 			}
 			else if (isQuoted(secondArgument)) {
-				return ContainerUtil::to_strset(PKB().getStmUsing(trimFrontEnd(secondArgument)));
-			} 
-			else {
-				return result;
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmUsing(
+					trimFrontEnd(secondArgument)));
 			}
 		}
-		return result;
 	}
 	else if (relation == "Modifies") {
 		if (isSynonym(secondArgument)) {
 			if (isInteger(firstArgument)) {
-				return PKB().getVarModifiedByStm(stoi(firstArgument));
-
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getVarModifiedByStm(
+				stoi(firstArgument)));
 			}
 			else if (isQuoted(firstArgument)) {
-				return PKB().getVarModifiedByProc(trimFrontEnd(firstArgument));
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getVarModifiedByProc(
+				trimFrontEnd(firstArgument)));
 			}
-			return ContainerUtil::to_strset(PKB().getStmVarModifyPairs());
+			else if (declarations[firstArgument] == "procedure") {
+				return ContainerUtil::to_mapvec(firstArgument, secondArgument, 
+					PKB().getProcVarModifyPairs());
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getStmVarModifyPairs());
+			}
 		}
 		if (isSynonym(firstArgument)) {
 			if (secondArgument == "_") {
-				return ContainerUtil::to_strset(PKB().getStmModifying(""));
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmModifying(""));
 			}
 			else if (isQuoted(secondArgument)) {
-				return ContainerUtil::to_strset(PKB().getStmModifying(trimFrontEnd(secondArgument)));
-			}
-			else {
-				return result;
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmModifying(
+					trimFrontEnd(secondArgument)));
 			}
 		}
-		return result;
 	}
 
-	return result;
+	if (tableResult.size() == 1) {
+		if (isSynonym(firstArgument)) {
+			filterType(firstArgument, declarations, tableResult);
+		}
+		else {
+			filterType(secondArgument, declarations, tableResult);
+		}
+ 	}
+	else if (tableResult.size() == 2) {
+		filterType(firstArgument, secondArgument, declarations, tableResult);
+	}
+	
+	return tableResult;
 }
 
 /*
 The function returns the list of all statements.
 */
-unordered_set<string> QueryEvaluator::getAllStms() {
-	unordered_set<string> allStms;
+std::unordered_set<std::string> QueryEvaluator::getAllStms() {
+	unordered_set<std::string> allStms;
 	for (int i = 1; i <= PKB().getTotalStmNo(); i++) {
 		allStms.insert(to_string(i));
 	}
@@ -407,33 +522,34 @@ unordered_set<string> QueryEvaluator::getAllStms() {
 The function retrieves all statements 
 of a given type
 */
-unordered_set<string> QueryEvaluator::getStmts(string s) {
-	unordered_set<string> result;
-	if (s == "stmt") {
-		return getAllStms();
+std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::getStmts(
+	std::unordered_map<std::string, std::string> declarations,
+	std::string syn) {
+	std::string synType = declarations[syn];
+	if (synType == "stmt") {
+		return ContainerUtil::to_mapvec(syn, getAllStms());
 	}
-	else if (s == "read") {
-		return ContainerUtil::to_strset(PKB().getReadStms());
+	else if (synType == "read") {
+		return ContainerUtil::to_mapvec(syn, PKB().getReadStms());
 	}
-	else if (s == "print") {
-		return ContainerUtil::to_strset(PKB().getPrintStms());
+	else if (synType == "print") {
+		return ContainerUtil::to_mapvec(syn, PKB().getPrintStms());
 	}
-	else if (s == "while") {
-		return ContainerUtil::to_strset(PKB().getWhileStms());
+	else if (synType == "while") {
+		return ContainerUtil::to_mapvec(syn, PKB().getWhileStms());
 	}
-	else if (s == "if") {
-		return ContainerUtil::to_strset(PKB().getIfStms());
+	else if (synType == "if") {
+		return ContainerUtil::to_mapvec(syn, PKB().getIfStms());
 	}
-	else if (s == "assign") {
-		return ContainerUtil::to_strset(PKB().getAssignStms());
+	else if (synType == "assign") {
+		return ContainerUtil::to_mapvec(syn, PKB().getAssignStms());
 	}
-	else if (s == "variable") {
-		return PKB().getVariables();
+	else if (synType == "variable") {
+		return ContainerUtil::to_mapvec(syn, PKB().getVariables());
 	}
-	else if (s == "constant") {
-		return PKB().getConstants();
+	else if (synType == "constant") {
+		return ContainerUtil::to_mapvec(syn, PKB().getConstants());
 	}
-	return result;
 }
 
 /*
@@ -442,17 +558,24 @@ strings so that they are in the
 set of all statements of a given
 type.
 */
-unordered_set<string> QueryEvaluator::filterType(string typeRequired, unordered_set<string>toBeFiltered) {
-	unordered_set<string> typeRequiredSet = getStmts(typeRequired);
-	unordered_set<string> filteredSet;
-	for (unordered_set<string>::iterator it = toBeFiltered.begin(); it != toBeFiltered.end(); ++it) {
-		string pointer = *it;
-		if (typeRequiredSet.count(pointer) == 1) {
-			filteredSet.insert(pointer);
+void QueryEvaluator::filterType(std::string synonym, 
+	std::unordered_map<std::string, std::string> declarations,
+	std::unordered_map<std::string, std::vector<std::string>> toBeFiltered) {
+	std::string synonymType = declarations[synonym];
+	std::unordered_map<std::string, std::vector<std::string>> typeRequiredSet = getStmts(
+		declarations, synonym);
+	std::vector<std::string> filter = typeRequiredSet[synonym];
+	if (synonymType != "stmt") {
+		auto it = toBeFiltered[synonym].begin();
+		while (it != toBeFiltered[synonym].end()) {
+			if (std::find(filter.begin(), filter.end(), *it) != filter.end()) {
+				it = toBeFiltered[synonym].erase(it);
+			}
+			else {
+				++it;
+			}
 		}
 	}
-
-	return filteredSet;
 }
 
 /*
@@ -462,42 +585,56 @@ second member is in the set of all
 statements in a first type and a second
 type respectively.
 */
-unordered_set<string> QueryEvaluator::filterType(string firstTypeRequired, string secondTypeRequired,
-	unordered_set<string> toBeFiltered) {
-	unordered_set<string> firstTypeRequiredSet = getStmts(firstTypeRequired);
-	unordered_set<string> secondTypeRequiredSet = getStmts(secondTypeRequired);
-	unordered_set<string> filteredSet;
-	for (unordered_set<string>::iterator it = toBeFiltered.begin(); it != toBeFiltered.end(); ++it) {
-		string pointer = *it;
-		int spaceIndex = pointer.find(" ");
-		string firstParam = pointer.substr(0, spaceIndex);
-		string secondParam = pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 1);
-		if ((firstTypeRequiredSet.count(firstParam) == 1) &&
-			(secondTypeRequiredSet.count(secondParam) == 1)) {
-			filteredSet.insert(pointer);
+void QueryEvaluator::filterType(std::string synonym1, std::string synonym2,
+	std::unordered_map<std::string, std::string> declarations,
+	std::unordered_map<std::string, std::vector<std::string>> toBeFiltered) {
+	std::string synonym1Type = declarations[synonym1];
+	std::string synonym2Type = declarations[synonym2];
+	std::unordered_map<std::string, std::vector<std::string>> type1RequiredSet = getStmts(
+		declarations, synonym1);
+	std::unordered_map<std::string, std::vector<std::string>> type2RequiredSet = getStmts(
+		declarations, synonym2);
+	std::vector<std::string> filter1 = type1RequiredSet[synonym1];
+	std::vector<std::string> filter2 = type2RequiredSet[synonym2];
+	auto it1 = toBeFiltered[synonym1].begin();
+	auto it2 = toBeFiltered[synonym2].begin();
+	if (synonym1Type == "stmt" && synonym2Type != "stmt") {
+		while (it2 != toBeFiltered[synonym2].end()) {
+			if (std::find(filter2.begin(), filter2.end(), *it2) != filter2.end()) {
+				it1 = toBeFiltered[synonym1].erase(it1);
+				it2 = toBeFiltered[synonym2].erase(it2);
+			}
+			else {
+				++it1;
+				++it2;
+			}
 		}
 	}
-
-	return filteredSet;
-}
-
-/*
-Retrieves the assign statements
-arguments after pattern filtering
-*/
-unordered_set<string> QueryEvaluator::getAssign(unordered_set<string> afterPatternFilter) {
-	unordered_set<string> result;
-	for (unordered_set<string>::iterator it = afterPatternFilter.begin(); it != afterPatternFilter.end(); ++it) {
-		string pointer = *it;
-		if (pointer.find(" ") != string::npos) {
-			result.insert(pointer.substr(0, pointer.find(" ")));
-		}
-		else {
-			result.insert(pointer);
+	else if (synonym1Type != "stmt" && synonym2Type == "stmt") {
+		while (it1 != toBeFiltered[synonym1].end()) {
+			if (std::find(filter1.begin(), filter1.end(), *it1) != filter1.end()) {
+				it1 = toBeFiltered[synonym1].erase(it1);
+				it2 = toBeFiltered[synonym2].erase(it2);
+			}
+			else {
+				++it1;
+				++it2;
+			}
 		}
 	}
-
-	return result;
+	else if (synonym1Type != "stmt" && synonym2Type == "stmt") {
+		while ((it1 != toBeFiltered[synonym1].end()) && (it2 != toBeFiltered[synonym2].end())) {
+			if ((std::find(filter1.begin(), filter1.end(), *it1) != filter1.end())
+				&& (std::find(filter2.begin(), filter2.end(), *it2) != filter2.end())) {
+				it1 = toBeFiltered[synonym1].erase(it1);
+				it2 = toBeFiltered[synonym2].erase(it2);
+			}
+			else {
+				++it1;
+				++it2;
+			}
+		}
+	}
 }
 
 /*
