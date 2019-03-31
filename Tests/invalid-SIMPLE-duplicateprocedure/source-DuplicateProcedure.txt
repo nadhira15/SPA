@@ -1,0 +1,14 @@
+procedure procedure {
+	y = y + 1;
+	x = x + 2;
+	call ProcedureDuplicate;
+}
+
+procedure procedureDuplicate {
+	y = v + c;
+	y = d + 5;
+}
+
+procedure procedureDuplicate {
+	v = v + v;
+}
