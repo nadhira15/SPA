@@ -5,21 +5,42 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 #include "PKB.h"
 
 class ContainerUtil
 {
 public:
-	static unordered_set<string> to_strset(vector<int> intVec);
-	static unordered_set<string> to_strset(vector<pair<int, string>> intStrVec);
-	static unordered_set<string> to_strset(unordered_set<int> intSet);
-	static unordered_set<string> to_strset(unordered_set<pair<int, int>, intPairhash> intPairSet);
-	static unordered_set<string> to_strset(unordered_set<pair<int, string>, intStringhash> intStringSet);
-	static unordered_set<string> to_strset(unordered_set<pair<string, string>, strPairhash> strPairSet);
-	static unordered_set<string> getFirstParam(unordered_set<string> stringPair);
-	static unordered_set<string> getSecondParam(unordered_set<string> stringPair);
-	static unordered_set<string> intersection(unordered_set<string> first, unordered_set<string> toContain);
-	static unordered_set<string> getOtherPair(int position, unordered_set<string> stringPair, unordered_set<string> toContain);
+	static std::unordered_map<std::string, std::vector<std::string>> to_mapvec(std::string key,
+		int n);
+	static std::unordered_map<std::string, std::vector<std::string>> to_mapvec(std::string key,
+		string s);
+	static std::unordered_map<std::string, std::vector<std::string>> to_mapvec(std::string key, 
+		std::vector<int> intVec);
+	static std::unordered_map<std::string, std::vector<std::string>> to_mapvec(std::string key1, 
+		std::string key2, std::vector<std::pair<int, std::string>> intStrVec);
+	static std::unordered_map<std::string, std::vector<std::string>> to_mapvec(std::string key, 
+		std::unordered_set<int> intSet);
+	static std::unordered_map<std::string, std::vector<std::string>> to_mapvec(std::string key,
+		std::unordered_set<std::string> strSet);
+	static std::unordered_map<std::string, std::vector<std::string>> to_mapvec(std::string key1,
+		std::string key2, std::unordered_set<std::pair<int, int>, intPairhash> intPairSet);
+	static std::unordered_map<std::string, std::vector<std::string>> to_mapvec(std::string key1, 
+		std::string key2, std::unordered_set<pair<int, std::string>, intStringhash> intStringSet);
+	static std::unordered_map<std::string, std::vector<std::string>> to_mapvec(std::string key1, 
+		std::string key2, std::unordered_set<pair<std::string, std::string>, strPairhash> strPairSet);
+	static std::unordered_map<std::string, std::vector<std::string>> crossProduct(
+		std::unordered_map<std::string, std::vector<std::string>> oldTable,
+		std::unordered_map<std::string, std::vector<std::string>> toAddTable);
+	static std::unordered_map<std::string, std::vector<std::string>> oneCommonProduct(
+		std::unordered_map<std::string, std::vector<std::string>> oldTable,
+		std::unordered_map<std::string, std::vector<std::string>> toAddTable);
+	static std::unordered_map<std::string, std::vector<std::string>> twoCommonProduct(
+		std::unordered_map<std::string, std::vector<std::string>> oldTable,
+		std::unordered_map<std::string, std::vector<std::string>> toAddTable);
+	static std::unordered_map<std::string, std::vector<std::string>> mixProduct(
+		std::unordered_map<std::string, std::vector<std::string>> oldTable,
+		std::unordered_map<std::string, std::vector<std::string>> toAddTable);
+	static std::unordered_map<std::string, std::vector<std::string>> product(
+		std::unordered_map<std::string, std::vector<std::string>> oldTable,
+		std::unordered_map<std::string, std::vector<std::string>> toAddTable);
 };

@@ -12,23 +12,37 @@ using namespace std;
 class QueryEvaluator
 {
 public:
-	static unordered_set<string> evaluateQuery(vector<pair<string, string>> declarations,
-		vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
-		vector<pair<string, pair<string, string>>> patternCondition);
+	static std::unordered_set<std::string> projectResult(
+		std::unordered_map<std::string, std::string> declarations,
+		std::vector<std::string> selectedVar,
+		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
+		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
+		std::vector<pair<std::string, std::string>> withCondition);
+	static std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>> evaluateTable(
+		std::unordered_map<std::string, std::string> declarations,
+		vector<pair<string, pair<string, string>>> suchThatCondition,
+		vector<pair<string, pair<string, string>>> patternCondition,
+		std::vector<std::pair<std::string, std::string>> withCondition);
 
-	static unordered_set<string> filterPatternCondition(vector<pair<string, pair<string, string>>> patternCondition);
-	static unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> declarations, vector<string> selectedVar,
-		vector<pair<string, pair<string, string>>> suchThatCondition, vector<pair<string, pair<string, string>>> patternCondition);
+	static std::unordered_map<std::string, std::vector<std::string>> evaluatePatternCondition(
+		std::unordered_map<std::string, std::string> declarations,
+		std::pair<std::string, std::pair<std::string, std::string>> pattern);
 
 	static string isSuchThatTrivial(string relation, string firstArgument, string secondArgument);
-	static unordered_set<string> evaluateSuchThat(string relation, string firstArgument, string secondArgument);
+	static std::unordered_map<std::string, std::vector<std::string>> evaluateSuchThat(
+		std::unordered_map<std::string, std::string> declarations,
+		string relation, string firstArgument, string secondArgument);
 
-	static unordered_set<string> getAllStms();
-	static unordered_set<string> getStmts(string s);
-	static unordered_set<string> filterType(string typeRequired, unordered_set<string>toBeFiltered);
-	static unordered_set<string> filterType(string firstTypeRequired, string secondTypeRequired,
-		unordered_set<string> toBeFiltered);
-	static unordered_set<string> QueryEvaluator::getAssign(unordered_set<string> afterPatternFilter);
+	static std::unordered_set<std::string> getAllStms();
+	static std::unordered_map<std::string, std::vector<std::string>> getStmts(
+		std::unordered_map<std::string, std::string> declarations, 
+		string syn);
+	static std::unordered_map<std::string, std::vector<std::string>> filterType(string synonym,
+		std::unordered_map<std::string, std::string> declarations,
+		std::unordered_map<std::string, std::vector<std::string>> toBeFiltered);
+	static std::unordered_map<std::string, std::vector<std::string>> filterType(string synonym1, 
+		string synonym2, std::unordered_map<std::string, std::string> declarations,
+		std::unordered_map<std::string, std::vector<std::string>> toBeFiltered);
 
 	static string truthValue(bool boolean);
 	static string trimFrontEnd(string quotedString);
