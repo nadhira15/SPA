@@ -14,7 +14,7 @@ using namespace std;
 #include "NextStorage.h"
 #include "Hasher.h"
 
-enum stmType {none, read, print, assign, whileStm, ifStm, call};
+enum stmType {read, print, assign, whileStm, ifStm, call};
 
 /*
 	Accepts relationship, pattern and other general data from Parser and DesignExtractor and
