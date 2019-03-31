@@ -18,7 +18,7 @@ public:
 		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
 		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
 		std::vector<pair<std::string, std::string>> withCondition);
-	static std::unordered_map<std::string, std::vector<std::string>> evaluateTable(
+	static std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>> evaluateTable(
 		std::unordered_map<std::string, std::string> declarations,
 		vector<pair<string, pair<string, string>>> suchThatCondition,
 		vector<pair<string, pair<string, string>>> patternCondition,
@@ -37,11 +37,11 @@ public:
 	static std::unordered_map<std::string, std::vector<std::string>> getStmts(
 		std::unordered_map<std::string, std::string> declarations, 
 		string syn);
-	static void filterType(string synonym,
+	static std::unordered_map<std::string, std::vector<std::string>> filterType(string synonym,
 		std::unordered_map<std::string, std::string> declarations,
 		std::unordered_map<std::string, std::vector<std::string>> toBeFiltered);
-	static void filterType(string synonym1, string synonym2,
-		std::unordered_map<std::string, std::string> declarations,
+	static std::unordered_map<std::string, std::vector<std::string>> filterType(string synonym1, 
+		string synonym2, std::unordered_map<std::string, std::string> declarations,
 		std::unordered_map<std::string, std::vector<std::string>> toBeFiltered);
 
 	static string truthValue(bool boolean);

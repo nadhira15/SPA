@@ -341,6 +341,9 @@ Collate all the product functions
 std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::product(
 	std::unordered_map<std::string, std::vector<std::string>> oldTable,
 	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
+	if (oldTable.size() == 0) {
+		return toAddTable;
+	}
 	if (toAddTable.size() == 1) {
 		if (oldTable.count(toAddTable.begin()->first) == 1) {
 			return oneCommonProduct(oldTable, toAddTable);
