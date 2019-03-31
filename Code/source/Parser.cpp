@@ -11,20 +11,36 @@ int Parser::parse(vector<Statement> stmtLst, int parent, string procedure) {
 
 	for (size_t i = 0; i < stmtLst.size(); i++) {
 		Statement stmt = stmtLst.at(i);
-		
+
 		//Add Statement Type into PKB.
-		populateStmtList(stmt);
+		populateStmtList(stmt, procedure);
 
 		int currStmtLine = stmt.getStmtNum();
 
-		//Add Follow relation if is not the very first line or if not an else statement
+		//Add Follow and Next relation if is not the very first line or if not an else statement
 		if (prevStmtLine != 0 && stmt.getType() != 7) {
 			pkb.addFollow(prevStmtLine, currStmtLine);
+			pkb.addNext(prevStmtLine, currStmtLine);
 		}
 
+		//Add Next relation for IF statement type
+		if (stmt.getType() == 6) {
+			pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
+		}
+
+		//Add Next relation for Else
+		if (stmt.getType() == 7) {
+			pkb.addNext(currStmtLine, currStmtLine + 1);
+		}
 		//Add Parent relation if parent is not 0.
 		if (parent != 0) {
-			pkb.addParent(parent ,currStmtLine);
+			pkb.addParent(parent, currStmtLine);
+		}
+
+		//Add Next relation for WHILE statment type
+		if (stmt.getType() == 5) {
+			pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
+			pkb.addNext(stmt.getStmtLst().back().getStmtNum(), currStmtLine);
 		}
 
 		//Add Procedure - Statement Relationship if Statment is in a Procedure.
@@ -34,11 +50,10 @@ int Parser::parse(vector<Statement> stmtLst, int parent, string procedure) {
 
 		//Add VariableName, Constants, and Procedure name into PKB.
 		populateDesignEntities(stmt, procedure);
-		
+
 		//Update previous statement line.
 		prevStmtLine = currStmtLine;
-
-		}
+	}
 	
 	return 0;
 }
@@ -127,7 +142,7 @@ void Parser::extractCallEntity(std::string &stmtString, int stmtLine, std::strin
 	CallParser cp;
 	string procedureName = cp.parseCallStmt(stmtString);
 	
-	//pkb.addCall(procedure, procedureName);
+	pkb.addCall(procedure, procedureName, stmtLine);
 }
 
 void Parser::extractReadEntity(std::string &stmtString, int stmtLine) {
@@ -177,7 +192,6 @@ void Parser::extractIfEntity(std::string &stmtString, int stmtLine, vector<State
 		pkb.addConstant(constant);
 	}
 
-
 	ip.parseStmtLst();
 }
 
@@ -195,7 +209,7 @@ void Parser::extractProcedureEntity(std::string &stmtString, vector<Statement> s
 }
 
 
-void Parser::populateStmtList(Statement stmt) {
+void Parser::populateStmtList(Statement stmt, std::string procedure) {
 	int stmtLine = stmt.getStmtNum();
 	int stmtType = stmt.getType();
 
@@ -203,27 +217,27 @@ void Parser::populateStmtList(Statement stmt) {
 	switch (stmtType) {
 	case 1:
 		//AssignStatement
-		pkb.addStatement(stmtLine, stmType::assign);
+		pkb.addStatement(stmtLine, stmType::assign, procedure);
 		break;
 	case 2:
 		//CallStatement
-		pkb.addStatement(stmtLine, stmType::call);
+		pkb.addStatement(stmtLine, stmType::call, procedure);
 		break;
 	case 3:
 		//ReadStatement
-		pkb.addStatement(stmtLine, stmType::read);
+		pkb.addStatement(stmtLine, stmType::read, procedure);
 		break;
 	case 4:
 		//PrintStatement
-		pkb.addStatement(stmtLine, stmType::print);
+		pkb.addStatement(stmtLine, stmType::print, procedure);
 		break;
 	case 5:
 		//WhileStatement
-		pkb.addStatement(stmtLine, stmType::whileStm);
+		pkb.addStatement(stmtLine, stmType::whileStm, procedure);
 		break;
 	case 6:
 		//IfStatemnt
-		pkb.addStatement(stmtLine, stmType::ifStm);
+		pkb.addStatement(stmtLine, stmType::ifStm, procedure);
 		break;
 	}
 }

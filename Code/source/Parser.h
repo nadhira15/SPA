@@ -43,7 +43,7 @@ private:
 
 	void extractProcedureEntity(std::string & stmtString, vector<Statement> stmtLst);
 
-	void populateStmtList(Statement stmt);
+	void populateStmtList(Statement stmt, std::string procedure);
 
 	PKB pkb;
 };

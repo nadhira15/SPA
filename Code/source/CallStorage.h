@@ -34,7 +34,8 @@ public:
 		Adds the call relation into the various lists in the storage
 		Returns false if the pair already exist
 	*/
-	bool addCall(string caller, string callee);
+	bool addCall(string caller, string callee);		//remove in future
+	bool addCall(string caller, string callee, int stm);
 
 	/*
 		Sets "callAnc" of callee
@@ -98,10 +99,24 @@ public:
 	// returns a list of all call* pairs
 	unordered_set< pair<string, string>, strPairhash> getCallStarPairs();
 
+	/*
+		returns the procedure called by 'stm'
+		returns empty string if 'stm' is not found
+	*/
+	string getProcCalledBy(int stm);
+
+	/*
+		returns a list of statements that calls 'procedure'
+		returns an empty set {} if 'procedure' is not found
+	*/
+	unordered_set<int> getStmCalling(string procedure);
+
 private:
 	static unordered_map<string, cRelationships> callTable;
 	static unordered_set< pair<string, string>, strPairhash> callPairList;
 	static unordered_set< pair<string, string>, strPairhash> callStarPairList;
 	static unordered_set<string> callerList;
 	static unordered_set<string> calleeList;
+	static unordered_map<int, string> stmToProcMap;
+	static unordered_map<string, unordered_set<int>> procToStmMap;
 };

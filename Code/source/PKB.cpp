@@ -1,7 +1,8 @@
 #include "PKB.h"
+#include"RunTimeDesignExtractor.h"
 
 unordered_set<string> PKB::procList;
-unordered_map<string, unordered_set<int>> PKB::procStmList;
+unordered_map<string, vector<int>> PKB::procStmList;
 vector<stmType> PKB::stmTypeList;
 unordered_set<string> PKB::varList;
 unordered_set<string> PKB::constList;
@@ -10,6 +11,7 @@ unordered_set<int> PKB::printStmList;
 unordered_set<int> PKB::assignStmList;
 unordered_set<int> PKB::ifStmList;
 unordered_set<int> PKB::whileStmList;
+unordered_set<int> PKB::callStmList;
 
 FollowStorage PKB::fStore;
 ParentStorage PKB::pStore;
@@ -49,6 +51,9 @@ void PKB::addStatement(int stmNo, stmType type)
 		case ifStm:
 			ifStmList.emplace(stmNo);
 			break;
+		case call:
+			callStmList.emplace(stmNo);
+			break;
 		default:
 			break;
 	}
@@ -57,9 +62,9 @@ void PKB::addStatement(int stmNo, stmType type)
 void PKB::addStatement(int stmNo, stmType type, string procedure)
 {
 	stmTypeList.assign(stmNo, type);
-	if (!procStmList.emplace(procedure, unordered_set<int>{stmNo}).second)
+	if (!procStmList.emplace(procedure, vector<int>{stmNo}).second)
 	{
-		procStmList.find(procedure)->second.emplace(stmNo);
+		procStmList.find(procedure)->second.push_back(stmNo);
 	}
 
 	switch (type)
@@ -78,6 +83,9 @@ void PKB::addStatement(int stmNo, stmType type, string procedure)
 			break;
 		case ifStm:
 			ifStmList.emplace(stmNo);
+			break;
+		case call:
+			callStmList.emplace(stmNo);
 			break;
 		default:
 			break;
@@ -177,6 +185,15 @@ bool PKB::addCall(string proc1, string proc2)
 	return cStore.addCall(proc1, proc2);
 }
 
+bool PKB::addCall(string proc1, string proc2, int stmNo)
+{
+	if (proc1 == "" || proc2 == "" || stmNo <= 0)
+	{
+		return false;
+	}
+	return cStore.addCall(proc1, proc2, stmNo);
+}
+
 bool PKB::setCallAnc(string proc, unordered_set<string> procList)
 {
 	return cStore.setCallAnc(proc, procList);
@@ -189,7 +206,7 @@ bool PKB::setCallDesc(string proc, unordered_set<string> procList)
 
 bool PKB::addNext(int line1, int line2)
 {
-	if (line2 <= line1 || line1 <= 0 || line2 <= 0)
+	if (line1 <= 0 || line2 <= 0)
 	{
 		return false;
 	}
@@ -206,7 +223,7 @@ unordered_set<string> PKB::getProcList()
 	return procList;
 }
 
-unordered_set<int> PKB::getStmList(string procedure)
+vector<int> PKB::getStmList(string procedure)
 {
 	if (procStmList.find(procedure) != procStmList.end())
 	{
@@ -248,6 +265,11 @@ unordered_set<int> PKB::getIfStms()
 unordered_set<int> PKB::getWhileStms()
 {
 	return whileStmList;
+}
+
+unordered_set<int> PKB::getCallStms()
+{
+	return callStmList;
 }
 
 unordered_set<string> PKB::getVariables()
@@ -510,6 +532,16 @@ unordered_set<pair<string, string>, strPairhash> PKB::getCallStarPairs()
 	return cStore.getCallStarPairs();
 }
 
+string PKB::getProcCalledBy(int stm)
+{
+	return cStore.getProcCalledBy(stm);
+}
+
+unordered_set<int> PKB::getStmCalling(string procedure)
+{
+	return cStore.getStmCalling(procedure);
+}
+
 bool PKB::hasNextRelation()
 {
 	return !nStore.isEmpty();
@@ -518,15 +550,15 @@ bool PKB::hasNextRelation()
 bool PKB::hasNextStarPair(int line1, int line2)
 {
 	// call DE
-	return false;
+	return RunTimeDesignExtractor::extractNextStarPair(line1, line2);
 }
 
-int PKB::getNext(int line)
+unordered_set<int> PKB::getNext(int line)
 {
 	return nStore.getNext(line);
 }
 
-int PKB::getPrev(int line)
+unordered_set<int> PKB::getPrev(int line)
 {
 	return nStore.getPrev(line);
 }

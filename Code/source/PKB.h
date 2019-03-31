@@ -145,6 +145,15 @@ public:
 	bool addCall(string proc1, string proc2);
 
 	/*
+		Adds the call relation at statement 'stmNo' into CallStorage
+		Returns false if
+			1) the pair is already stored
+			2) proc1 or proc2 == ""
+			3) stmNo <= 0
+	*/
+	bool addCall(string proc1, string proc2, int stmNo);
+
+	/*
 		Sets the list of call ancestors of 'procedure' in CallStorage
 		Each Call* pair is stored as well
 		If 'procedure' already has a list of call ancestors, it is not replaced and it return false
@@ -165,9 +174,7 @@ public:
 		add the next relation in NextStorage
 		Returns false if
 			1) the pair is already stored
-			2) the previous program line has another next program line stored
-			3) the next program line has another previous program line stored
-			4) line2 <= line1 or line1, line2 <= 0
+			2) line1, line2 <= 0
 	*/
 	bool addNext(int line1, int line2);
 
@@ -186,8 +193,8 @@ public:
 	// returns the stored list of procedures
 	unordered_set<string> getProcList();
 
-	// returns a list of statements that are in 'procedure'
-	unordered_set<int> getStmList(string procedure);
+	// returns an ordered list of statements that are in 'procedure'
+	vector<int> getStmList(string procedure);
 
 	// returns the total number of statements in the entire program
 	int getTotalStmNo();
@@ -209,6 +216,9 @@ public:
 
 	// returns the stored list of while statements
 	unordered_set<int> getWhileStms();
+
+	// returns the stored list of call statements
+	unordered_set<int> getCallStms();
 
 	// returns the stored list of variables
 	unordered_set<string> getVariables();
@@ -445,6 +455,18 @@ public:
 	// returns a list of all call* pairs
 	unordered_set< pair<string, string>, strPairhash> getCallStarPairs();
 
+	/*
+		returns the procedure called by 'stm'
+		returns empty string if 'stm' is not found
+	*/
+	string getProcCalledBy(int stm);
+
+	/*
+		returns a list of statements that calls 'procedure'
+		returns an empty set {} if 'procedure' is not found
+	*/
+	unordered_set<int> getStmCalling(string procedure);
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Next Getter Methods	/////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -455,16 +477,16 @@ public:
 	bool hasNextStarPair(int line1, int line2);
 
 	/*
-		return the program line to be executed after 'line'
-		return 0 if 'line' is not found
+		return a list of program lines that can be executed after 'line'
+		return {} if 'line' is not found
 	*/
-	int getNext(int line);
+	unordered_set<int> getNext(int line);
 
 	/*
-		return the program line to be executed before 'line'
-		return 0 if 'line' is not found
+		return a list of program lines that can be executed before 'line'
+		return {} if 'line' is not found
 	*/
-	int getPrev(int line);
+	unordered_set<int> getPrev(int line);
 
 	/*
 		return a list of program lines that is directly/indirectly after 'line'
@@ -520,7 +542,7 @@ public:
 
 private:
 	static unordered_set<string> procList;
-	static unordered_map<string, unordered_set<int>> procStmList;
+	static unordered_map<string, vector<int>> procStmList;
 	static vector<stmType> stmTypeList;
 	static unordered_set<string> varList;
 	static unordered_set<string> constList;
@@ -529,6 +551,7 @@ private:
 	static unordered_set<int> assignStmList;
 	static unordered_set<int> ifStmList;
 	static unordered_set<int> whileStmList;
+	static unordered_set<int> callStmList;
 
 	static FollowStorage fStore;
 	static ParentStorage pStore;
