@@ -37,8 +37,8 @@ void DesignExtractor::verifyCalledProceduresPresence()
 				break;
 			}
 		}
-		if (present = false) {
-			throw "A procedure that was called does not exist";
+		if (!present) {
+			throw "A procedure that was called does not exist : " + calledProcedure;
 		}
 	}
 }
@@ -169,7 +169,7 @@ void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::str
 		std::unordered_set<std::string>::const_iterator currPath = pathVisitedProcedure.find(callee);
 
 		//If neighbouring procedure is in currentCallPath, detect cyclic Calls.
-		if (currPath != visitedProcedures.end()) {
+		if (currPath != pathVisitedProcedure.end()) {
 			throw "Cyclical call detected at Procedure : " + procedure;
 		}
 

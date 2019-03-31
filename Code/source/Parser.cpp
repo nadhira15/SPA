@@ -203,7 +203,11 @@ void Parser::extractElseEntity(std::string &stmtString, int stmtLine, vector<Sta
 void Parser::extractProcedureEntity(std::string &stmtString, vector<Statement> stmtLst) {
 	ProcedureParser pp;
 	string procName = pp.parseProcName(stmtString);
-	pkb.addProc(procName);
+	bool newProcedure = pkb.addProc(procName);
+
+	if (!newProcedure) {
+		throw "Duplicate Procedure name detected : " + procName;
+	}
 
 	pp.parseStmtLst(stmtLst, procName);
 }

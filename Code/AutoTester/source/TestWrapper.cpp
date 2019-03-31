@@ -51,6 +51,9 @@ void TestWrapper::parse(std::string filename) {
 			exit(0);
 		}
 	}
+	else {
+		std::cout << "Check if the file name is correct!" << std::flush;
+	}
 
 }
 
