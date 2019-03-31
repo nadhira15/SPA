@@ -36,5 +36,11 @@ public:
 		std::unordered_map<std::string, std::vector<std::string>> toAddTable);
 	static std::unordered_map<std::string, std::vector<std::string>> twoCommonProduct(
 		std::unordered_map<std::string, std::vector<std::string>> oldTable,
-		std::unordered_map<std::string, std::vector<std::string>> toAddTable)
+		std::unordered_map<std::string, std::vector<std::string>> toAddTable);
+	static std::unordered_map<std::string, std::vector<std::string>> mixProduct(
+		std::unordered_map<std::string, std::vector<std::string>> oldTable,
+		std::unordered_map<std::string, std::vector<std::string>> toAddTable);
+	static std::unordered_map<std::string, std::vector<std::string>> product(
+		std::unordered_map<std::string, std::vector<std::string>> oldTable,
+		std::unordered_map<std::string, std::vector<std::string>> toAddTable);
 };

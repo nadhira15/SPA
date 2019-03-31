@@ -209,7 +209,7 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::crossPr
 			}
 		}
 		std::pair<std::string, std::vector<std::string>> toAddPair(columnIt->first, newColumn);
-		newTable.insert(toAddPair);
+		newTable.insert({ columnIt->first, newColumn });
 	}
 	for (auto columnIt = toAddTable.begin(); columnIt != toAddTable.end(); ++columnIt) {
 		std::vector<std::string> newColumn;
@@ -218,8 +218,7 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::crossPr
 				newColumn.push_back(columnIt->second[i]);
 			}
 		}
-		std::pair<std::string, std::vector<std::string>> toAddPair (columnIt->first, newColumn);
-		newTable.insert(toAddPair);
+		newTable.insert({ columnIt->first, newColumn });
 	}
 
 	return newTable;
@@ -241,15 +240,14 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::oneComm
 	for (auto columnIt = oldTable.begin(); columnIt != oldTable.begin(); ++columnIt) {
 		std::vector<std::string> newColumn;
 		for (std::vector<std::string>::size_type i = 0; i != oldSize; i++) {
-			for (std::vector<std::string>::size_type j = 0; j != toAddSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != toAddSize; j++) {
 				if (oldTable[commonKey][i] == toAddTable[commonKey][j]) {
 					newColumn.push_back(columnIt->second[i]);
 					break;
 				}
 			}
 		}
-		std::pair<std::string, std::vector<std::string>> toAddPair(columnIt->first, newColumn);
-		newTable.insert(toAddPair);
+		newTable.insert({ columnIt->first, newColumn });
 	}
 
 	return newTable;
@@ -274,7 +272,7 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::twoComm
 	for (auto columnIt = oldTable.begin(); columnIt != oldTable.begin(); ++columnIt) {
 		std::vector<std::string> newColumn;
 		for (std::vector<std::string>::size_type i = 0; i != oldSize; i++) {
-			for (std::vector<std::string>::size_type j = 0; j != toAddSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != toAddSize; j++) {
 				if (oldTable[commonKey1][i] == toAddTable[commonKey1][j]
 					&& oldTable[commonKey2][i] == toAddTable[commonKey2][j]) {
 					newColumn.push_back(columnIt->second[i]);
@@ -282,10 +280,89 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::twoComm
 				}
 			}
 		}
-		std::pair<std::string, std::vector<std::string>> toAddPair(columnIt->first, newColumn);
-		newTable.insert(toAddPair);
+		newTable.insert({ columnIt->first, newColumn });
 	}
 
 	return newTable;
+}
+
+/*
+The function products two tables
+where the second table only contains
+two keys and exactly one of them is 
+in the firsttable.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::mixProduct(
+	std::unordered_map<std::string, std::vector<std::string>> oldTable,
+	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
+	std::string commonKey;
+	for (auto it = toAddTable.begin(); it != toAddTable.end(); ++it) {
+		if (oldTable.count(it->first) == 1) {
+			commonKey = it->first;
+		}
+	}
+	int oldSize = oldTable[commonKey].size();
+	int toAddSize = toAddTable[commonKey].size();
+	std::unordered_map<std::string, std::vector<std::string>> intermediateTable1;
+	std::unordered_map<std::string, std::vector<std::string>> intermediateTable2;
+	intermediateTable1.insert({ commonKey, toAddTable[commonKey] });
+	intermediateTable2.insert({ commonKey, oldTable[commonKey] });
+	intermediateTable1 = oneCommonProduct(oldTable, intermediateTable1);
+	intermediateTable2 = oneCommonProduct(toAddTable, intermediateTable2);
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	for (auto columnIt = oldTable.begin(); columnIt != oldTable.end(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (std::vector<std::string>::size_type i = 0; i != toAddSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != oldSize; j++) {
+				if (oldTable[commonKey][j] == toAddTable[commonKey][i]) {
+					newColumn.push_back(columnIt->second[j]);
+				}
+			}
+		}
+		newTable.insert({ columnIt->first, newColumn });
+	}
+	for (auto columnIt = toAddTable.begin(); columnIt != toAddTable.end(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (std::vector<std::string>::size_type i = 0; i != toAddSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != oldSize; j++) {
+				if (oldTable[commonKey][j] == toAddTable[commonKey][i]) {
+					newColumn.push_back(columnIt->second[i]);
+				}
+			}
+		}
+		newTable.insert({ columnIt->first, newColumn });
+	}
+	return newTable;
+}
+
+/*
+Collate all the product functions
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::product(
+	std::unordered_map<std::string, std::vector<std::string>> oldTable,
+	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
+	if (toAddTable.size() == 1) {
+		if (oldTable.count(toAddTable.begin()->first) == 1) {
+			return oneCommonProduct(oldTable, toAddTable);
+		}
+		else {
+			return crossProduct(oldTable, toAddTable);
+		}
+	}
+	if (toAddTable.size() == 2) {
+		auto it = toAddTable.begin();
+		std::string firstKey = it->first;
+		++it;
+		std::string secondKey = it->first;
+		if (oldTable.count(firstKey) + oldTable.count(secondKey) == 2) {
+			return twoCommonProduct(oldTable, toAddTable);
+		}
+		else if (oldTable.count(firstKey) + oldTable.count(secondKey) == 1) {
+			return mixProduct(oldTable, toAddTable);
+		}
+		else {
+			return crossProduct(oldTable, toAddTable);
+		}
+	}
 }
 

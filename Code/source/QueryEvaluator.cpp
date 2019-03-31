@@ -103,7 +103,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 					return emptyTable;
 				}
 				else {
-					resultTable = ContainerUtil::crossProduct(resultTable, newTable);
+					resultTable = ContainerUtil::product(resultTable, newTable);
 				}
 			}
 		}
@@ -121,7 +121,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 				return emptyTable;
 			}
 			else {
-				resultTable = ContainerUtil::crossProduct(resultTable, newTable);
+				resultTable = ContainerUtil::product(resultTable, newTable);
 			}
 		}
 	}
