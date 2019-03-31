@@ -25,9 +25,9 @@ PKB::PKB()
 {
 }
 
-void PKB::addProc(string name)
+bool PKB::addProc(string name)
 {
-	procList.emplace(name);
+	return procList.emplace(name).second;
 }
 
 void PKB::addStatement(int stmNo, stmType type)
