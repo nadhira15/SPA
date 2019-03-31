@@ -334,7 +334,7 @@ void DesignExtractor::processModifiesProcedures(std::string procedure)
  */
 void DesignExtractor::processCallsStar(std::vector<std::string> sortedProcedures) {
 	//Process procedure list s where Calls*(s, procedure) is true
-	for (int i = sortedProcedures.size() - 1; i >= 0; i++) {
+	for (int i = sortedProcedures.size() - 1; i >= 0; i--) {
 		std::string procedure = sortedProcedures.at(i);
 		std::unordered_set<std::string> callerList = pkb.getCaller(procedure);
 
