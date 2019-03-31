@@ -31,11 +31,11 @@ TestA, TestB, TestC, TenWhileLoop, procedure, fruits, colours, Pr0c3dUr3, oneCal
 7 - select synonym, calls undeclared synonym and wildcard
 procedure p, q;
 Select q such that Calls(pq, _)
-TestA, TestB, TestC, TenWhileLoop, procedure, fruits, colours, Pr0c3dUr3, oneCall, transportation, country
+none
 5000
 8 - select synonym, calls wildcard procName
 procedure p, q;
-Select p such that Calls(_, "TestA")
+Select p such that Calls(_, "TestB")
 none
 5000
 9 - select synonym, calls wildcard procName
