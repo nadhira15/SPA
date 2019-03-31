@@ -1,13 +1,3 @@
-#pragma once
-
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
-
-#include "Statement.h"
-
-using namespace std;
 
 /**** Usage guide
   Statement is a container for the processed source code
@@ -33,23 +23,25 @@ using namespace std;
 	*NOTE will return true for if, else, while even if its statement list is empty
 */
 
+#include "Statement.h"
+
 //constructors
-Statement::Statement(string s, int type, int sNum) { //constructor for ASSIGN, CALL, READ, PRINT
+Statement::Statement(std::string s, int type, int sNum) { //constructor for ASSIGN, CALL, READ, PRINT
 	extracted_String = s;
 	stmtType = type;
 	stmtNum = sNum;
 }
-Statement::Statement(string s, vector<Statement> lst, int type, int sNum) { //constructor for IF, WHILE 
+Statement::Statement(std::string s, std::vector<Statement> lst, int type, int sNum) { //constructor for IF, WHILE 
 	extracted_String = s;
 	stmtLst = lst;
 	stmtType = type;
 	stmtNum = sNum;
 }
 //getters
-string Statement::getString() {
+std::string Statement::getString() {
 	return extracted_String;
 }
-vector<Statement> Statement::getStmtLst() {
+std::vector<Statement> Statement::getStmtLst() {
 	return stmtLst;
 }
 int Statement::getType() {
@@ -63,7 +55,7 @@ bool Statement::hasStmtLst() {
 }
 //for troubleshooting
 void Statement::printStatement() {
-	cout << getStmtNum() << "   <" << getString() << ">" << getType() << "\n";
+	std::cout << getStmtNum() << "   <" << getString() << ">" << getType() << "\n";
 }
 void Statement::print() {
 	printStatement();

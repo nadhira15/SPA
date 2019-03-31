@@ -11,21 +11,21 @@ namespace UnitTesting
 	public:
 		TEST_METHOD(testStringGetter1)
 		{
-			string expected = "a = b";
-			string actual = Statement("a = b", 1, 0).getString();
+			std::string expected = "a = b";
+			std::string actual = Statement("a = b", 1, 0).getString();
 			Assert::AreEqual(expected, actual);
 		}
 		TEST_METHOD(testStringGetter2)
 		{
-			string expected = "if (i == 1) then";
-			string actual = Statement("a = b", 1, 0).getString();
+			std::string expected = "if (i == 1) then";
+			std::string actual = Statement("a = b", 1, 0).getString();
 			Assert::AreNotEqual(expected, actual);
 		}
 		TEST_METHOD(testStringGetter3)
 		{
 			//different type numbers
-			string expected = Statement("a = b", 2, 0).getString();
-			string actual = Statement("a = b", 1, 0).getString();
+			std::string expected = Statement("a = b", 2, 0).getString();
+			std::string actual = Statement("a = b", 1, 0).getString();
 			Assert::AreEqual(expected, actual);
 		}
 		TEST_METHOD(testStmtGetter1)
@@ -36,9 +36,9 @@ namespace UnitTesting
 		}
 		TEST_METHOD(testStmtGetter2)
 		{
-			vector<Statement> r; 
+			std::vector<Statement> r; 
 			r.push_back(Statement("a = b", 1, 0));
-			string w = "while (i == 0)";
+			std::string w = "while (i == 0)";
 			bool actual = Statement(w, r, 5, 0).hasStmtLst();
 			Assert::AreEqual(true, actual);
 		}

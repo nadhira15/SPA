@@ -18,29 +18,16 @@ bool NextStorage::addNext(int prev, int next)
 		return false;
 	}
 
-	if (nextTable.find(prev) != nextTable.end() && nextTable.find(prev)->second.next != 0)
-	{
-		nextPairList.erase(pair<int, int>(prev, next));
-		return false;
-	}
-
-	if (nextTable.find(next) != nextTable.end() &&
-		nextTable.find(next)->second.previous != 0)
-	{
-		nextPairList.erase(pair<int, int>(prev, next));
-		return false;
-	}
-
 	// if prev already exist in nextTable
-	if (!nextTable.emplace(prev, nRelationships{ 0, next }).second)
+	if (!nextTable.emplace(prev, nRelationships{ { next }, {} }).second)
 	{
-		nextTable.find(prev)->second.next = next;
+		nextTable.find(prev)->second.next.emplace(next);
 	}
 
 	// if next already exist in nextTable
-	if (!nextTable.emplace(next, nRelationships{ prev, 0 }).second)
+	if (!nextTable.emplace(next, nRelationships{ {}, { prev } }).second)
 	{
-		nextTable.find(next)->second.previous = prev;
+		nextTable.find(next)->second.previous.emplace(prev);
 	}
 
 	nextList.emplace(next);
@@ -53,22 +40,22 @@ bool NextStorage::isEmpty()
 	return nextTable.size() == 0;
 }
 
-int NextStorage::getNext(int ln)
+unordered_set<int> NextStorage::getNext(int ln)
 {
 	if (nextTable.find(ln) != nextTable.end())
 	{
 		return nextTable.at(ln).next;
 	}
-	return 0;
+	return {};
 }
 
-int NextStorage::getPrev(int ln)
+unordered_set<int> NextStorage::getPrev(int ln)
 {
 	if (nextTable.find(ln) != nextTable.end())
 	{
 		return nextTable.at(ln).previous;
 	}
-	return 0;
+	return {};
 }
 
 unordered_set<int> NextStorage::getAllNext()
