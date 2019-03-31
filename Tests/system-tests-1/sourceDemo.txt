@@ -273,7 +273,7 @@ procedure fruits {
 		apple = 1;
 		read pear;
 		call Pr0c3dUr3;
-		if (banana == pear) {
+		if (banana == pear) then {
 			banana = banana - banana;
 			banana = banana * 12345;
 			print pear;
@@ -298,7 +298,7 @@ procedure fruits {
 	}
 	print grape;
 	grape = orange;
-	if ((grape >= banana) && (grape != pear)) {
+	if ((grape >= banana) && (grape != pear)) then {
 		orange = grape + 670;
 		call TenWhileLoop;
 		pear = banana + orange * grape;
@@ -311,7 +311,7 @@ procedure fruits {
 	}
 	avocado = cherry * cherry;
 	print avocado;
-	if (((avocado >= cherry) && (banana > avocado)) || (((banana + 1) % 2) > 0)) {
+	if (((avocado >= cherry) && (banana > avocado)) || (((banana + 1) % 2) > 0)) then {
 		while (grape == orange) {
 			orange = orange + 1;
 			banana = orange;
@@ -321,8 +321,8 @@ procedure fruits {
 		}
 		print grape;
 		grape = grape * orange / orange * 123 + 15;
-		if (kiwi == kiwi) {
-			kiwi + 5;
+		if (kiwi == kiwi) then {
+			kiwi = kiwi + 5;
 			orange = orange + kiwi;
 			while ((kiwi > 67) && orange > (pear * 3 % 2 + banana)) {
 				kiwi = orange * pear;
@@ -356,13 +356,13 @@ procedure fruits {
 }
 
 procedure colours{
-	if ((red >= blue) && (((blue % 3) > green) || yellow == pink)) {
+	if ((red >= blue) && (((blue % 3) > green) || yellow == pink)) then {
 		while (pink != 3) {
 			pink = pink + purple;
 			read purple;
 			purple = green * 15 + (green % 17) - ((((green - 1) * 7) % 6) + 123) * (blue % 6) + blue + blue + pink * yellow;
 			print yellow;
-			if (yellow > 8) {
+			if (yellow > 8) then {
 				while (yellow == pink) {
 					read pink;
 					pink = red + red;
@@ -452,7 +452,7 @@ procedure Pr0c3dUr3 {
 		read while;
 		if = 123 + 567 + 8 * 9 / 1;
 		print if;
-		if (while  !=    if) {
+		if (while  !=    if) then {
 			while = while + while;
 			if = 1;
 			if = 2;
@@ -477,10 +477,10 @@ procedure Pr0c3dUr3 {
 		print print;
 		print = print + 12 / 6 * read + 67;
 		print read;
-		if (if != if) {
+		if (if != if) then {
 			if = 12345;
 			print = read * 12 * 12;
-			if (print > while) {
+			if (print > while) then {
 				while = print;
 				print while;
 				while (while == while) {
@@ -492,7 +492,7 @@ procedure Pr0c3dUr3 {
 						while = while + 123;
 						else = else;
 						read read;
-						if (while == 123) {
+						if (while == 123) then {
 							read while;
 							while = print;
 							print = print * print;
@@ -512,7 +512,7 @@ procedure Pr0c3dUr3 {
 				}
 			}
 		} else {
-			if (while > print) {
+			if (while > print) then {
 				print = while;
 				while = while + while;
 				while = 1;
@@ -535,7 +535,7 @@ procedure oneCall {
 
 procedure transportation {
 	call country;
-	if (bus > (taxi - 1)) {
+	if (bus > (taxi - 1)) then {
 		read bus;
 		bus = taxi + motorcycle;
 		mrt = mrt;
@@ -551,7 +551,7 @@ procedure transportation {
 		while (grab != gojek) {
 			bike = gojek;
 			bike = bike + 1;
-			if ((uber != gojek) || (gojek > grab)) {
+			if ((uber != gojek) || (gojek > grab)) then {
 				grab = grab * 0 + gojek / 123 * 9 - 2 + 6 + (2 + 5 + 9 / 0);
 				grab = grab;
 				print train;
@@ -592,7 +592,7 @@ procedure country {
 			brazil = brazil + india + singapore + malaysia + indonesia;
 			read malaysia;
 		}
-		if (thailand > indonesia) {
+		if (thailand > indonesia) then {
 			malaysia = 1;
 			while (malaysia > spain) {
 				spain = spain;
@@ -605,7 +605,7 @@ procedure country {
 			read singapore;
 			while (laos > vietnam) {
 				print laos;
-				if (((vietnam != brazil) && ((indonesia == 1) || (6 > malaysia))) || ((china - 1) == japan)) {
+				if (((vietnam != brazil) && ((indonesia == 1) || (6 > malaysia))) || ((china - 1) == japan)) then {
 					vietnam = vietnam + brazil * indonesia - laos;
 					laos = laos + brazil;
 					uk = uk / uk;
