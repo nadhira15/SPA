@@ -146,3 +146,12 @@ unordered_set<pair<int, int>, intPairhash> FollowStorage::getFollowStarPairs()
 {
 	return followStarPairList;
 }
+
+void FollowStorage::erase()
+{
+	followTable.erase(followTable.begin(), followTable.end());
+	followerList.erase(followerList.begin(), followerList.end());
+	followedList.erase(followedList.begin(), followedList.end());
+	followPairList.erase(followPairList.begin(), followPairList.end());
+	followStarPairList.erase(followStarPairList.begin(), followStarPairList.end());
+}

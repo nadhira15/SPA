@@ -647,3 +647,25 @@ unordered_set<pair<int, string>, intStringhash> PKB::findPatternPairs(string exp
 	}
 	return validPairs;
 }
+
+void PKB::erase()
+{
+	procList.erase(procList.begin(), procList.end());
+	procStmList.erase(procStmList.begin(), procStmList.end());
+	stmTypeList.erase(stmTypeList.begin(), stmTypeList.end());
+	varList.erase(varList.begin(), varList.end());
+	constList.erase(constList.begin(), constList.end());
+	readStmList.erase(readStmList.begin(), readStmList.end());
+	printStmList.erase(printStmList.begin(), printStmList.end());
+	assignStmList.erase(assignStmList.begin(), assignStmList.end());
+	ifStmList.erase(ifStmList.begin(), ifStmList.end());
+	whileStmList.erase(whileStmList.begin(), whileStmList.end());
+	callStmList.erase(callStmList.begin(), callStmList.end());
+	patternList.erase(patternList.begin(), patternList.end());
+	fStore.erase();
+	pStore.erase();
+	uStore.erase();
+	mStore.erase();
+	cStore.erase();
+	nStore.erase();
+}
