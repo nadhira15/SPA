@@ -127,7 +127,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 				status == "FALSE";
 				break;
 			}
-			if (trivialness == "non trivial") {
+			if (trivialness == "not trivial") {
 				std::unordered_map<std::string, std::vector<std::string>> newTable = evaluateWithCondition(
 					declarations, left, right);
 				resultTable = ContainerUtil::product(resultTable, newTable);
@@ -176,10 +176,10 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		if ((attrType == "call") && (ref == "procName")) {
 			return ContainerUtil::to_mapvec(attr, PKB().getStmCalling(trimFrontEnd(right)));
 		}
-		else if ((attrType == "read") && (ref == "procName")) {
+		else if ((attrType == "read") && (ref == "varName")) {
 			return evaluateSuchThat(declarations, "Modifies", attr, right);
 		}
-		else if ((attrType == "print") && (ref == "procName")) {
+		else if ((attrType == "print") && (ref == "varName")) {
 			return evaluateSuchThat(declarations, "Uses", attr, right);
 		}
 		else {
@@ -1031,7 +1031,7 @@ attribute reference.
 */
 std::string QueryEvaluator::attrOf(std::string s) {
 	std::size_t dotPos = s.find(".");
-	return s.substr(0, dotPos - 1);
+	return s.substr(0, dotPos);
 }
 
 /*
