@@ -13,6 +13,7 @@ using namespace std;
 #include "CallStorage.h"
 #include "NextStorage.h"
 #include "ControlVariableStorage.h"
+#include "RunTimeDesignExtractor.h"
 #include "Hasher.h"
 
 enum stmType {read, print, assign, whileStm, ifStm, call};
