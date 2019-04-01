@@ -660,14 +660,14 @@ void PKB::addWhileControlVariable(int stm, string variable)
 	cvStore.addWhileControlVariable(stm, variable);
 }
 
-bool PKB::hasIfControlVariable()
+std::unordered_set<int> PKB::getAllIfWithControls()
 {
-	return cvStore.hasIfControlVariable();
+	return cvStore.getAllIfWithControls();
 }
 
-bool PKB::hasWhileControlVariable()
+std::unordered_set<int> PKB::getAllWhileWithControls()
 {
-	return cvStore.hasWhileControlVariable();
+	return cvStore.getAllWhileWithControls();
 }
 
 std::unordered_set<int> PKB::getIfStmWithControlVariable(std::string variable)

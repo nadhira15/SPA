@@ -13,10 +13,10 @@ public:
 	void addWhileControlVariable(int stm, string variable);
 
 	//Call for if(_,_)
-	bool hasIfControlVariable();
+	std::unordered_set<int> getAllIfWithControls();
 
 	//Call for w(_,_)
-	bool hasWhileControlVariable();
+	std::unordered_set<int> getAllWhileWithControls();
 
 	//Call for if('s',_)
 	std::unordered_set<int> getIfStmWithControlVariable(std::string variable);
