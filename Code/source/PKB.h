@@ -12,6 +12,7 @@ using namespace std;
 #include "ModifyStorage.h"
 #include "CallStorage.h"
 #include "NextStorage.h"
+#include "ControlVariableStorage.h"
 #include "Hasher.h"
 
 enum stmType {read, print, assign, whileStm, ifStm, call};
@@ -545,6 +546,36 @@ public:
 	*/
 	unordered_set<pair<int, string>, intStringhash> findPatternPairs(string expr, bool isExclusive);
 
+
+
+	/*
+	* While/If Pattern Setters and Getters
+	*/
+
+	//Set for ifs.
+	void addIfControlVariable(int stm, string variable);
+
+	//Set for while.
+	void addWhileControlVariable(int stm, string variable);
+
+	//Call for if(_,_)
+	bool hasIfControlVariable();
+
+	//Call for w(_,_)
+	bool hasWhileControlVariable();
+
+	//Call for if('s',_)
+	std::unordered_set<int> getIfStmWithControlVariable(std::string variable);
+
+	//Call for w('s',_)
+	std::unordered_set <int> getWhileStmWithControlVariable(std::string variable);
+
+	//Call for if(s,_)
+	std::unordered_set<std::pair<int, std::string>, intStringhash> getIfStmControlVariablePair();
+
+	//Call for w(s,_)
+	std::unordered_set<std::pair<int, std::string>, intStringhash> getWhileStmControlVariablePair();
+
 private:
 	static unordered_set<string> procList;
 	static unordered_map<string, vector<int>> procStmList;
@@ -564,5 +595,6 @@ private:
 	static ModifyStorage mStore;
 	static CallStorage cStore;
 	static NextStorage nStore;
+	static ControlVariableStorage cvStore;
 	static unordered_map<int, pair<string, string> > patternList;
 };

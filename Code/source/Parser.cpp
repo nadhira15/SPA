@@ -43,11 +43,6 @@ int Parser::parse(vector<Statement> stmtLst, int parent, string procedure) {
 			pkb.addNext(stmt.getStmtLst().back().getStmtNum(), currStmtLine);
 		}
 
-		//Add Procedure - Statement Relationship if Statment is in a Procedure.
-		if (!procedure.empty()) {
-			//TODO:: Add Procedure containing statement in pkb.
-		}
-
 		//Add VariableName, Constants, and Procedure name into PKB.
 		populateDesignEntities(stmt, procedure);
 
@@ -169,6 +164,7 @@ void Parser::extractWhileEntity(std::string &stmtString, int stmtLine, vector<St
 	for (string variable : variables) {
 		pkb.addVariable(variable);
 		pkb.addUsesStm(stmtLine, variable);
+		pkb.addWhileControlVariable(stmtLine, variable);
 	}
 
 	for (string constant : constants) {
@@ -186,6 +182,7 @@ void Parser::extractIfEntity(std::string &stmtString, int stmtLine, vector<State
 	for (string variable : variables) {
 		pkb.addVariable(variable);
 		pkb.addUsesStm(stmtLine, variable);
+		pkb.addIfControlVariable(stmtLine, variable);
 	}
 
 	for (string constant : constants) {
