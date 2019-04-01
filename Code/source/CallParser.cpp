@@ -4,7 +4,7 @@ std::regex validCallStatement("\\s*call\\s+(\\w+)\\s*");
 
 std::string CallParser::parseCallStmt(std::string toParse) {
 	if (verifyCallStmt(toParse) == false) {
-		throw "Invalid Read Statement";
+		throw "Invalid Call Statement : " + toParse;
 	}
 
 	std::smatch matches;
@@ -17,11 +17,11 @@ std::string CallParser::parseCallStmt(std::string toParse) {
 			return name;
 		}
 		else {
-			throw "Invalid Procedure Name";
+			throw "Invalid Procedure Name : " + name;
 		}
 	}
 	else {
-		throw "Invalid Read Statement";
+		throw "Invalid Call Statement : " + toParse;
 	}
 }
 

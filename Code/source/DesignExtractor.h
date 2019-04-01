@@ -17,8 +17,7 @@
  */
 class DesignExtractor {
 public:
-	static void extractDesigns(PKB storage);
-
+	static void extractDesigns();
 private:
 	static PKB pkb;
 	static void verifyCalledProceduresPresence();
