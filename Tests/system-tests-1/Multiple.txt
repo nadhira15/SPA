@@ -114,8 +114,8 @@ Select ifs such that Calls(p, q) and Parent(ifs, c) and Next(c, a) and with c.pr
 none
 5000
 24 - select synonym, stmtNum, 3 such that 3 with 3 pattern
-stmt s; assign a; print pr; read re; if ifs; while w; constant cons; call c; variable v; procedure p, q;
-Select v such that Uses(ifs, v) and Follows(s, a) and Parent (ifs, a) with v.varName = "g" and ifs.stmt# = cons and a.stmt# = cons pattern ifs(v, _, _) and a(v, _) and w(_, _)
+stmt s; assign a; print pr; read re; if ifs; while w; constant cons, cons1; call c; variable v; procedure p, q;
+Select v such that Uses(ifs, v) and Follows(s, a) and Parent (ifs, a) with v.varName = "g" and ifs.stmt# = cons.value and a.stmt# = cons1.value pattern ifs(v, _, _) and a(v, _) and w(_, _)
 none
 5000
 25 - select synonym, 4 such that 4 with 3 pattern
