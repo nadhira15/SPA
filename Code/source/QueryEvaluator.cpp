@@ -164,10 +164,20 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 	std::string left, std::string right) {
 	std::unordered_map<std::string, std::vector<std::string>> withMap;
 	if (isSynonym(left) && !hasReference(right) && !isSynonym(right)) {
-		return ContainerUtil::to_mapvec(left, right);
+		if (stoi(right) < PKB().getTotalStmNo()) {
+			return ContainerUtil::to_mapvec(left, right);
+		}
+		std::vector<std::string> emptyVec;
+		withMap.insert({ left, emptyVec });
+		return withMap;
 	}
 	else if (!hasReference(left) && !isSynonym(left) && isSynonym(right)) {
-		return ContainerUtil::to_mapvec(right, left);
+		if (stoi(left) < PKB().getTotalStmNo()) {
+			return ContainerUtil::to_mapvec(right, left);
+		}
+		std::vector<std::string> emptyVec;
+		withMap.insert({ right, emptyVec });
+		return withMap;
 	}
 	else if (hasReference(left) && !hasReference(right) && !isSynonym(right)) {
 		std::string attr = attrOf(left);
@@ -236,6 +246,9 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			return ContainerUtil::intersectOne(getStmts(declarations, leftAttr),
 				getStmts(declarations, rightAttr));
 		}
+		std::vector<std::string> emptyVec;
+		withMap.insert({ leftAttr, emptyVec });
+		return withMap;
 	}
 }
 
