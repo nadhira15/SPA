@@ -111,6 +111,9 @@ public:
 	*/
 	unordered_set<int> getStmCalling(string procedure);
 
+	// empty the entire storage
+	void erase();
+
 private:
 	static unordered_map<string, cRelationships> callTable;
 	static unordered_set< pair<string, string>, strPairhash> callPairList;

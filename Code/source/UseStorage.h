@@ -67,6 +67,9 @@ public:
 	// returns a list of all Uses pairs for procedures
 	unordered_set< pair<string, string>, strPairhash> getProcVarPairs();
 
+	// empty the entire storage
+	void erase();
+
 private:
 	static unordered_set<pair<int, string>, intStringhash> stmVarPairList;
 	static unordered_set<pair<string, string>, strPairhash> procVarPairList;
