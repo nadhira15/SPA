@@ -881,6 +881,9 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::getStm
 	else if (synType == "procedure") {
 		return ContainerUtil::to_mapvec(syn, PKB().getProcList());
 	}
+	else if (synType == "call") {
+		return ContainerUtil::to_mapvec(syn, PKB().getCallStms());
+	}
 }
 
 /*
