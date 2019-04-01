@@ -549,7 +549,6 @@ bool PKB::hasNextRelation()
 
 bool PKB::hasNextStarPair(int line1, int line2)
 {
-	// call DE
 	return RunTimeDesignExtractor::extractNextStarPair(line1, line2);
 }
 
@@ -684,7 +683,7 @@ std::unordered_set<std::pair<int, std::string>, intStringhash> PKB::getIfStmCont
 
 std::unordered_set<std::pair<int, std::string>, intStringhash> PKB::getWhileStmControlVariablePair()
 {
-	return cvStore.getWhileStmControlVariablePair()
+	return cvStore.getWhileStmControlVariablePair();
 }
 
 void PKB::erase()
