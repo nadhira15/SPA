@@ -7,6 +7,7 @@ unordered_set<string> CallStorage::callerList;
 unordered_set<string> CallStorage::calleeList;
 unordered_map<int, string> CallStorage::stmToProcMap;
 unordered_map<string, unordered_set<int>> CallStorage::procToStmMap;
+unordered_set< pair<int, string>, intStringhash> CallStorage::stmProcCallPairList;
 
 CallStorage::CallStorage()
 {
@@ -174,6 +175,11 @@ unordered_set<int> CallStorage::getStmCalling(string procedure)
 		return procToStmMap.at(procedure);
 	}
 	return {};
+}
+
+unordered_set<pair<int, string>, intStringhash> CallStorage::getStmProcCallPairs()
+{
+	return stmProcCallPairList;
 }
 
 void CallStorage::erase()

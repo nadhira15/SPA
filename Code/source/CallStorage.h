@@ -110,6 +110,9 @@ public:
 	*/
 	unordered_set<int> getStmCalling(string procedure);
 
+	// returns a list of all call statement - procedure pairs
+	unordered_set< pair<int, string>, intStringhash> getStmProcCallPairs();
+
 	// empty the entire storage
 	void erase();
 
@@ -121,4 +124,5 @@ private:
 	static unordered_set<string> calleeList;
 	static unordered_map<int, string> stmToProcMap;
 	static unordered_map<string, unordered_set<int>> procToStmMap;
+	static unordered_set< pair<int, string>, intStringhash> stmProcCallPairList;
 };

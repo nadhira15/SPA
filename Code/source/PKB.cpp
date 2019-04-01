@@ -504,6 +504,11 @@ unordered_set<int> PKB::getStmCalling(string procedure)
 	return cStore.getStmCalling(procedure);
 }
 
+unordered_set<pair<int, string>, intStringhash> PKB::getStmProcCallPairs()
+{
+	return cStore.getStmProcCallPairs();
+}
+
 bool PKB::hasNextRelation()
 {
 	return !nStore.isEmpty();
