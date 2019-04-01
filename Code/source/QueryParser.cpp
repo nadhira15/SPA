@@ -134,7 +134,7 @@ unordered_set<string> QueryParser::parse(string query) {
 	// validating 'such that' parameter
 	errorString = QueryValidator::validateSuchThatParam(suchThatCondition, declarations);
 	if (errorString == "semantic error" && selectBoolean) {
-		result.insert("false");
+		result.insert("FALSE");
 		return result;
 	}
 	else if (errorString != "") {
@@ -145,7 +145,7 @@ unordered_set<string> QueryParser::parse(string query) {
 	// validating 'pattern' parameter
 	errorString = QueryValidator::validatePatternParam(patternCondition, declarations);
 	if (errorString == "semantic error" && selectBoolean) {
-		result.insert("false");
+		result.insert("FALSE");
 		return result;
 	}
 	else if (errorString != "") {
@@ -156,7 +156,7 @@ unordered_set<string> QueryParser::parse(string query) {
 	// validating 'with' parameter
 	errorString = QueryValidator::validateWithParam(withCondition, declarations);
 	if (errorString == "semantic error" && selectBoolean) {
-		result.insert("false");
+		result.insert("FALSE");
 		return result;
 	}
 	else if (errorString != "") {
