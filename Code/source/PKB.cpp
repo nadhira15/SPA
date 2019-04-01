@@ -1,5 +1,4 @@
 #include "PKB.h"
-#include"RunTimeDesignExtractor.h"
 
 unordered_set<string> PKB::procList;
 unordered_map<string, vector<int>> PKB::procStmList;
@@ -549,7 +548,7 @@ bool PKB::hasNextRelation()
 
 bool PKB::hasNextStarPair(int line1, int line2)
 {
-	return RunTimeDesignExtractor::extractNextStarPair(line1, line2);
+	return RunTimeDesignExtractor::extractNextStarPair(this, line1, line2);
 }
 
 unordered_set<int> PKB::getNext(int line)
@@ -564,12 +563,12 @@ unordered_set<int> PKB::getPrev(int line)
 
 unordered_set<int> PKB::getAllLnAfter(int line)
 {
-	return RunTimeDesignExtractor::extractNextStar(line);
+	return RunTimeDesignExtractor::extractNextStar(this, line);
 }
 
 unordered_set<int> PKB::getAllLnBefore(int line)
 {
-	return RunTimeDesignExtractor::extractPreviousStar(line);
+	return RunTimeDesignExtractor::extractPreviousStar(this, line);
 }
 
 unordered_set<int> PKB::getAllNext()
@@ -589,7 +588,7 @@ unordered_set<pair<int, int>, intPairhash> PKB::getNextPairs()
 
 unordered_set<pair<int, int>, intPairhash> PKB::getNextStarPairs()
 {
-	return RunTimeDesignExtractor::getNextStarPairs();
+	return RunTimeDesignExtractor::getNextStarPairs(this);
 }
 
 unordered_set<int> PKB::findPattern(string variable, string expr, bool isExclusive)
