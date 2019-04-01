@@ -55,6 +55,6 @@ public:
 	static bool isSynonym(std::string s);
 	static bool hasReference(std::string s);
 	static std::string attrOf(std::string s);
-	static std::string refOf(std::string s)
+	static std::string refOf(std::string s);
 
 };
