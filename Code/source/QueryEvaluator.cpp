@@ -97,7 +97,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 					declarations, relation, firstArgument, secondArgument);
 				resultTable = ContainerUtil::product(resultTable, newTable);
 				if (resultTable.begin()->second.size() == 0) {
-					status == "FALSE";
+					status = "FALSE";
 					break;
 				}
 			}
@@ -111,7 +111,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 				declarations, patternCondition[i]);
 			resultTable = ContainerUtil::product(resultTable, newTable);
 			if (resultTable.begin()->second.size() == 0) {
-				status == "FALSE";
+				status = "FALSE";
 				break;
 			}
 		}
@@ -124,7 +124,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 			std::string right = withCondition[i].second;
 			std::string trivialness = isWithTrivial(left, right);
 			if (trivialness == "false") {
-				status == "FALSE";
+				status = "FALSE";
 				break;
 			}
 			if (trivialness == "non trivial") {
@@ -132,7 +132,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 					declarations, left, right);
 				resultTable = ContainerUtil::product(resultTable, newTable);
 				if (resultTable.begin()->second.size() == 0) {
-					status == "FALSE";
+					status = "FALSE";
 					break;
 				}
 			}
@@ -183,7 +183,13 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			return evaluateSuchThat(declarations, "Uses", attr, right);
 		}
 		else {
-			return ContainerUtil::to_mapvec(attr, right);
+			std::vector<std::string> attrValues = getStmts(declarations, attr)[attr];
+			if (std::find(attrValues.begin(), attrValues.end(), right) != attrValues.end()) {
+				return ContainerUtil::to_mapvec(attr, right);
+			}
+			std::vector<std::string> emptyVec;
+			withMap.insert({ attr, emptyVec });
+			return withMap;
 		}
 	}
 	else if (!hasReference(left) && !isSynonym(left) && hasReference(right)) {
@@ -200,7 +206,13 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			return evaluateSuchThat(declarations, "Uses", attr, left);
 		}
 		else {
-			return ContainerUtil::to_mapvec(attr, left);
+			std::vector<std::string> attrValues = getStmts(declarations, attr)[attr];
+			if (std::find(attrValues.begin(), attrValues.end(), left) != attrValues.end()) {
+				return ContainerUtil::to_mapvec(attr, left);
+			}
+			std::vector<std::string> emptyVec;
+			withMap.insert({ attr, emptyVec });
+			return withMap;
 		}
 	}
 	else if (hasReference(left) && isSynonym(right)) {

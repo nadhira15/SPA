@@ -1,0 +1,154 @@
+<?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
+<test_results>
+<info>
+<name>AutoTester</name><parsing_time_taken>26894.000000</parsing_time_taken>
+</info>
+<queries>
+<query>
+<id ReturnBoolean="1" CondNum="1" RelNum="0" comment="select boolean with no clause">1</id><querystr><![CDATA[ Select BOOLEAN]]></querystr>
+<stuans>TRUE</stuans>
+<correct>TRUE</correct>
+<time_taken>62.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="select boolean with clause that returns true boolean">2</id><querystr><![CDATA[ Select BOOLEAN such that Follows(1, 2)]]></querystr>
+<stuans>TRUE</stuans>
+<correct>TRUE</correct>
+<time_taken>48.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="select boolean with clauses that returns table with result">3</id><querystr><![CDATA[stmt s, s1; Select BOOLEAN such that Follows(s, s1)]]></querystr>
+<stuans>TRUE</stuans>
+<correct>TRUE</correct>
+<time_taken>714.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="select boolean with clauses that return false boolean">4</id><querystr><![CDATA[ Select BOOLEAN such that Follows(2, 1)]]></querystr>
+<stuans>FALSE</stuans>
+<correct>FALSE</correct>
+<time_taken>256.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" Calls="2" SuchThat="1" CondNum="4" RelNum="2" comment="select boolean with clauses that do not return any results">5</id><querystr><![CDATA[procedure s, s1; Select BOOLEAN such that Calls(s, s1) and Calls(s1, s)]]></querystr>
+<stuans>FALSE</stuans>
+<correct>FALSE</correct>
+<time_taken>264.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" Follows="1" Parent="1" SuchThat="1" CondNum="4" RelNum="2" comment="select boolean with clauses that return true and clauses that return false">6</id><querystr><![CDATA[ Select BOOLEAN such that Follows(1, 2) and Parent(1, 2)]]></querystr>
+<stuans>FALSE</stuans>
+<correct>FALSE</correct>
+<time_taken>96.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" Follows="1" Parent="1" SuchThat="1" CondNum="4" RelNum="2" comment="select boolean with clauses that return true and clauses that return any results">7</id><querystr><![CDATA[stmt s, s1; Select BOOLEAN such that Follows(1, 2) and Parent(s, s1)]]></querystr>
+<stuans>TRUE</stuans>
+<correct>TRUE</correct>
+<time_taken>490.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" Calls="2" Follows="1" SuchThat="2" CondNum="6" RelNum="3" comment="select boolean with clauses that return true and clauses that do not return any results">8</id><querystr><![CDATA[procedure s, s1; Select BOOLEAN such that Follows(1,2) such that Calls(s, s1) and Calls(s1, s)]]></querystr>
+<stuans>FALSE</stuans>
+<correct>FALSE</correct>
+<time_taken>276.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" Calls="2" Follows="1" SuchThat="2" CondNum="6" RelNum="3" comment="select boolean with clauses that return results and clauses that do not return any results">9</id><querystr><![CDATA[proc s, s1; stmt a, a1; Select BOOLEAN such that Follows(a, a1) such that Calls(s, s1) and Calls(s1, s)]]></querystr>
+<stuans></stuans>
+<correct>FALSE</correct>
+<time_taken>173.000000</time_taken>
+<failed>
+<missing>FALSE</missing>
+<additional></additional>
+<summary>
+<expected>1</expected>
+<matched>0</matched>
+<missing>1</missing>
+<additional>0</additional>
+</summary>
+</failed>
+</query>
+<query>
+<id ReturnBoolean="1" Follows="1" Parent="1" SuchThat="2" CondNum="5" RelNum="2" comment="select boolean with clauses that return results and clauses that return false boolean">10</id><querystr><![CDATA[stmt a, a1; Select BOOLEAN such that Follows(a, a1) such that Parent(1, 2)]]></querystr>
+<stuans>FALSE</stuans>
+<correct>FALSE</correct>
+<time_taken>301.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" Calls="2" Follows="1" SuchThat="1" CondNum="5" RelNum="3" comment="select boolean with clauses that do not return any results and clauses that return false boolean">11</id><querystr><![CDATA[proc a, a1; Select BOOLEAN such that Calls(s, s1) and Calls(s1, s) and Follows(1,2)]]></querystr>
+<stuans></stuans>
+<correct>FALSE</correct>
+<time_taken>32.000000</time_taken>
+<failed>
+<missing>FALSE</missing>
+<additional></additional>
+<summary>
+<expected>1</expected>
+<matched>0</matched>
+<missing>1</missing>
+<additional>0</additional>
+</summary>
+</failed>
+</query>
+<query>
+<id ReturnBoolean="1" With="1" CondNum="2" RelNum="0" comment="select boolean meaningless queries">12</id><querystr><![CDATA[ Select BOOLEAN with 10 = 10]]></querystr>
+<stuans>TRUE</stuans>
+<correct>TRUE</correct>
+<time_taken>34.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" With="1" CondNum="2" RelNum="0" comment="select boolean meaningless query false">13</id><querystr><![CDATA[ Select BOOLEAN with 10 = 11]]></querystr>
+<stuans>FALSE</stuans>
+<correct>FALSE</correct>
+<time_taken>25.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" With="1" CondNum="2" RelNum="0" comment="select boolean with clauses">14</id><querystr><![CDATA[stmt s; Select BOOLEAN with s.stmt# = 4]]></querystr>
+<stuans>TRUE</stuans>
+<correct>TRUE</correct>
+<time_taken>140.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" With="1" CondNum="2" RelNum="0" comment="select boolean with clauses false">15</id><querystr><![CDATA[stmt s; Select BOOLEAN with s.stmt# = 99999999]]></querystr>
+<stuans>TRUE</stuans>
+<correct>FALSE</correct>
+<time_taken>104.000000</time_taken>
+<failed>
+<missing>FALSE</missing>
+<additional>TRUE</additional>
+<summary>
+<expected>1</expected>
+<matched>0</matched>
+<missing>1</missing>
+<additional>1</additional>
+</summary>
+</failed>
+</query>
+<query>
+<id ReturnBoolean="1" Follows="1" UnnamedVar="1" SuchThat="1" CondNum="4" RelNum="1" comment="Boolean with WildCard in Clauses">16</id><querystr><![CDATA[ Select BOOLEAN such that Follows(_,_)]]></querystr>
+<stuans>TRUE</stuans>
+<correct>TRUE</correct>
+<time_taken>29.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" UnnamedVar="1" Pattern="1" CondNum="3" RelNum="0" comment="Boolean with WildCard in Patterns">17</id><querystr><![CDATA[assign a; Select BOOLEAN pattern a(_,_)]]></querystr>
+<stuans>TRUE</stuans>
+<correct>TRUE</correct>
+<time_taken>70.000000</time_taken>
+<passed/>
+</query>
+</queries>
+</test_results>
