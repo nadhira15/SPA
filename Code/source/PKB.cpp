@@ -30,34 +30,6 @@ bool PKB::addProc(string name)
 	return procList.emplace(name).second;
 }
 
-void PKB::addStatement(int stmNo, stmType type)
-{
-	stmTypeList.push_back(type);
-	switch (type)
-	{
-		case read:
-			readStmList.emplace(stmNo);
-			break;
-		case print:
-			printStmList.emplace(stmNo);
-			break;
-		case assign:
-			assignStmList.emplace(stmNo);
-			break;
-		case whileStm:
-			whileStmList.emplace(stmNo);
-			break;
-		case ifStm:
-			ifStmList.emplace(stmNo);
-			break;
-		case call:
-			callStmList.emplace(stmNo);
-			break;
-		default:
-			break;
-	}
-}
-
 void PKB::addStatement(int stmNo, stmType type, string procedure)
 {
 	stmTypeList.push_back(type);
@@ -173,15 +145,6 @@ bool PKB::addModifiesProc(string procedure, string variable)
 		return false;
 	}
 	return mStore.addModifiesProc(procedure, variable);
-}
-
-bool PKB::addCall(string proc1, string proc2)
-{
-	if (proc1 == "" || proc2 == "")
-	{
-		return false;
-	}
-	return cStore.addCall(proc1, proc2);
 }
 
 bool PKB::addCall(string proc1, string proc2, int stmNo)

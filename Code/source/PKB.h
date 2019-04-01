@@ -35,11 +35,6 @@ public:
 
 	/*
 		Pre-cond: statements added in must be added in numerical order; no jumps or reversing
-		add statement to its respective StmList and set stmTypeList[stmNo] to type 
-	*/
-	void addStatement(int stmNo, stmType type);
-	/*
-		Pre-cond: statements added in must be added in numerical order; no jumps or reversing
 		add statement to its respective StmLists and set stmTypeList[stmNo] to type
 	*/
 	void addStatement(int stmNo, stmType type, string procedure);
@@ -143,14 +138,6 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Calls adder & setter Methods	/////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/*
-		Adds the call relation into CallStorage
-		Returns false if
-			1) the pair is already stored
-			2) proc1 or proc2 == ""
-	*/
-	bool addCall(string proc1, string proc2);
-
 	/*
 		Adds the call relation at statement 'stmNo' into CallStorage
 		Returns false if
