@@ -48,7 +48,7 @@ void Preprocessor::process() {
 	}
 	catch (std::string e) {
 		std::string s1 = "Pre-processing error, incorrect syntax for ";
-		cout << s1 << e << "! \n";
+		throw s1 + e;
 	}
 }
 
@@ -71,12 +71,12 @@ Statement Preprocessor::processProc(int bookmark)
 		valid = 0; // unable to find '{'
 	}
 	if (valid == 0) {
-		throw "procedure";
+		throw std::string("procedure") + std::to_string(stmtNum);
 	}
 	tmpn2 = stmtNum;
 	std::vector<Statement> stmtlst = processLst(tmpn + 1);
 	if (stmtlst.empty() || !ifStmt.empty()) {
-		throw "procedure";
+		throw std::string("procedure") + std::to_string(stmtNum);
 	}
 	Statement s = Statement(tmp, stmtlst, valid, tmpn2); //will proceed even with errors
 	return s;

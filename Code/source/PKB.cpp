@@ -19,6 +19,7 @@ UseStorage PKB::uStore;
 ModifyStorage PKB::mStore;
 CallStorage PKB::cStore;
 NextStorage PKB::nStore;
+ControlVariableStorage PKB::cvStore;
 unordered_map<int, pair<string, string> > PKB::patternList;
 
 PKB::PKB()
@@ -649,6 +650,46 @@ unordered_set<pair<int, string>, intStringhash> PKB::findPatternPairs(string exp
 	return validPairs;
 }
 
+void PKB::addIfControlVariable(int stm, string variable)
+{
+	cvStore.addIfControlVariable(stm, variable);
+}
+
+void PKB::addWhileControlVariable(int stm, string variable)
+{
+	cvStore.addWhileControlVariable(stm, variable);
+}
+
+std::unordered_set<int> PKB::getAllIfWithControls()
+{
+	return cvStore.getAllIfWithControls();
+}
+
+std::unordered_set<int> PKB::getAllWhileWithControls()
+{
+	return cvStore.getAllWhileWithControls();
+}
+
+std::unordered_set<int> PKB::getIfStmWithControlVariable(std::string variable)
+{
+	return cvStore.getIfStmWithControlVariable(variable);
+}
+
+std::unordered_set<int> PKB::getWhileStmWithControlVariable(std::string variable)
+{
+	return cvStore.getWhileStmWithControlVariable(variable);
+}
+
+std::unordered_set<std::pair<int, std::string>, intStringhash> PKB::getIfStmControlVariablePair()
+{
+	return cvStore.getIfStmControlVariablePair();
+}
+
+std::unordered_set<std::pair<int, std::string>, intStringhash> PKB::getWhileStmControlVariablePair()
+{
+	return cvStore.getWhileStmControlVariablePair();
+}
+
 void PKB::erase()
 {
 	procList.erase(procList.begin(), procList.end());
@@ -670,3 +711,4 @@ void PKB::erase()
 	cStore.erase();
 	nStore.erase();
 }
+  
