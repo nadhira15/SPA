@@ -3,7 +3,6 @@
 #include "Preprocessor.h"
 #include "PKB.h"
 #include "Parser.h"
-#include "DesignExtractor.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

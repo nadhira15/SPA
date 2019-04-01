@@ -166,6 +166,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CallParserTest.cpp" />
+    <ClCompile Include="DesignExtractorTest.cpp" />
     <ClCompile Include="NextStartTest.cpp" />
     <ClCompile Include="PreprocessorTest.cpp" />
     <ClCompile Include="QueryParserTest.cpp" />
