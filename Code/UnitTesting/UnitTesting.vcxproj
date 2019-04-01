@@ -171,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PKB\FollowStorageTest.cpp" />
+    <ClCompile Include="PKB\ModifyStorageTest.cpp" />
     <ClCompile Include="PKB\ParentStorageTest.cpp" />
     <ClCompile Include="PKB\UseStorageTest.cpp" />
     <ClCompile Include="PreProcessor\PreprocessorTest.cpp" />

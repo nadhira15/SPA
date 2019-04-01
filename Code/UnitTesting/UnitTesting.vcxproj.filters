@@ -83,5 +83,8 @@
     <ClCompile Include="PKB\UseStorageTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PKB\ModifyStorageTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

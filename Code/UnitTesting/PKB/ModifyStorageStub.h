@@ -48,13 +48,17 @@ store.addModifiesProc("fruit", "durian");
 store.addModifiesProc("fruit", "figs");
 store.addModifiesProc("fruit2", "pineapple");
 */
-unordered_set<string> stmVarList[8] = { {"apple", "melon"}, {"banana", "melon"}, {"melon"}, {"melon"} };
-unordered_set<string> procVarList[2] = { {"apple", "melon", "banana"}, {"melon"} };
-unordered_set<int> stmList[4] = { {9}, {9, 10, 11, 12}, {10}, {9, 10, 11, 12} };
-unordered_set<string> procList[4] = { {"fruit2"}, {"fruit2", "fruit3"}, {"fruit2"}, {"fruit2", "fruit3"} };
-unordered_set<pair<int, string>, intStringhash> stmVarPairs = { pair<int, string>(9, "apple"),
-	pair<int, string>(9, "melon"), pair<int, string>(10, "banana"), pair<int, string>(10, "melon"),
-	pair<int, string>(11, "melon"), pair<int, string>(12, "melon") };
-unordered_set<pair<string, string>, strPairhash> procVarPairs = {
-	pair<string, string>("fruit2", "apple"), pair<string, string>("fruit2", "melon"),
-	pair<string, string>("fruit2", "banana"), pair<string, string>("fruit3", "melon") };
+unordered_set<string> ModifyStmVarList[8] = { {"apple"}, {"pineapple"}, {"apple"}, {"durian", "figs"},
+{"durian"}, {"durian"}, {"figs"}, {"pineapple"} };
+unordered_set<string> ModifyProcVarList[2] = { {"apple", "pineapple", "durian", "figs"}, {"pineapple"} };
+unordered_set<int> ModifyStmList[5] = { {1, 4}, {2, 9}, {5, 6, 7}, {5, 8}, {1, 2, 4, 5, 6, 7, 8, 9} };
+unordered_set<string> ModifyProcList[5] = { {"fruit"}, {"fruit", "fruit2"}, {"fruit"}, {"fruit"},
+{"fruit", "fruit2"} };
+unordered_set<pair<int, string>, intStringhash> ModifyStmVarPairs = { pair<int, string>(1, "apple"),
+	pair<int, string>(2, "pineapple"), pair<int, string>(4, "apple"), pair<int, string>(5, "durian"),
+	pair<int, string>(5, "figs"), pair<int, string>(6, "durian"), pair<int, string>(7, "durian"),
+	pair<int, string>(8, "figs"), pair<int, string>(9, "pineapple") };
+unordered_set<pair<string, string>, strPairhash> ModifyProcVarPairs = {
+	pair<string, string>("fruit", "apple"), pair<string, string>("fruit", "pineapple"),
+	pair<string, string>("fruit", "durian"), pair<string, string>("fruit", "figs"),
+	pair<string, string>("fruit2", "pineapple")};
