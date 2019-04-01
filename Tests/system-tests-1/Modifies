@@ -1,0 +1,41 @@
+1 - Integer Statement Modifies variable synonym
+variable v;
+Select v such that Modifies(209, v)
+a
+5000
+2 - Integer Statement Modifies variable string
+
+Select BOOLEAN such that Modifies(209, "a")
+TRUE
+5000
+3 - Integer Statement Modifies WildCard true
+
+Select BOOLEAN such that Modifies(199, _))
+TRUE
+5000
+4 - Integer Statement Modifies WildCard false
+
+Select BOOLEAN such that Modifies(258, _))
+FALSE
+5000
+5 - Variable Statement Modifies variable synonym
+variable v; stmt s;
+Select v such that Modifies(s, v)
+sum, minus1, minus2, minus, times, div, c, b, a, div, d, 
+5000
+6 - Variable Statement Modifies variable string empty
+stmt s;
+Select s such that Modifies(s, "pikachu")
+none
+5000
+7 - Variable Statement Modifies variable string
+stmt s;
+Select s such that Modifies(s, "orange")
+198, 222, 223, 226, 233, 234, 235, 239, 242, 244, 245, 249, 259, 260, 263, 266
+5000
+8 - Variable Procedure Modifies WildCard
+procedure p;
+Select p such that Modifies(p, _)
+TestA, TestB, TestC, TenWhileLoop, procedure, fruits, colours, Pr0c3dUr3, oneCall, transportation, country
+5000
+
