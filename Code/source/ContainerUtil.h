@@ -43,4 +43,7 @@ public:
 	static std::unordered_map<std::string, std::vector<std::string>> product(
 		std::unordered_map<std::string, std::vector<std::string>> oldTable,
 		std::unordered_map<std::string, std::vector<std::string>> toAddTable);
+	static std::unordered_map<std::string, std::vector<std::string>> intersect(
+		std::unordered_map<std::string, std::vector<std::string>> table1,
+		std::unordered_map<std::string, std::vector<std::string>> table2)
 };

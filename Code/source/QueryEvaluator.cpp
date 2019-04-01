@@ -163,7 +163,13 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 	std::unordered_map<std::string, std::string> declarations,
 	std::string left, std::string right) {
 	std::unordered_map<std::string, std::vector<std::string>> withMap;
-	if (hasReference(left) && !hasReference(right) && !isSynonym(right)) {
+	if (isSynonym(left) && !hasReference(right) && !isSynonym(right)) {
+		return ContainerUtil::to_mapvec(left, right);
+	}
+	else if (!hasReference(left) && !isSynonym(left) && isSynonym(right)) {
+		return ContainerUtil::to_mapvec(right, left);
+	}
+	else if (hasReference(left) && !hasReference(right) && !isSynonym(right)) {
 		std::string attr = attrOf(left);
 		std::string ref = refOf(left);
 		std::string attrType = declarations[attr];
@@ -190,11 +196,11 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		else if ((attrType == "read") && (ref == "procName")) {
 			return evaluateSuchThat(declarations, "Modifies", attr, left);
 		}
-		else if ((sttrType == "print") && (ref == "procName")) {
+		else if ((attrType == "print") && (ref == "procName")) {
 			return evaluateSuchThat(declarations, "Uses", attr, left);
 		}
 		else {
-			return ContainerUtil::to_mapvec(stmt, right);
+			return ContainerUtil::to_mapvec(attr, left);
 		}
 	}
 }
@@ -974,7 +980,7 @@ bool QueryEvaluator::isQuoted(std::string s) {
 Checks if the string is a synonym
 */
 bool QueryEvaluator::isSynonym(std::string s) {
-	bool result = !isInteger(s) && !isQuoted(s) && s != "_";
+	bool result = !isInteger(s) && !isQuoted(s) && !hasReference(s) && s != "_";
 	return result;
 }
 

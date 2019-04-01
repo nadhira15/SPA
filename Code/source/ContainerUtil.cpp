@@ -369,3 +369,17 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::product
 	}
 }
 
+/*
+The function intersect two tables
+with one column and combine them.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::intersect(
+	std::unordered_map<std::string, std::vector<std::string>> table1,
+	std::unordered_map<std::string, std::vector<std::string>> table2) {
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	newTable.insert({ table1.begin()->first, table2.begin()->second });
+	newTable = product(table1, newTable);
+	newTable.insert({ table2.begin()->first, newTable.begin()->second });
+	return newTable;
+}
+
