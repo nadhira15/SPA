@@ -17,36 +17,8 @@ int Parser::parse(vector<Statement> stmtLst, int parent, string procedure) {
 
 		int currStmtLine = stmt.getStmtNum();
 
-		//Add Follow and Next relation if is not the very first line or if not an else statement
-		if (prevStmtLine != 0 && stmt.getType() != 7) {
-			pkb.addFollow(prevStmtLine, currStmtLine);
-			pkb.addNext(prevStmtLine, currStmtLine);
-		}
-
-		//Add Next relation for IF statement type
-		if (stmt.getType() == 6) {
-			pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
-		}
-
-		//Add Next relation for Else
-		if (stmt.getType() == 7) {
-			pkb.addNext(currStmtLine, currStmtLine + 1);
-		}
-		//Add Parent relation if parent is not 0.
-		if (parent != 0) {
-			pkb.addParent(parent, currStmtLine);
-		}
-
-		//Add Next relation for WHILE statment type
-		if (stmt.getType() == 5) {
-			pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
-			pkb.addNext(stmt.getStmtLst().back().getStmtNum(), currStmtLine);
-		}
-
-		//Add Procedure - Statement Relationship if Statment is in a Procedure.
-		if (!procedure.empty()) {
-			//TODO:: Add Procedure containing statement in pkb.
-		}
+		//Populate Next Relation.
+		populateNextEntity(prevStmtLine, stmt, currStmtLine, parent);
 
 		//Add VariableName, Constants, and Procedure name into PKB.
 		populateDesignEntities(stmt, procedure);
@@ -56,6 +28,35 @@ int Parser::parse(vector<Statement> stmtLst, int parent, string procedure) {
 	}
 	
 	return 0;
+}
+
+void Parser::populateNextEntity(int prevStmtLine, Statement &stmt, int currStmtLine, int parent)
+{
+	//Add Follow and Next relation if is not the very first line or if not an else statement
+	if (prevStmtLine != 0 && stmt.getType() != 7) {
+		pkb.addFollow(prevStmtLine, currStmtLine);
+		pkb.addNext(prevStmtLine, currStmtLine);
+	}
+
+	//Add Next relation for IF statement type
+	if (stmt.getType() == 6) {
+		pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
+	}
+
+	//Add Next relation for Else
+	if (stmt.getType() == 7) {
+		pkb.addNext(currStmtLine, currStmtLine + 1);
+	}
+	//Add Parent relation if parent is not 0.
+	if (parent != 0) {
+		pkb.addParent(parent, currStmtLine);
+	}
+
+	//Add Next relation for WHILE statment type
+	if (stmt.getType() == 5) {
+		pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
+		pkb.addNext(stmt.getStmtLst().back().getStmtNum(), currStmtLine);
+	}
 }
 
 void Parser::populateDesignEntities(Statement stmt, std::string procedure) {
@@ -169,6 +170,7 @@ void Parser::extractWhileEntity(std::string &stmtString, int stmtLine, vector<St
 	for (string variable : variables) {
 		pkb.addVariable(variable);
 		pkb.addUsesStm(stmtLine, variable);
+		pkb.addWhileControlVariable(stmtLine, variable);
 	}
 
 	for (string constant : constants) {
@@ -186,6 +188,7 @@ void Parser::extractIfEntity(std::string &stmtString, int stmtLine, vector<State
 	for (string variable : variables) {
 		pkb.addVariable(variable);
 		pkb.addUsesStm(stmtLine, variable);
+		pkb.addIfControlVariable(stmtLine, variable);
 	}
 
 	for (string constant : constants) {
