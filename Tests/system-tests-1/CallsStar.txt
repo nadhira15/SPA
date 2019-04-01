@@ -96,7 +96,7 @@ transportation, fruits, TestC, TestB, TestA, oneCall, procedure
 20 - select synonym, callsStar synonym procName
 procedure p, q; stmt s; assign a; print pr; read re; if ifs; while w; constant cons; call c;
 Select p such that Calls*(p, "colours")
-TestA, TestB, TestC, TenWhileLoop, procedure, fruits, colours, oneCall, transportation
+TestA, TestB, TestC, TenWhileLoop, procedure, fruits, oneCall, transportation
 5000
 21 - select synonym, callsStar synonym procName
 procedure p, q; stmt s; assign a; print pr; read re; if ifs; while w; constant cons; call c;
@@ -156,12 +156,12 @@ TenWhileLoop, colours, Pr0c3dUr3, transportation, country
 32 - select synonym, callsStar procName synonym
 procedure p, q; stmt s; assign a; print pr; read re; if ifs; while w; constant cons; call c;
 Select p such that Calls*("fruits", p)
-TenWhileLoop, procedure, fruits, colours, Pr0c3dUr3, oneCall, transportation, country
+TenWhileLoop, colours, Pr0c3dUr3, oneCall, transportation, country
 5000
 33 - select synonym, callsStar procName synonym
 procedure p, q; stmt s; assign a; print pr; read re; if ifs; while w; constant cons; call c;
 Select p such that Calls*("TenWhileLoop", p)
-colours, Pr0c3dUr3, colours
+colours, Pr0c3dUr3, country
 5000
 34 - select synonym, callsStar procName synonym
 procedure p, q; stmt s; assign a; print pr; read re; if ifs; while w; constant cons; call c;
