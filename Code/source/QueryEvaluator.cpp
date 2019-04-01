@@ -203,6 +203,28 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			return ContainerUtil::to_mapvec(attr, left);
 		}
 	}
+	else if (hasReference(left) && isSynonym(right)) {
+		std::string attr = attrOf(left);
+		return ContainerUtil::intersectOne(getStmts(declarations, attr),
+			getStmts(declarations, right));
+	}
+	else if (isSynonym(left) && hasReference(right)) {
+		std::string attr = attrOf(right);
+		return ContainerUtil::intersectOne(getStmts(declarations, left),
+			getStmts(declarations, attr));
+	}
+	else {
+		std::string leftAttr = attrOf(left);
+		std::string leftRef = refOf(left);
+		std::string leftAttrType = declarations[leftAttr];
+		std::string rightAttr = attrOf(right);
+		std::string rightRef = refOf(right);
+		std::string rightAttrType = declarations[rightAttr];
+		if (leftRef == "stmt#" || leftRef == "value") {
+			return ContainerUtil::intersectOne(getStmts(declarations, leftAttr),
+				getStmts(declarations, rightAttr));
+		}
+	}
 }
 
 /*
@@ -226,31 +248,36 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 				return ContainerUtil::to_mapvec(patternSynonym,
 					PKB().findPattern(trimFrontEnd(leftArgument), "", false));
 			}
-			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs("", false));
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, 
+				PKB().findPatternPairs("", false));
 		}
 		else if (isQuoted(rightArgument)) {
 			rightArgument = trimFrontEnd(rightArgument);
 			rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
 			if (leftArgument == "_") {
-				return ContainerUtil::to_mapvec(patternSynonym, PKB().findPattern(rightArgument, true));
+				return ContainerUtil::to_mapvec(patternSynonym, 
+					PKB().findPattern(rightArgument, true));
 			}
 			else if (isQuoted(leftArgument)) {
 				return ContainerUtil::to_mapvec(patternSynonym,
 					PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, true));
 			}
-			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs(rightArgument, true));
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, 
+				PKB().findPatternPairs(rightArgument, true));
 		}
 		else {
 			rightArgument = trimFrontEnd(trimFrontEnd(rightArgument));
 			rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
 			if (leftArgument == "_") {
-				return ContainerUtil::to_mapvec(patternSynonym, PKB().findPattern(rightArgument, false));
+				return ContainerUtil::to_mapvec(patternSynonym, 
+					PKB().findPattern(rightArgument, false));
 			}
 			else if (isQuoted(leftArgument)) {
 				return ContainerUtil::to_mapvec(patternSynonym,
 					PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, false));
 			}
-			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs(rightArgument, false));
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, 
+				PKB().findPatternPairs(rightArgument, false));
 		}
 	}
 	if (patternType == "if") {
@@ -827,7 +854,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::getStm
 	std::unordered_map<std::string, std::string> declarations,
 	std::string syn) {
 	std::string synType = declarations[syn];
-	if (synType == "stmt") {
+	if (synType == "stmt" || synType == "prog_line") {
 		return ContainerUtil::to_mapvec(syn, getAllStms());
 	}
 	else if (synType == "read") {
