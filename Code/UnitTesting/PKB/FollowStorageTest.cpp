@@ -99,7 +99,7 @@ namespace UnitTesting
 		{
 			FollowStorage store;
 			store.addFollow(1, 2);
-			store.setAllFollowing(1, { 2 });
+			store.setAllFollowing(1, allFollowing[0]);
 			Assert::IsTrue(store.hasFollowStarPair({1, 2}));
 		}
 
