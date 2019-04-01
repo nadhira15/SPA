@@ -254,7 +254,10 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		}
 	}
 	if (patternType == "if") {
-		if (isQuoted(leftArgument)) {
+		if (leftArgument == "_") {
+			return ContainerUtil::to_mapvec(patternSynonym, PKB().getAllIfWithControls());
+		}
+		else if (isQuoted(leftArgument)) {
 			return ContainerUtil::to_mapvec(patternSynonym, PKB().getIfStmWithControlVariable(
 				trimFrontEnd(rightArgument)));
 		}
@@ -264,7 +267,10 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		}
 	}
 	if (patternType == "while") {
-		if (isQuoted(leftArgument)) {
+		if (leftArgument == "_") {
+			return ContainerUtil::to_mapvec(patternSynonym, PKB().getAllWhileWithControls());
+		}
+		else if (isQuoted(leftArgument)) {
 			return ContainerUtil::to_mapvec(patternSynonym, PKB().getWhileStmWithControlVariable(
 				trimFrontEnd(rightArgument)));
 		}
