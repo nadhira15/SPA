@@ -69,6 +69,7 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 	}
 }
 
+
 /*
 Merge all the results of each clause
 */
@@ -102,7 +103,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 			}
 		}
 	}
-	if (patternCondition.size() != 0) {
+	if (patternCondition.size() != 0 && status == "TRUE") {
 		for (std::vector<std::pair<std::string, std::pair<std::string, std::string>>>::size_type i = 0;
 			i != patternCondition.size();
 			i++) {
@@ -115,9 +116,115 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 			}
 		}
 	}
+	if (withCondition.size() != 0 && status == "TRUE") {
+		for (std::vector<std::pair<std::string, std::string>>::size_type i = 0;
+			i != withCondition.size();
+			i++) {
+			std::string left = withCondition[i].first;
+			std::string right = withCondition[i].second;
+			std::string trivialness = isWithTrivial(left, right);
+			if (trivialness == "false") {
+				status == "FALSE";
+				break;
+			}
+			if (trivialness == "non trivial") {
+				std::unordered_map<std::string, std::vector<std::string>> newTable = evaluateWithCondition(
+					declarations, left, right);
+				resultTable = ContainerUtil::product(resultTable, newTable);
+				if (resultTable.begin()->second.size() == 0) {
+					status == "FALSE";
+					break;
+				}
+			}
+		}
+	}
 	std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>> resultPair(status,
 		resultTable);
 	return resultPair;
+}
+
+/*
+The function checks if 
+the with clause is trivial
+and evaluates if it is
+*/
+std::string QueryEvaluator::isWithTrivial(std::string left, std::string right) {
+	if ((isQuoted(left) && isQuoted(right)) || (isInteger(left) && isInteger(right))) {
+		return truthValue(left == right);
+	}
+	return "not trivial";
+}
+
+/*
+The function evaluates the non-trivial
+with clauses.
+*/
+std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluateWithCondition(
+	std::unordered_map<std::string, std::string> declarations,
+	std::string left, std::string right) {
+	std::unordered_map<std::string, std::vector<std::string>> withMap;
+	if (isSynonym(left) && !hasReference(right) && !isSynonym(right)) {
+		return ContainerUtil::to_mapvec(left, right);
+	}
+	else if (!hasReference(left) && !isSynonym(left) && isSynonym(right)) {
+		return ContainerUtil::to_mapvec(right, left);
+	}
+	else if (hasReference(left) && !hasReference(right) && !isSynonym(right)) {
+		std::string attr = attrOf(left);
+		std::string ref = refOf(left);
+		std::string attrType = declarations[attr];
+		if ((attrType == "call") && (ref == "procName")) {
+			return ContainerUtil::to_mapvec(attr, PKB().getStmCalling(trimFrontEnd(right)));
+		}
+		else if ((attrType == "read") && (ref == "procName")) {
+			return evaluateSuchThat(declarations, "Modifies", attr, right);
+		}
+		else if ((attrType == "print") && (ref == "procName")) {
+			return evaluateSuchThat(declarations, "Uses", attr, right);
+		}
+		else {
+			return ContainerUtil::to_mapvec(attr, right);
+		}
+	}
+	else if (!hasReference(left) && !isSynonym(left) && hasReference(right)) {
+		std::string attr = attrOf(right);
+		std::string ref = refOf(right);
+		std::string attrType = declarations[attr];
+		if ((attrType == "call") && (ref == "procName")) {
+			return ContainerUtil::to_mapvec(attr, PKB().getStmCalling(trimFrontEnd(left)));
+		}
+		else if ((attrType == "read") && (ref == "procName")) {
+			return evaluateSuchThat(declarations, "Modifies", attr, left);
+		}
+		else if ((attrType == "print") && (ref == "procName")) {
+			return evaluateSuchThat(declarations, "Uses", attr, left);
+		}
+		else {
+			return ContainerUtil::to_mapvec(attr, left);
+		}
+	}
+	else if (hasReference(left) && isSynonym(right)) {
+		std::string attr = attrOf(left);
+		return ContainerUtil::intersectOne(getStmts(declarations, attr),
+			getStmts(declarations, right));
+	}
+	else if (isSynonym(left) && hasReference(right)) {
+		std::string attr = attrOf(right);
+		return ContainerUtil::intersectOne(getStmts(declarations, left),
+			getStmts(declarations, attr));
+	}
+	else {
+		std::string leftAttr = attrOf(left);
+		std::string leftRef = refOf(left);
+		std::string leftAttrType = declarations[leftAttr];
+		std::string rightAttr = attrOf(right);
+		std::string rightRef = refOf(right);
+		std::string rightAttrType = declarations[rightAttr];
+		if (leftRef == "stmt#" || leftRef == "value") {
+			return ContainerUtil::intersectOne(getStmts(declarations, leftAttr),
+				getStmts(declarations, rightAttr));
+		}
+	}
 }
 
 /*
@@ -141,31 +248,62 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 				return ContainerUtil::to_mapvec(patternSynonym,
 					PKB().findPattern(trimFrontEnd(leftArgument), "", false));
 			}
-			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs("", false));
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, 
+				PKB().findPatternPairs("", false));
 		}
 		else if (isQuoted(rightArgument)) {
 			rightArgument = trimFrontEnd(rightArgument);
 			rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
 			if (leftArgument == "_") {
-				return ContainerUtil::to_mapvec(patternSynonym, PKB().findPattern(rightArgument, true));
+				return ContainerUtil::to_mapvec(patternSynonym, 
+					PKB().findPattern(rightArgument, true));
 			}
 			else if (isQuoted(leftArgument)) {
 				return ContainerUtil::to_mapvec(patternSynonym,
 					PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, true));
 			}
-			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs(rightArgument, true));
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, 
+				PKB().findPatternPairs(rightArgument, true));
 		}
 		else {
 			rightArgument = trimFrontEnd(trimFrontEnd(rightArgument));
 			rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
 			if (leftArgument == "_") {
-				return ContainerUtil::to_mapvec(patternSynonym, PKB().findPattern(rightArgument, false));
+				return ContainerUtil::to_mapvec(patternSynonym, 
+					PKB().findPattern(rightArgument, false));
 			}
 			else if (isQuoted(leftArgument)) {
 				return ContainerUtil::to_mapvec(patternSynonym,
 					PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, false));
 			}
-			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs(rightArgument, false));
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, 
+				PKB().findPatternPairs(rightArgument, false));
+		}
+	}
+	if (patternType == "if") {
+		if (leftArgument == "_") {
+			return ContainerUtil::to_mapvec(patternSynonym, PKB().getAllIfWithControls());
+		}
+		else if (isQuoted(leftArgument)) {
+			return ContainerUtil::to_mapvec(patternSynonym, PKB().getIfStmWithControlVariable(
+				trimFrontEnd(rightArgument)));
+		}
+		else {
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument,
+				PKB().getIfStmControlVariablePair());
+		}
+	}
+	if (patternType == "while") {
+		if (leftArgument == "_") {
+			return ContainerUtil::to_mapvec(patternSynonym, PKB().getAllWhileWithControls());
+		}
+		else if (isQuoted(leftArgument)) {
+			return ContainerUtil::to_mapvec(patternSynonym, PKB().getWhileStmWithControlVariable(
+				trimFrontEnd(rightArgument)));
+		}
+		else {
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument,
+				PKB().getWhileStmControlVariablePair());
 		}
 	}
 }
@@ -716,7 +854,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::getStm
 	std::unordered_map<std::string, std::string> declarations,
 	std::string syn) {
 	std::string synType = declarations[syn];
-	if (synType == "stmt") {
+	if (synType == "stmt" || synType == "prog_line") {
 		return ContainerUtil::to_mapvec(syn, getAllStms());
 	}
 	else if (synType == "read") {
@@ -840,7 +978,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::filter
 The function transforms a boolean value
 into a string.
 */
-string QueryEvaluator::truthValue(bool boolean) {
+std::string QueryEvaluator::truthValue(bool boolean) {
 	if (boolean) {
 		return "true";
 	}
@@ -851,30 +989,57 @@ string QueryEvaluator::truthValue(bool boolean) {
 /*
 Trims quote in front and end of a string.
 */
-string QueryEvaluator::trimFrontEnd(string quotedString) {
+std::string QueryEvaluator::trimFrontEnd(std::string quotedString) {
 	return quotedString.substr(1, quotedString.size() - 2);
 }
 
 /*
 Checks if the string is an integer
 */
-bool QueryEvaluator::isInteger(string s) {
+bool QueryEvaluator::isInteger(std::string s) {
 	bool result = LexicalToken::verifyInteger(s);
 	return result;
 }
 
 /*
-Checks if the string is an integer
+Checks if the string is quoted
 */
-bool QueryEvaluator::isQuoted(string s) {
+bool QueryEvaluator::isQuoted(std::string s) {
 	bool result = s[0] == '"';
 	return result;
 }
 
 /*
-Checks if the string is an integer
+Checks if the string is a synonym
 */
-bool QueryEvaluator::isSynonym(string s) {
-	bool result = !isInteger(s) && !isQuoted(s) && s != "_";
+bool QueryEvaluator::isSynonym(std::string s) {
+	bool result = !isInteger(s) && !isQuoted(s) && !hasReference(s) && s != "_";
 	return result;
 }
+
+/*
+Checks if the string contains a reference
+*/
+bool QueryEvaluator::hasReference(std::string s) {
+	bool result = s.find(".") != std::string::npos;
+	return result;
+}
+
+/*
+Get attribute of an
+attribute reference.
+*/
+std::string QueryEvaluator::attrOf(std::string s) {
+	std::size_t dotPos = s.find(".");
+	return s.substr(0, dotPos - 1);
+}
+
+/*
+Get reference of an
+attribute reference.
+*/
+std::string QueryEvaluator::refOf(std::string s) {
+	std::size_t dotPos = s.find(".");
+	return s.substr(dotPos + 1, s.size() - dotPos - 1);
+}
+	
