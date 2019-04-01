@@ -48,17 +48,17 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 				}
 			}
 			for (std::vector<std::string>::size_type i = 0; i != notInResult.size(); i++) {
-				projectTable = ContainerUtil::product(projectTable, getStmts(declarations, selectedVar[i]));
+				projectTable = ContainerUtil::product(projectTable, getStmts(declarations, notInResult[i]));
 			}
 			int projectedSize = projectTable.begin()->second.size();
 			for (std::vector<std::string>::size_type i = 0; i != projectedSize; i++) {
 				std::string tuple;
-				for (auto columnIt = projectTable.begin(); columnIt != projectTable.end(); ++columnIt) {
+				for (std::vector<std::string>::size_type j = 0; j != selectedVar.size(); j++) {
 					if (tuple.size() == 0) {
-						tuple = columnIt->second[i];
+						tuple = projectTable[selectedVar[j]][i];
 					} 
 					else {
-						tuple = tuple + " " + columnIt->second[i];
+						tuple = tuple + " " + projectTable[selectedVar[j]][i];
 					}
 				}
 				resultSet.insert(tuple);
