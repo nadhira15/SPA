@@ -17,13 +17,21 @@ int Parser::parse(vector<Statement> stmtLst, int parent, string procedure) {
 
 		int currStmtLine = stmt.getStmtNum();
 
-		//Populate Next Relation.
-		populateNextEntity(prevStmtLine, stmt, currStmtLine, parent);
-
+		//Add Follow relation if is not the very first line or if not an else statement
+		if (prevStmtLine != 0 && stmt.getType() != 7) {
+			pkb.addFollow(prevStmtLine, currStmtLine);
+		}
 		//Add VariableName, Constants, and Procedure name into PKB.
 		populateDesignEntities(stmt, procedure);
 
 		//Update previous statement line.
+		prevStmtLine = currStmtLine;
+	}
+	//Populate Next Relation.
+	for (size_t t = 0; t < stmtLst.size(); t++) {
+		Statement stmt = stmtLst.at(t);
+		int currStmtLine = stmt.getStmtNum();
+		populateNextEntity(prevStmtLine, stmt, currStmtLine, parent);
 		prevStmtLine = currStmtLine;
 	}
 	
@@ -34,18 +42,24 @@ void Parser::populateNextEntity(int prevStmtLine, Statement &stmt, int currStmtL
 {
 	//Add Follow and Next relation if is not the very first line or if not an else statement
 	if (prevStmtLine != 0 && stmt.getType() != 7) {
-		pkb.addFollow(prevStmtLine, currStmtLine);
+
 		pkb.addNext(prevStmtLine, currStmtLine);
 	}
 
 	//Add Next relation for IF statement type
 	if (stmt.getType() == 6) {
 		pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
+		if (pkb.getFollower(stmt.getStmtNum()) != 0) {
+			pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(stmt.getStmtNum()));
+		}
 	}
 
 	//Add Next relation for Else
 	if (stmt.getType() == 7) {
-		pkb.addNext(currStmtLine, currStmtLine + 1);
+		pkb.addNext(stmt.getStmtNum(), stmt.getStmtLst().front().getStmtNum());
+		if (pkb.getFollower(stmt.getStmtNum()) != 0) {
+			pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(stmt.getStmtNum()));
+		}
 	}
 	//Add Parent relation if parent is not 0.
 	if (parent != 0) {
