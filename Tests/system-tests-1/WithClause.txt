@@ -11,7 +11,7 @@ none
 3 - call procName exist
 call c;
 Select c with c.procName = "TenWhileLoop"
-66, 85, 92, 225, 434
+66, 85, 92, 224, 434
 5000
 4 - call procName does not exist
 call c;
@@ -20,7 +20,7 @@ none
 5000
 5 - variable exist
 variable v;
-Select v with v.varName = "fruits"
+Select v with v.varName = "usa"
 fruits
 5000
 6 - variable does not exist
@@ -45,21 +45,21 @@ a, b, x, r, c, s, i, p, f, read, pear, banana, grape, orange, avocado, kiwi, che
 5000
 10 - print variable exist
 print p;
-Select p with p.varName = "malaysia"
-malaysia
+Select p with p.varName = "cherry"
+cherry
 5000
 11 - print variable does not exist
 print p;
 Select p with "malaysia" = p.varName
-malaysia
+none
 5000
 12 - constant value exist.
-const c;
+constant c;
 Select c with c.value = 7
 7
 5000
 13 - constant value does not exist.
-const c;
+constant c;
 Select c with c.value = 929293939939293832828387383738
 none
 5000
@@ -149,7 +149,7 @@ select ifs with ifs.stmt# = 463
 none
 5000
 29 - assign stm number exist
-assign al;
+assign a;
 select a with a.stmt# = 456
 456
 5000
