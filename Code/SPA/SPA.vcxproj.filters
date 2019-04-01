@@ -75,9 +75,6 @@
     <ClCompile Include="..\source\PrintParser.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Preprocesser.cpp">
-      <Filter>Source Files\PreProcessor</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\ModifyStorage.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
@@ -179,9 +176,6 @@
     <ClInclude Include="..\source\WhileParser.h">
       <Filter>Header Files\Parser</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\Preprocesser.h">
-      <Filter>Header Files\PreProcessor</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\Statement.h">
       <Filter>Header Files\PreProcessor</Filter>
     </ClInclude>
@@ -192,9 +186,6 @@
       <Filter>Header Files\PQL</Filter>
     </ClInclude>
     <ClInclude Include="..\source\QueryParser.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\QueryValidator.h">
       <Filter>Header Files\PQL</Filter>
     </ClInclude>
     <ClInclude Include="..\source\ConditionalExp.h">
@@ -212,9 +203,6 @@
     <ClInclude Include="..\source\StringUtil.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\Preprocessor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\QueryValidator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -229,6 +217,12 @@
     </ClInclude>
     <ClInclude Include="..\source\NextStorage.h">
       <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Preprocessor.h">
+      <Filter>Header Files\PreProcessor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\QueryValidator.h">
+      <Filter>Header Files\PQL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
