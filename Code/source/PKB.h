@@ -220,6 +220,12 @@ public:
 	// returns the stored list of constants
 	unordered_set<string> getConstants();
 
+	// returns the stored list of <read stm, variable> pairs
+	unordered_set< pair<int, string>, intStringhash > getReadPairs();
+
+	// returns the stored list of <print stm, variable> pairs
+	unordered_set< pair<int, string>, intStringhash > getPrintPairs();
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Follows Getter Methods	/////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -583,6 +589,8 @@ private:
 	static unordered_set<int> ifStmList;
 	static unordered_set<int> whileStmList;
 	static unordered_set<int> callStmList;
+	static unordered_set< pair<int, string>, intStringhash > readPairList;
+	static unordered_set< pair<int, string>, intStringhash > printPairList;
 
 	static FollowStorage fStore;
 	static ParentStorage pStore;

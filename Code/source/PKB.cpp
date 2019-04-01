@@ -11,6 +11,8 @@ unordered_set<int> PKB::assignStmList;
 unordered_set<int> PKB::ifStmList;
 unordered_set<int> PKB::whileStmList;
 unordered_set<int> PKB::callStmList;
+unordered_set< pair<int, string>, intStringhash > PKB::readPairList;
+unordered_set< pair<int, string>, intStringhash > PKB::printPairList;
 
 FollowStorage PKB::fStore;
 ParentStorage PKB::pStore;
@@ -117,6 +119,11 @@ bool PKB::addUsesStm(int stm, string variable)
 	{
 		return false;
 	}
+	// if the stm using 'variable' is a print stm
+	if (printStmList.find(stm) != printStmList.end())
+	{
+		printPairList.emplace(pair<int, string>(stm, variable));
+	}
 	return uStore.addUsesStm(stm, variable);
 }
 
@@ -134,6 +141,11 @@ bool PKB::addModifiesStm(int stm, string variable)
 	if (variable == "")
 	{
 		return false;
+	}
+	// if the stm modifying 'variable' is a read stm
+	if (readStmList.find(stm) != readStmList.end())
+	{
+		readPairList.emplace(pair<int, string>(stm, variable));
 	}
 	return mStore.addModifiesStm(stm, variable);
 }
@@ -242,6 +254,16 @@ unordered_set<string> PKB::getVariables()
 unordered_set<string> PKB::getConstants()
 {
 	return constList;
+}
+
+unordered_set<pair<int, string>, intStringhash> PKB::getReadPairs()
+{
+	return readPairList;
+}
+
+unordered_set<pair<int, string>, intStringhash> PKB::getPrintPairs()
+{
+	return printPairList;
 }
 
 bool PKB::hasFollowRelation()
