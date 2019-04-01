@@ -565,14 +565,12 @@ unordered_set<int> PKB::getPrev(int line)
 
 unordered_set<int> PKB::getAllLnAfter(int line)
 {
-	// call DE
-	return {};
+	return RunTimeDesignExtractor::extractNextStar(line);
 }
 
 unordered_set<int> PKB::getAllLnBefore(int line)
 {
-	// call DE
-	return {};
+	return RunTimeDesignExtractor::extractPreviousStar(line);
 }
 
 unordered_set<int> PKB::getAllNext()
@@ -592,8 +590,7 @@ unordered_set<pair<int, int>, intPairhash> PKB::getNextPairs()
 
 unordered_set<pair<int, int>, intPairhash> PKB::getNextStarPairs()
 {
-	// call DE
-	return {};
+	return RunTimeDesignExtractor::getNextStarPairs();
 }
 
 unordered_set<int> PKB::findPattern(string variable, string expr, bool isExclusive)
