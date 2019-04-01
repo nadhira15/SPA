@@ -8,8 +8,6 @@
 #include <sstream>
 #include <algorithm>
 
-using namespace std;
-
 #include "PKB.h"
 #include "QueryEvaluator.h"	
 #include "LexicalToken.h"
@@ -17,167 +15,397 @@ using namespace std;
 #include "ContainerUtil.h"
 
 /*
-The function transforms a vector of integers
-into a set of strings
+The function returns a map of string to
+vector of string given a key and an integer.
 */
-unordered_set<string> ContainerUtil::to_strset(vector<int> intVec) {
-	unordered_set<string> strSet;
-	for (vector<int>::size_type i = 0; i != intVec.size(); i++) {
-		strSet.insert(to_string(intVec[i]));
-	}
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key,
+	int n) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> keyValue;
+	keyValue.push_back(to_string(n));
+	std::pair<std::string, std::vector<std::string>> keyValuePair(key, keyValue);
+	mapvec.insert(keyValuePair);
 
-	return strSet;
+	return mapvec;
 }
 
 /*
-The function transforms a vector of pair of integer and string
-into a set of strings
+The function returns a map of string to
+vector of string given a key and a string.
 */
-unordered_set<string> ContainerUtil::to_strset(vector<pair<int, string>> intStrVec) {
-	unordered_set<string> strSet;
-	for (vector<pair<int, string>>::size_type i = 0; i != intStrVec.size(); i++) {
-		strSet.insert(to_string(intStrVec[i].first) + " " + intStrVec[i].second);
-	}
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key,
+	string s) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> keyValue;
+	keyValue.push_back(s);
+	std::pair<std::string, std::vector<std::string>> keyValuePair(key, keyValue);
+	mapvec.insert(keyValuePair);
 
-	return strSet;
+	return mapvec;
 }
 
 /*
-The function transforms a set of integers
-into a set of strings
+The function returns a map of string to
+vector of strings given a key and vector 
+of integers.
 */
-unordered_set<string> ContainerUtil::to_strset(unordered_set<int> intSet) {
-	unordered_set<string> strSet;
-	for (unordered_set<int>::iterator it = intSet.begin(); it != intSet.end(); ++it) {
-		strSet.insert(to_string(*it));
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key, std::vector<int> intVec) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> keyValue;
+	for (std::vector<int>::size_type i = 0; i != intVec.size(); i++) {
+		keyValue.push_back(to_string(intVec[i]));
 	}
+	std::pair<std::string, std::vector<std::string>> keyValuePair (key, keyValue);
+	mapvec.insert(keyValuePair);
 
-	return strSet;
+	return mapvec;
 }
 
 /*
-It transforms a set of pairs of integers into
-a set of pairs of strings.
+The function returns a map of strings
+to vectors of strings given two keys and
+vector of pairs of int and string.
 */
-unordered_set<string> ContainerUtil::to_strset(unordered_set<pair<int, int>, intPairhash> intPairSet) {
-	unordered_set<string> strSet;
-	for (unordered_set<pair<int, int>, intPairhash>::iterator it = intPairSet.begin(); it != intPairSet.end(); ++it) {
-		pair<int, int> pointer = *it;
-		strSet.insert(to_string(pointer.first) + " " + to_string(pointer.second));
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key1, 
+	std::string key2, std::vector<pair<int, std::string>> intStrVec) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> key1Value;
+	std::vector<std::string> key2Value;
+	for (std::vector<std::pair<int, std::string>>::size_type i = 0; i != intStrVec.size(); i++) {
+		key1Value.push_back(to_string(intStrVec[i].first));
+		key2Value.push_back(intStrVec[i].second);
 	}
+	std::pair<std::string, std::vector<std::string>> keyValuePair1 (key1, key1Value);
+	std::pair<std::string, std::vector<std::string>> keyValuePair2 (key2, key2Value);
+	mapvec.insert(keyValuePair1);
+	mapvec.insert(keyValuePair2);
 
-	return strSet;
+	return mapvec;
 }
 
 /*
-It transforms a set of pair of integer
-and string into a set of strings consist
-of an integer and a string
+The function returns a map of string
+to vector of string given a key and 
+set of integers
 */
-unordered_set<string> ContainerUtil::to_strset(unordered_set<pair<int, string>, intStringhash> intStringSet) {
-	unordered_set<string> strSet;
-	for (unordered_set<pair<int, string>, intStringhash>::iterator it = intStringSet.begin(); it != intStringSet.end(); ++it) {
-		pair<int, string> pointer = *it;
-		strSet.insert(to_string(pointer.first) + " " + pointer.second);
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key,
+	std::unordered_set<int> intSet) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> keyValue;
+	for (std::unordered_set<int>::iterator it = intSet.begin(); it != intSet.end(); ++it) {
+		keyValue.push_back(to_string(*it));
 	}
+	std::pair<std::string, std::vector<std::string>> keyValuePair(key, keyValue);
+	mapvec.insert(keyValuePair);
 
-	return strSet;
+	return mapvec;
 }
 
 /*
-It transforms a set of pair of strings
-into a set of strings of pairs.
+The function returns a map of string
+to vector of string given a key and
+set of strings
 */
-unordered_set<string> ContainerUtil::to_strset(unordered_set<pair<string, string>, strPairhash> strPairSet) {
-	unordered_set<string> strSet;
-	for (unordered_set<pair<string, string>, strPairhash>::iterator it = strPairSet.begin(); it != strPairSet.end(); ++it) {
-		pair<string, string> pointer = *it;
-		strSet.insert(pointer.first + " " + pointer.second);
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key,
+	std::unordered_set<std::string> strSet) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> keyValue;
+	for (std::unordered_set<std::string>::iterator it = strSet.begin(); it != strSet.end(); ++it) {
+		keyValue.push_back(*it);
 	}
+	std::pair<std::string, std::vector<std::string>> keyValuePair(key, keyValue);
+	mapvec.insert(keyValuePair);
 
-	return strSet;
+	return mapvec;
 }
 
 /*
-It fetchs out all the first member of
-all pairs in the set
+The function returns a map of strings
+to vectors of strings given two keys and
+set of pairs of integers and integers.
 */
-unordered_set<string> ContainerUtil::getFirstParam(unordered_set<string> stringPair) {
-	unordered_set<string> result;
-	int spaceIndex;
-	for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
-		string pointer = *it;
-		spaceIndex = pointer.find(" ");
-		result.insert(pointer.substr(0, spaceIndex));
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key1,
+	std::string key2, std::unordered_set<std::pair<int, int>, intPairhash> intPairSet) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> key1Value;
+	std::vector<std::string> key2Value;
+	for (std::unordered_set<std::pair<int, int>, intPairhash>::iterator it = intPairSet.begin(); it != intPairSet.end(); ++it) {
+		std::pair<int, int> pointer = *it;
+		key1Value.push_back(to_string(pointer.first));
+		key2Value.push_back(to_string(pointer.second));
 	}
+	std::pair<std::string, std::vector<std::string>> keyValuePair1(key1, key1Value);
+	std::pair<std::string, std::vector<std::string>> keyValuePair2(key2, key2Value);
+	mapvec.insert(keyValuePair1);
+	mapvec.insert(keyValuePair2);
 
-	return result;
+	return mapvec;
 }
 
 /*
-It fetchs out all the second member
-of all pairs in the set.
+The function returns a map of strings
+to vectors of strings given two keys and
+set of pairs of integers and strings.
 */
-unordered_set<string> ContainerUtil::getSecondParam(unordered_set<string> stringPair) {
-	unordered_set<string> result;
-	int spaceIndex;
-	for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
-		string pointer = *it;
-		spaceIndex = pointer.find(" ");
-		result.insert(pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 1));
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key1,
+	std::string key2, std::unordered_set<pair<int, std::string>, intStringhash> intStringSet) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> key1Value;
+	std::vector<std::string> key2Value;
+	for (std::unordered_set<std::pair<int, std::string>, intPairhash>::iterator it = intStringSet.begin(); it != intStringSet.end(); ++it) {
+		std::pair<int, std::string> pointer = *it;
+		key1Value.push_back(to_string(pointer.first));
+		key2Value.push_back(pointer.second);
 	}
+	std::pair<std::string, std::vector<std::string>> keyValuePair1(key1, key1Value);
+	std::pair<std::string, std::vector<std::string>> keyValuePair2(key2, key2Value);
+	mapvec.insert(keyValuePair1);
+	mapvec.insert(keyValuePair2);
 
-	return result;
+	return mapvec;
 }
 
 /*
-Finds the intersection of 2 sets of string
+The function returns a map of strings
+to vectors of strings given two keys and
+set of pairs of strings and strings.
 */
-unordered_set<string> ContainerUtil::intersection(unordered_set<string> first, unordered_set<string> toContain) {
-	unordered_set<string> result;
-	for (unordered_set<string>::iterator it = first.begin(); it != first.end(); ++it) {
-		string pointer = *it;
-		if (toContain.count(pointer) == 1) {
-			result.insert(pointer);
-		}
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::to_mapvec(std::string key1,
+	std::string key2, std::unordered_set<pair<std::string, std::string>, strPairhash> strPairSet) {
+	std::unordered_map<std::string, std::vector<std::string>> mapvec;
+	std::vector<std::string> key1Value;
+	std::vector<std::string> key2Value;
+	for (std::unordered_set<std::pair<std::string, std::string>, strPairhash>::iterator it = strPairSet.begin(); it != strPairSet.end(); ++it) {
+		std::pair<std::string, std::string> pointer = *it;
+		key1Value.push_back(pointer.first);
+		key2Value.push_back(pointer.second);
 	}
+	std::pair<std::string, std::vector<std::string>> keyValuePair1(key1, key1Value);
+	std::pair<std::string, std::vector<std::string>> keyValuePair2(key2, key2Value);
+	mapvec.insert(keyValuePair1);
+	mapvec.insert(keyValuePair2);
 
-	return result;
+	return mapvec;
 }
 
 /*
-The function does the following:
-1. It checks which pair in stringPair which
-member in position "position"(either 1 or 2)
-is in the toContain set.
-2. It fetch out all the member in the
-other "position" of the filtered set of pairs.
+The function do cross product
+of 2 tables in form of a map
 */
-unordered_set<string> ContainerUtil::getOtherPair(int position, unordered_set<string> stringPair, unordered_set<string> toContain) {
-	unordered_set<string> result;
-	int spaceIndex;
-	string first;
-	if (position == 1) {
-		for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
-			string pointer = *it;
-			spaceIndex = pointer.find(" ");
-			first = pointer.substr(0, spaceIndex);
-			if (toContain.count(first) == 1) {
-				result.insert(pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 1));
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::crossProduct(
+	std::unordered_map<std::string, std::vector<std::string>> oldTable,
+	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	int oldSize = oldTable.begin()->second.size();
+	int toAddSize = toAddTable.begin()->second.size();
+	if (toAddSize == 0) {
+		return toAddTable;
+	}
+	for (auto columnIt = oldTable.begin(); columnIt != oldTable.end(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (int i = 0; i < toAddSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != oldSize; j++) {
+				newColumn.push_back(columnIt->second[j]);
 			}
 		}
+		std::pair<std::string, std::vector<std::string>> toAddPair(columnIt->first, newColumn);
+		newTable.insert({ columnIt->first, newColumn });
 	}
-	if (position == 2) {
-		for (unordered_set<string>::iterator it = stringPair.begin(); it != stringPair.end(); ++it) {
-			string pointer = *it;
-			spaceIndex = pointer.find(" ");
-			first = pointer.substr(spaceIndex + 1, pointer.size() - spaceIndex - 1);
-			if (toContain.count(first) == 1) {
-				result.insert(pointer.substr(0, spaceIndex));
+	for (auto columnIt = toAddTable.begin(); columnIt != toAddTable.end(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (std::vector<std::string>::size_type i = 0; i != toAddSize; i++) {
+			for (int j = 0; j < oldSize; j++) {
+				newColumn.push_back(columnIt->second[i]);
 			}
 		}
+		newTable.insert({ columnIt->first, newColumn });
 	}
 
-	return result;
+	return newTable;
+}
+
+/*
+The function products two tables
+where the second table only contains
+one key and it is also in the first 
+table.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::oneCommonProduct(
+	std::unordered_map<std::string, std::vector<std::string>> oldTable,
+	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	std::string commonKey = toAddTable.begin()->first;
+	int oldSize = oldTable[commonKey].size();
+	int toAddSize = toAddTable[commonKey].size();
+	for (auto columnIt = oldTable.begin(); columnIt != oldTable.end(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (std::vector<std::string>::size_type i = 0; i != oldSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != toAddSize; j++) {
+				if (toAddTable[commonKey][j] == oldTable[commonKey][i]) {
+					newColumn.push_back(columnIt->second[i]);
+					break;
+				}
+			}
+		}
+		newTable.insert({ columnIt->first, newColumn });
+	}
+
+	return newTable;
+}
+
+/*
+The function products two tables
+where the second table only contains
+two keys and they are also in the 
+first table.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::twoCommonProduct(
+	std::unordered_map<std::string, std::vector<std::string>> oldTable,
+	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	std::vector<std::string> commonKeys;
+	for (auto it = toAddTable.begin(); it != toAddTable.end(); ++it) {
+		commonKeys.push_back(it->first);
+	}
+	int oldSize = oldTable[commonKeys[0]].size();
+	int toAddSize = toAddTable[commonKeys[0]].size();
+	for (auto columnIt = oldTable.begin(); columnIt != oldTable.end(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (std::vector<std::string>::size_type i = 0; i != oldSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != toAddSize; j++) {
+				if (toAddTable[commonKeys[0]][j] == oldTable[commonKeys[0]][i]
+					&& toAddTable[commonKeys[1]][j] == oldTable[commonKeys[1]][i]) {
+					newColumn.push_back(columnIt->second[i]);
+					break;
+				}
+			}
+		}
+		newTable.insert({ columnIt->first, newColumn });
+	}
+
+	return newTable;
+}
+
+/*
+The function products two tables
+where the second table only contains
+two keys and exactly one of them is 
+in the firsttable.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::mixProduct(
+	std::unordered_map<std::string, std::vector<std::string>> oldTable,
+	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
+	std::string commonKey;
+	for (auto it = toAddTable.begin(); it != toAddTable.end(); ++it) {
+		if (oldTable.count(it->first) == 1) {
+			commonKey = it->first;
+		}
+	}
+	int oldSize = oldTable[commonKey].size();
+	int toAddSize = toAddTable[commonKey].size();
+	std::unordered_map<std::string, std::vector<std::string>> intermediateTable1;
+	std::unordered_map<std::string, std::vector<std::string>> intermediateTable2;
+	intermediateTable1.insert({ commonKey, toAddTable[commonKey] });
+	intermediateTable2.insert({ commonKey, oldTable[commonKey] });
+	intermediateTable1 = oneCommonProduct(oldTable, intermediateTable1);
+	intermediateTable2 = oneCommonProduct(toAddTable, intermediateTable2);
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	for (auto columnIt = oldTable.begin(); columnIt != oldTable.end(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (std::vector<std::string>::size_type i = 0; i != toAddSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != oldSize; j++) {
+				if (oldTable[commonKey][j] == toAddTable[commonKey][i]) {
+					newColumn.push_back(columnIt->second[j]);
+				}
+			}
+		}
+		newTable.insert({ columnIt->first, newColumn });
+	}
+	for (auto columnIt = toAddTable.begin(); columnIt != toAddTable.end(); ++columnIt) {
+		std::vector<std::string> newColumn;
+		for (std::vector<std::string>::size_type i = 0; i != toAddSize; i++) {
+			for (std::vector<std::string>::size_type j = 0; j != oldSize; j++) {
+				if (oldTable[commonKey][j] == toAddTable[commonKey][i]) {
+					newColumn.push_back(columnIt->second[i]);
+				}
+			}
+		}
+		newTable.insert({ columnIt->first, newColumn });
+	}
+	return newTable;
+}
+
+/*
+Collate all the product functions
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::product(
+	std::unordered_map<std::string, std::vector<std::string>> oldTable,
+	std::unordered_map<std::string, std::vector<std::string>> toAddTable) {
+	if (oldTable.size() == 0) {
+		return toAddTable;
+	}
+	if (toAddTable.size() == 1) {
+		if (oldTable.count(toAddTable.begin()->first) == 1) {
+			return oneCommonProduct(oldTable, toAddTable);
+		}
+		else {
+			return crossProduct(oldTable, toAddTable);
+		}
+	}
+	if (toAddTable.size() == 2) {
+		auto it = toAddTable.begin();
+		std::string firstKey = it->first;
+		++it;
+		std::string secondKey = it->first;
+		if (oldTable.count(firstKey) + oldTable.count(secondKey) == 2) {
+			return twoCommonProduct(oldTable, toAddTable);
+		}
+		else if (oldTable.count(firstKey) + oldTable.count(secondKey) == 1) {
+			return mixProduct(oldTable, toAddTable);
+		}
+		else {
+			return crossProduct(oldTable, toAddTable);
+		}
+	}
+}
+
+/*
+The function intersect two tables
+with one column and combine them.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::intersectOne(
+	std::unordered_map<std::string, std::vector<std::string>> table1,
+	std::unordered_map<std::string, std::vector<std::string>> table2) {
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	newTable.insert({ table1.begin()->first, table2.begin()->second });
+	newTable = product(table1, newTable);
+	newTable.insert({ table2.begin()->first, newTable.begin()->second });
+	return newTable;
+}
+
+/*
+The function intersect two tables
+with two columns and combine the
+columns that are not common key.
+Assume common key is the first column.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::intersectTwo(
+	std::unordered_map<std::string, std::vector<std::string>> table1,
+	std::unordered_map<std::string, std::vector<std::string>> table2) {
+	std::string commonKey;
+	for (auto it = table2.begin(); it != table2.end(); ++it) {
+		if (table1.count(it->first) == 1) {
+			commonKey = it->first;
+		}
+	}
+	std::unordered_map<std::string, std::vector<std::string>> intermediateTable = product(
+		table1, table2);
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	for (auto it = intermediateTable.begin(); it != intermediateTable.end(); ++it) {
+		if (it->first != commonKey) {
+			newTable.insert({ it->first, it->second });
+		}
+	}
+	return newTable;
 }
 

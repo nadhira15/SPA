@@ -45,15 +45,16 @@ bool CallStorage::addCall(string caller, string callee, int stm)
 		return false;
 	}
 
-	// if callee exists
+	// if callee exist in callTable
 	if (!callTable.emplace(callee, cRelationships{ {caller}, {}, {}, {} }).second)
 	{
 		callTable.find(callee)->second.caller.emplace(caller);
-		procToStmMap.find(callee)->second.emplace(stm);
 	}
-	else
+
+	// if callee exist in procToStmMap
+	if (!procToStmMap.emplace(callee, unordered_set<int>{ stm }).second)
 	{
-		procToStmMap.emplace(callee, unordered_set<int>{ stm });
+		procToStmMap.find(callee)->second.emplace(stm);
 	}
 
 	// if caller exist in callTable

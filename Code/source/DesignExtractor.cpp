@@ -4,13 +4,12 @@ PKB DesignExtractor::pkb;
 
 /* The main public function that calls other function to populate different design entities in the PKB.
  */
-void DesignExtractor::extractDesigns(PKB storage)
+void DesignExtractor::extractDesigns()
 {
-	pkb = storage;
+	pkb = PKB();
 
 	//Verification
 	verifyCalledProceduresPresence();
-	verifyAbsenceOfCyclicity();
 	
 	//Statement-Statement Relationships
 	processFollowStar();
@@ -19,6 +18,7 @@ void DesignExtractor::extractDesigns(PKB storage)
 	//Statement/Procedure - Variable Relationships
 	vector<string> sortedProcedures = topologicalSortProcedures();
 	processAdvancedUsesAndModifies(sortedProcedures);
+	processCallsStar(sortedProcedures);
 }
 
 /*
@@ -27,8 +27,8 @@ void DesignExtractor::extractDesigns(PKB storage)
  */
 void DesignExtractor::verifyCalledProceduresPresence()
 {
-/*	std::unordered_set<std::string> calledProcedures = pkb.getAllCallee();
-	std::unoredred_set<std::string> procedureList = pkb.getProcedures();
+	std::unordered_set<std::string> calledProcedures = pkb.getAllCallees();
+	std::unordered_set<std::string> procedureList = pkb.getProcList();
 	for (string calledProcedure : calledProcedures) {
 		bool present = false;
 		for (string procedure : procedureList) {
@@ -37,17 +37,11 @@ void DesignExtractor::verifyCalledProceduresPresence()
 				break;
 			}
 		}
-		if (present = false) {
-			throw "A procedure that was called does not exist";
+		if (!present) {
+			throw "A procedure that was called does not exist : " + calledProcedure;
 		}
 	}
-*/	
 }
-
-void DesignExtractor::verifyAbsenceOfCyclicity() {
-
-}
-
 
 /*
  * Processes the Follow* Design Entitiy in the SPA requirement.
@@ -123,34 +117,47 @@ void DesignExtractor::processParentStar()
 	}
 }
 
-vector<string> DesignExtractor::topologicalSortProcedures()
-{
-	/*
-	unordered_set<std::string> procList = pkb.getProcedures();
+/*
+ * This function performs a topological sort on the unorderedList of procedures.
+ * It returns a vector of procedures in order such that procedures on a lower index will never call
+ * a procedure with a higher index.
+ * For example if TestA calls TestB, and TestB calls TestC, and Test A calls TestC.
+ * A valid toposort result would return {TestC, TestB, TestA} in a vector.
+ */
+vector<string> DesignExtractor::topologicalSortProcedures() {
+	std::unordered_set<std::string> procList = pkb.getProcList();
 	int procListSize = procList.size();
 
-	unordered_set<std::string> visitedProcedures;
-	vector<std::string> sortedProcedures(procListSize);
+	std::unordered_set<std::string> visitedProcedures;
+	std::vector<std::string> sortedProcedures;
+	std::unordered_set<std::string> pathVisitedProcedure;
 
 	for (std::string procedure : procList) {
 		//Try finding if the procedure has already been visited.
 		std::unordered_set<std::string>::const_iterator exist = visitedProcedures.find(procedure);
 
 		//If we have not visited this procedure, visit it.
-		if (exist != visitedProcedures.end()) {
-			DFSRecursive(procedure, visitedProcedures, sortedProcedures);
+		if (exist == visitedProcedures.end()) {
+			DFSRecursive(procedure, visitedProcedures, sortedProcedures, pathVisitedProcedure);
 		}
 	}
-	*/
-
-	vector<std::string> sortedProcedures(5);
 	return sortedProcedures;
 }
 
-void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::string> &visitedProcedures, vector<std::string> &sortedProcedures) {
-	/*
+/*
+ * A Recursive Function to perform Depth First Search of a procedure calling.
+ * This DFSRecursive Function requires 4 inputs.
+ * 1) procedure that is being visited.
+ * 2) vistedProcedures: The list of procedures that have been visited in a DFS.
+ * 3) sortedProcedures: The list of procedures that in a toposort order.
+ * 4) pathVisitedProcedure: The list of procedures that have been called in the current DFSRecursive Stack.
+ */
+void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::string> &visitedProcedures, vector<std::string> &sortedProcedures, unordered_set<std::string> pathVisitedProcedure) {
 	//Marks procedure as visited
 	visitedProcedures.insert(procedure);
+
+	//Add visited procedure to currentCallPath
+	pathVisitedProcedure.insert(procedure);
 
 	//Get neighbouring procedures.
 	unordered_set<string> adjacentProcedures = pkb.getCallee(procedure);
@@ -158,54 +165,101 @@ void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::str
 	//For each neighbouring procedure
 	for (std::string callee : adjacentProcedures) {
 
+		//Check if neighbouring procedure is in currentCallPath
+		std::unordered_set<std::string>::const_iterator currPath = pathVisitedProcedure.find(callee);
+
+		//If neighbouring procedure is in currentCallPath, detect cyclic Calls.
+		if (currPath != pathVisitedProcedure.end()) {
+			throw "Cyclical call detected at Procedure : " + procedure;
+		}
+
 		//Check if neighbouring procedure has been visited
 		std::unordered_set<std::string>::const_iterator exist = visitedProcedures.find(callee);
 
 		//If neighbouring procedure has not been visited, visit it.
-		if (exist != visitedProcedures.end()) {
-			DFSRecursive(procedure, visitedProcedures);
+		if (exist == visitedProcedures.end()) {
+			DFSRecursive(callee, visitedProcedures, sortedProcedures, pathVisitedProcedure);
 		}
 	}
-
 	//Add procedure to the sortedProcedures.
 	sortedProcedures.push_back(procedure);
-	*/
+
+	//Remove procedure from current Call path.
+	pathVisitedProcedure.erase(procedure);
 }
 
+/* 
+ * Performs population of Uses and Modifies for Calls, If/While Container Statements and Procecedures
+ * starting from the leaf node procedures.
+ */
 void DesignExtractor::processAdvancedUsesAndModifies(std::vector<std::string> sortedProcedures) {
 	for (std::string procedure : sortedProcedures) {
-		/*
-		processCallUses(procedure);
-		processCallModifies(procedure);
+		//Populate Call Statement Uses/Modifies
+		processUsesCalls(procedure);
+		processModifiesCalls(procedure);
+
+		//Populate Container Statement (While/If) Uses/Modifies
 		processUsesContainers(procedure);
 		processModifiesContainers(procedure);
+
+		//Populate Procedure Uses/Modifies
 		processUsesProcedures(procedure);
 		processModifiesProcedures(procedure);
-		*/
 	}
 }
 
+/*
+ * Populates the Uses of Call Statements in SIMPLE
+ */
+void DesignExtractor::processUsesCalls(std::string procedure) {
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
 
-void DesignExtractor::processUsesProcedures()
-{
-	//TODO: Implement for Iteration 2
+	for (int i = 0; i < procedureStm.size() ; i++) {
+		int currLine = procedureStm.at(i);
+		stmType type = pkb.getStmType(currLine);
+
+		if (type == stmType::call) {
+			std::string procedure = pkb.getProcCalledBy(currLine);
+			std::unordered_set<std::string> usedVars = pkb.getVarUsedByProc(procedure);
+
+			for (std::string var : usedVars) {
+				pkb.addUsesStm(currLine, var);
+			}
+		}
+	}
 }
 
-void DesignExtractor::processModifiesProcedures()
-{
-	//TODO: Implement for Iteration 2
+/*
+ * Populates the Uses of Modifies Statements in SIMPLE
+ */
+void DesignExtractor::processModifiesCalls(std::string procedure) {
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
+
+	for (int i = 0; i < procedureStm.size(); i++) {
+		int currLine = procedureStm.at(i);
+		stmType type = pkb.getStmType(currLine);
+
+		if (type == stmType::call) {
+			std::string procedure = pkb.getProcCalledBy(currLine);
+			std::unordered_set<std::string> modifiedVars = pkb.getVarModifiedByProc(procedure);
+
+			for (std::string var : modifiedVars) {
+				pkb.addModifiesStm(currLine, var);
+			}
+		}
+	}
 }
 
 /*
  * Processes the the variables that are MODIFIED in Containing Statement so that the While/If Statement
  * also MODIFY these variables.
  */
-void DesignExtractor::processModifiesContainers()
-{
-	int stmtNum = pkb.getTotalStmNo();
+void DesignExtractor::processModifiesContainers(std::string procedure) {
+	//TODO: Implement for Iteration 2
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
 
-	for (int i = stmtNum; i >= 1; i--) {
-		int currLine = i;
+	for (int i = procedureStm.size() - 1; i >= 0; i--) {
+		int currLine = procedureStm.at(i);
 		unordered_set<int> descendents = pkb.getDescendants(currLine);
 		for (int descendent : descendents) {
 			unordered_set<string> modifiedList = pkb.getVarModifiedByStm(descendent);
@@ -220,18 +274,102 @@ void DesignExtractor::processModifiesContainers()
  * Processes the the variables that are USED in Containing Statement so that the While/If Statement
  * also USE these variables.
  */
-void DesignExtractor::processUsesContainers()
-{
-	int stmtNum = pkb.getTotalStmNo();
+void DesignExtractor::processUsesContainers(std::string procedure) {
+	//TODO: Implement for Iteration 2
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
 
-	for (int i = stmtNum; i >= 1; i--) {
-		int currLine = i;
+	for (int i = procedureStm.size() - 1; i >= 0; i--) {
+		int currLine = procedureStm.at(i);
 		unordered_set<int> descendents = pkb.getDescendants(currLine);
 		for (int descendent : descendents) {
 			unordered_set<string> usedList = pkb.getVarUsedByStm(descendent);
 			for (string usedVariable : usedList) {
 				pkb.addUsesStm(currLine, usedVariable);
 			}
+		}
+	}
+}
+
+/*
+ * Processes the variables that are USED in a procedure, by checking the use Relation for all Statements belonging
+ * to that procedure.
+ */
+void DesignExtractor::processUsesProcedures(std::string procedure)
+{
+	//TODO: Implement for Iteration 2
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
+
+	for (int i = 0; i < procedureStm.size() ; i++) {
+		int currLine = procedureStm.at(i);
+		std::unordered_set<std::string> usedList = pkb.getVarUsedByStm(currLine);
+
+		for (std::string usedVar : usedList) {
+			pkb.addUsesProc(procedure, usedVar);
+		}
+	}
+
+}
+
+/*
+ * Processes the variables that are MODIFIED in a procedure, by checking the modifying Relation for all Statements belonging
+ * to that procedure.
+ */
+void DesignExtractor::processModifiesProcedures(std::string procedure)
+{
+	//TODO: Implement for Iteration 2
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
+
+	for (int i = 0; i < procedureStm.size(); i++) {
+		int currLine = procedureStm.at(i);
+		std::unordered_set<std::string> modifiedList = pkb.getVarModifiedByStm(i);
+
+		for (std::string modifiedVar : modifiedList) {
+			pkb.addModifiesProc(procedure, modifiedVar);
+		}
+	}
+}
+
+/*
+ * Processes the Call* Relationship
+ */
+void DesignExtractor::processCallsStar(std::vector<std::string> sortedProcedures) {
+	//Process procedure list s where Calls*(s, procedure) is true
+	for (int i = sortedProcedures.size() - 1; i >= 0; i--) {
+		std::string procedure = sortedProcedures.at(i);
+		std::unordered_set<std::string> callerList = pkb.getCaller(procedure);
+
+		std::unordered_set<std::string> allAncestorCallers;
+
+		//If Someone called this procedure
+		if (!callerList.empty()) {
+			for (std::string caller : callerList) {
+				std::unordered_set<std::string> ancestorCallersList = pkb.getCallAnc(caller);
+				for (std::string ancestorCaller : ancestorCallersList) {
+					allAncestorCallers.insert(ancestorCaller);
+				}
+				allAncestorCallers.insert(caller);
+			}
+			pkb.setCallAnc(procedure, allAncestorCallers);
+		}
+	}
+	
+	//Process procedure list s where Calls*(procedure, s) is true.
+	for (int i = 0; i < sortedProcedures.size(); i++) {
+		std::string procedure = sortedProcedures.at(i);
+		std::unordered_set<std::string> calleeList = pkb.getCallee(procedure);
+
+		std::unordered_set<std::string> allDescendentsCallee;
+
+		//If this procedure called something.
+		if (!calleeList.empty()) {
+			for (std::string callee : calleeList) {
+				std::unordered_set<std::string> descendentsCalleeList = pkb.getCallDesc(callee);
+				for (std::string descendentCallee : descendentsCalleeList) {
+					allDescendentsCallee.insert(descendentCallee);
+				}
+				allDescendentsCallee.insert(callee);
+			}
+			pkb.setCallDesc(procedure, allDescendentsCallee);
 		}
 	}
 }

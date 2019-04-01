@@ -19,21 +19,21 @@ UseStorage PKB::uStore;
 ModifyStorage PKB::mStore;
 CallStorage PKB::cStore;
 NextStorage PKB::nStore;
+ControlVariableStorage PKB::cvStore;
 unordered_map<int, pair<string, string> > PKB::patternList;
 
 PKB::PKB()
 {
 }
 
-void PKB::addProc(string name)
+bool PKB::addProc(string name)
 {
-	procList.emplace(name);
+	return procList.emplace(name).second;
 }
 
 void PKB::addStatement(int stmNo, stmType type)
 {
-	stmTypeList.assign(stmNo, type);
-
+	stmTypeList.push_back(type);
 	switch (type)
 	{
 		case read:
@@ -61,7 +61,7 @@ void PKB::addStatement(int stmNo, stmType type)
 
 void PKB::addStatement(int stmNo, stmType type, string procedure)
 {
-	stmTypeList.assign(stmNo, type);
+	stmTypeList.push_back(type);
 	if (!procStmList.emplace(procedure, vector<int>{stmNo}).second)
 	{
 		procStmList.find(procedure)->second.push_back(stmNo);
@@ -239,7 +239,7 @@ int PKB::getTotalStmNo()
 
 stmType PKB::getStmType(int stm)
 {
-	return stmTypeList.at(stm);
+	return stmTypeList.at(stm - 1);
 }
 
 unordered_set<int> PKB::getReadStms()
@@ -645,4 +645,44 @@ unordered_set<pair<int, string>, intStringhash> PKB::findPatternPairs(string exp
 		}
 	}
 	return validPairs;
+}
+
+void PKB::addIfControlVariable(int stm, string variable)
+{
+	cvStore.addIfControlVariable(stm, variable);
+}
+
+void PKB::addWhileControlVariable(int stm, string variable)
+{
+	cvStore.addWhileControlVariable(stm, variable);
+}
+
+std::unordered_set<int> PKB::getAllIfWithControls()
+{
+	return cvStore.getAllIfWithControls();
+}
+
+std::unordered_set<int> PKB::getAllWhileWithControls()
+{
+	return cvStore.getAllWhileWithControls();
+}
+
+std::unordered_set<int> PKB::getIfStmWithControlVariable(std::string variable)
+{
+	return cvStore.getIfStmWithControlVariable(variable);
+}
+
+std::unordered_set<int> PKB::getWhileStmWithControlVariable(std::string variable)
+{
+	return cvStore.getWhileStmWithControlVariable(variable);
+}
+
+std::unordered_set<std::pair<int, std::string>, intStringhash> PKB::getIfStmControlVariablePair()
+{
+	return cvStore.getIfStmControlVariablePair();
+}
+
+std::unordered_set<std::pair<int, std::string>, intStringhash> PKB::getWhileStmControlVariablePair()
+{
+	return cvStore.getWhileStmControlVariablePair();
 }

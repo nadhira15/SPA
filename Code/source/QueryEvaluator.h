@@ -5,36 +5,56 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 #include "PKB.h"
 
 class QueryEvaluator
 {
 public:
-	static unordered_set<string> evaluateQuery(vector<pair<string, string>> declarations,
-		vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
-		vector<pair<string, pair<string, string>>> patternCondition);
+	static std::unordered_set<std::string> projectResult(
+		std::unordered_map<std::string, std::string> declarations,
+		std::vector<std::string> selectedVar,
+		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
+		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
+		std::vector<pair<std::string, std::string>> withCondition);
+	static std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>> evaluateTable(
+		std::unordered_map<std::string, std::string> declarations,
+		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
+		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
+		std::vector<std::pair<std::string, std::string>> withCondition);
 
-	static unordered_set<string> filterPatternCondition(vector<pair<string, pair<string, string>>> patternCondition);
-	static unordered_set<string> filterSuchThatCondition(vector<pair<string, string>> declarations, vector<string> selectedVar,
-		vector<pair<string, pair<string, string>>> suchThatCondition, vector<pair<string, pair<string, string>>> patternCondition);
+	static std::string isWithTrivial(std::string left, std::string right);
+	static std::unordered_map<std::string, std::vector<std::string>> evaluateWithCondition(
+		std::unordered_map<std::string, std::string> declarations,
+		std::string left, std::string right);
 
-	static string isSuchThatTrivial(string relation, string firstArgument, string secondArgument);
-	static unordered_set<string> evaluateSuchThat(string relation, string firstArgument, string secondArgument);
+	static std::unordered_map<std::string, std::vector<std::string>> evaluatePatternCondition(
+		std::unordered_map<std::string, std::string> declarations,
+		std::pair<std::string, std::pair<std::string, std::string>> pattern);
 
-	static unordered_set<string> getAllStms();
-	static unordered_set<string> getStmts(string s);
-	static unordered_set<string> filterType(string typeRequired, unordered_set<string>toBeFiltered);
-	static unordered_set<string> filterType(string firstTypeRequired, string secondTypeRequired,
-		unordered_set<string> toBeFiltered);
-	static unordered_set<string> QueryEvaluator::getAssign(unordered_set<string> afterPatternFilter);
+	static std::string isSuchThatTrivial(std::string relation, std::string firstArgument, std::string secondArgument);
+	static std::unordered_map<std::string, std::vector<std::string>> evaluateSuchThat(
+		std::unordered_map<std::string, std::string> declarations,
+		std::string relation, std::string firstArgument, std::string secondArgument);
 
-	static string truthValue(bool boolean);
-	static string trimFrontEnd(string quotedString);
+	static std::unordered_set<std::string> getAllStms();
+	static std::unordered_map<std::string, std::vector<std::string>> getStmts(
+		std::unordered_map<std::string, std::string> declarations, 
+		std::string syn);
+	static std::unordered_map<std::string, std::vector<std::string>> filterType(std::string synonym,
+		std::unordered_map<std::string, std::string> declarations,
+		std::unordered_map<std::string, std::vector<std::string>> toBeFiltered);
+	static std::unordered_map<std::string, std::vector<std::string>> filterType(std::string synonym1, 
+		std::string synonym2, std::unordered_map<std::string, std::string> declarations,
+		std::unordered_map<std::string, std::vector<std::string>> toBeFiltered);
 
-	static bool isInteger(string s);
-	static bool isQuoted(string s);
-	static bool isSynonym(string s);
+	static std::string truthValue(bool boolean);
+	static std::string trimFrontEnd(std::string quotedString);
+
+	static bool isInteger(std::string s);
+	static bool isQuoted(std::string s);
+	static bool isSynonym(std::string s);
+	static bool hasReference(std::string s);
+	static std::string attrOf(std::string s);
+	static std::string refOf(std::string s)
 
 };
