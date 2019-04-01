@@ -12,7 +12,7 @@ CallStorage::CallStorage()
 {
 }
 
-bool CallStorage::addCall(string caller, string callee)
+bool CallStorage::addCall(string caller, string callee, int stm)
 {
 	// if Call Pair is already added
 	if (!callPairList.emplace(pair<string, string>(caller, callee)).second)
@@ -20,27 +20,8 @@ bool CallStorage::addCall(string caller, string callee)
 		return false;
 	}
 
-	// if callee exist in callTable
-	if (!callTable.emplace(callee, cRelationships{ {caller}, {}, {}, {} }).second)
-	{
-		callTable.find(callee)->second.caller.emplace(caller);
-	}
-
-	// if caller exist in callTable
-	if (!callTable.emplace(caller, cRelationships{ {} ,{callee}, {}, {} }).second)
-	{
-		callTable.find(caller)->second.callees.emplace(callee);
-	}
-
-	callerList.emplace(caller);
-	calleeList.emplace(callee);
-	return true;
-}
-
-bool CallStorage::addCall(string caller, string callee, int stm)
-{
-	// if Call Pair is already added
-	if (!callPairList.emplace(pair<string, string>(caller, callee)).second)
+	// if Stm - Proc Pair is already added
+	if (!stmProcCallPairList.emplace(pair<int, string>(stm, callee)).second)
 	{
 		return false;
 	}
