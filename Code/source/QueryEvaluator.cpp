@@ -317,7 +317,95 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			}
 		}
 	}
-
+	else if (relation == "Calls") {
+		if (firstArgument == "_") {
+			if (secondArgument == "_") {
+				return truthValue(PKB().hasCallRelation());
+			}
+			else if (isQuoted(secondArgument)) {
+				return truthValue(PKB().isCallee(trimFrontEnd(secondArgument)));
+			}
+		}
+		else if (isQuoted(firstArgument)) {
+			if (secondArgument == "_") {
+				return truthValue(PKB().isCaller(trimFrontEnd(firstArgument)));
+			}
+			else if (isQuoted(secondArgument)) {
+				result = PKB().getCallee(trimFrontEnd(firstArgument)).count(trimFrontEnd(secondArgument)) == 1;
+				return truthValue(result);
+			}
+		}
+		else if (firstArgument == secondArgument) {
+			return "false";
+		}
+	}
+	else if (relation == "Calls*") {
+		if (firstArgument == "_") {
+			if (secondArgument == "_") {
+				return truthValue(PKB().hasCallRelation());
+			}
+			else if (isQuoted(secondArgument)) {
+				return truthValue(PKB().isCallee(trimFrontEnd(secondArgument)));
+			}
+		}
+		else if (isQuoted(firstArgument)) {
+			if (secondArgument == "_") {
+				return truthValue(PKB().isCaller(trimFrontEnd(firstArgument)));
+			}
+			else if (isQuoted(secondArgument)) {
+				result = PKB().hasCallStarPair(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument));
+				return truthValue(result);
+			}
+		}
+		else if (firstArgument == secondArgument) {
+			return "false";
+		}
+	}
+	if (relation == "Next") {
+		if (firstArgument == "_") {
+			if (secondArgument == "_") {
+				return truthValue(PKB().hasNextRelation());
+			}
+			else if (isInteger(secondArgument)) {
+				result = PKB().getPrev(stoi(secondArgument)).size() > 0;
+				return truthValue(result);
+			}
+		}
+		else if (isInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				result = PKB().getNext(stoi(firstArgument)).size() > 0;
+				return truthValue(result);
+			}
+			else if (isInteger(secondArgument)) {
+				result = PKB().getNext(stoi(firstArgument)).count(stoi(secondArgument)) == 1;
+				return truthValue(result);
+			};
+		}
+		else if (firstArgument == secondArgument) {
+			return "false";
+		}
+	}
+	if (relation == "Next*") {
+		if (firstArgument == "_") {
+			if (secondArgument == "_") {
+				return truthValue(PKB().hasNextRelation());
+			}
+			else if (isInteger(secondArgument)) {
+				result = PKB().getPrev(stoi(secondArgument)).size() > 0;
+				return truthValue(result);
+			}
+		}
+		else if (isInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				result = PKB().getNext(stoi(firstArgument)).size() > 0;
+				return truthValue(result);
+			}
+			else if (isInteger(secondArgument)) {
+				result = PKB().hasNextStarPair(stoi(firstArgument), stoi(secondArgument)) == 1;
+				return truthValue(result);
+			};
+		}
+	}
 	return "not trivial";
 }
 
@@ -493,6 +581,102 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			else if (isQuoted(secondArgument)) {
 				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmModifying(
 					trimFrontEnd(secondArgument)));
+			}
+		}
+	}
+	if (relation == "Calls") {
+		if (isSynonym(firstArgument)) {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllCallers());
+			}
+			else if (isQuoted(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getCaller(
+					trimFrontEnd(secondArgument)));
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getCallPairs());
+			}
+		}
+		if (isSynonym(secondArgument)) {
+			if (firstArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllCallees());
+			}
+			else if (isQuoted(firstArgument)) {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getCallee(
+					trimFrontEnd(firstArgument)));
+			}
+		}
+	}
+	if (relation == "Calls*") {
+		if (isSynonym(firstArgument)) {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllCallers());
+			}
+			else if (isQuoted(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getCallAnc(
+					trimFrontEnd(secondArgument)));
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getCallStarPairs());
+			}
+		}
+		if (isSynonym(secondArgument)) {
+			if (firstArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllCallees());
+			}
+			else if (isQuoted(firstArgument)) {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getCallDesc(
+					trimFrontEnd(firstArgument)));
+			}
+		}
+	}
+	if (relation == "Next") {
+		if (isSynonym(firstArgument)) {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllPrev());
+			}
+			else if (isInteger(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getPrev(
+					stoi(secondArgument)));
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getNextPairs());
+			}
+		}
+		if (isSynonym(secondArgument)) {
+			if (firstArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllNext());
+			}
+			else if (isInteger(firstArgument)) {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getNext(
+					stoi(firstArgument)));
+			}
+		}
+	}
+	if (relation == "Next*") {
+		if (isSynonym(firstArgument)) {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllPrev());
+			}
+			else if (isInteger(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllLnBefore(
+					stoi(secondArgument)));
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getNextStarPairs());
+			}
+		}
+		if (isSynonym(secondArgument)) {
+			if (firstArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllNext());
+			}
+			else if (isInteger(firstArgument)) {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllLnAfter(
+					stoi(firstArgument)));
 			}
 		}
 	}
