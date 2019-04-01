@@ -26,37 +26,31 @@ void TestWrapper::parse(std::string filename) {
 	DesignExtractor de = DesignExtractor();
 	
 	// Opens the file and read into contents.
-	std::FILE* fptr = std::fopen(filename.c_str(), "r");
-	if (fptr) {
-		std::fseek(fptr, 0, SEEK_END);
-		size_t len = std::ftell(fptr);
-		std::fseek(fptr, 0, SEEK_SET);
-		std::string contents(len + 1, '\0');
-		std::fread(&contents[0], 1, len, fptr);
-		fclose(fptr);
+	std::ifstream t(filename);
+	std::string contents;
 
-		try {
-			//Preprocesses source into a list of Statements
-			Preprocessor preprocessor = Preprocessor(contents);
-			preprocessor.process();
-			vector<Statement> procList = preprocessor.getProcLst();
+	t.seekg(0, std::ios::end);
+	contents.reserve(t.tellg());
+	t.seekg(0, std::ios::beg);
 
-			//Parses the list of procedures.
-			parser.parse(procList, 0, "");
+	contents.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
 
-			//Perform post-parsing Design Extraction.
-			de.extractDesigns();
-		} catch (string exception) {
-			std::cout << exception << std::flush;
-			exit(0);
-		}
-		catch (char* exception) {
-			std::cout << exception << std::flush;
-			exit(0);
-		}
-	}
-	else {
-		std::cout << "Check if the file name is correct!" << std::flush;
+	contents = contents + '\0';
+
+	try {
+		//Preprocesses source into a list of Statements
+		Preprocessor preprocessor = Preprocessor(contents);
+		preprocessor.process();
+		vector<Statement> procList = preprocessor.getProcLst();
+
+		//Parses the list of procedures.
+		parser.parse(procList, 0, "");
+
+		//Perform post-parsing Design Extraction.
+		de.extractDesigns();
+	} catch (string exception) {
+		std::cout << exception << std::flush;
+		exit(0);
 	}
 
 }
