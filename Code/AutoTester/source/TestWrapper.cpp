@@ -45,7 +45,7 @@ void TestWrapper::parse(std::string filename) {
 			parser.parse(procList, 0, "");
 
 			//Perform post-parsing Design Extraction.
-			de.extractDesigns(pkb);
+			de.extractDesigns();
 		} catch (string exception) {
 			std::cout << exception << std::flush;
 			exit(0);

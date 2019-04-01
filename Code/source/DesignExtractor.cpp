@@ -4,9 +4,9 @@ PKB DesignExtractor::pkb;
 
 /* The main public function that calls other function to populate different design entities in the PKB.
  */
-void DesignExtractor::extractDesigns(PKB storage)
+void DesignExtractor::extractDesigns()
 {
-	pkb = storage;
+	pkb = PKB();
 
 	//Verification
 	verifyCalledProceduresPresence();
