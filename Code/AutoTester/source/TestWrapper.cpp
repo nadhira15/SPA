@@ -50,6 +50,10 @@ void TestWrapper::parse(std::string filename) {
 			std::cout << exception << std::flush;
 			exit(0);
 		}
+		catch (char* exception) {
+			std::cout << exception << std::flush;
+			exit(0);
+		}
 	}
 	else {
 		std::cout << "Check if the file name is correct!" << std::flush;
