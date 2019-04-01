@@ -138,6 +138,9 @@
     <ClCompile Include="..\source\RunTimeDesignExtractor.cpp">
       <Filter>Source Files\DesignExtractor</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\ControlVariableStorage.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\PKB.h">
@@ -229,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="..\source\RunTimeDesignExtractor.h">
       <Filter>Header Files\DesignExtractor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ControlVariableStorage.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

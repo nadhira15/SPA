@@ -23,6 +23,8 @@ public:
 
 	int parse(vector<Statement> stmtLst, int parent, string procedure);
 
+	void populateNextEntity(int prevStmtLine, Statement &stmt, int currStmtLine, int parent);
+
 private:
 
 	void populateDesignEntities(Statement stmt, string procedure);
@@ -43,7 +45,7 @@ private:
 
 	void extractProcedureEntity(std::string & stmtString, vector<Statement> stmtLst);
 
-	void populateStmtList(Statement stmt);
+	void populateStmtList(Statement stmt, std::string procedure);
 
 	PKB pkb;
 };

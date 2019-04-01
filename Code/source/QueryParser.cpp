@@ -350,13 +350,8 @@ unordered_set<string> QueryParser::evaluateSelectConditions(unordered_map<string
 	vector<string> selectedVar, vector<pair<string, pair<string, string>>> suchThatCondition,
 	vector<pair<string, pair<string, string>>> patternCondition, vector<pair<string, string>> withCondition) {
 
-	// just delete 4 lines below and replace the argument for Query Evaluator to declarations
-	vector<pair<string, string>> declarationsVector;
-	for (auto x: declarations) {
-		declarationsVector.push_back(make_pair(x.second, x.first));
-	}
-
-	return QueryEvaluator::evaluateQuery(declarationsVector, selectedVar, suchThatCondition, patternCondition);
+	return QueryEvaluator::projectResult(declarations, selectedVar, suchThatCondition, patternCondition,
+		withCondition);
 }
 
 /*
