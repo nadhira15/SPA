@@ -369,3 +369,43 @@ std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::product
 	}
 }
 
+/*
+The function intersect two tables
+with one column and combine them.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::intersectOne(
+	std::unordered_map<std::string, std::vector<std::string>> table1,
+	std::unordered_map<std::string, std::vector<std::string>> table2) {
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	newTable.insert({ table1.begin()->first, table2.begin()->second });
+	newTable = product(table1, newTable);
+	newTable.insert({ table2.begin()->first, newTable.begin()->second });
+	return newTable;
+}
+
+/*
+The function intersect two tables
+with two columns and combine the
+columns that are not common key.
+Assume common key is the first column.
+*/
+std::unordered_map<std::string, std::vector<std::string>> ContainerUtil::intersectTwo(
+	std::unordered_map<std::string, std::vector<std::string>> table1,
+	std::unordered_map<std::string, std::vector<std::string>> table2) {
+	std::string commonKey;
+	for (auto it = table2.begin(); it != table2.end(); ++it) {
+		if (table1.count(it->first) == 1) {
+			commonKey = it->first;
+		}
+	}
+	std::unordered_map<std::string, std::vector<std::string>> intermediateTable = product(
+		table1, table2);
+	std::unordered_map<std::string, std::vector<std::string>> newTable;
+	for (auto it = intermediateTable.begin(); it != intermediateTable.end(); ++it) {
+		if (it->first != commonKey) {
+			newTable.insert({ it->first, it->second });
+		}
+	}
+	return newTable;
+}
+
