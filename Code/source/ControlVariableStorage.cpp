@@ -35,22 +35,28 @@ void ControlVariableStorage::addWhileControlVariable(int stm, string variable) {
 	}
 }
 
-bool ControlVariableStorage::hasIfControlVariable() {
+std::unordered_set<int> ControlVariableStorage::getAllIfWithControls() {
+	std::unordered_set<int> result;
 
-	if (ifVariableToStm.empty()) {
-		return false;
-	} else {
-		return true;
+	for (std::pair<std::string, std::unordered_set<int>> pair : ifVariableToStm) {
+		for (int stm : pair.second) {
+			result.insert(stm);
+		}
 	}
+	return result;
+
 }
 
-bool ControlVariableStorage::hasWhileControlVariable() {
+std::unordered_set<int> ControlVariableStorage::getAllWhileWithControls() {
+	std::unordered_set<int> result;
 
-	if (whileVariableToStm.empty()) {
-		return false;
-	} else {
-		return true;
+	for (std::pair<std::string, std::unordered_set<int>> pair : whileVariableToStm) {
+		for (int stm : pair.second) {
+			result.insert(stm);
+		}
 	}
+	return result;
+
 }
 
 std::unordered_set<int> ControlVariableStorage::getIfStmWithControlVariable(std::string variable) {
