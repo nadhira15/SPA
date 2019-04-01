@@ -247,6 +247,26 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, PKB().findPatternPairs(rightArgument, false));
 		}
 	}
+	if (patternType == "if") {
+		if (isQuoted(leftArgument)) {
+			return ContainerUtil::to_mapvec(patternSynonym, PKB().getIfStmWithControlVariable(
+				trimFrontEnd(rightArgument)));
+		}
+		else {
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument,
+				PKB().getIfStmControlVariablePair());
+		}
+	}
+	if (patternType == "while") {
+		if (isQuoted(leftArgument)) {
+			return ContainerUtil::to_mapvec(patternSynonym, PKB().getWhileStmWithControlVariable(
+				trimFrontEnd(rightArgument)));
+		}
+		else {
+			return ContainerUtil::to_mapvec(patternSynonym, leftArgument,
+				PKB().getWhileStmControlVariablePair());
+		}
+	}
 }
 
 /*
