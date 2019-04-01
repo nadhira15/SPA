@@ -22,14 +22,14 @@ namespace UnitTesting
 			Assert::IsFalse(store.addUsesProc("fruit2", "apple"));
 		}
 
-		TEST_METHOD(containsStmVarPair_PairExist_Success)
+		TEST_METHOD(containsUseStmPair_PairExist_Success)
 		{
 			UseStorage store;
 			store.addUsesStm(9, "apple");
 			Assert::IsTrue(store.containsStmVarPair(pair<int, string>(9, "apple")));
 		}
 
-		TEST_METHOD(containsProcVarPair_PairExist_Success)
+		TEST_METHOD(containsUseProcPair_PairExist_Success)
 		{
 			UseStorage store;
 			store.addUsesProc("fruit2", "apple");
@@ -91,7 +91,7 @@ namespace UnitTesting
 			Assert::IsTrue(store.getProcUsing("") == procList[3]);
 		}
 
-		TEST_METHOD(getStmVarPairs_NormalOperation_Success)
+		TEST_METHOD(getUseStmPairs_NormalOperation_Success)
 		{
 			UseStorage store;
 			store.addUsesStm(9, "apple");
@@ -103,7 +103,7 @@ namespace UnitTesting
 			Assert::IsTrue(store.getStmVarPairs() == stmVarPairs);
 		}
 
-		TEST_METHOD(getProcVarPairs_NormalOperation_Success)
+		TEST_METHOD(getUseProcPairs_NormalOperation_Success)
 		{
 			UseStorage store;
 			store.addUsesProc("fruit2", "apple");
