@@ -183,7 +183,13 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			return evaluateSuchThat(declarations, "Uses", attr, right);
 		}
 		else {
-			return ContainerUtil::to_mapvec(attr, right);
+			std::vector<std::string> attrVal = getStmts(declarations, attr)[attr];
+			if (std::find(attrVal.begin(), attrVal.end(), right) != attrVal.end()) {
+				return ContainerUtil::to_mapvec(attr, right);
+			}
+			std::vector<std::string> emptyVec;
+			withMap.insert({ attr, emptyVec });
+			return withMap;
 		}
 	}
 	else if (!hasReference(left) && !isSynonym(left) && hasReference(right)) {
@@ -200,7 +206,13 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			return evaluateSuchThat(declarations, "Uses", attr, left);
 		}
 		else {
-			return ContainerUtil::to_mapvec(attr, left);
+			std::vector<std::string> attrVal = getStmts(declarations, attr)[attr];
+			if (std::find(attrVal.begin(), attrVal.end(), left) != attrVal.end()) {
+				return ContainerUtil::to_mapvec(attr, left);
+			}
+			std::vector<std::string> emptyVec;
+			withMap.insert({ attr, emptyVec });
+			return withMap;
 		}
 	}
 	else if (hasReference(left) && isSynonym(right)) {
