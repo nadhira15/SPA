@@ -97,7 +97,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 					declarations, relation, firstArgument, secondArgument);
 				resultTable = ContainerUtil::product(resultTable, newTable);
 				if (resultTable.begin()->second.size() == 0) {
-					status == "FALSE";
+					status = "FALSE";
 					break;
 				}
 			}
@@ -111,7 +111,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 				declarations, patternCondition[i]);
 			resultTable = ContainerUtil::product(resultTable, newTable);
 			if (resultTable.begin()->second.size() == 0) {
-				status == "FALSE";
+				status = "FALSE";
 				break;
 			}
 		}
@@ -124,7 +124,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 			std::string right = withCondition[i].second;
 			std::string trivialness = isWithTrivial(left, right);
 			if (trivialness == "false") {
-				status == "FALSE";
+				status = "FALSE";
 				break;
 			}
 			if (trivialness == "not trivial") {
@@ -132,7 +132,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 					declarations, left, right);
 				resultTable = ContainerUtil::product(resultTable, newTable);
 				if (resultTable.begin()->second.size() == 0) {
-					status == "FALSE";
+					status = "FALSE";
 					break;
 				}
 			}
