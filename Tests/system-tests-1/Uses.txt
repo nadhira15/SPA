@@ -1,0 +1,60 @@
+1 - select bool, 4 use wildcard wildcard
+assign a;
+Select BOOLEAN such that Uses(_, _)
+FALSE
+5000
+3 - select synonym, use procName synonym
+procedure p, q; variable v;
+Select v such that Uses("country", v)
+uk, usa, france, germany, spain, russia, brazil, indonesia, india, singapore, malaysia, thailand, vietnam, laos, china, japan
+5000
+4 - select synonym, use procName synonym
+procedure p, q; variable v;
+Select v such that Uses("Pr0c3dUr3", v)
+while, if, read, print, else
+5000
+7 - select synonym, use synonym varName
+procedure p, q; variable v;
+Select p such that Uses(p, "sum")
+TestA, TestB, TestC
+5000
+8 - select synonym, use synonym varName
+procedure p, q; variable v;
+Select p such that Uses(p, "pink")
+TestA, TestB, TestC, colours, fruits, TenWhileLoop, transportation, procedure, oneCall
+5000
+9 - select synonym, use synonym varName
+procedure p, q; variable v;
+Select p such that Uses(p, "gojek")
+transportation, oneCall, procedure, fruits, TestA, TestB, TestC
+5000
+10 - select synonym, use synonym varName
+procedure p, q; variable v; call c;
+Select c such that Uses(c, "minus1")
+20, 58, 83
+5000
+11 - select synonym, use procName varName
+procedure p, q; variable v;
+Select p such that Uses("TestB", "a")
+TestA, TestB, TestC, procedure, colours, fruits, country, Pr0c3dUr3, oneCall, transportation, TenWhileLoop
+5000
+12 - select synonym, use procName varName
+procedure p, q; variable v; constant cons;
+Select cons such that Uses("TestB", "grape")
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 16, 17, 67, 100, 123, 126, 127, 156, 567, 670, 8248, 12345, 341242, 1234567890123
+5000
+13 - select synonym, use nonexistent procName varName
+procedure p, q; variable v;
+Select cons such that Uses("procedureDoesNotExist", "querky")
+none
+5000
+14 - select synonym, use procName undeclared varName
+constant cons; procedure p;
+Select cons such that Uses(p, "querky")
+none
+5000
+15 - select synonym, use nonexistent call varName
+stmt s;
+Select s such that Uses(10000, "querky")
+none
+5000

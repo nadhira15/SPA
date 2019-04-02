@@ -1,5 +1,4 @@
 #include "PKB.h"
-#include"RunTimeDesignExtractor.h"
 
 unordered_set<string> PKB::procList;
 unordered_map<string, vector<int>> PKB::procStmList;
@@ -12,6 +11,11 @@ unordered_set<int> PKB::assignStmList;
 unordered_set<int> PKB::ifStmList;
 unordered_set<int> PKB::whileStmList;
 unordered_set<int> PKB::callStmList;
+unordered_set< pair<int, string>, intStringhash > PKB::readPairList;
+unordered_set< pair<int, string>, intStringhash > PKB::printPairList;
+unordered_map<int, int> PKB::whileLastStmList;
+unordered_map<int, pair<int, int> > PKB::ifFirstStmList;
+unordered_map<int, pair<int, int> > PKB::ifLastStmList;
 
 FollowStorage PKB::fStore;
 ParentStorage PKB::pStore;
@@ -29,34 +33,6 @@ PKB::PKB()
 bool PKB::addProc(string name)
 {
 	return procList.emplace(name).second;
-}
-
-void PKB::addStatement(int stmNo, stmType type)
-{
-	stmTypeList.push_back(type);
-	switch (type)
-	{
-		case read:
-			readStmList.emplace(stmNo);
-			break;
-		case print:
-			printStmList.emplace(stmNo);
-			break;
-		case assign:
-			assignStmList.emplace(stmNo);
-			break;
-		case whileStm:
-			whileStmList.emplace(stmNo);
-			break;
-		case ifStm:
-			ifStmList.emplace(stmNo);
-			break;
-		case call:
-			callStmList.emplace(stmNo);
-			break;
-		default:
-			break;
-	}
 }
 
 void PKB::addStatement(int stmNo, stmType type, string procedure)
@@ -100,6 +76,43 @@ void PKB::addVariable(string name)
 void PKB::addConstant(string value)
 {
 	constList.emplace(value);
+}
+
+void PKB::addWhileLastStm(int whileStm, int lastStm)
+{
+	whileLastStmList.emplace(whileStm, lastStm);
+}
+
+void PKB::addThenFirstStm(int ifStm, int thenStm)
+{
+	if (!ifFirstStmList.emplace(ifStm, pair<int, int>{thenStm, 0}).second)
+	{
+		ifFirstStmList.at(ifStm).first = thenStm;
+	}
+}
+
+void PKB::addElseFirstStm(int ifStm, int elseStm)
+{
+	if (!ifFirstStmList.emplace(ifStm, pair<int, int>{0, elseStm}).second)
+	{
+		ifFirstStmList.at(ifStm).second = elseStm;
+	}
+}
+
+void PKB::addThenLastStm(int ifStm, int thenStm)
+{
+	if (!ifLastStmList.emplace(ifStm, pair<int, int>{thenStm, 0}).second)
+	{
+		ifLastStmList.at(ifStm).first = thenStm;
+	}
+}
+
+void PKB::addElseLastStm(int ifStm, int elseStm)
+{
+	if (!ifLastStmList.emplace(ifStm, pair<int, int>{0, elseStm}).second)
+	{
+		ifLastStmList.at(ifStm).second = elseStm;
+	}
 }
 
 bool PKB::addFollow(int stm1, int stm2)
@@ -146,6 +159,11 @@ bool PKB::addUsesStm(int stm, string variable)
 	{
 		return false;
 	}
+	// if the stm using 'variable' is a print stm
+	if (printStmList.find(stm) != printStmList.end())
+	{
+		printPairList.emplace(pair<int, string>(stm, variable));
+	}
 	return uStore.addUsesStm(stm, variable);
 }
 
@@ -164,6 +182,11 @@ bool PKB::addModifiesStm(int stm, string variable)
 	{
 		return false;
 	}
+	// if the stm modifying 'variable' is a read stm
+	if (readStmList.find(stm) != readStmList.end())
+	{
+		readPairList.emplace(pair<int, string>(stm, variable));
+	}
 	return mStore.addModifiesStm(stm, variable);
 }
 
@@ -176,22 +199,15 @@ bool PKB::addModifiesProc(string procedure, string variable)
 	return mStore.addModifiesProc(procedure, variable);
 }
 
-bool PKB::addCall(string proc1, string proc2)
+void PKB::addCall(string proc1, string proc2, int stmNo)
 {
-	if (proc1 == "" || proc2 == "")
-	{
-		return false;
-	}
-	return cStore.addCall(proc1, proc2);
-}
-
-bool PKB::addCall(string proc1, string proc2, int stmNo)
-{
+	/*
 	if (proc1 == "" || proc2 == "" || stmNo <= 0)
 	{
 		return false;
 	}
-	return cStore.addCall(proc1, proc2, stmNo);
+	*/
+	cStore.addCall(proc1, proc2, stmNo);
 }
 
 bool PKB::setCallAnc(string proc, unordered_set<string> procList)
@@ -280,6 +296,43 @@ unordered_set<string> PKB::getVariables()
 unordered_set<string> PKB::getConstants()
 {
 	return constList;
+}
+
+unordered_set<pair<int, string>, intStringhash> PKB::getReadPairs()
+{
+	return readPairList;
+}
+
+unordered_set<pair<int, string>, intStringhash> PKB::getPrintPairs()
+{
+	return printPairList;
+}
+
+int PKB::getWhileLastStm(int whileStm)
+{
+	if (whileLastStmList.find(whileStm) != whileLastStmList.end())
+	{
+		return whileLastStmList.at(whileStm);
+	}
+	return 0;
+}
+
+pair<int, int> PKB::getIfFirstStms(int ifStm)
+{
+	if (ifFirstStmList.find(ifStm) != ifFirstStmList.end())
+	{
+		return ifFirstStmList.at(ifStm);
+	}
+	return pair<int, int>(0, 0);
+}
+
+pair<int, int> PKB::getIfLastStms(int ifStm)
+{
+	if (ifLastStmList.find(ifStm) != ifLastStmList.end())
+	{
+		return ifLastStmList.at(ifStm);
+	}
+	return pair<int, int>(0, 0);
 }
 
 bool PKB::hasFollowRelation()
@@ -542,6 +595,11 @@ unordered_set<int> PKB::getStmCalling(string procedure)
 	return cStore.getStmCalling(procedure);
 }
 
+unordered_set<pair<int, string>, intStringhash> PKB::getStmProcCallPairs()
+{
+	return cStore.getStmProcCallPairs();
+}
+
 bool PKB::hasNextRelation()
 {
 	return !nStore.isEmpty();
@@ -549,8 +607,7 @@ bool PKB::hasNextRelation()
 
 bool PKB::hasNextStarPair(int line1, int line2)
 {
-	// call DE
-	return RunTimeDesignExtractor::extractNextStarPair(line1, line2);
+	return RunTimeDesignExtractor::extractNextStarPair(this, line1, line2);
 }
 
 unordered_set<int> PKB::getNext(int line)
@@ -565,12 +622,12 @@ unordered_set<int> PKB::getPrev(int line)
 
 unordered_set<int> PKB::getAllLnAfter(int line)
 {
-	return RunTimeDesignExtractor::extractNextStar(line);
+	return RunTimeDesignExtractor::extractNextStar(this, line);
 }
 
 unordered_set<int> PKB::getAllLnBefore(int line)
 {
-	return RunTimeDesignExtractor::extractPreviousStar(line);
+	return RunTimeDesignExtractor::extractPreviousStar(this, line);
 }
 
 unordered_set<int> PKB::getAllNext()
@@ -590,7 +647,7 @@ unordered_set<pair<int, int>, intPairhash> PKB::getNextPairs()
 
 unordered_set<pair<int, int>, intPairhash> PKB::getNextStarPairs()
 {
-	return RunTimeDesignExtractor::getNextStarPairs();
+	return RunTimeDesignExtractor::getNextStarPairs(this);
 }
 
 unordered_set<int> PKB::findPattern(string variable, string expr, bool isExclusive)
@@ -685,4 +742,26 @@ std::unordered_set<std::pair<int, std::string>, intStringhash> PKB::getIfStmCont
 std::unordered_set<std::pair<int, std::string>, intStringhash> PKB::getWhileStmControlVariablePair()
 {
 	return cvStore.getWhileStmControlVariablePair();
+}
+
+void PKB::erase()
+{
+	procList.erase(procList.begin(), procList.end());
+	procStmList.erase(procStmList.begin(), procStmList.end());
+	stmTypeList.erase(stmTypeList.begin(), stmTypeList.end());
+	varList.erase(varList.begin(), varList.end());
+	constList.erase(constList.begin(), constList.end());
+	readStmList.erase(readStmList.begin(), readStmList.end());
+	printStmList.erase(printStmList.begin(), printStmList.end());
+	assignStmList.erase(assignStmList.begin(), assignStmList.end());
+	ifStmList.erase(ifStmList.begin(), ifStmList.end());
+	whileStmList.erase(whileStmList.begin(), whileStmList.end());
+	callStmList.erase(callStmList.begin(), callStmList.end());
+	patternList.erase(patternList.begin(), patternList.end());
+	fStore.erase();
+	pStore.erase();
+	uStore.erase();
+	mStore.erase();
+	cStore.erase();
+	nStore.erase();
 }

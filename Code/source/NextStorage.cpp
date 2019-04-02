@@ -72,3 +72,11 @@ unordered_set<pair<int, int>, intPairhash> NextStorage::getNextPairs()
 {
 	return nextPairList;
 }
+
+void NextStorage::erase()
+{
+	nextTable.erase(nextTable.begin(), nextTable.end());
+	nextPairList.erase(nextPairList.begin(), nextPairList.end());
+	nextList.erase(nextList.begin(), nextList.end());
+	prevList.erase(prevList.begin(), prevList.end());
+}

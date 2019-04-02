@@ -776,12 +776,12 @@ Select a such that Modifies (a, "minus2") pattern a (_, _"b"_)
 156 - select boolean
 assign a;
 Select BOOLEAN such that Parent (a, aa)
-false
+FALSE
 5000
 157 - select boolean
 assign a;
 Select BOOLEAN such that Parent (a, _)
-false
+FALSE
 5000
 158 - select tuple
 assign a, a1;

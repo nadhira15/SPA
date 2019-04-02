@@ -1,41 +1,37 @@
 #include"RunTimeDesignExtractor.h"
-#include"Hasher.h"
-#include"PKB.h"
 
-PKB RunTimeDesignExtractor::pkb;
-
-unordered_set<int> RunTimeDesignExtractor::extractNextStar(int stmt) {
+unordered_set<int> RunTimeDesignExtractor::extractNextStar(PKB* pkb, int stmt) {
 	unordered_set<int>visitedStmts;
 	unordered_set<int>stmtsAfter;
-	DFSRecursiveNext(stmt, visitedStmts, stmtsAfter);
+	DFSRecursiveNext(pkb, stmt, visitedStmts, stmtsAfter);
 	return stmtsAfter;
 }
 
-unordered_set<int> RunTimeDesignExtractor::extractPreviousStar(int stmt) {
+unordered_set<int> RunTimeDesignExtractor::extractPreviousStar(PKB* pkb, int stmt) {
 	unordered_set<int>visitedStmts;
 	unordered_set<int>stmtsBefore;
-	DFSRecursivePrevious(stmt, visitedStmts,stmtsBefore);
+	DFSRecursivePrevious(pkb, stmt, visitedStmts,stmtsBefore);
 	return stmtsBefore;
 }
 
-bool RunTimeDesignExtractor::extractNextStarPair(int start, int end) {
+bool RunTimeDesignExtractor::extractNextStarPair(PKB* pkb, int start, int end) {
 	unordered_set<int>visitedStmts;
 	unordered_set<int>stmtsAfter;
-	DFSRecursiveNext(start, visitedStmts,stmtsAfter);
+	DFSRecursiveNext(pkb, start, visitedStmts,stmtsAfter);
 	if (stmtsAfter.find(end) == stmtsAfter.end()) {
 		return false;
 	}
 	return true;
 }
 
-unordered_set<pair<int, int>, intPairhash> RunTimeDesignExtractor::getNextStarPairs() {
-	int stmtNum = pkb.getTotalStmNo();
+unordered_set<pair<int, int>, intPairhash> RunTimeDesignExtractor::getNextStarPairs(PKB* pkb) {
+	int stmtNum = pkb->getTotalStmNo();
 	unordered_set<pair<int, int>, intPairhash> allNextStarPairs;
 	//for all Statement in statemnet list generate nextStar
 	for (int i = 1; i <= stmtNum; i++) {
 		unordered_set<int>visitedStmts;
 		unordered_set<int>stmtsAfter;
-		DFSRecursiveNext(i, visitedStmts,stmtsAfter);
+		DFSRecursiveNext(pkb, i, visitedStmts,stmtsAfter);
 		for (int statments : stmtsAfter) {
 			allNextStarPairs.emplace(i, statments);
 		}
@@ -43,11 +39,11 @@ unordered_set<pair<int, int>, intPairhash> RunTimeDesignExtractor::getNextStarPa
 	return allNextStarPairs;
 }
 
-void RunTimeDesignExtractor::DFSRecursiveNext(int statments, unordered_set<int> &visitedStmts, unordered_set<int> &stmtsAfter) {
+void RunTimeDesignExtractor::DFSRecursiveNext(PKB* pkb, int statments, unordered_set<int> &visitedStmts, unordered_set<int> &stmtsAfter) {
 	//Marks statment as visited
 	visitedStmts.insert(statments);
 	//Get neighbouring statments.
-	unordered_set<int> adjacentStmts = pkb.getNext(statments);
+	unordered_set<int> adjacentStmts = pkb->getNext(statments);
 
 	//For each neighbouring statments
 	for (int stmts : adjacentStmts) {
@@ -62,16 +58,16 @@ void RunTimeDesignExtractor::DFSRecursiveNext(int statments, unordered_set<int> 
 		//If neighbouring statments has not been visited, visit it.
 		if (exist == visitedStmts.end()) {
 			stmtsAfter.insert(stmts);
-			DFSRecursiveNext(stmts, visitedStmts,stmtsAfter);
+			DFSRecursiveNext(pkb, stmts, visitedStmts,stmtsAfter);
 		}
 	}
 }
 
-void RunTimeDesignExtractor::DFSRecursivePrevious(int statments, unordered_set<int> &visitedStmts, unordered_set<int> &stmtsBefore) {
+void RunTimeDesignExtractor::DFSRecursivePrevious(PKB* pkb, int statments, unordered_set<int> &visitedStmts, unordered_set<int> &stmtsBefore) {
 	//Marks statment as visited
 	visitedStmts.insert(statments);
 	//Get neighbouring statments.
-	unordered_set<int> adjacentStmts = pkb.getPrev(statments);
+	unordered_set<int> adjacentStmts = pkb->getPrev(statments);
 
 	//For each neighbouring statments
 	for (int stmts : adjacentStmts) {
@@ -85,7 +81,7 @@ void RunTimeDesignExtractor::DFSRecursivePrevious(int statments, unordered_set<i
 
 		//If neighbouring statments has not been visited, visit it.
 		if (exist == visitedStmts.end()) {
-			DFSRecursivePrevious(stmts, visitedStmts,stmtsBefore);
+			DFSRecursivePrevious(pkb, stmts, visitedStmts,stmtsBefore);
 		}
 	}
 }

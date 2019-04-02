@@ -56,6 +56,8 @@ public:
 	// returns a list of all next pairs
 	unordered_set< pair<int, int>, intPairhash> getNextPairs();
 
+	// empty the entire storage
+	void erase();
 private:
 	static unordered_map<int, nRelationships> nextTable;
 	static unordered_set< pair<int, int>, intPairhash> nextPairList;
