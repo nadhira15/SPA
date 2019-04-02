@@ -23,6 +23,9 @@ public:
 		std::vector<std::pair<std::string, std::string>> withCondition);
 
 	static std::string isWithTrivial(std::string left, std::string right);
+	static std::unordered_map<std::string, std::vector<std::string>> evaluateWithPair(
+		std::unordered_map<std::string, std::string> declarations,
+		std::string attr);
 	static std::unordered_map<std::string, std::vector<std::string>> evaluateWithCondition(
 		std::unordered_map<std::string, std::string> declarations,
 		std::string left, std::string right);
