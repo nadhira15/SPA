@@ -39,6 +39,7 @@ bool isNumber(std::string str) {
 	return (str.find_first_not_of("0123456789") == std::string::npos);
 }
 
+// Used for getting PQ
 int getSuchThatPriority(std::string relation, int synNum) {
 	//Priority determined by the relation and number of synonyms
 	int ans;
@@ -66,12 +67,12 @@ int getSuchThatPriority(std::string relation, int synNum) {
 
 int getWithPriority(std::string relation, int synNum) {
 	int ans;
-	//determine with priority by? what is required?
+	//determine with priority by? what is required as inputs?
 	return ans;
 }
 
 int getPatternPriority(std::string synonym, int synNum) {
 	int ans;
-	//determine with priority by? what is required?
+	//determine with priority by? what is required as inputs?
 	return ans;
 }
