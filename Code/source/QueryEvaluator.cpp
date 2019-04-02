@@ -311,7 +311,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		}
 		else if (isQuoted(leftArgument)) {
 			return ContainerUtil::to_mapvec(patternSynonym, PKB().getIfStmWithControlVariable(
-				trimFrontEnd(rightArgument)));
+				trimFrontEnd(leftArgument)));
 		}
 		else {
 			return ContainerUtil::to_mapvec(patternSynonym, leftArgument,
@@ -324,7 +324,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		}
 		else if (isQuoted(leftArgument)) {
 			return ContainerUtil::to_mapvec(patternSynonym, PKB().getWhileStmWithControlVariable(
-				trimFrontEnd(rightArgument)));
+				trimFrontEnd(leftArgument)));
 		}
 		else {
 			return ContainerUtil::to_mapvec(patternSynonym, leftArgument,
