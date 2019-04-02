@@ -3,6 +3,7 @@
 #include <regex>
 #include <sstream>
 #include "ConditionalExp.h"
+#include "LexicalToken.h"
 
 using namespace ConditionalExp;
 
@@ -83,7 +84,9 @@ std::vector<std::string> ConditionalExp::getVariables() {
 			std::stringstream(line3) >> year;
 		}
 		else {
-			variables.push_back(line3);
+			if (LexicalToken::verifyName(line3)) {
+				variables.push_back(line3);
+			}
 		}
 	}
 	return variables;
