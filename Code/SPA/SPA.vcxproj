@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -35,7 +35,8 @@
     <ClCompile Include="..\source\ParentStorage.cpp" />
     <ClCompile Include="..\source\UseStorage.cpp" />
     <ClCompile Include="..\source\ModifyStorage.cpp" />
-    <ClCompile Include="ClauseGraph.cpp" />
+    <ClCompile Include="..\source\ClauseGraph.cpp" />
+    <ClCompile Include="..\source\OptimizerUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\AssignParser.h" />
@@ -63,7 +64,7 @@
     <ClInclude Include="..\source\UseStorage.h" />
     <ClInclude Include="..\source\ModifyStorage.h" />
     <ClInclude Include="..\source\Hasher.h" />
-    <ClInclude Include="ClauseGraph.h" />
+    <ClInclude Include="..\source\ClauseGraph.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>
