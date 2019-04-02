@@ -15,7 +15,19 @@ void ClauseGraph::groupClause() {
 	groupByClauseType(st);
 	groupByClauseType(w);
 	groupByClauseType(p);
-	mapClauses();
+	int check = suchThatClauses.size() + withClauses.size() + patternClauses.size();
+	std::pair<clauseType, int> cl;
+	bool trivial;
+	while (check != 0) {
+		cl = getFirstCl(); //function for the more efficient? get from PKB statistics
+		trivial = mapClauses(std::unordered_set<std::pair<std::string, std::pair <std::string, std::string >>>(), cl, false);
+		if (trivial) {
+			//add to non trivial sets
+		}
+		else {
+			//add to trivial set
+		}
+	}
 }
 
 void ClauseGraph::groupByClauseType(clauseType t) {
@@ -39,33 +51,32 @@ void ClauseGraph::groupByClauseType(clauseType t) {
 }
 
 void ClauseGraph::mapSynonyms(std::vector<std::string> synLst, std::pair<clauseType, int> cl) {
+	clMap[cl] = synLst;
 	for (std::vector<std::string>::iterator it = synLst.begin(); it != synLst.end(); ++it) {
 		if (synMap.find(*it) == synMap.end()) {
 			//synMap[*it] = std::vector<std::pair<clauseType, int>>();
 			synMap[*it].push_back(cl);
-			clMap[cl].push_back(counter++);
 		} else {
-			//merge clause into group for 1 syn match
-			clMap[cl].push_back(clMap[synMap.at[*it].at(0)]); 
 			//group index for cl0 = group index for cl1
 			synMap.at[*it].insert(cl);
 		}
 	}
 }
 
-void ClauseGraph::mapClauses(std::vector<std::string> synLst, std::pair<clauseType, int> cl) {
+bool ClauseGraph::mapClauses(std::vector <std::pair<clauseType, int>> set, std::pair<clauseType, int> cl, bool trivial) {
+	std::vector<std::string> synLst = clMap[cl];
 	for (std::vector<std::string>::iterator it = synLst.begin(); it != synLst.end(); ++it) {
-		if (synMap.find(*it) == synMap.end()) {
-			//synMap[*it] = std::vector<std::pair<clauseType, int>>();
-			synMap[*it].push_back(cl);
-			clMap[cl].push_back(counter++);
+		//choose the more optimal clause
+		//
+		//check if *it is part of select
+		if (true) {
+			trivial = true;
 		}
-		else {
-			//merge clause into group for 1 syn match
-			clMap[cl].push_back(clMap[synMap.at[*it].at(0)]);
-			//group index for cl0 = group index for cl1
-			synMap.at[*it].insert(cl);
-		}
+		set.push_back(cl);
+		cl = getOptimal(synMap[*it])
+		synMap[*it].remove(cl);
+		clMap[cl].remove(*it);
+		mapClauses(set, cl);
 	}
 }
 
