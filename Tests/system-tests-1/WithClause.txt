@@ -21,7 +21,7 @@ none
 5 - variable exist
 variable v;
 Select v with v.varName = "usa"
-fruits
+usa
 5000
 6 - variable does not exist
 variable v;
@@ -46,7 +46,7 @@ a, b, x, r, c, s, i, p, f, read, pear, banana, grape, orange, avocado, kiwi, che
 10 - print variable exist
 print p;
 Select p with p.varName = "cherry"
-cherry
+229, 255
 5000
 11 - print variable does not exist
 print p;
