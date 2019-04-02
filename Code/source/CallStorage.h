@@ -34,8 +34,7 @@ public:
 		Adds the call relation into the various lists in the storage
 		Returns false if the pair already exist
 	*/
-	bool addCall(string caller, string callee);		//remove in future
-	bool addCall(string caller, string callee, int stm);
+	void addCall(string caller, string callee, int stm);
 
 	/*
 		Sets "callAnc" of callee
@@ -111,6 +110,12 @@ public:
 	*/
 	unordered_set<int> getStmCalling(string procedure);
 
+	// returns a list of all call statement - procedure pairs
+	unordered_set< pair<int, string>, intStringhash> getStmProcCallPairs();
+
+	// empty the entire storage
+	void erase();
+
 private:
 	static unordered_map<string, cRelationships> callTable;
 	static unordered_set< pair<string, string>, strPairhash> callPairList;
@@ -119,4 +124,5 @@ private:
 	static unordered_set<string> calleeList;
 	static unordered_map<int, string> stmToProcMap;
 	static unordered_map<string, unordered_set<int>> procToStmMap;
+	static unordered_set< pair<int, string>, intStringhash> stmProcCallPairList;
 };

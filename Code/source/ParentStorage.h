@@ -99,6 +99,9 @@ public:
 	// returns a list of all parent* pairs
 	unordered_set< pair<int, int>, intPairhash> getAncDescPair();
 
+	// empty the entire storage
+	void erase();
+
 private:
 	static unordered_map<int, pRelationships> parentTable;
 	static unordered_set< pair<int, int>, intPairhash> parent_ChildPairList;
