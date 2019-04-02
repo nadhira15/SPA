@@ -111,7 +111,7 @@ Select w such that Next(219, w)
 23 - select synonym, next stmtNum synonym
 while w;
 Select w such that Next(136, w)
-132
+131
 5000
 24 - select synonym, next stmtNum synonym
 call c;
@@ -151,7 +151,7 @@ none
 31 - select synonym, next synonym synonym
 stmt s; assign a; print pr; read re; if ifs; while w; constant cons; call c;
 Select a such that Next(a, pr)
-4, 41, 110, 117, 138, 143, 204, 228, 231, 254, 266, 272, 296, 302, 338, 345, 365, 371, 374, 385, 422, 424, 435, 441, 456, 466
+4, 41, 110, 117, 138, 143, 190, 204, 228, 231, 254, 266, 272, 296, 302, 338, 345, 365, 371, 374, 385, 422, 424, 435, 441, 456, 466
 5000
 32 - select synonym, next synonym synonym
 if ifs; call c;
@@ -161,7 +161,7 @@ Select c such that Next(ifs, c)
 33 - select synonym, next synonym synonym
 read re; while w;
 Select w such that Next(w, re)
-129, 140, 154, 155, 158, 217, 276, 341, 378, 470
+107, 124, 128, 157, 216, 275, 335, 377, 460
 5000
 34 - select synonym, next synonym synonym
 stmt s; assign a; print pr; read re; if ifs; while w; constant cons; call c;
@@ -186,7 +186,7 @@ Select a such that Next(a, ifs)
 38 - select synonym, next synonym synonym
 if ifs; while w; constant cons; 
 Select cons such that Next(ifs, w)
-0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 16, 17, 67, 100, 123, 126, 127, 156, 567, 670, 8248, 341242, 1234567890123
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 16, 17, 67, 100, 123, 126, 127, 156, 567, 670, 8248, 12345, 341242, 1234567890123
 5000
 39 - select synonym, next synonym and undeclared synonym
 stmt s;

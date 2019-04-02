@@ -48,17 +48,17 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 				}
 			}
 			for (std::vector<std::string>::size_type i = 0; i != notInResult.size(); i++) {
-				projectTable = ContainerUtil::product(projectTable, getStmts(declarations, selectedVar[i]));
+				projectTable = ContainerUtil::product(projectTable, getStmts(declarations, notInResult[i]));
 			}
 			int projectedSize = projectTable.begin()->second.size();
 			for (std::vector<std::string>::size_type i = 0; i != projectedSize; i++) {
 				std::string tuple;
-				for (auto columnIt = projectTable.begin(); columnIt != projectTable.end(); ++columnIt) {
+				for (std::vector<std::string>::size_type j = 0; j != selectedVar.size(); j++) {
 					if (tuple.size() == 0) {
-						tuple = columnIt->second[i];
+						tuple = projectTable[selectedVar[j]][i];
 					} 
 					else {
-						tuple = tuple + " " + columnIt->second[i];
+						tuple = tuple + " " + projectTable[selectedVar[j]][i];
 					}
 				}
 				resultSet.insert(tuple);
@@ -97,7 +97,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 					declarations, relation, firstArgument, secondArgument);
 				resultTable = ContainerUtil::product(resultTable, newTable);
 				if (resultTable.begin()->second.size() == 0) {
-					status == "FALSE";
+					status = "FALSE";
 					break;
 				}
 			}
@@ -111,7 +111,7 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 				declarations, patternCondition[i]);
 			resultTable = ContainerUtil::product(resultTable, newTable);
 			if (resultTable.begin()->second.size() == 0) {
-				status == "FALSE";
+				status = "FALSE";
 				break;
 			}
 		}
@@ -124,15 +124,15 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 			std::string right = withCondition[i].second;
 			std::string trivialness = isWithTrivial(left, right);
 			if (trivialness == "false") {
-				status == "FALSE";
+				status = "FALSE";
 				break;
 			}
-			if (trivialness == "non trivial") {
+			if (trivialness == "not trivial") {
 				std::unordered_map<std::string, std::vector<std::string>> newTable = evaluateWithCondition(
 					declarations, left, right);
 				resultTable = ContainerUtil::product(resultTable, newTable);
 				if (resultTable.begin()->second.size() == 0) {
-					status == "FALSE";
+					status = "FALSE";
 					break;
 				}
 			}
@@ -155,6 +155,28 @@ std::string QueryEvaluator::isWithTrivial(std::string left, std::string right) {
 	return "not trivial";
 }
 
+std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluateWithPair(
+	std::unordered_map<std::string, std::string> declarations,
+	std::string attr) {
+	std::string attrType = declarations[attr];
+	if (attrType == "call") {
+		return ContainerUtil::to_mapvec(attr, "name", PKB().getStmProcCallPairs());
+	}
+	else if (attrType == "print") {
+		return ContainerUtil::to_mapvec(attr, "name", PKB().getPrintPairs());
+	}
+	else if (attrType == "read") {
+		return ContainerUtil::to_mapvec(attr, "name", PKB().getReadPairs());
+	}
+	else {
+		std::vector<std::string> attrVal= getStmts(declarations, attr)[attr];
+		std::unordered_map<std::string, std::vector<std::string>> doubleMap;
+		doubleMap.insert({ {attr, attrVal}, {"name", attrVal} });
+		return doubleMap;
+	}
+}
+
+
 /*
 The function evaluates the non-trivial
 with clauses.
@@ -164,10 +186,20 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 	std::string left, std::string right) {
 	std::unordered_map<std::string, std::vector<std::string>> withMap;
 	if (isSynonym(left) && !hasReference(right) && !isSynonym(right)) {
-		return ContainerUtil::to_mapvec(left, right);
+		if (stoi(right) < PKB().getTotalStmNo()) {
+			return ContainerUtil::to_mapvec(left, right);
+		}
+		std::vector<std::string> emptyVec;
+		withMap.insert({ left, emptyVec });
+		return withMap;
 	}
 	else if (!hasReference(left) && !isSynonym(left) && isSynonym(right)) {
-		return ContainerUtil::to_mapvec(right, left);
+		if (stoi(left) < PKB().getTotalStmNo()) {
+			return ContainerUtil::to_mapvec(right, left);
+		}
+		std::vector<std::string> emptyVec;
+		withMap.insert({ right, emptyVec });
+		return withMap;
 	}
 	else if (hasReference(left) && !hasReference(right) && !isSynonym(right)) {
 		std::string attr = attrOf(left);
@@ -176,14 +208,25 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		if ((attrType == "call") && (ref == "procName")) {
 			return ContainerUtil::to_mapvec(attr, PKB().getStmCalling(trimFrontEnd(right)));
 		}
-		else if ((attrType == "read") && (ref == "procName")) {
+		else if ((attrType == "read") && (ref == "varName")) {
 			return evaluateSuchThat(declarations, "Modifies", attr, right);
 		}
-		else if ((attrType == "print") && (ref == "procName")) {
+		else if ((attrType == "print") && (ref == "varName")) {
 			return evaluateSuchThat(declarations, "Uses", attr, right);
 		}
 		else {
-			return ContainerUtil::to_mapvec(attr, right);
+			std::vector<std::string> attrVal = getStmts(declarations, attr)[attr];
+			if (!isQuoted(right)
+				&& std::find(attrVal.begin(), attrVal.end(), right) != attrVal.end()) {
+				return ContainerUtil::to_mapvec(attr, right);
+			}
+			if (isQuoted(right)
+				&& std::find(attrVal.begin(), attrVal.end(), trimFrontEnd(right)) != attrVal.end()) {
+				return ContainerUtil::to_mapvec(attr, trimFrontEnd(right));
+			}
+			std::vector<std::string> emptyVec;
+			withMap.insert({ attr, emptyVec });
+			return withMap;
 		}
 	}
 	else if (!hasReference(left) && !isSynonym(left) && hasReference(right)) {
@@ -200,7 +243,18 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			return evaluateSuchThat(declarations, "Uses", attr, left);
 		}
 		else {
-			return ContainerUtil::to_mapvec(attr, left);
+			std::vector<std::string> attrVal = getStmts(declarations, attr)[attr];
+			if (!isQuoted(left)
+				&& std::find(attrVal.begin(), attrVal.end(), left) != attrVal.end()) {
+				return ContainerUtil::to_mapvec(attr, left);
+			}
+			if (isQuoted(left)
+				&& std::find(attrVal.begin(), attrVal.end(), trimFrontEnd(left)) != attrVal.end()) {
+				return ContainerUtil::to_mapvec(attr, trimFrontEnd(left));
+			}
+			std::vector<std::string> emptyVec;
+			withMap.insert({ attr, emptyVec });
+			return withMap;
 		}
 	}
 	else if (hasReference(left) && isSynonym(right)) {
@@ -218,11 +272,14 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		std::string leftRef = refOf(left);
 		std::string leftAttrType = declarations[leftAttr];
 		std::string rightAttr = attrOf(right);
-		std::string rightRef = refOf(right);
 		std::string rightAttrType = declarations[rightAttr];
 		if (leftRef == "stmt#" || leftRef == "value") {
 			return ContainerUtil::intersectOne(getStmts(declarations, leftAttr),
 				getStmts(declarations, rightAttr));
+		}
+		else {
+			return ContainerUtil::intersectTwo(evaluateWithPair(declarations, leftAttr),
+				evaluateWithPair(declarations, rightAttr));
 		}
 	}
 }
@@ -286,7 +343,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		}
 		else if (isQuoted(leftArgument)) {
 			return ContainerUtil::to_mapvec(patternSynonym, PKB().getIfStmWithControlVariable(
-				trimFrontEnd(rightArgument)));
+				trimFrontEnd(leftArgument)));
 		}
 		else {
 			return ContainerUtil::to_mapvec(patternSynonym, leftArgument,
@@ -299,7 +356,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		}
 		else if (isQuoted(leftArgument)) {
 			return ContainerUtil::to_mapvec(patternSynonym, PKB().getWhileStmWithControlVariable(
-				trimFrontEnd(rightArgument)));
+				trimFrontEnd(leftArgument)));
 		}
 		else {
 			return ContainerUtil::to_mapvec(patternSynonym, leftArgument,
@@ -683,12 +740,21 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 					PKB().getStmVarUsePairs());
 			}
 		}
-		if (isSynonym(firstArgument)) {
+		if (declarations[firstArgument] != "procedure") {
 			if (secondArgument == "_") {
 				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmUsing(""));
 			}
 			else if (isQuoted(secondArgument)) {
 				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmUsing(
+					trimFrontEnd(secondArgument)));
+			}
+		}
+		else {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getProcUsing(""));
+			}
+			else if (isQuoted(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getProcUsing(
 					trimFrontEnd(secondArgument)));
 			}
 		}
@@ -712,12 +778,21 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 					PKB().getStmVarModifyPairs());
 			}
 		}
-		if (isSynonym(firstArgument)) {
+		if (declarations[firstArgument] != "procedure") {
 			if (secondArgument == "_") {
 				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmModifying(""));
 			}
 			else if (isQuoted(secondArgument)) {
 				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmModifying(
+					trimFrontEnd(secondArgument)));
+			}
+		}
+		else {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getProcModifying(""));
+			}
+			else if (isQuoted(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getProcModifying(
 					trimFrontEnd(secondArgument)));
 			}
 		}
@@ -881,6 +956,9 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::getStm
 	else if (synType == "procedure") {
 		return ContainerUtil::to_mapvec(syn, PKB().getProcList());
 	}
+	else if (synType == "call") {
+		return ContainerUtil::to_mapvec(syn, PKB().getCallStms());
+	}
 }
 
 /*
@@ -1031,7 +1109,7 @@ attribute reference.
 */
 std::string QueryEvaluator::attrOf(std::string s) {
 	std::size_t dotPos = s.find(".");
-	return s.substr(0, dotPos - 1);
+	return s.substr(0, dotPos);
 }
 
 /*

@@ -1,0 +1,65 @@
+1 - select assign follows parent pattern one synonym
+assign a;
+Select a pattern a ("black", _"black % 6"_) such that Follows(301, a) and Follows(a, 303) such that Parent(269, a)
+302
+5000
+2 - select call followsStar follows parent one synonym
+call c; while w;
+Select c such that Follows*(199, c) and Follows(200, c) and Parent(w, c)
+201
+5000
+3 - select read followsStar next modifies one synonym
+read r;
+Select r such that Follows*(186, r) and Next(r, 189) and Modifies(r, "read")
+188
+5000
+4 - select print parentStar next uses one synonym
+print p;
+Select p such that Parent*(222, p) and Next(228, p) and Uses(p, "cherry")
+229
+5000
+5 - select ifs uses next parent one synonym
+if ifs;
+Select ifs such that Uses(ifs, "yellow") and Next(273, ifs) and Parent(269, ifs)
+274
+5000
+6 - select while uses follows one synonym 
+while w;
+Select w such that Uses(w, "pink") and Follows(w, 304)
+269
+5000
+7 - select boolean follows parent wildcard wildcard 
+assign a;
+Select BOOLEAN such that Follows(_, _) and Parent(_, _)
+TRUE
+5000
+8 - select boolean uses procedure wildcard and next wildcard wildcard 
+stmt s;
+Select BOOLEAN such that Uses(s, _) and Next(_, _)
+TRUE
+5000
+9 - select boolean ParentStar and FollowsStar wildcard wildcard 
+procedure p;
+Select BOOLEAN such that Parent*(_, _) and Follows*(_, _)
+TRUE
+5000
+10 - select boolean parent follows parentStar followsStar next calls callsStar wildcard wildcard 
+procedure p;
+Select BOOLEAN such that Parent(_, _) and Follows(_, _) and Parent*(_, _) and Follows*(_, _) and Next(_, _) and Calls(_, _) and Calls*(_, _)
+TRUE
+5000
+11 - select procedure uses calls one synonym returns none
+procedure p;
+Select p such that Uses(p, "thisIsANonExistentProcedure") and Calls(p, "colours")
+none
+5000
+12 - select procedure modifies calls one synonym returns none
+procedure p;
+Select p such that Modifies(p, "thisIsANonExistentProcedure") and Calls(p, "country")
+none
+5000
+13 - select assign pattern follows one synonym
+assign a;
+Select a such that pattern a("thisIsANonExistentAssign", _) such that Follows(a, _) and Parent*(_, _)
+none
+5000

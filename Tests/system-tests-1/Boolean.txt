@@ -49,7 +49,7 @@ Select BOOLEAN such that Follows(a, a1) such that Parent(1, 2)
 FALSE
 5000
 11 - select boolean with clauses that do not return any results and clauses that return false boolean
-proc a, a1;
+procedure a, a1;
 Select BOOLEAN such that Calls(s, s1) and Calls(s1, s) and Follows(1,2)
 FALSE
 5000
