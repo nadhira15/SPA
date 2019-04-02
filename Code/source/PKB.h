@@ -13,6 +13,7 @@ using namespace std;
 #include "CallStorage.h"
 #include "NextStorage.h"
 #include "ControlVariableStorage.h"
+#include "RunTimeDesignExtractor.h"
 #include "Hasher.h"
 
 enum stmType {read, print, assign, whileStm, ifStm, call};
@@ -32,11 +33,6 @@ public:
 	// add a procedure to procList
 	bool addProc(string procName);
 
-	/*
-		Pre-cond: statements added in must be added in numerical order; no jumps or reversing
-		add statement to its respective StmList and set stmTypeList[stmNo] to type 
-	*/
-	void addStatement(int stmNo, stmType type);
 	/*
 		Pre-cond: statements added in must be added in numerical order; no jumps or reversing
 		add statement to its respective StmLists and set stmTypeList[stmNo] to type
@@ -143,14 +139,6 @@ public:
 	//Calls adder & setter Methods	/////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
-		Adds the call relation into CallStorage
-		Returns false if
-			1) the pair is already stored
-			2) proc1 or proc2 == ""
-	*/
-	bool addCall(string proc1, string proc2);
-
-	/*
 		Adds the call relation at statement 'stmNo' into CallStorage
 		Returns false if
 			1) the pair is already stored
@@ -231,6 +219,12 @@ public:
 
 	// returns the stored list of constants
 	unordered_set<string> getConstants();
+
+	// returns the stored list of <read stm, variable> pairs
+	unordered_set< pair<int, string>, intStringhash > getReadPairs();
+
+	// returns the stored list of <print stm, variable> pairs
+	unordered_set< pair<int, string>, intStringhash > getPrintPairs();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Follows Getter Methods	/////////////////////////////////////////////////////////////////////////
@@ -473,6 +467,9 @@ public:
 	*/
 	unordered_set<int> getStmCalling(string procedure);
 
+	// returns a list of all call statement - procedure pairs
+	unordered_set< pair<int, string>, intStringhash> getStmProcCallPairs();
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Next Getter Methods	/////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -519,7 +516,7 @@ public:
 	unordered_set< pair<int, int>, intPairhash> getNextStarPairs();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//Pattern Getter Methods	/////////////////////////////////////////////////////////////////////////
+	//Assign Pattern Getter Methods	/////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
 		Search for assign statements with pattern matching
@@ -546,11 +543,9 @@ public:
 	*/
 	unordered_set<pair<int, string>, intStringhash> findPatternPairs(string expr, bool isExclusive);
 
-
-
-	/*
-	* While/If Pattern Setters and Getters
-	*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//If & While Pattern Getter Methods	/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//Set for ifs.
 	void addIfControlVariable(int stm, string variable);
@@ -576,6 +571,12 @@ public:
 	//Call for w(s,_)
 	std::unordered_set<std::pair<int, std::string>, intStringhash> getWhileStmControlVariablePair();
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+	//Erase Method		//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
+	// Empty the entire PKB including the Storage obects
+	void erase();
+
 private:
 	static unordered_set<string> procList;
 	static unordered_map<string, vector<int>> procStmList;
@@ -588,6 +589,8 @@ private:
 	static unordered_set<int> ifStmList;
 	static unordered_set<int> whileStmList;
 	static unordered_set<int> callStmList;
+	static unordered_set< pair<int, string>, intStringhash > readPairList;
+	static unordered_set< pair<int, string>, intStringhash > printPairList;
 
 	static FollowStorage fStore;
 	static ParentStorage pStore;
