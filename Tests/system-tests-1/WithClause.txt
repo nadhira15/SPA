@@ -39,9 +39,9 @@ Select r with r.varName = "hifive5"
 none
 5000
 9 - meaningless read query
-read r;
-Select r with r.varName = v.varName
-a, b, x, r, c, s, i, p, f, read, pear, banana, grape, orange, avocado, kiwi, cherry, purple, pink, red, brown, red, black, blue, green, while, print, while, read, bus, gojek, train, brazil, spain, malaysia, india, singapore, usa, japan
+read r; variable v;
+Select v with r.varName = v.varName
+a, b, x, r, c, s, i, p, f, read, pear, banana, grape, orange, avocado, kiwi, cherry, purple, pink, red, brown, black, blue, green, while, print, bus, gojek, train, brazil, spain, malaysia, india, singapore, usa, japan
 5000
 10 - print variable exist
 print p;
@@ -73,102 +73,102 @@ stmt s;
 Select s with s.stmt# = 12941
 none
 5000
-15 - read number exist.
+16 - read number exist.
 read r;
 Select r with r.stmt# = 468
 468
 5000
-16 - read number does not exist.
+17 - read number does not exist.
 read r;
 Select r with r.stmt# = 12299
 none
 5000
-17 - read number is not a read stmt
+18 - read number is not a read stmt
 read r;
 Select r with r.stmt# = 461
 none
 5000
-18 - print stm number exist.
+19 - print stm number exist.
 print p;
 Select p with p.stmt# = 471
 471
 5000
-19 - print stm number does not exist.
+20 - print stm number does not exist.
 print p;
 Select p with p.stmt# = 46111
 none
 5000
-20 - print stm number is not a print stm.
+21 - print stm number is not a print stm.
 print p;
 Select p with p.stmt# = 460
 none
 5000
-21 - call stm number exist
+22 - call stm number exist
 call c;
 Select c with c.stmt# = 434
 434
 5000
-22 - call stm number does not exist
+23 - call stm number does not exist
 call c;
 Select c with c.stmt# = 1922
 none
 5000
-23 - call is not a call stmt
+24 - call is not a call stmt
 call c;
 Select c with c.stmt# = 438
 none
 5000
-24 - while stm number exist
+25 - while stm number exist
 while w;
 Select w with w.stmt# = 429
 429
 5000
-25 - while stm number does not exist
+26 - while stm number does not exist
 while w;
 Select w with w.stmt# = 192929
 none
 5000
-26 - while is not a while stmt
+27 - while is not a while stmt
 while w;
 Select w with w.stmt# = 451
 none
 5000
 28 - if stm number exist
 if ifs;
-select ifs with ifs.stmt# = 451
+Select ifs with ifs.stmt# = 451
 451
 5000
-28 - if stm number does not exist
+29 - if stm number does not exist
 if ifs;
-select ifs with ifs.stmt# = 1929
+Select ifs with ifs.stmt# = 1929
 none
 5000
-28 - if is not an if stmt
+30 - if is not an if stmt
 if ifs;
-select ifs with ifs.stmt# = 463
+Select ifs with ifs.stmt# = 463
 none
 5000
-29 - assign stm number exist
+31 - assign stm number exist
 assign a;
-select a with a.stmt# = 456
+Select a with a.stmt# = 456
 456
 5000
-29 - assign stm number does not exist
+32 - assign stm number does not exist
 assign al;
-select a with a.stmt# = 45612
+Select a with a.stmt# = 45612
 none
 5000
-29 - assign is not an assign stmt
+33 - assign is not an assign stmt
 assign al;
-select a with a.stmt# = 471
+Select a with a.stmt# = 471
 none
 5000
-30 - prog_line exist
+34 - prog_line exist
 prog_line n;
 Select n with n = 212
 212
 5000
-31 - prog_line does not exist
+35 - prog_line does not exist
 prog_line n;
 Select n with n = 212112
 none
