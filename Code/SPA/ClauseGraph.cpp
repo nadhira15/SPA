@@ -36,6 +36,7 @@ Creates a hashmap of syn-clause and clause-syn, which will be used for graph tra
 */
 void ClauseGraph::groupByClauseType(clauseType t) {
 	std::vector<std::string> synLst;
+	//clauses are represented internally by <clauseType,index>
 	if (t == st) {
 		for (int i = 0; i < suchThatClauses.size(); i++) {
 			synLst = extractSuchThatSyn(i);
