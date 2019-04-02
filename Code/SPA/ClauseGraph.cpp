@@ -131,8 +131,8 @@ std::vector<std::string> ClauseGraph::extractSuchThatSyn(int index) {
 	std::vector<std::string> synLst;
 	std::string f = suchThatClauses.at(index).second.first;
 	std::string s = suchThatClauses.at(index).second.second;
-	if (isSynonym(f)) synLst.push_back(f);
-	if (isSynonym(s)) synLst.push_back(s);
+	if (isSuchThatSynonym(f)) synLst.push_back(f);
+	if (isSuchThatSynonym(s)) synLst.push_back(s);
 	return synLst;
 }
 
@@ -140,8 +140,8 @@ std::vector<std::string> ClauseGraph::extractPatternSyn(int index) {
 	std::vector<std::string> synLst;
 	std::string f = patternClauses.at(index).first;
 	std::string s = patternClauses.at(index).second.first;
-	if (isSynonym(f)) synLst.push_back(f);
-	if (isSynonym(s)) synLst.push_back(s);
+	if (isPatternSynonym(f)) synLst.push_back(f);
+	if (isPatternSynonym(s)) synLst.push_back(s);
 	return synLst;
 }
 
@@ -152,44 +152,6 @@ std::vector<std::string> ClauseGraph::extractWithSyn(int index) {
 	if (isWithSynonym(f)) synLst.push_back(f);
 	if (isWithSynonym(s)) synLst.push_back(s);
 	return synLst;
-}
-
-/* Checking to test if the parts of such that clause contains a synonym */
-bool isSuchThatSynonym(std::string str) {
-	bool res = false;
-	if (str.find('"') == std::string::npos) {
-		if (!isNumber(str)) {
-			if (str.compare("_") != 0) {
-				res = true;
-			}
-		}
-	}
-	return res;
-}
-
-/* Checking to test if the parts of pattern clause contains a synonym */
-bool isSuchThatSynonym(std::string str) {
-	bool res = false;
-	if (str.find('"') == std::string::npos) {
-		if (str.compare("_") != 0) {
-			res = true;
-		}
-	}
-	return res;
-}
-
-/* Checking to test if the parts of with clause contains a synonym */
-bool isWithSynonym(std::string str) {
-	bool res = false;
-	if (str.find('.') != std::string::npos) {
-		res = true;
-	}
-	return res;
-}
-
-/* Checking if string is a number */
-bool isNumber(std::string str) {
-	return (str.find_first_not_of("0123456789") == std::string::npos);
 }
 
 /* Getter functions */

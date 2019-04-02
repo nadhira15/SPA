@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include "OptimizerUtility.cpp"
 
 /** Usage Guide
   This class optimises the evaluator by chaining the clauses together such that every other clause will have at least 1 clause evaluated
