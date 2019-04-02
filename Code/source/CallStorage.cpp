@@ -7,12 +7,13 @@ unordered_set<string> CallStorage::callerList;
 unordered_set<string> CallStorage::calleeList;
 unordered_map<int, string> CallStorage::stmToProcMap;
 unordered_map<string, unordered_set<int>> CallStorage::procToStmMap;
+unordered_set< pair<int, string>, intStringhash> CallStorage::stmProcCallPairList;
 
 CallStorage::CallStorage()
 {
 }
 
-bool CallStorage::addCall(string caller, string callee)
+bool CallStorage::addCall(string caller, string callee, int stm)
 {
 	// if Call Pair is already added
 	if (!callPairList.emplace(pair<string, string>(caller, callee)).second)
@@ -20,27 +21,8 @@ bool CallStorage::addCall(string caller, string callee)
 		return false;
 	}
 
-	// if callee exist in callTable
-	if (!callTable.emplace(callee, cRelationships{ {caller}, {}, {}, {} }).second)
-	{
-		callTable.find(callee)->second.caller.emplace(caller);
-	}
-
-	// if caller exist in callTable
-	if (!callTable.emplace(caller, cRelationships{ {} ,{callee}, {}, {} }).second)
-	{
-		callTable.find(caller)->second.callees.emplace(callee);
-	}
-
-	callerList.emplace(caller);
-	calleeList.emplace(callee);
-	return true;
-}
-
-bool CallStorage::addCall(string caller, string callee, int stm)
-{
-	// if Call Pair is already added
-	if (!callPairList.emplace(pair<string, string>(caller, callee)).second)
+	// if Stm - Proc Pair is already added
+	if (!stmProcCallPairList.emplace(pair<int, string>(stm, callee)).second)
 	{
 		return false;
 	}
@@ -193,4 +175,20 @@ unordered_set<int> CallStorage::getStmCalling(string procedure)
 		return procToStmMap.at(procedure);
 	}
 	return {};
+}
+
+unordered_set<pair<int, string>, intStringhash> CallStorage::getStmProcCallPairs()
+{
+	return stmProcCallPairList;
+}
+
+void CallStorage::erase()
+{
+	callTable.erase(callTable.begin(), callTable.end());
+	callPairList.erase(callPairList.begin(), callPairList.end());
+	callStarPairList.erase(callStarPairList.begin(), callStarPairList.end());
+	callerList.erase(callerList.begin(), callerList.end());
+	calleeList.erase(calleeList.begin(), calleeList.end());
+	stmToProcMap.erase(stmToProcMap.begin(), stmToProcMap.end());
+	procToStmMap.erase(procToStmMap.begin(), procToStmMap.end());
 }

@@ -108,3 +108,13 @@ unordered_set<pair<string, string>, strPairhash> ModifyStorage::getProcVarPairs(
 {
 	return procVarPairList;
 }
+
+void ModifyStorage::erase()
+{
+	stmVarPairList.erase(stmVarPairList.begin(), stmVarPairList.end());
+	procVarPairList.erase(procVarPairList.begin(), procVarPairList.end());
+	stmToVarMap.erase(stmToVarMap.begin(), stmToVarMap.end());
+	procToVarMap.erase(procToVarMap.begin(), procToVarMap.end());
+	varToProcMap.erase(varToProcMap.begin(), varToProcMap.end());
+	varToStmMap.erase(varToStmMap.begin(), varToStmMap.end());
+}

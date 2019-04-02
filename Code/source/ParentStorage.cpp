@@ -146,3 +146,12 @@ unordered_set<pair<int, int>, intPairhash> ParentStorage::getAncDescPair()
 {
 	return anc_DescPairList;
 }
+
+void ParentStorage::erase()
+{
+	parentTable.erase(parentTable.begin(), parentTable.end());
+	parent_ChildPairList.erase(parent_ChildPairList.begin(), parent_ChildPairList.end());
+	anc_DescPairList.erase(anc_DescPairList.begin(), anc_DescPairList.end());
+	parentList.erase(parentList.begin(), parentList.end());
+	childrenList.erase(childrenList.begin(), childrenList.end());
+}
