@@ -21,57 +21,110 @@ int Parser::parse(vector<Statement> stmtLst, int parent, string procedure) {
 		if (prevStmtLine != 0 && stmt.getType() != 7) {
 			pkb.addFollow(prevStmtLine, currStmtLine);
 		}
+		//Add Parent relation if parent is not 0.
+		if (parent != 0) {
+			pkb.addParent(parent, currStmtLine);
+		}
 		//Add VariableName, Constants, and Procedure name into PKB.
 		populateDesignEntities(stmt, procedure);
 
 		//Update previous statement line.
 		prevStmtLine = currStmtLine;
+
+		prevStmtLine = 0;
+
+		for (size_t t = 0; t < stmtLst.size(); t++) {
+			Statement stmt = stmtLst.at(t);
+			int currStmtLine = stmt.getStmtNum();
+			populateNextEntity(prevStmtLine, stmt, currStmtLine, parent,procedure);
+			prevStmtLine = currStmtLine;
+		}
 	}
-	//Populate Next Relation.
-	for (size_t t = 0; t < stmtLst.size(); t++) {
-		Statement stmt = stmtLst.at(t);
-		int currStmtLine = stmt.getStmtNum();
-		populateNextEntity(prevStmtLine, stmt, currStmtLine, parent);
-		prevStmtLine = currStmtLine;
-	}
-	
 	return 0;
 }
 
-void Parser::populateNextEntity(int prevStmtLine, Statement &stmt, int currStmtLine, int parent)
+void Parser::populateNextEntity(int prevStmtLine, Statement &stmt, int currStmtLine, int parent, string procedure)
 {
+	std::vector<int> procedureStm = pkb.getStmList(procedure);
 	//Add Follow and Next relation if is not the very first line or if not an else statement
-	if (prevStmtLine != 0 && stmt.getType() != 7) {
-
+	if (prevStmtLine != 0 && stmt.getType() != 7 && (std::find(procedureStm.begin(), procedureStm.end(), prevStmtLine) != procedureStm.end())) {
 		pkb.addNext(prevStmtLine, currStmtLine);
 	}
 
 	//Add Next relation for IF statement type
 	if (stmt.getType() == 6) {
+		pkb.storeLastStmt(stmt.getStmtNum(), stmt.getStmtLst().back().getStmtNum());
 		pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
-		if (pkb.getFollower(stmt.getStmtNum()) != 0) {
-			pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(stmt.getStmtNum()));
+		//if If has follower
+		//if ((pkb.getFollower(currStmtLine) != 0) ) {
+		//	pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(currStmtLine));
+		//}
+		//if If has no follower
+		//else {
+			if (parent != 0) {
+				//if parent is While statment
+				if ((pkb.getStmType(parent) == 5)) {
+					pkb.addNext(stmt.getStmtLst().back().getStmtNum(), parent);
+				}
+				/*if parent is If/Else statment
+				if ((pkb.getStmType(parent) == 6) || pkb.getStmType(parent) == 7) {
+					if (pkb.getFollower(parent) != 0 ) {
+						pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(parent));
+					}
+				}*/
+			}
 		}
-	}
 
 	//Add Next relation for Else
 	if (stmt.getType() == 7) {
-		pkb.addNext(stmt.getStmtNum(), stmt.getStmtLst().front().getStmtNum());
-		if (pkb.getFollower(stmt.getStmtNum()) != 0) {
-			pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(stmt.getStmtNum()));
+		pkb.storeLastStmt(stmt.getStmtNum(), stmt.getStmtLst().back().getStmtNum());
+		pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
+		//if If has follower
+		//if ((pkb.getFollower(currStmtLine) != 0) ) {
+		//	pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(currStmtLine));
+		//}
+		//if If has no follower
+		//else {
+		if (parent != 0) {
+			//if parent is While statment
+			if ((pkb.getStmType(parent) == 5)) {
+				pkb.addNext(stmt.getStmtLst().back().getStmtNum(), parent);
+			}
+			/*if parent is If/Else statment
+			if ((pkb.getStmType(parent) == 6) || pkb.getStmType(parent) == 7) {
+				if (pkb.getFollower(parent) != 0 ) {
+					pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(parent));
+				}
+			}*/
 		}
 	}
-	//Add Parent relation if parent is not 0.
-	if (parent != 0) {
-		pkb.addParent(parent, currStmtLine);
-	}
-
+	/*if (stmt.getType() == 7) {
+		pkb.addNext(stmt.getStmtNum(), stmt.getStmtLst().front().getStmtNum());
+		if ((pkb.getFollower(stmt.getStmtNum()) != 0) && (std::find(procedureStm.begin(), procedureStm.end(), pkb.getFollower(stmt.getStmtNum())) != procedureStm.end())) {
+			pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(stmt.getStmtNum()));
+		}
+		else {
+			if (parent != 0) {
+				//if parent is While statment
+				if ((pkb.getStmType(parent) == 5)) {
+					pkb.addNext(stmt.getStmtLst().back().getStmtNum(), parent);
+				}
+				//if parent is If/Else statment
+				if ((pkb.getStmType(parent) == 6) || pkb.getStmType(parent) == 7) {
+					if (pkb.getFollower(parent) != 0 && (std::find(procedureStm.begin(), procedureStm.end(), pkb.getFollower(stmt.getStmtNum())) != procedureStm.end())) {
+						pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(parent));
+					}
+				}
+			}
+		}
+	}*/
 	//Add Next relation for WHILE statment type
 	if (stmt.getType() == 5) {
 		pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
 		pkb.addNext(stmt.getStmtLst().back().getStmtNum(), currStmtLine);
 	}
 }
+
 
 void Parser::populateDesignEntities(Statement stmt, std::string procedure) {
 	std::string stmtString = stmt.getString();
