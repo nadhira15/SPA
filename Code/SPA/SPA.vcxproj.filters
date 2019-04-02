@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -141,6 +141,12 @@
     <ClCompile Include="..\source\ControlVariableStorage.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\ClauseGraph.cpp">
+      <Filter>Source Files\ProgramQueryLanguage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\OptimizerUtility.cpp">
+      <Filter>Source Files\ProgramQueryLanguage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\PKB.h">
@@ -235,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="..\source\ControlVariableStorage.h">
       <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ClauseGraph.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
