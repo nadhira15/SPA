@@ -34,7 +34,7 @@ public:
 		Adds the call relation into the various lists in the storage
 		Returns false if the pair already exist
 	*/
-	bool addCall(string caller, string callee, int stm);
+	void addCall(string caller, string callee, int stm);
 
 	/*
 		Sets "callAnc" of callee

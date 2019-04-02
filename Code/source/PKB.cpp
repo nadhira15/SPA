@@ -159,13 +159,15 @@ bool PKB::addModifiesProc(string procedure, string variable)
 	return mStore.addModifiesProc(procedure, variable);
 }
 
-bool PKB::addCall(string proc1, string proc2, int stmNo)
+void PKB::addCall(string proc1, string proc2, int stmNo)
 {
+	/*
 	if (proc1 == "" || proc2 == "" || stmNo <= 0)
 	{
 		return false;
 	}
-	return cStore.addCall(proc1, proc2, stmNo);
+	*/
+	cStore.addCall(proc1, proc2, stmNo);
 }
 
 bool PKB::setCallAnc(string proc, unordered_set<string> procList)

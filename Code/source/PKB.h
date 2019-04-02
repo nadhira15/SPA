@@ -145,7 +145,7 @@ public:
 			2) proc1 or proc2 == ""
 			3) stmNo <= 0
 	*/
-	bool addCall(string proc1, string proc2, int stmNo);
+	void addCall(string proc1, string proc2, int stmNo);
 
 	/*
 		Sets the list of call ancestors of 'procedure' in CallStorage
