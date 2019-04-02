@@ -1,5 +1,8 @@
 #include "ClauseGraph.h"
 
+/* 
+* Constructor function
+*/
 ClauseGraph::ClauseGraph(
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> st,
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> w,
@@ -12,15 +15,20 @@ ClauseGraph::ClauseGraph(
 
 }
 
+/*
+* main processing function
+*/
 void ClauseGraph::groupClause() {
+	//extract synonyms and create the syn-cl and cl-syn map
 	groupByClauseType(st);
 	groupByClauseType(w);
 	groupByClauseType(p);
+	//while loop to chain clauses (DFS)
 	std::pair<clauseType, int> cl;
 	bool isTrivial;
 	while (!clSet.empty()) {
-		//function for the more efficient? get from PKB statistics or pq
-		cl = *clSet.begin();
+		//function for the more efficient clause? get from PKB statistics or use pq
+		cl = *clSet.begin(); //rn use the first in unordered set
 		isTrivial = mapClauses(cl, true);
 		if (isTrivial) {
 			trivial.push_back(graph);
@@ -32,7 +40,7 @@ void ClauseGraph::groupClause() {
 }
 
 /*
-Creates a hashmap of syn-clause and clause-syn, which will be used for graph traversal
+* Creates a hashmap of syn-clause and clause-syn, which will be used for graph traversal
 */
 void ClauseGraph::groupByClauseType(clauseType t) {
 	std::vector<std::string> synLst;
@@ -55,6 +63,9 @@ void ClauseGraph::groupByClauseType(clauseType t) {
 	}
 }
 
+/*
+* Creates syn-cl and cl-syn maps 
+*/
 void ClauseGraph::createMaps(std::vector<std::string> synLst, std::pair<clauseType, int> cl) {
 	clMap[cl] = synLst;
 	for (std::vector<std::string>::iterator it = synLst.begin(); it != synLst.end(); ++it) {
@@ -62,11 +73,20 @@ void ClauseGraph::createMaps(std::vector<std::string> synLst, std::pair<clauseTy
 	}
 }
 
+/* 
+* Chains synonyms and clauses together
+* Input: clause, isTrivial
+* Output: isTrivial
+* Bookeeping: as this is DFS, a synSet and clSet is used for bookkeeping
+  i.e. once a clause/synonym is accessed, no other synonym/clause can access it
+  As the for loop is implemented, the algorithm is guaranteed to access all synonyms of the clause and vice versa
+* Note: The actual clause, rather than the internal reference, is added to the results graph
+*/
 bool ClauseGraph::mapClauses(std::pair<clauseType, int> cl, bool isTrivial) {
 	std::pair<std::string, std::pair<std::string, std::string>> clause;
 	clSet.erase(cl); //clause removed from bookkeeping sets
 	for (std::vector<std::string>::iterator it = clMap[cl].begin(); it != clMap[cl].end(); ++it) {
-		if (synSet.find(*it) != synSet.end()) {
+		if (synSet.find(*it) != synSet.end()) { //check if synonym is already (partially) processed
 			if (cl.first == st) {
 				clause = suchThatClauses.at(cl.second);
 			} else if (cl.first == p) {
@@ -81,6 +101,15 @@ bool ClauseGraph::mapClauses(std::pair<clauseType, int> cl, bool isTrivial) {
 	return isTrivial;
 }
 
+/*
+* Chains synonyms and clauses together
+* Input: synonym, isTrivial
+* Output: isTrivial
+* Bookeeping: as this is DFS, a synSet and clSet is used for bookkeeping
+  i.e. once a clause/synonym is accessed, no other synonym/clause can access it
+  As the for loop is implemented, the algorithm is guaranteed to access all synonyms of the clause and vice versa
+* Note: Group is assumed to be trivial until a select synonym matches
+*/
 bool ClauseGraph::mapSynonym(std::string syn, bool isTrivial) {
 	//check if syn is part of select if group is trivial
 	if (isTrivial && (selectClause.find(syn) != selectClause.end())) {
@@ -95,6 +124,9 @@ bool ClauseGraph::mapSynonym(std::string syn, bool isTrivial) {
 	return isTrivial;
 }
 
+/*
+* To extract synonym from the such that, pattern, with clauses
+*/
 std::vector<std::string> ClauseGraph::extractSuchThatSyn(int index) {
 	std::vector<std::string> synLst;
 	std::string f = suchThatClauses.at(index).second.first;
@@ -122,22 +154,45 @@ std::vector<std::string> ClauseGraph::extractWithSyn(int index) {
 	return synLst;
 }
 
-bool isSynonym(std::string str) {
+/* Checking to test if the parts of such that clause contains a synonym */
+bool isSuchThatSynonym(std::string str) {
 	bool res = false;
 	if (str.find('"') == std::string::npos) {
-		res = true;
+		if (!isNumber(str)) {
+			if (str.compare("_") != 0) {
+				res = true;
+			}
+		}
 	}
 	return res;
 }
 
+/* Checking to test if the parts of pattern clause contains a synonym */
+bool isSuchThatSynonym(std::string str) {
+	bool res = false;
+	if (str.find('"') == std::string::npos) {
+		if (str.compare("_") != 0) {
+			res = true;
+		}
+	}
+	return res;
+}
+
+/* Checking to test if the parts of with clause contains a synonym */
 bool isWithSynonym(std::string str) {
 	bool res = false;
-	if (str.find('.') == std::string::npos) {
+	if (str.find('.') != std::string::npos) {
 		res = true;
 	}
 	return res;
 }
 
+/* Checking if string is a number */
+bool isNumber(std::string str) {
+	return (str.find_first_not_of("0123456789") == std::string::npos);
+}
+
+/* Getter functions */
 std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> ClauseGraph::getTrivial() {
 	return trivial;
 }
