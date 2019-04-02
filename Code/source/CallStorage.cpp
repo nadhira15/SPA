@@ -13,19 +13,14 @@ CallStorage::CallStorage()
 {
 }
 
-bool CallStorage::addCall(string caller, string callee, int stm)
+void CallStorage::addCall(string caller, string callee, int stm)
 {
-	// if Call Pair is already added
-	if (!callPairList.emplace(pair<string, string>(caller, callee)).second)
-	{
-		return false;
-	}
+	// add Stm - Proc Pair
+	stmProcCallPairList.emplace(pair<int, string>(stm, callee));
+	stmToProcMap.emplace(stm, callee);
 
-	// if Stm - Proc Pair is already added
-	if (!stmProcCallPairList.emplace(pair<int, string>(stm, callee)).second)
-	{
-		return false;
-	}
+	// add Call Pair
+	callPairList.emplace(pair<string, string>(caller, callee));
 
 	// if callee exist in callTable
 	if (!callTable.emplace(callee, cRelationships{ {caller}, {}, {}, {} }).second)
@@ -47,8 +42,6 @@ bool CallStorage::addCall(string caller, string callee, int stm)
 
 	callerList.emplace(caller);
 	calleeList.emplace(callee);
-	stmToProcMap.emplace(stm, callee);
-	return true;
 }
 
 bool CallStorage::setCallAnc(string callee, unordered_set<string> callAnc)
