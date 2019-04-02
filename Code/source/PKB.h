@@ -45,6 +45,21 @@ public:
 	// add constant to constList
 	void addConstant(string value);
 
+	// add the last statement of a while loop
+	void addWhileLastStm(int whileStm, int lastStm);
+
+	// add the first statement for an if then block
+	void addThenFirstStm(int ifStm, int thenStm);
+
+	// add the first statement for an if else block
+	void addElseFirstStm(int ifStm, int elseStm);
+
+	// add the last statement for an if then block
+	void addThenLastStm(int ifStm, int thenStm);
+
+	// add the last statement for an if else block
+	void addElseLastStm(int ifStm, int elseStm);
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Follows adder & setter Methods	/////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +240,15 @@ public:
 
 	// returns the stored list of <print stm, variable> pairs
 	unordered_set< pair<int, string>, intStringhash > getPrintPairs();
+
+	// returns the last statement of the specified while loop
+	int getWhileLastStm(int whileStm);
+
+	// returns the first statements of the specified if stm's then and else block
+	pair<int, int> getIfFirstStms(int ifStm);
+
+	// returns the last statements of the specified if stm's then and else block
+	pair<int, int> getIfLastStms(int ifStm);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Follows Getter Methods	/////////////////////////////////////////////////////////////////////////
@@ -591,6 +615,9 @@ private:
 	static unordered_set<int> callStmList;
 	static unordered_set< pair<int, string>, intStringhash > readPairList;
 	static unordered_set< pair<int, string>, intStringhash > printPairList;
+	static unordered_map<int, int> whileLastStmList;
+	static unordered_map<int, pair<int, int> > ifFirstStmList;
+	static unordered_map<int, pair<int, int> > ifLastStmList;
 
 	static FollowStorage fStore;
 	static ParentStorage pStore;
