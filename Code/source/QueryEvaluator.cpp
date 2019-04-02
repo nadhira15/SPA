@@ -216,9 +216,13 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		}
 		else {
 			std::vector<std::string> attrVal = getStmts(declarations, attr)[attr];
-			if (std::find(attrVal.begin(), attrVal.end(), right) != attrVal.end()
-				|| std::find(attrVal.begin(), attrVal.end(), trimFrontEnd(right)) != attrVal.end()) {
+			if (!isQuoted(right)
+				&& std::find(attrVal.begin(), attrVal.end(), right) != attrVal.end()) {
 				return ContainerUtil::to_mapvec(attr, right);
+			}
+			if (isQuoted(right)
+				&& std::find(attrVal.begin(), attrVal.end(), trimFrontEnd(right)) != attrVal.end()) {
+				return ContainerUtil::to_mapvec(attr, trimFrontEnd(right));
 			}
 			std::vector<std::string> emptyVec;
 			withMap.insert({ attr, emptyVec });
@@ -240,9 +244,13 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		}
 		else {
 			std::vector<std::string> attrVal = getStmts(declarations, attr)[attr];
-			if (std::find(attrVal.begin(), attrVal.end(), left) != attrVal.end()
-				|| std::find(attrVal.begin(), attrVal.end(), trimFrontEnd(left)) != attrVal.end()) {
+			if (!isQuoted(left)
+				&& std::find(attrVal.begin(), attrVal.end(), left) != attrVal.end()) {
 				return ContainerUtil::to_mapvec(attr, left);
+			}
+			if (isQuoted(left)
+				&& std::find(attrVal.begin(), attrVal.end(), trimFrontEnd(left)) != attrVal.end()) {
+				return ContainerUtil::to_mapvec(attr, trimFrontEnd(left));
 			}
 			std::vector<std::string> emptyVec;
 			withMap.insert({ attr, emptyVec });
@@ -732,7 +740,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 					PKB().getStmVarUsePairs());
 			}
 		}
-		if (declarations[firstArgument] == "stmt") {
+		if (declarations[firstArgument] != "procedure") {
 			if (secondArgument == "_") {
 				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmUsing(""));
 			}
@@ -741,7 +749,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 					trimFrontEnd(secondArgument)));
 			}
 		}
-		if (declarations[firstArgument] == "procedure") {
+		else {
 			if (secondArgument == "_") {
 				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getProcUsing(""));
 			}
@@ -770,7 +778,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 					PKB().getStmVarModifyPairs());
 			}
 		}
-		if (declarations[firstArgument] == "stmt") {
+		if (declarations[firstArgument] != "procedure") {
 			if (secondArgument == "_") {
 				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getStmModifying(""));
 			}
@@ -779,7 +787,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 					trimFrontEnd(secondArgument)));
 			}
 		}
-		if (declarations[firstArgument] == "procedure") {
+		else {
 			if (secondArgument == "_") {
 				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getProcModifying(""));
 			}
