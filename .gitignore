@@ -399,5 +399,5 @@ ASALocalRun/
 healthchecksdb
 
 Code/Tests/out.xml
-Test/system-tests-1/out.xml
+Tests/system-tests-1/out.xml
 *.vcxproj.user
