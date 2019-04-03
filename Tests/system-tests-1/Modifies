@@ -1,11 +1,11 @@
 1 - Integer Statement Modifies variable synonym
 variable v;
 Select v such that Modifies(209, v)
-a
+pear, banana
 5000
 2 - Integer Statement Modifies variable string
 
-Select BOOLEAN such that Modifies(209, "a")
+Select BOOLEAN such that Modifies(209, "pear")
 TRUE
 5000
 3 - Integer Statement Modifies WildCard true
@@ -15,13 +15,13 @@ TRUE
 5000
 4 - Integer Statement Modifies WildCard false
 
-Select BOOLEAN such that Modifies(258, _))
+Select BOOLEAN such that Modifies(267, _))
 FALSE
 5000
 5 - Variable Statement Modifies variable synonym
 variable v; stmt s;
 Select v such that Modifies(s, v)
-sum, minus1, minus2, minus, times, div, c, b, a, div, d, 
+sum, minus1, minus2, minus, times, div, c, b, a, d, apple, avocado, banana, bike, black,blue,brazil,brown,bus,car,cherry,else,f,gojek,grab,grape,green,grey,i,if,india,j,japan,k,kiwi,laos,m,malaysia,motorcycle,mrt,orange,p,pear,pink,print,procedure,purple,r,read,red,russia,s,singapore,spain,thailand,then,train,uk,usa,vietnam,while,white,x,yellow,z
 5000
 6 - Variable Statement Modifies variable string empty
 stmt s;
@@ -31,11 +31,35 @@ none
 7 - Variable Statement Modifies variable string
 stmt s;
 Select s such that Modifies(s, "orange")
-198, 222, 223, 226, 233, 234, 235, 239, 242, 244, 245, 249, 259, 260, 263, 266
+222, 223, 226, 233, 234, 235, 239, 242, 244, 245, 249, 259, 260, 263, 266, 14,156,159,160,161,162,163,164,167,187,20,26,28,30,33,35,40,42,43,49,52,54,56,58,60,64,72,73,74,75,76,79,81,83,86,88
 5000
 8 - Variable Procedure Modifies WildCard
 procedure p;
 Select p such that Modifies(p, _)
-TestA, TestB, TestC, TenWhileLoop, procedure, fruits, colours, Pr0c3dUr3, oneCall, transportation, country
+TestA, TestB, TestC, TenWhileLoop, procedure, fruits, colours, Pr0c3dUr3, transportation, country, oneCall
 5000
-
+9 - Procedure with wildcard
+procedure p;
+Select BOOLEAN such that Modifies("oneCall", _)
+TRUE
+5000
+9 - Procedure with variable inside it
+stmt s;
+Select BOOLEAN such that Modifies("transportation", "bus")
+TRUE
+5000
+9 - Procedure with variable inside a procedure called by it
+stmt s;
+Select BOOLEAN such that Modifies("transportation", "uk")
+TRUE
+5000
+10 - Procedure with synonym variable
+variable v;
+Select v such that Modifies("transportation", v)
+a,b,bike,black,blue,brazil,brown,bus,c,car,d,else,gojek,grab,green,grey,if,india,japan,k,laos,malaysia,motorcycle,mrt,pink,print,purple,r,read,red,russia,s,singapore,spain,thailand,train,uk,usa,vietnam,while,white,x,yellow,z
+5000
+11 - Procedure synonym with variable
+procedure p;
+Select p such that Modifies(p, "orange")
+TestA,TestB,TestC,fruits,procedure
+5000
