@@ -538,7 +538,7 @@ bool PKB::hasNextRelation()
 
 bool PKB::hasNextStarPair(int line1, int line2)
 {
-	return RunTimeDesignExtractor::extractNextStarPair(this, line1, line2);
+	return RunTimeDesignExtractor().extractNextStarPair(line1, line2);
 }
 
 unordered_set<int> PKB::getNext(int line)
@@ -553,12 +553,12 @@ unordered_set<int> PKB::getPrev(int line)
 
 unordered_set<int> PKB::getAllLnAfter(int line)
 {
-	return RunTimeDesignExtractor::extractNextStar(this, line);
+	return RunTimeDesignExtractor().extractNextStar(line);
 }
 
 unordered_set<int> PKB::getAllLnBefore(int line)
 {
-	return RunTimeDesignExtractor::extractPreviousStar(this, line);
+	return RunTimeDesignExtractor().extractPreviousStar(line);
 }
 
 unordered_set<int> PKB::getAllNext()
@@ -578,7 +578,7 @@ unordered_set<pair<int, int>, intPairhash> PKB::getNextPairs()
 
 unordered_set<pair<int, int>, intPairhash> PKB::getNextStarPairs()
 {
-	return RunTimeDesignExtractor::getNextStarPairs(this);
+	return RunTimeDesignExtractor().getNextStarPairs();
 }
 
 unordered_set<int> PKB::findPattern(string variable, string expr, bool isExclusive)
