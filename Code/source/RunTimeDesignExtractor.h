@@ -7,11 +7,33 @@ class PKB;
 class RunTimeDesignExtractor {
 
 public:
-	static unordered_set<int> extractNextStar(PKB* pkb, int stmt);
-	static unordered_set<int> extractPreviousStar(PKB* pkb, int stmt);
-	static bool extractNextStarPair(PKB* pkb, int start, int end);
-	static unordered_set<pair<int, int>, intPairhash> getNextStarPairs(PKB* pkb);
-	static void DFSRecursiveNext(PKB* pkb, int procedure, unordered_set<int> &visitedStmts, unordered_set<int>& stmtsAfter);
-	static void DFSRecursivePrevious(PKB* pkb, int procedure, unordered_set<int> &visitedStmts, unordered_set<int> &stmtsBefore);
+	unordered_set<int> extractNextStar(int stmt);
+	unordered_set<int> extractPreviousStar(int stmt);
+	bool extractNextStarPair(int start, int end);
+	unordered_set<pair<int, int>, intPairhash> getNextStarPairs();
+	void DFSRecursiveNext(int procedure, unordered_set<int> &visitedStmts, unordered_set<int>& stmtsAfter);
+	void DFSRecursivePrevious(int procedure, unordered_set<int> &visitedStmts, unordered_set<int> &stmtsBefore);
 
+	bool isAffect(int stmt, int stmt1);
+
+	bool DFSRecursiveCheckAffectsPair(int start, int target, int current, std::unordered_set<int>& cfgPath, bool isStart);
+
+	bool isStatementAffectingAnother(int stmt);
+
+	bool DFSRecursiveCheckAffecting(int start, int current, std::unordered_set<int>& cfgPath, bool isStart);
+
+	bool isStatementAffectedByAnother(int stmt);
+
+	bool DFSRecursiveCheckAffectedBy(int end, int current, std::unordered_set<int>& cfgPath, bool isStart);
+
+	bool hasAffectsRelation();
+
+	bool isAffectPossible(int stmt, int stmt1);
+
+	bool isLastModifiedBroken(int current, int start);
+
+	bool contains(std::unordered_set<std::string>& modifiedInStmt, std::unordered_set<std::string>& usedInStmt1);
+
+private:
+	PKB* pkb;
 };
