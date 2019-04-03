@@ -11,7 +11,7 @@ void DesignExtractor::extractDesigns()
 
 	//Verification
 	verifyCalledProceduresPresence();
-	
+
 	//Statement-Statement Relationships
 	processFollowStar();
 	processParentStar();
@@ -87,7 +87,7 @@ void DesignExtractor::processParentStar()
 	int stmtNum = pkb.getTotalStmNo();
 
 	//Process stmt list s where Parent*(s, index) is true.
-	for (int i = 1 ; i <= stmtNum ; i++) {
+	for (int i = 1; i <= stmtNum; i++) {
 		int currStmt = i;
 		int directParentStm = pkb.getParent(i);
 
@@ -190,7 +190,7 @@ void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::str
 	pathVisitedProcedure.erase(procedure);
 }
 
-/* 
+/*
  * Performs population of Uses and Modifies for Calls, If/While Container Statements and Procecedures
  * starting from the leaf node procedures.
  */
@@ -216,7 +216,7 @@ void DesignExtractor::processAdvancedUsesAndModifies(std::vector<std::string> so
 void DesignExtractor::processUsesCalls(std::string procedure) {
 	std::vector<int> procedureStm = pkb.getStmList(procedure);
 
-	for (int i = 0; i < procedureStm.size() ; i++) {
+	for (int i = 0; i < procedureStm.size(); i++) {
 		int currLine = procedureStm.at(i);
 		stmType type = pkb.getStmType(currLine);
 
@@ -301,7 +301,7 @@ void DesignExtractor::processUsesProcedures(std::string procedure)
 	//TODO: Implement for Iteration 2
 	std::vector<int> procedureStm = pkb.getStmList(procedure);
 
-	for (int i = 0; i < procedureStm.size() ; i++) {
+	for (int i = 0; i < procedureStm.size(); i++) {
 		int currLine = procedureStm.at(i);
 		std::unordered_set<std::string> usedList = pkb.getVarUsedByStm(currLine);
 
@@ -354,7 +354,7 @@ void DesignExtractor::processCallsStar(std::vector<std::string> sortedProcedures
 			pkb.setCallAnc(procedure, allAncestorCallers);
 		}
 	}
-	
+
 	//Process procedure list s where Calls*(procedure, s) is true.
 	for (int i = 0; i < sortedProcedures.size(); i++) {
 		std::string procedure = sortedProcedures.at(i);
@@ -376,90 +376,44 @@ void DesignExtractor::processCallsStar(std::vector<std::string> sortedProcedures
 	}
 }
 
+//get all if Statments and extrct Next entity
 void DesignExtractor::extractNextEntity() {
-	unordered_map<int, int> lastStmtList = pkb.getLastStmtList();
-	pkb.addNext(10, 12);
-	for (auto& it : lastStmtList) {
-		if (pkb.getFollower(it.first) != 0) {
-			pkb.addNext(it.second, pkb.getFollower(it.first));
+	unordered_set<int> ifStmtList = pkb.getIfStms();
+	for (int stmt : ifStmtList) {
+		//pair<int,int> first int is last stmt of then block, second int is last stmt of else block
+		pair<int, int> ifLastStmt = pkb.getIfLastStms(stmt);
+		int parent = pkb.getParent(stmt);
+		//if if statment have follower, next(last stmt of then block and else block, follower)
+		if (pkb.getFollower(stmt) != 0) {
+			pkb.addNext(ifLastStmt.first, pkb.getFollower(stmt));
+			pkb.addNext(ifLastStmt.second, pkb.getFollower(stmt));
 		}
 		else {
-			int parent = pkb.getParent(it.first);
 			if (parent != 0) {
-				if (pkb.getStmType(parent) == 6) {
-					if (pkb.getFollower(it.first) != 0) {
-						pkb.addNext(it.second, pkb.getFollower(it.first));
+				//if if statment have a while statment as parent, 
+				//next(last stmt of then block and else block, while statment)
+				if (pkb.getStmType(parent) == whileStm) {
+					pkb.addNext(ifLastStmt.first, parent);
+					pkb.addNext(ifLastStmt.second, parent);
+				}
+				//if if statment have a if statment as parent, 
+				if (pkb.getStmType(parent) == ifStm) {
+					//next(last stmt of then block and else block, follower of parent)
+					if (pkb.getFollower(parent) != 0) {
+						pkb.addNext(ifLastStmt.first, pkb.getFollower(parent));
+						pkb.addNext(ifLastStmt.second, pkb.getFollower(parent));
+					}
+					//if parent if statement have no follower 
+					else {
+						//check the parent of parent if it is a while statment
+						//next(last stmt of then block and else block, while statment)
+						if (pkb.getStmType(pkb.getParent(parent)) == whileStm) {
+							pkb.addNext(ifLastStmt.first, pkb.getParent(parent));
+							pkb.addNext(ifLastStmt.second, pkb.getParent(parent));
+						}
 					}
 				}
 			}
 		}
 	}
 }
-/*void DesignExtractor::extractNextEntity() {
-	int prevStmtLine = 0;
-	int stmtNum = pkb.getTotalStmNo();
-
-	//Populate Next Relation.
-	for (size_t t = 0; t < stmtNum; t++) {
-		Statement stmt = stmtLst.at(t);
-		int currStmtLine = stmt.getStmtNum();
-		int parent = pkb.getParent(currStmtLine);
-		populateNextEntity(prevStmtLine, stmt, currStmtLine, parent);
-		prevStmtLine = currStmtLine;
-	}
-}*/
-
-/*void DesignExtractor::populateNextEntity(int prevStmtLine, Statement &stmt, int currStmtLine, int parent)
-{
-	//Add Follow and Next relation if is not the very first line or if not an else statement
-	if (prevStmtLine != 0 && stmt.getType() != 7) {
-		pkb.addNext(prevStmtLine, currStmtLine);
-	}
-
-	//Add Next relation for IF statement type
-	if (stmt.getType() == 6) {
-		pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
-		//if If has follower
-		if (pkb.getFollower(stmt.getStmtNum()) != 0) {
-			pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(stmt.getStmtNum()));
-		}
-		//if If has no follower
-		else {
-			//if parent is While statment
-			if (pkb.getStmType(parent) == 5) {
-				pkb.addNext(stmt.getStmtLst().back().getStmtNum, parent);
-			}
-			//if parent is If/Else statment
-			if (pkb.getStmType(parent) == 6 || pkb.getStmType(parent) == 7){
-				if (pkb.getFollower(parent) != 0) {
-					pkb.addNext(stmt.getStmtLst().back().getStmtNum, pkb.getFollower(parent));
-				}
-			}
-		}
-	}
-
-	//Add Next relation for Else
-	if (stmt.getType() == 7) {
-		pkb.addNext(stmt.getStmtNum(), stmt.getStmtLst().front().getStmtNum());
-		if (pkb.getFollower(stmt.getStmtNum()) != 0) {
-			pkb.addNext(stmt.getStmtLst().back().getStmtNum(), pkb.getFollower(stmt.getStmtNum()));
-		}
-		else {
-			//if parent is While statment
-			if (pkb.getStmType(parent) == 5) {
-				pkb.addNext(stmt.getStmtLst().back().getStmtNum, parent);
-			}
-			//if parent is If/Else statment
-			if (pkb.getStmType(parent) == 6 || pkb.getStmType(parent) == 7) {
-				if (pkb.getFollower(parent) != 0) {
-					pkb.addNext(stmt.getStmtLst().back().getStmtNum, pkb.getFollower(parent));
-				}
-			}
-		}
-	}
-	//Add Next relation for WHILE statment type
-	if (stmt.getType() == 5) {
-		pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
-		pkb.addNext(stmt.getStmtLst().back().getStmtNum(), currStmtLine);
-	}
-}*/
