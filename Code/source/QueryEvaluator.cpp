@@ -40,11 +40,21 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 			std::unordered_map<std::string, std::vector<std::string>> projectTable;
 			std::vector<std::string> notInResult;
 			for (std::vector<std::string>::size_type i = 0; i != selectedVar.size(); i++) {
-				if (resultTable.count(selectedVar[i]) == 0) {
-					notInResult.push_back(selectedVar[i]);
+				std::string currentVar = selectedVar[i];
+				if (hasReference(currentVar)) {
+					std::string attr = attrOf(currentVar);
+					if (resultTable.count(attr) == 0) {
+						notInResult.push_back(attr);
+					} 
+					else {
+						projectTable.insert({ attr, resultTable[attr] });
+					}
+				}
+				else if (resultTable.count(currentVar) == 0) {
+					notInResult.push_back(currentVar);
 				}
 				else {
-					projectTable.insert({ selectedVar[i], resultTable[selectedVar[i]] });
+					projectTable.insert({ currentVar, resultTable[currentVar] });
 				}
 			}
 			for (std::vector<std::string>::size_type i = 0; i != notInResult.size(); i++) {
@@ -54,11 +64,25 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 			for (std::vector<std::string>::size_type i = 0; i != projectedSize; i++) {
 				std::string tuple;
 				for (std::vector<std::string>::size_type j = 0; j != selectedVar.size(); j++) {
+					std::string currentVar = selectedVar[j];
 					if (tuple.size() == 0) {
-						tuple = projectTable[selectedVar[j]][i];
+						if (hasReference(currentVar)) {
+							std::string attr = attrOf(currentVar);
+							tuple = toAttrRefVal(declarations, currentVar, projectTable[attr][i]);
+						}
+						else {
+							tuple = projectTable[currentVar][i];
+						}
 					} 
 					else {
-						tuple = tuple + " " + projectTable[selectedVar[j]][i];
+						if (hasReference(currentVar)) {
+							std::string attr = attrOf(currentVar);
+							tuple = tuple  + " " + 
+								toAttrRefVal(declarations, currentVar, projectTable[attr][i]);
+						}
+						else {
+							tuple = tuple + " " + projectTable[currentVar][i];
+						}
 					}
 				}
 				resultSet.insert(tuple);
@@ -1050,6 +1074,27 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::filter
 		}
 	}
 	return filteredSet;
+}
+
+std::string QueryEvaluator::toAttrRefVal(std::unordered_map<std::string, std::string> declarations,
+	std::string attrRef, std::string attrMember) {
+	std::string attr = attrOf(attrRef);
+	std::string ref = refOf(attrRef);
+	std::string attrType = declarations[attr];
+	if ((attrType == "call") && (ref == "procName")) {
+		return PKB().getProcCalledBy(stoi(attrMember));
+	}
+	else if ((attrType == "read") && (ref == "varName")) {
+		auto it = PKB().getVarModifiedByStm(stoi(attrMember)).begin();
+		return *it;
+	}
+	else if ((attrType == "print") && (ref == "varName")) {
+		auto it = PKB().getVarUsedByStm(stoi(attrMember)).begin();
+		return *it;
+	}
+	else {
+		return attrMember;
+	}
 }
 
 /*
