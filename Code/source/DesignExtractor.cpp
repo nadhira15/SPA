@@ -321,7 +321,7 @@ void DesignExtractor::processModifiesProcedures(std::string procedure)
 
 	for (int i = 0; i < procedureStm.size(); i++) {
 		int currLine = procedureStm.at(i);
-		std::unordered_set<std::string> modifiedList = pkb.getVarModifiedByStm(i);
+		std::unordered_set<std::string> modifiedList = pkb.getVarModifiedByStm(currLine);
 
 		for (std::string modifiedVar : modifiedList) {
 			pkb.addModifiesProc(procedure, modifiedVar);
