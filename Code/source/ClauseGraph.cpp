@@ -20,11 +20,11 @@ ClauseGraph::ClauseGraph(
 */
 void ClauseGraph::groupClause() {
 	//extract synonyms and create the syn-cl and cl-syn map
-	groupByClauseType(st);
-	groupByClauseType(w);
-	groupByClauseType(p);
+	groupByClauseType(0);
+	groupByClauseType(1);
+	groupByClauseType(2);
 	//while loop to chain clauses (DFS)
-	std::pair<clauseType, int> cl;
+	std::tuple<int, int, int> cl;
 	bool isTrivial;
 	while (!clSet.empty()) {
 		//function for the more efficient clause? get from PKB statistics or use pq
@@ -42,23 +42,23 @@ void ClauseGraph::groupClause() {
 /*
 * Creates a hashmap of syn-clause and clause-syn, which will be used for graph traversal
 */
-void ClauseGraph::groupByClauseType(clauseType t) {
-	std::vector<std::string> synLst;
-	//clauses are represented internally by <clauseType,index>
-	if (t == st) {
+void ClauseGraph::groupByClauseType(int t) {
+	std::pair<int,std::vector<std::string>> prioritySyn;
+	//clauses are represented internally by <int,index>
+	if (t == 0) {
 		for (int i = 0; i < suchThatClauses.size(); i++) {
-			synLst = extractSuchThatSyn(i);
-			createMaps(synLst, std::make_pair(st, i));
+			prioritySyn = extractSuchThatSyn(i);
+			createMaps(prioritySyn.second, std::make_tuple(prioritySyn.first, t, i));
 		}
-	} else if (t == p) {
+	} else if (t == 1) {
 		for (int i = 0; i < patternClauses.size(); i++) {
-			synLst = extractPatternSyn(i);
-			createMaps(synLst, std::make_pair(p, i));
+			prioritySyn = extractPatternSyn(i);
+			createMaps(prioritySyn.second, std::make_tuple(prioritySyn.first, t, i));
 		}
 	} else {
 		for (int i = 0; i < withClauses.size(); i++) {
-			synLst = extractWithSyn(i);
-			createMaps(synLst, std::make_pair(w, i));
+			prioritySyn = extractWithSyn(i);
+			createMaps(prioritySyn.second, std::make_tuple(prioritySyn.first, t, i));
 		}
 	}
 }
@@ -66,10 +66,17 @@ void ClauseGraph::groupByClauseType(clauseType t) {
 /*
 * Creates syn-cl and cl-syn maps 
 */
-void ClauseGraph::createMaps(std::vector<std::string> synLst, std::pair<clauseType, int> cl) {
+void ClauseGraph::createMaps(std::vector<std::string> synLst, std::tuple<int, int, int> cl) {
 	clMap[cl] = synLst;
+	clSet.insert(cl);
 	for (std::vector<std::string>::iterator it = synLst.begin(); it != synLst.end(); ++it) {
-		synMap[*it].push_back(cl);
+		if (synMap.find(*it) == synMap.end()) {
+			synMap[*it] = std::priority_queue<std::tuple<int, int, int>, std::vector<std::tuple<int, int, int>>, Compare>();
+		} else {
+			synMap[*it].push(cl);
+			synSet.insert(*it);
+		}
+
 	}
 }
 
@@ -82,18 +89,12 @@ void ClauseGraph::createMaps(std::vector<std::string> synLst, std::pair<clauseTy
   As the for loop is implemented, the algorithm is guaranteed to access all synonyms of the clause and vice versa
 * Note: The actual clause, rather than the internal reference, is added to the results graph
 */
-bool ClauseGraph::mapClauses(std::pair<clauseType, int> cl, bool isTrivial) {
+bool ClauseGraph::mapClauses(std::tuple<int, int, int> cl, bool isTrivial) {
 	std::pair<std::string, std::pair<std::string, std::string>> clause;
 	clSet.erase(cl); //clause removed from bookkeeping sets
 	for (std::vector<std::string>::iterator it = clMap[cl].begin(); it != clMap[cl].end(); ++it) {
 		if (synSet.find(*it) != synSet.end()) { //check if synonym is already (partially) processed
-			if (cl.first == st) {
-				clause = suchThatClauses.at(cl.second);
-			} else if (cl.first == p) {
-				clause = patternClauses.at(cl.second);
-			} else {
-				clause = withClauses.at(cl.second);
-			}
+			clause = getClause(cl);
 			graph.push_back(clause);
 			isTrivial = mapSynonym(*it, isTrivial);
 		}
@@ -116,9 +117,13 @@ bool ClauseGraph::mapSynonym(std::string syn, bool isTrivial) {
 		isTrivial = false;
 	}
 	synSet.erase(syn); //synonym removed from bookkeeping sets
-	for (std::vector<std::pair<clauseType, int>>::iterator it = synMap[syn].begin(); it != synMap[syn].end(); ++it) {
-		if (clSet.find(*it) != clSet.end()) { //check if clause is already processed
-			isTrivial = mapClauses(*it, isTrivial);
+	while (!synMap[syn].empty()) {
+		std::tuple<int, int, int> cl = synMap[syn].top();
+		synMap[syn].pop();
+		if (clSet.find(cl) != clSet.end()) { //check if clause is already processed
+			isTrivial = mapClauses(cl, isTrivial);
+		} else {
+			synMap[syn].pop();
 		}
 	}
 	return isTrivial;
@@ -127,31 +132,65 @@ bool ClauseGraph::mapSynonym(std::string syn, bool isTrivial) {
 /*
 * To extract synonym from the such that, pattern, with clauses
 */
-std::vector<std::string> ClauseGraph::extractSuchThatSyn(int index) {
+std::pair<int, std::vector<std::string>> ClauseGraph::extractSuchThatSyn(int index) {
 	std::vector<std::string> synLst;
+	std::string r = suchThatClauses.at(index).first;
 	std::string f = suchThatClauses.at(index).second.first;
 	std::string s = suchThatClauses.at(index).second.second;
-	if (isSuchThatSynonym(f)) synLst.push_back(f);
-	if (isSuchThatSynonym(s)) synLst.push_back(s);
-	return synLst;
+	int synNum = 0;
+	int tmp = getSuchThatEntityType(f);
+	if (tmp == 1) {
+		synLst.push_back(f);
+	}
+	if (tmp > 0) {
+		synNum++;
+	}
+	tmp = getSuchThatEntityType(s);
+	if (tmp == 1) {
+		synLst.push_back(s);
+	}
+	if (tmp > 0) {
+		synNum++;
+	}
+	tmp = getSuchThatPriority(r, synNum);
+	return std::make_pair(tmp, synLst);
 }
 
-std::vector<std::string> ClauseGraph::extractPatternSyn(int index) {
+std::pair<int, std::vector<std::string>> ClauseGraph::extractPatternSyn(int index) {
 	std::vector<std::string> synLst;
-	std::string f = patternClauses.at(index).first;
-	std::string s = patternClauses.at(index).second.first;
-	if (isPatternSynonym(f)) synLst.push_back(f);
-	if (isPatternSynonym(s)) synLst.push_back(s);
-	return synLst;
+	std::string syn = patternClauses.at(index).first;
+	std::string f = patternClauses.at(index).second.first;
+	std::string s = patternClauses.at(index).second.second;
+	synLst.push_back(syn);
+	int tmp1 = getPatternEntityType1(f);
+	if (tmp1 == 1) {
+		synLst.push_back(f);
+	}
+	//get from declaration --> syn type of syn
+	std::string type;
+	int tmp2 = 0;
+	if (type.compare("assign") == 0) {
+		tmp2 = getPatternEntityType2(s);
+	}
+	int p = getPatternPriority(type, tmp1, tmp2);
+	return std::make_pair(p, synLst);
 }
 
-std::vector<std::string> ClauseGraph::extractWithSyn(int index) {
+std::pair<int, std::vector<std::string>> ClauseGraph::extractWithSyn(int index) {
 	std::vector<std::string> synLst;
 	std::string f = withClauses.at(index).second.first;
 	std::string s = withClauses.at(index).second.second;
-	if (isWithSynonym(f)) synLst.push_back(f);
-	if (isWithSynonym(s)) synLst.push_back(s);
-	return synLst;
+	int synNum = 0;
+	if (isWithSynonym(f)) {
+		synLst.push_back(f);
+		synNum++;
+	}
+	if (isWithSynonym(s)) {
+		synLst.push_back(s);
+		synNum++;
+	}
+	int p = getWithPriority(synNum);
+	return std::make_pair(p, synLst);
 }
 
 /* Getter functions */
@@ -160,4 +199,22 @@ std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::strin
 }
 std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> ClauseGraph::getNonTrivial() {
 	return nontrivial;
+}
+
+std::pair<std::string, std::pair<std::string, std::string>> ClauseGraph::getClause(std::tuple<int, int, int> cl) {
+	std::pair<std::string, std::pair<std::string, std::string>> clause;
+	if (std::get<1>(cl) == 0) {
+		clause = suchThatClauses.at(std::get<2>(cl));
+	}
+	else if (std::get<1>(cl) == 1) {
+		clause = patternClauses.at(std::get<2>(cl));
+	}
+	else {
+		clause = withClauses.at(std::get<2>(cl));
+	}
+	return clause;
+}
+
+bool Compare::operator()(std::tuple<int, int, int> c1, std::tuple<int, int, int> c2) {
+	return std::get<0>(c1) < std::get<0>(c2);
 }
