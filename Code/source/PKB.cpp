@@ -13,6 +13,9 @@ unordered_set<int> PKB::whileStmList;
 unordered_set<int> PKB::callStmList;
 unordered_set< pair<int, string>, intStringhash > PKB::readPairList;
 unordered_set< pair<int, string>, intStringhash > PKB::printPairList;
+unordered_map<int, int> PKB::whileLastStmList;
+unordered_map<int, pair<int, int> > PKB::ifFirstStmList;
+unordered_map<int, pair<int, int> > PKB::ifLastStmList;
 
 FollowStorage PKB::fStore;
 ParentStorage PKB::pStore;
@@ -73,6 +76,43 @@ void PKB::addVariable(string name)
 void PKB::addConstant(string value)
 {
 	constList.emplace(value);
+}
+
+void PKB::addWhileLastStm(int whileStm, int lastStm)
+{
+	whileLastStmList.emplace(whileStm, lastStm);
+}
+
+void PKB::addThenFirstStm(int ifStm, int thenStm)
+{
+	if (!ifFirstStmList.emplace(ifStm, pair<int, int>{thenStm, 0}).second)
+	{
+		ifFirstStmList.at(ifStm).first = thenStm;
+	}
+}
+
+void PKB::addElseFirstStm(int ifStm, int elseStm)
+{
+	if (!ifFirstStmList.emplace(ifStm, pair<int, int>{0, elseStm}).second)
+	{
+		ifFirstStmList.at(ifStm).second = elseStm;
+	}
+}
+
+void PKB::addThenLastStm(int ifStm, int thenStm)
+{
+	if (!ifLastStmList.emplace(ifStm, pair<int, int>{thenStm, 0}).second)
+	{
+		ifLastStmList.at(ifStm).first = thenStm;
+	}
+}
+
+void PKB::addElseLastStm(int ifStm, int elseStm)
+{
+	if (!ifLastStmList.emplace(ifStm, pair<int, int>{0, elseStm}).second)
+	{
+		ifLastStmList.at(ifStm).second = elseStm;
+	}
 }
 
 bool PKB::addFollow(int stm1, int stm2)
@@ -266,6 +306,33 @@ unordered_set<pair<int, string>, intStringhash> PKB::getReadPairs()
 unordered_set<pair<int, string>, intStringhash> PKB::getPrintPairs()
 {
 	return printPairList;
+}
+
+int PKB::getWhileLastStm(int whileStm)
+{
+	if (whileLastStmList.find(whileStm) != whileLastStmList.end())
+	{
+		return whileLastStmList.at(whileStm);
+	}
+	return 0;
+}
+
+pair<int, int> PKB::getIfFirstStms(int ifStm)
+{
+	if (ifFirstStmList.find(ifStm) != ifFirstStmList.end())
+	{
+		return ifFirstStmList.at(ifStm);
+	}
+	return pair<int, int>(0, 0);
+}
+
+pair<int, int> PKB::getIfLastStms(int ifStm)
+{
+	if (ifLastStmList.find(ifStm) != ifLastStmList.end())
+	{
+		return ifLastStmList.at(ifStm);
+	}
+	return pair<int, int>(0, 0);
 }
 
 bool PKB::hasFollowRelation()

@@ -94,7 +94,7 @@ unordered_set<string> ModifyStorage::getProcModifying(string variable)
 {
 	if (varToProcMap.find(variable) != varToProcMap.end())
 	{
-		varToProcMap.at(variable);
+		return varToProcMap.at(variable);
 	}
 	return {};
 }
