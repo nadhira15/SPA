@@ -45,11 +45,11 @@ namespace UnitTesting
 		TEST_METHOD(testNextStarPair)
 		{
 			PKB storage = PKB();
-			storage.addStatement(1, assign);
-			storage.addStatement(2, whileStm);
-			storage.addStatement(3, assign);
-			storage.addStatement(4, assign);
-			storage.addStatement(5, assign);
+			storage.addStatement(1, assign, "proc1");
+			storage.addStatement(2, whileStm, "proc1");
+			storage.addStatement(3, assign, "proc1");
+			storage.addStatement(4, assign, "proc1");
+			storage.addStatement(5, assign, "proc1");
 			storage.addNext(1, 2);
 			storage.addNext(2, 3);
 			storage.addNext(3, 4);
