@@ -116,16 +116,14 @@ bool ClauseGraph::mapSynonym(std::string syn, bool isTrivial) {
 	if (isTrivial && (selectClause.find(syn) != selectClause.end())) {
 		isTrivial = false;
 	}
-	synSet.erase(syn); //synonym removed from bookkeeping sets
 	while (!synMap[syn].empty()) {
 		std::tuple<int, int, int> cl = synMap[syn].top();
 		synMap[syn].pop();
 		if (clSet.find(cl) != clSet.end()) { //check if clause is already processed
 			isTrivial = mapClauses(cl, isTrivial);
-		} else {
-			synMap[syn].pop();
 		}
 	}
+	synSet.erase(syn); //synonym removed from bookkeeping sets
 	return isTrivial;
 }
 
