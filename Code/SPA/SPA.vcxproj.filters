@@ -200,9 +200,6 @@
     <ClInclude Include="..\source\QueryParser.h">
       <Filter>Header Files\PQL</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\QueryValidator.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\ConditionalExp.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
@@ -217,9 +214,6 @@
     </ClInclude>
     <ClInclude Include="..\source\StringUtil.h">
       <Filter>Header Files\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Preprocessor.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\QueryValidator.h">
       <Filter>Header Files</Filter>
@@ -247,6 +241,12 @@
     </ClInclude>
     <ClInclude Include="..\source\OptimizerUtility.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Preprocessor.h">
+      <Filter>Header Files\PreProcessor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\QueryValidator.h">
+      <Filter>Header Files\PQL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
