@@ -179,6 +179,18 @@ std::string QueryEvaluator::isWithTrivial(std::string left, std::string right) {
 	return "not trivial";
 }
 
+/*
+The function returns a 
+table consist of 2 columns.
+The first one is the attribute
+value column and the second one 
+is the reference value column, but 
+the key is changed to "name". 
+For example, if attr is r.varName,
+then it returns table with column r 
+and r.varName, but the r.varName is 
+changed to "name".
+*/
 std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluateWithPair(
 	std::unordered_map<std::string, std::string> declarations,
 	std::string attr) {
@@ -1076,6 +1088,17 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::filter
 	return filteredSet;
 }
 
+/*
+The function evaluate the reference value
+given the value of its attribute. 
+For example: 
+Given statement 6: call MeMaybe.
+Let attrRef br c.procName, where c 
+in declarations are mapped to 
+call. Let attrMember be 6, which is
+a member of the call statements. Then  
+then function returns 6.procName
+*/
 std::string QueryEvaluator::toAttrRefVal(std::unordered_map<std::string, std::string> declarations,
 	std::string attrRef, std::string attrMember) {
 	std::string attr = attrOf(attrRef);
