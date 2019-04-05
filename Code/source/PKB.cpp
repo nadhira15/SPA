@@ -14,7 +14,6 @@ unordered_set<int> PKB::callStmList;
 unordered_set< pair<int, string>, intStringhash > PKB::readPairList;
 unordered_set< pair<int, string>, intStringhash > PKB::printPairList;
 unordered_map<int, int> PKB::whileLastStmList;
-unordered_map<int, pair<int, int> > PKB::ifFirstStmList;
 unordered_map<int, pair<int, int> > PKB::ifLastStmList;
 
 FollowStorage PKB::fStore;
@@ -81,22 +80,6 @@ void PKB::addConstant(string value)
 void PKB::addWhileLastStm(int whileStm, int lastStm)
 {
 	whileLastStmList.emplace(whileStm, lastStm);
-}
-
-void PKB::addThenFirstStm(int ifStm, int thenStm)
-{
-	if (!ifFirstStmList.emplace(ifStm, pair<int, int>{thenStm, 0}).second)
-	{
-		ifFirstStmList.at(ifStm).first = thenStm;
-	}
-}
-
-void PKB::addElseFirstStm(int ifStm, int elseStm)
-{
-	if (!ifFirstStmList.emplace(ifStm, pair<int, int>{0, elseStm}).second)
-	{
-		ifFirstStmList.at(ifStm).second = elseStm;
-	}
 }
 
 void PKB::addThenLastStm(int ifStm, int thenStm)
@@ -315,15 +298,6 @@ int PKB::getWhileLastStm(int whileStm)
 		return whileLastStmList.at(whileStm);
 	}
 	return 0;
-}
-
-pair<int, int> PKB::getIfFirstStms(int ifStm)
-{
-	if (ifFirstStmList.find(ifStm) != ifFirstStmList.end())
-	{
-		return ifFirstStmList.at(ifStm);
-	}
-	return pair<int, int>(0, 0);
 }
 
 pair<int, int> PKB::getIfLastStms(int ifStm)
