@@ -40,11 +40,21 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 			std::unordered_map<std::string, std::vector<std::string>> projectTable;
 			std::vector<std::string> notInResult;
 			for (std::vector<std::string>::size_type i = 0; i != selectedVar.size(); i++) {
-				if (resultTable.count(selectedVar[i]) == 0) {
-					notInResult.push_back(selectedVar[i]);
+				std::string currentVar = selectedVar[i];
+				if (hasReference(currentVar)) {
+					std::string attr = attrOf(currentVar);
+					if (resultTable.count(attr) == 0) {
+						notInResult.push_back(attr);
+					} 
+					else {
+						projectTable.insert({ attr, resultTable[attr] });
+					}
+				}
+				else if (resultTable.count(currentVar) == 0) {
+					notInResult.push_back(currentVar);
 				}
 				else {
-					projectTable.insert({ selectedVar[i], resultTable[selectedVar[i]] });
+					projectTable.insert({ currentVar, resultTable[currentVar] });
 				}
 			}
 			for (std::vector<std::string>::size_type i = 0; i != notInResult.size(); i++) {
@@ -54,11 +64,25 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 			for (std::vector<std::string>::size_type i = 0; i != projectedSize; i++) {
 				std::string tuple;
 				for (std::vector<std::string>::size_type j = 0; j != selectedVar.size(); j++) {
+					std::string currentVar = selectedVar[j];
 					if (tuple.size() == 0) {
-						tuple = projectTable[selectedVar[j]][i];
+						if (hasReference(currentVar)) {
+							std::string attr = attrOf(currentVar);
+							tuple = toAttrRefVal(declarations, currentVar, projectTable[attr][i]);
+						}
+						else {
+							tuple = projectTable[currentVar][i];
+						}
 					} 
 					else {
-						tuple = tuple + " " + projectTable[selectedVar[j]][i];
+						if (hasReference(currentVar)) {
+							std::string attr = attrOf(currentVar);
+							tuple = tuple  + " " + 
+								toAttrRefVal(declarations, currentVar, projectTable[attr][i]);
+						}
+						else {
+							tuple = tuple + " " + projectTable[currentVar][i];
+						}
 					}
 				}
 				resultSet.insert(tuple);
@@ -155,6 +179,18 @@ std::string QueryEvaluator::isWithTrivial(std::string left, std::string right) {
 	return "not trivial";
 }
 
+/*
+The function returns a 
+table consist of 2 columns.
+The first one is the attribute
+value column and the second one 
+is the reference value column, but 
+the key is changed to "name". 
+For example, if attr is r.varName,
+then it returns table with column r 
+and r.varName, but the r.varName is 
+changed to "name".
+*/
 std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluateWithPair(
 	std::unordered_map<std::string, std::string> declarations,
 	std::string attr) {
@@ -1050,6 +1086,36 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::filter
 		}
 	}
 	return filteredSet;
+}
+
+/*
+The function evaluate the reference value
+given the value of its attribute. 
+For example: 
+Given statement 6: call MeMaybe.
+Let attrRef br c.procName, where c 
+in declarations are mapped to 
+call. Let attrMember be 6, which is
+a member of the call statements. Then  
+then function returns 6.procName
+*/
+std::string QueryEvaluator::toAttrRefVal(std::unordered_map<std::string, std::string> declarations,
+	std::string attrRef, std::string attrMember) {
+	std::string attr = attrOf(attrRef);
+	std::string ref = refOf(attrRef);
+	std::string attrType = declarations[attr];
+	if ((attrType == "call") && (ref == "procName")) {
+		return PKB().getProcCalledBy(stoi(attrMember));
+	}
+	else if ((attrType == "read") && (ref == "varName")) {
+		return *PKB().getVarModifiedByStm(stoi(attrMember)).begin();
+	}
+	else if ((attrType == "print") && (ref == "varName")) {
+		return *PKB().getVarUsedByStm(stoi(attrMember)).begin();
+	}
+	else {
+		return attrMember;
+	}
 }
 
 /*
