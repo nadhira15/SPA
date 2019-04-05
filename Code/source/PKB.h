@@ -22,6 +22,7 @@ enum stmType {read, print, assign, whileStm, ifStm, call};
 	Accepts relationship, pattern and other general data from Parser and DesignExtractor and
 	stores them here or into their respective Storage classes.
 	Reply to queries made by the QueryEvaluator.
+	Forwards Next*, Affects and Affects* queries to RunTimeDesignExtractor.
 */
 class PKB {
 public:
@@ -129,7 +130,7 @@ public:
 	//Modifies adder Methods			/////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
-		add the Modifies relation for a Statement in UseStorage
+		add the Modifies relation for a Statement in ModifyStorage
 		Returns false if
 			1) the pair is already stored
 			2) stm <= 0 and variable is an empty string
@@ -137,7 +138,7 @@ public:
 	bool addModifiesStm(int stm, string variable);
 
 	/*
-		add the Modifies relation for a Procedure in UseStorage
+		add the Modifies relation for a Procedure in ModifyStorage
 		Returns false if
 			1) the pair is already stored
 			2) procedure or variable is an empty string
@@ -189,6 +190,12 @@ public:
 		returns false if 'stm' already exist in the list with another pattern
 	*/
 	bool addAssignPattern(int stm, string variable, string expr);
+
+	// add an if statement containu=ing the specified control variable to patternStorage
+	void addIfControlVariable(int stm, string variable);
+
+	// add an while statement containu=ing the specified control variable to patternStorage
+	void addWhileControlVariable(int stm, string variable);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//General Getter Methods	/////////////////////////////////////////////////////////////////////////
@@ -435,13 +442,13 @@ public:
 	bool hasCallStarPair(string proc1, string proc2);
 
 	/*
-		return the procedure calling 'procedure'
-		return "" if 'procedure' is not found
+		return a list of procedure calling 'procedure'
+		return {} if 'procedure' is not found
 	*/
 	unordered_set<string> getCaller(string procedure);
 
 	/*
-		return the procedure called by 'procedure'
+		return a list of procedure called by 'procedure'
 		return {} if 'procedure' is not found
 	*/
 	unordered_set<string> getCallee(string procedure);
@@ -613,28 +620,22 @@ public:
 	//If & While Pattern Getter Methods	/////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	//Set for ifs.
-	void addIfControlVariable(int stm, string variable);
-
-	//Set for while.
-	void addWhileControlVariable(int stm, string variable);
-
-	//Call for if(_,_)
+	// return a list of all if statements with control variables
 	std::unordered_set<int> getAllIfWithControls();
 
-	//Call for w(_,_)
+	// return a list of all while statements with control variables
 	std::unordered_set<int> getAllWhileWithControls();
 
-	//Call for if('s',_)
+	// return a list of if statements that has 'variable' as a control variable
 	std::unordered_set<int> getIfStmWithControlVariable(std::string variable);
 
-	//Call for w('s',_)
+	// return a list of while statements that has 'variable' as a control variable
 	std::unordered_set <int> getWhileStmWithControlVariable(std::string variable);
 
-	//Call for if(s,_)
+	// return a list of all <  If Statement, Control Variable > pairs
 	std::unordered_set<std::pair<int, std::string>, intStringhash> getIfStmControlVariablePair();
 
-	//Call for w(s,_)
+	// return a list of all <  While Statement, Control Variable > pairs
 	std::unordered_set<std::pair<int, std::string>, intStringhash> getWhileStmControlVariablePair();
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
