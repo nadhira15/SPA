@@ -531,6 +531,57 @@ public:
 	unordered_set< pair<int, int>, intPairhash> getNextStarPairs();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Affects Getter Methods	 /////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// checks if there is at least one Affect relationship
+	bool hasAffectsRelation();
+
+	// checks if 'stm' affects another
+	bool isAffector(int stm);
+
+	// checks if 'stm' is affected by another
+	bool isAffected(int stm);
+
+	// checks if the relation Affects*(stm1, stm2) exist
+	bool hasAffectStarPair(int stm1, int stm2);
+
+	/*
+		return the stm affecting 'stm'
+		return 0 if 'stm' is not found
+	*/
+	int  getAffector(int stm);
+
+	/*
+		return the stm affected by 'stm'
+		return 0 if 'stm' is not found
+	*/
+	int getAffected(int stm);
+
+	/*
+		return a list of statements that is directly/indirectly affecting 'stm'
+		return an empty set if 'stm' is not found
+	*/
+	unordered_set<int> getAffectorStar(int stm);
+
+	/*
+		return a list of statements that is directly/indirectly affected by 'stm'
+		return an empty set if 'stm' is not found
+	*/
+	unordered_set<int> getAffectedStar(int stm);
+
+	// returns a list of all statements that affects another
+	unordered_set<int> getAllAffectors();
+
+	// returns a list of all statements that is affected by another
+	unordered_set<int> getAllAffected();
+
+	// returns a list of all affects pairs
+	unordered_set< pair<int, int>, intPairhash> getAffectPairs();
+
+	// returns a list of all affects* pairs
+	unordered_set< pair<int, int>, intPairhash> getAffectStarPairs();
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Assign Pattern Getter Methods	/////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/*
