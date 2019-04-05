@@ -9,106 +9,54 @@ namespace UnitTesting
 	TEST_CLASS(OptimizerTest)
 	{
 	public:
-		TEST_METHOD(testSuchThatEntityType1)
+		TEST_METHOD(testExtractSuchThat1)
 		{
 			std::string str = "a";
 			int actual = OptimizerUtility::getSuchThatEntityType(str);
 			Assert::AreEqual(actual, 1);
 		}
-		TEST_METHOD(testSuchThatEntityType2)
+		TEST_METHOD(testExtractSuchThat2)
 		{
 			int actual = OptimizerUtility::getSuchThatEntityType("_");
 			Assert::AreEqual(actual, 2);
 		}
-		TEST_METHOD(testSuchThatEntityType0String)
+		TEST_METHOD(testExtractSuchThatWildCard)
 		{
 			std::string s = { '"', 'v', 'a', 'r', '"' };
 			int actual = OptimizerUtility::getSuchThatEntityType(s);
 			Assert::AreEqual(actual, 0);
 		}
-		TEST_METHOD(testSuchThatEntityType0Num)
-		{
-			std::string str = "14";
-			int actual = OptimizerUtility::getSuchThatEntityType(str);
-			Assert::AreEqual(actual, 0);
-		}
-		TEST_METHOD(testWithSynonymTrue)
+		TEST_METHOD(testExtractWithSynonym1)
 		{
 			bool actual = OptimizerUtility::isWithSynonym("a.varName");
 			Assert::IsTrue(actual);
 		}
-		TEST_METHOD(testWithSynonymFalseNum)
+		TEST_METHOD(testExtractWithSynonym2)
 		{
 			bool actual = OptimizerUtility::isWithSynonym("14");
 			Assert::IsTrue(!actual);
 		}
-		TEST_METHOD(testWithSynonymFalseName)
-		{
-			bool actual = OptimizerUtility::isWithSynonym("procedure");
-			Assert::IsTrue(!actual);
-		}
-		TEST_METHOD(testPatternEntityTypeFirst0)
+		TEST_METHOD(testExtractPatternSynonymAssign)
 		{
 			std::string str = { '"', 's', '"' };
 			int actual = OptimizerUtility::getPatternEntityType1(str);
 			Assert::AreEqual(actual, 0);
 		}
-		TEST_METHOD(testPatternEntityTypeFirst1)
+		TEST_METHOD(testExtractPatternSynonymIf)
 		{
 			int actual = OptimizerUtility::getPatternEntityType1("v");
 			Assert::AreEqual(actual, 1);
 		}
-		TEST_METHOD(testPatternEntityTypeFirst2)
+		TEST_METHOD(testExtractPatternSynonymWhile)
 		{
 			int actual = OptimizerUtility::getPatternEntityType1("_");
 			Assert::AreEqual(actual, 2);
 		}
-		TEST_METHOD(testPatternEntityTypeSecond0)
+		TEST_METHOD(testCreateMaps)
 		{
 			std::string str = { '"',  's', '"' };
 			int actual = OptimizerUtility::getPatternEntityType2(str);
 			Assert::AreEqual(actual, 0);
-		}
-		TEST_METHOD(testPatternEntityTypeSecond1)
-		{
-			std::string str = { '_', '"',  's', '"', '_' };
-			int actual = OptimizerUtility::getPatternEntityType2(str);
-			Assert::AreEqual(actual, 1);
-		}
-		TEST_METHOD(testPatternEntityTypeSecond2)
-		{
-			int actual = OptimizerUtility::getPatternEntityType2("_");
-			Assert::AreEqual(actual, 2);
-		}
-		TEST_METHOD(testWithPriority1)
-		{
-			int actual = OptimizerUtility::getWithPriority(1);
-			Assert::AreEqual(actual, 4);
-		}
-		TEST_METHOD(testWithPriority2)
-		{
-			int actual = OptimizerUtility::getWithPriority(2);
-			Assert::AreEqual(actual, 18);
-		}
-		TEST_METHOD(testPatternPriorityA11)
-		{
-			int actual = OptimizerUtility::getPatternPriority("assign", 1, 1);
-			Assert::AreEqual(actual, 20);
-		}
-		TEST_METHOD(testPatternPriorityA02)
-		{
-			int actual = OptimizerUtility::getPatternPriority("assign", 0, 2);
-			Assert::AreEqual(actual, 12);
-		}
-		TEST_METHOD(testPatternPriorityIfs20)
-		{
-			int actual = OptimizerUtility::getPatternPriority("if", 2, 0);
-			Assert::AreEqual(actual, 33);
-		}
-		TEST_METHOD(testSuchThatPriorityFollowStar1)
-		{
-			int actual = OptimizerUtility::getSuchThatPriority("Follows*", 1);
-			Assert::AreEqual(actual, 17);
 		}
 	};
 }

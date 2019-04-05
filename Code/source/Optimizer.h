@@ -14,12 +14,12 @@
   This class optimises the evaluator by chaining the clauses together such that every other clause will have at least 1 clause evaluated
   
   // To use:
-  ClauseGraph cg = ClauseGraph(st, w, p, s);
-  cg.groupClause();
+  Optimizer op = Optimizer(st, w, p, s);
+  op.groupClause();
   
   // To get the groups of trivial/non-trivial clauses:
-  std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> trivial = cg.getTrivial();
-  std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> nontrivial = cg.getNonTrivial();
+  std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> trivial = op.getTrivial();
+  std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> nontrivial = op.getNonTrivial();
 */
 
 class Optimizer {
