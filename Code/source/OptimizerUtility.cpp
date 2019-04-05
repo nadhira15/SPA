@@ -5,7 +5,7 @@
 int getSuchThatEntityType(std::string str) {
 	int res;
 	if (str.find("_") == std::string::npos) {
-		if (!isNumber(str) && str.find('"') == std::string::npos) {
+		if (str.find_first_not_of("0123456789") == std::string::npos && str.find('"') == std::string::npos) {
 			res = 1; //synonym
 		} else {
 			res = 0; //varName or stmtNum
@@ -53,11 +53,6 @@ bool isWithSynonym(std::string str) {
 		res = true;
 	}
 	return res;
-}
-
-/* Checking if string is a number */
-bool isNumber(std::string str) {
-	return (str.find_first_not_of("0123456789") == std::string::npos);
 }
 
 // Used for getting PQ

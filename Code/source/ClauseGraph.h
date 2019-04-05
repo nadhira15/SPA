@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include "OptimizerUtility.cpp"
+#include "CompareTuple.cpp"
 
 /** Usage Guide
   This class optimises the evaluator by chaining the clauses together such that every other clause will have at least 1 clause evaluated
@@ -27,8 +28,7 @@ private:
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> withClauses;
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternClauses;
 	std::unordered_set<std::string> selectClause;
-	std::unordered_map<std::string, std::priority_queue<
-		std::tuple<int, int, int>, std::vector<std::tuple<int, int, int>>, Compare>> synMap;
+	std::unordered_map<std::string, std::priority_queue<std::tuple<int, int, int>, std::vector<std::tuple<int, int, int>>, CompareTuple>> synMap;
 	std::unordered_map<std::tuple<int, int, int>, std::vector<std::string>> clMap;
 	// these variables are used for storage of results
 	std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> trivial;
@@ -57,8 +57,4 @@ public:
 	//Getter Functions
 	std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> getTrivial();
 	std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> getNonTrivial();
-};
-
-class Compare {
-	bool operator() (std::tuple<int, int, int> c1, std::tuple<int, int, int> c2);
 };

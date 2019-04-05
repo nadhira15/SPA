@@ -71,7 +71,7 @@ void ClauseGraph::createMaps(std::vector<std::string> synLst, std::tuple<int, in
 	clSet.insert(cl);
 	for (std::vector<std::string>::iterator it = synLst.begin(); it != synLst.end(); ++it) {
 		if (synMap.find(*it) == synMap.end()) {
-			synMap[*it] = std::priority_queue<std::tuple<int, int, int>, std::vector<std::tuple<int, int, int>>, Compare>();
+			synMap[*it] = std::priority_queue<std::tuple<int, int, int>, std::vector<std::tuple<int, int, int>>, CompareTuple>();
 		} else {
 			synMap[*it].push(cl);
 			synSet.insert(*it);
@@ -211,8 +211,4 @@ std::pair<std::string, std::pair<std::string, std::string>> ClauseGraph::getClau
 		clause = withClauses.at(std::get<2>(cl));
 	}
 	return clause;
-}
-
-bool Compare::operator()(std::tuple<int, int, int> c1, std::tuple<int, int, int> c2) {
-	return std::get<0>(c1) < std::get<0>(c2);
 }

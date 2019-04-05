@@ -42,6 +42,7 @@
     <ClCompile Include="..\source\ModifyStorage.cpp" />
     <ClCompile Include="..\source\ClauseGraph.cpp" />
     <ClCompile Include="..\source\OptimizerUtility.cpp" />
+    <ClCompile Include="..\source\CompareTuple.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\AssignParser.h" />
