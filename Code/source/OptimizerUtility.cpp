@@ -1,4 +1,4 @@
-#include <OptimizerUtility.h>
+#include "OptimizerUtility.h"
 
 /* Checking to test if the parts of such that clause contains a synonym */
 int OptimizerUtility::getSuchThatEntityType(std::string str) {
