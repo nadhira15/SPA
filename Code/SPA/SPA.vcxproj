@@ -76,7 +76,6 @@
     <ClInclude Include="..\source\ModifyStorage.h" />
     <ClInclude Include="..\source\Hasher.h" />
     <ClInclude Include="..\source\ClauseGraph.h" />
-    <ClInclude Include="..\source\OptimizerUtility.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>

@@ -1,4 +1,3 @@
-#pragma once
 #include <OptimizerUtility.h>
 
 /* Checking to test if the parts of such that clause contains a synonym */

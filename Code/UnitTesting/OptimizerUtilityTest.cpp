@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "OptimizerUtility.cpp"
+#include "OptimizerUtility.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
