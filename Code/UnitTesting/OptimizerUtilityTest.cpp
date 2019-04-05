@@ -11,101 +11,103 @@ namespace UnitTesting
 	public:
 		TEST_METHOD(testSuchThatEntityType1)
 		{
-			int actual = getSuchThatEntityType("a");
+			std::string str = "a";
+			int actual = OptimizerUtility::getSuchThatEntityType(str);
 			Assert::AreEqual(actual, 1);
 		}
 		TEST_METHOD(testSuchThatEntityType2)
 		{
-			int actual = getSuchThatEntityType("_");
+			int actual = OptimizerUtility::getSuchThatEntityType("_");
 			Assert::AreEqual(actual, 2);
 		}
 		TEST_METHOD(testSuchThatEntityType0String)
 		{
-			std::string s = '"' + "var" + '"';
-			int actual = getSuchThatEntityType(s);
+			std::string s = { '"', 'v', 'a', 'r', '"' };
+			int actual = OptimizerUtility::getSuchThatEntityType(s);
 			Assert::AreEqual(actual, 0);
 		}
 		TEST_METHOD(testSuchThatEntityType0Num)
 		{
-			int actual = getSuchThatEntityType("14");
+			std::string str = "14";
+			int actual = OptimizerUtility::getSuchThatEntityType(str);
 			Assert::AreEqual(actual, 0);
 		}
 		TEST_METHOD(testWithSynonymTrue)
 		{
-			bool actual = isWithSynonym("a.varName");
+			bool actual = OptimizerUtility::isWithSynonym("a.varName");
 			Assert::IsTrue(actual);
 		}
 		TEST_METHOD(testWithSynonymFalseNum)
 		{
-			bool actual = isWithSynonym("14");
+			bool actual = OptimizerUtility::isWithSynonym("14");
 			Assert::IsTrue(!actual);
 		}
 		TEST_METHOD(testWithSynonymFalseName)
 		{
-			bool actual = isWithSynonym("procedure");
+			bool actual = OptimizerUtility::isWithSynonym("procedure");
 			Assert::IsTrue(!actual);
 		}
 		TEST_METHOD(testPatternEntityTypeFirst0)
 		{
-			std::string str = '"' + "s" + '"';
-			int actual = getPatternEntityType1(str);
+			std::string str = { '"', 's', '"' };
+			int actual = OptimizerUtility::getPatternEntityType1(str);
 			Assert::AreEqual(actual, 0);
 		}
 		TEST_METHOD(testPatternEntityTypeFirst1)
 		{
-			int actual = getPatternEntityType1("v");
+			int actual = OptimizerUtility::getPatternEntityType1("v");
 			Assert::AreEqual(actual, 1);
 		}
 		TEST_METHOD(testPatternEntityTypeFirst2)
 		{
-			int actual = getPatternEntityType1("_");
+			int actual = OptimizerUtility::getPatternEntityType1("_");
 			Assert::AreEqual(actual, 2);
 		}
 		TEST_METHOD(testPatternEntityTypeSecond0)
 		{
 			std::string str = { '"',  's', '"' };
-			int actual = getPatternEntityType2(str);
+			int actual = OptimizerUtility::getPatternEntityType2(str);
 			Assert::AreEqual(actual, 0);
 		}
 		TEST_METHOD(testPatternEntityTypeSecond1)
 		{
 			std::string str = { '_', '"',  's', '"', '_' };
-			int actual = getPatternEntityType2("v");
+			int actual = OptimizerUtility::getPatternEntityType2(str);
 			Assert::AreEqual(actual, 1);
 		}
 		TEST_METHOD(testPatternEntityTypeSecond2)
 		{
-			int actual = getPatternEntityType2("_");
+			int actual = OptimizerUtility::getPatternEntityType2("_");
 			Assert::AreEqual(actual, 2);
 		}
 		TEST_METHOD(testWithPriority1)
 		{
-			int actual = getWithPriority(1);
+			int actual = OptimizerUtility::getWithPriority(1);
 			Assert::AreEqual(actual, 4);
 		}
 		TEST_METHOD(testWithPriority2)
 		{
-			int actual = getWithPriority(2);
-			Assert::AreEqual(actual, 14);
+			int actual = OptimizerUtility::getWithPriority(2);
+			Assert::AreEqual(actual, 18);
 		}
 		TEST_METHOD(testPatternPriorityA11)
 		{
-			int actual = getPatternPriority("assign", 1, 1);
+			int actual = OptimizerUtility::getPatternPriority("assign", 1, 1);
 			Assert::AreEqual(actual, 20);
 		}
 		TEST_METHOD(testPatternPriorityA02)
 		{
-			int actual = getPatternPriority("assign", 0, 2);
+			int actual = OptimizerUtility::getPatternPriority("assign", 0, 2);
 			Assert::AreEqual(actual, 12);
 		}
 		TEST_METHOD(testPatternPriorityIfs20)
 		{
-			int actual = getPatternPriority("if", 2, 0);
-			Assert::AreEqual(actual, 10);
+			int actual = OptimizerUtility::getPatternPriority("if", 2, 0);
+			Assert::AreEqual(actual, 33);
 		}
 		TEST_METHOD(testSuchThatPriorityFollowStar1)
 		{
-			int actual = getSuchThatPriority("Follow*", 1);
+			int actual = OptimizerUtility::getSuchThatPriority("Follows*", 1);
 			Assert::AreEqual(actual, 17);
 		}
 	};

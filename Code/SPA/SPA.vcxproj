@@ -42,7 +42,6 @@
     <ClCompile Include="..\source\ModifyStorage.cpp" />
     <ClCompile Include="..\source\ClauseGraph.cpp" />
     <ClCompile Include="..\source\OptimizerUtility.cpp" />
-    <ClCompile Include="..\source\CompareTuple.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\AssignParser.h" />
@@ -57,6 +56,7 @@
     <ClInclude Include="..\source\IfParser.h" />
     <ClInclude Include="..\source\LexicalToken.h" />
     <ClInclude Include="..\source\NextStorage.h" />
+    <ClInclude Include="..\source\OptimizerUtility.h" />
     <ClInclude Include="..\source\Parser.h" />
     <ClInclude Include="..\source\PKB.h" />
     <ClInclude Include="..\source\PrintParser.h" />

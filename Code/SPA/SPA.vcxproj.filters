@@ -147,9 +147,6 @@
     <ClCompile Include="..\source\OptimizerUtility.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\CompareTuple.cpp">
-      <Filter>Source Files\PQL</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\PKB.h">
@@ -247,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="..\source\ClauseGraph.h">
       <Filter>Header Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\OptimizerUtility.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

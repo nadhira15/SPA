@@ -6,8 +6,9 @@
 #include <functional>
 #include <unordered_map>
 #include <unordered_set>
-#include "OptimizerUtility.cpp"
-#include "CompareTuple.cpp"
+#include <set>
+#include <map>
+#include "OptimizerUtility.h"
 
 /** Usage Guide
   This class optimises the evaluator by chaining the clauses together such that every other clause will have at least 1 clause evaluated
@@ -27,25 +28,27 @@ private:
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatClauses;
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> withClauses;
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternClauses;
+	int psize; //patternClauseSize
+	int wsize; //withClauseSize
 	std::unordered_set<std::string> selectClause;
-	std::unordered_map<std::string, std::priority_queue<std::tuple<int, int, int>, std::vector<std::tuple<int, int, int>>, CompareTuple>> synMap;
-	std::unordered_map<std::tuple<int, int, int>, std::vector<std::string>> clMap;
+	std::unordered_map<std::string, std::priority_queue<std::pair<int,int>>> synMap;
+	std::unordered_map<int, std::vector<std::string>> clMap;
 	// these variables are used for storage of results
 	std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> trivial;
 	std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> nontrivial;
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> graph;
 	// sets are used for bookkeeping to prevent infinite calls
 	std::unordered_set<std::string> synSet;
-	std::unordered_set<std::tuple<int, int, int>> clSet;
+	std::set<std::pair<int,int>> clSet;
 	// processing functions - refer to .cpp for more details
 	void groupByClauseType(int t);
 	std::pair<int, std::vector<std::string>> extractSuchThatSyn(int index);
 	std::pair<int, std::vector<std::string>> extractWithSyn(int index);
 	std::pair<int, std::vector<std::string>> extractPatternSyn(int index);
-	void createMaps(std::vector<std::string> synLst, std::tuple<int, int, int> cl);
-	bool mapClauses(std::tuple<int, int, int> cl, bool trivial);
+	void createMaps(std::vector<std::string> synLst, std::pair<int,int> cl);
+	bool mapClauses(std::pair<int,int> cl, bool trivial);
 	bool mapSynonym(std::string syn, bool trivial);
-	std::pair<std::string, std::pair<std::string, std::string>> getClause(std::tuple<int, int, int> cl);
+	std::pair<std::string, std::pair<std::string, std::string>> getClause(int cl);
 public:
 	//Constructor
 	ClauseGraph(std::vector<std::pair<std::string, std::pair<std::string, std::string>>> st,
