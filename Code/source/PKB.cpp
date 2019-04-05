@@ -22,7 +22,7 @@ UseStorage PKB::uStore;
 ModifyStorage PKB::mStore;
 CallStorage PKB::cStore;
 NextStorage PKB::nStore;
-ControlVariableStorage PKB::cvStore;
+CtrlVarStorage PKB::cvStore;
 unordered_map<int, pair<string, string> > PKB::patternList;
 
 PKB::PKB()

@@ -12,7 +12,7 @@ using namespace std;
 #include "ModifyStorage.h"
 #include "CallStorage.h"
 #include "NextStorage.h"
-#include "ControlVariableStorage.h"
+#include "CtrlVarStorage.h"
 #include "RunTimeDesignExtractor.h"
 #include "Hasher.h"
 
@@ -666,6 +666,6 @@ private:
 	static ModifyStorage mStore;
 	static CallStorage cStore;
 	static NextStorage nStore;
-	static ControlVariableStorage cvStore;
+	static CtrlVarStorage cvStore;
 	static unordered_map<int, pair<string, string> > patternList;
 };

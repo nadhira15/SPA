@@ -138,7 +138,7 @@
     <ClCompile Include="..\source\RunTimeDesignExtractor.cpp">
       <Filter>Source Files\DesignExtractor</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\ControlVariableStorage.cpp">
+    <ClCompile Include="..\source\CtrlVarStorage.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
   </ItemGroup>
@@ -224,14 +224,14 @@
     <ClInclude Include="..\source\RunTimeDesignExtractor.h">
       <Filter>Header Files\DesignExtractor</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\ControlVariableStorage.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\QueryValidator.h">
       <Filter>Header Files\PQL</Filter>
     </ClInclude>
     <ClInclude Include="..\source\Preprocessor.h">
       <Filter>Header Files\PreProcessor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\CtrlVarStorage.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

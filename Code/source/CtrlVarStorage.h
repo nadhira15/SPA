@@ -5,10 +5,10 @@
 
 #include "Hasher.h"
 
-class ControlVariableStorage {
+class CtrlVarStorage {
 
 public:
-	ControlVariableStorage();
+	CtrlVarStorage();
 	void addIfControlVariable(int stm, string variable);
 	void addWhileControlVariable(int stm, string variable);
 
