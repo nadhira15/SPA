@@ -113,5 +113,17 @@ namespace UnitTesting
 			std::pair<int, std::vector<std::string>> expected = std::make_pair(16, vect);
 			Assert::IsTrue(result.first == expected.first && result.second == expected.second);
 		}
+		TEST_METHOD(testGraphChainingLogic1)
+		{
+
+		}
+		TEST_METHOD(testGraphChainingLogic2)
+		{
+
+		}
+		TEST_METHOD(testTriviality)
+		{
+
+		}
 	};
 }
