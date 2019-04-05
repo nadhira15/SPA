@@ -170,10 +170,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-     <ClCompile Include="CallParserTest.cpp" />
-    <ClCompile Include="DesignExtractorTest.cpp" />
-    <ClCompile Include="NextStartTest.cpp" />
-	<ClCompile Include="PKB\FollowStorageTest.cpp" />
+    <ClCompile Include="Parser\CallParserTest.cpp" />
+    <ClCompile Include="DesignExtractor\DesignExtractorTest.cpp" />
+    <ClCompile Include="DesignExtractor\NextStartTest.cpp" />
+    <ClCompile Include="PKB\FollowStorageTest.cpp" />
     <ClCompile Include="PKB\ModifyStorageTest.cpp" />
     <ClCompile Include="PKB\ParentStorageTest.cpp" />
     <ClCompile Include="PKB\UseStorageTest.cpp" />

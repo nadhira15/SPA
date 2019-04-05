@@ -86,13 +86,13 @@
     <ClCompile Include="PKB\ModifyStorageTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NextStartTest.cpp">
+    <ClCompile Include="Parser\CallParserTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CallParserTest.cpp">
+    <ClCompile Include="DesignExtractor\DesignExtractorTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DesignExtractorTest.cpp">
+    <ClCompile Include="DesignExtractor\NextStartTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
