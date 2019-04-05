@@ -1085,12 +1085,10 @@ std::string QueryEvaluator::toAttrRefVal(std::unordered_map<std::string, std::st
 		return PKB().getProcCalledBy(stoi(attrMember));
 	}
 	else if ((attrType == "read") && (ref == "varName")) {
-		auto it = PKB().getVarModifiedByStm(stoi(attrMember)).begin();
-		return *it;
+		return *PKB().getVarModifiedByStm(stoi(attrMember)).begin();
 	}
 	else if ((attrType == "print") && (ref == "varName")) {
-		auto it = PKB().getVarUsedByStm(stoi(attrMember)).begin();
-		return *it;
+		return *PKB().getVarUsedByStm(stoi(attrMember)).begin();
 	}
 	else {
 		return attrMember;

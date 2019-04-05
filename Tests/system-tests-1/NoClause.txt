@@ -1,0 +1,115 @@
+1 - all statements
+stmt s;
+Select s
+none
+5000
+2 - all print statements
+print pn;
+Select pn
+none 
+5000
+3 - all read statements
+read r;
+Select r
+none
+5000
+4 - all while statements
+while w;
+Select w
+none 
+5000
+5 - all if statements
+if ifs;
+Select ifs
+none 
+5000
+6 - all assign statements
+assign a;
+Select a
+none 
+5000
+7 - all variables
+variable v;
+Select v
+none
+5000
+8 - all constants
+constant c;
+Select c
+none
+5000
+9 - all procedures
+procedure p;
+Select p
+none 
+5000
+10 - all calls
+call c;
+Select c
+none 
+5000
+11 - all procedures name
+procedure p;
+Select p.procName
+none
+5000
+12 - all called procedures
+call c;
+Select c.procName
+none 
+5000
+13 - all variables name 
+variable v;
+Select v.varName
+none
+5000
+14 - all printed variables
+print pn;
+Select pn.varName
+none
+5000
+15 - all read variables
+read r;
+Select r.varName
+none 
+5000
+16 - all contant values
+constant c;
+Select c.value
+none 
+5000
+17 - all statement numbers
+stmt s;
+Select s.stmt#
+none
+5000
+18 - all read statement numbers
+read r;
+Select r.stmt#
+none 
+5000
+19 - all print statement numbers
+print pn;
+Select pn.stmt#
+none
+5000
+20 - all call statement numbers
+call c;
+Select c.stmt#
+none 
+5000
+21 - all while statement numbers
+while w;
+Select w.stmt#
+none 
+5000
+22 - all if statement numbers
+if ifs;
+Select ifs.stmt#
+none 
+5000
+23 - all assign statment numbers
+assign a;
+Select a.stmt#
+none 
+5000
