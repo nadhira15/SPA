@@ -1,9 +1,9 @@
-#include "ClauseGraph.h"
+#include "Optimizer.h"
 
 /* 
 * Constructor function
 */
-ClauseGraph::ClauseGraph(
+Optimizer::Optimizer(
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> st,
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> w,
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> p, 
@@ -20,11 +20,12 @@ ClauseGraph::ClauseGraph(
 /*
 * main processing function
 */
-void ClauseGraph::groupClause() {
+void Optimizer::groupClause() {
 	//extract synonyms and create the syn-cl and cl-syn map
-	groupByClauseType(0);
-	groupByClauseType(1);
-	groupByClauseType(2);
+	int clauseSize = psize + wsize + suchThatClauses.size();
+	for (int i = 0; i < clauseSize; i++) {
+		groupByClauseType(i);
+	}
 	//while loop to chain clauses (DFS)
 	std::pair<int,int> cl;
 	bool isTrivial;
@@ -44,31 +45,25 @@ void ClauseGraph::groupClause() {
 /*
 * Creates a hashmap of syn-clause and clause-syn, which will be used for graph traversal
 */
-void ClauseGraph::groupByClauseType(int t) {
+void Optimizer::groupByClauseType(int i) {
 	std::pair<int,std::vector<std::string>> prioritySyn;
-	//clauses are represented internally by <int,index>
-	if (t == 0) {
-		for (int i = 0; i < (int)suchThatClauses.size(); i++) {
-			prioritySyn = extractSuchThatSyn(i);
-			createMaps(prioritySyn.second, std::make_pair(prioritySyn.first, wsize + psize + i));
-		}
-	} else if (t == 1) {
-		for (int i = 0; i < (int)patternClauses.size(); i++) {
-			prioritySyn = extractPatternSyn(i);
-			createMaps(prioritySyn.second, std::make_pair(prioritySyn.first, i));
-		}
+	//clauses are represented internally by int, in the order pattern, with, st
+	if (i > wsize + psize) {
+		prioritySyn = extractSuchThatSyn(i - wsize - psize);
+		createMaps(prioritySyn.second, std::make_pair(prioritySyn.first, i));
+	} else if (i > psize) {
+		prioritySyn = extractWithSyn(i - psize);
+		createMaps(prioritySyn.second, std::make_pair(prioritySyn.first, i));
 	} else {
-		for (int i = 0; i < (int)withClauses.size(); i++) {
-			prioritySyn = extractWithSyn(i);
-			createMaps(prioritySyn.second, std::make_pair(prioritySyn.first, psize + i));
-		}
+		prioritySyn = extractPatternSyn(i);
+		createMaps(prioritySyn.second, std::make_pair(prioritySyn.first, i));
 	}
 }
 
 /*
 * Creates syn-cl and cl-syn maps 
 */
-void ClauseGraph::createMaps(std::vector<std::string> synLst, std::pair<int,int> cl) {
+void Optimizer::createMaps(std::vector<std::string> synLst, std::pair<int,int> cl) {
 	clMap[cl.second] = synLst;
 	clSet.insert(cl);
 	for (std::vector<std::string>::iterator it = synLst.begin(); it != synLst.end(); ++it) {
@@ -91,7 +86,7 @@ void ClauseGraph::createMaps(std::vector<std::string> synLst, std::pair<int,int>
   As the for loop is implemented, the algorithm is guaranteed to access all synonyms of the clause and vice versa
 * Note: The actual clause, rather than the internal reference, is added to the results graph
 */
-bool ClauseGraph::mapClauses(std::pair<int,int> cl, bool isTrivial) {
+bool Optimizer::mapClauses(std::pair<int,int> cl, bool isTrivial) {
 	std::pair<std::string, std::pair<std::string, std::string>> clause;
 	clSet.erase(cl); //clause removed from bookkeeping sets
 	for (std::vector<std::string>::iterator it = clMap[cl.second].begin(); it != clMap[cl.second].end(); ++it) {
@@ -113,7 +108,7 @@ bool ClauseGraph::mapClauses(std::pair<int,int> cl, bool isTrivial) {
   As the for loop is implemented, the algorithm is guaranteed to access all synonyms of the clause and vice versa
 * Note: Group is assumed to be trivial until a select synonym matches
 */
-bool ClauseGraph::mapSynonym(std::string syn, bool isTrivial) {
+bool Optimizer::mapSynonym(std::string syn, bool isTrivial) {
 	//check if syn is part of select if group is trivial
 	if (isTrivial && (selectClause.find(syn) != selectClause.end())) {
 		isTrivial = false;
@@ -132,7 +127,7 @@ bool ClauseGraph::mapSynonym(std::string syn, bool isTrivial) {
 /*
 * To extract synonym from the such that, pattern, with clauses
 */
-std::pair<int, std::vector<std::string>> ClauseGraph::extractSuchThatSyn(int index) {
+std::pair<int, std::vector<std::string>> Optimizer::extractSuchThatSyn(int index) {
 	std::vector<std::string> synLst;
 	std::string r = suchThatClauses.at(index).first;
 	std::string f = suchThatClauses.at(index).second.first;
@@ -156,7 +151,7 @@ std::pair<int, std::vector<std::string>> ClauseGraph::extractSuchThatSyn(int ind
 	return std::make_pair(tmp, synLst);
 }
 
-std::pair<int, std::vector<std::string>> ClauseGraph::extractPatternSyn(int index) {
+std::pair<int, std::vector<std::string>> Optimizer::extractPatternSyn(int index) {
 	std::vector<std::string> synLst;
 	std::string syn = patternClauses.at(index).first;
 	std::string f = patternClauses.at(index).second.first;
@@ -176,7 +171,7 @@ std::pair<int, std::vector<std::string>> ClauseGraph::extractPatternSyn(int inde
 	return std::make_pair(p, synLst);
 }
 
-std::pair<int, std::vector<std::string>> ClauseGraph::extractWithSyn(int index) {
+std::pair<int, std::vector<std::string>> Optimizer::extractWithSyn(int index) {
 	std::vector<std::string> synLst;
 	std::string f = withClauses.at(index).second.first;
 	std::string s = withClauses.at(index).second.second;
@@ -194,14 +189,14 @@ std::pair<int, std::vector<std::string>> ClauseGraph::extractWithSyn(int index) 
 }
 
 /* Getter functions */
-std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> ClauseGraph::getTrivial() {
+std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> Optimizer::getTrivial() {
 	return trivial;
 }
-std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> ClauseGraph::getNonTrivial() {
+std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> Optimizer::getNonTrivial() {
 	return nontrivial;
 }
 
-std::pair<std::string, std::pair<std::string, std::string>> ClauseGraph::getClause(int cl) {
+std::pair<std::string, std::pair<std::string, std::string>> Optimizer::getClause(int cl) {
 	std::pair<std::string, std::pair<std::string, std::string>> clause;
 	if (cl > psize + wsize) {
 		clause = suchThatClauses.at(cl - psize - wsize);

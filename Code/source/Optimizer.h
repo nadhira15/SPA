@@ -22,7 +22,7 @@
   std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> nontrivial = cg.getNonTrivial();
 */
 
-class ClauseGraph {
+class Optimizer {
 private:
 	// these variables will be used as reference and will NOT be altered after creation
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatClauses;
@@ -51,7 +51,7 @@ private:
 	std::pair<std::string, std::pair<std::string, std::string>> getClause(int cl);
 public:
 	//Constructor
-	ClauseGraph(std::vector<std::pair<std::string, std::pair<std::string, std::string>>> st,
+	Optimizer(std::vector<std::pair<std::string, std::pair<std::string, std::string>>> st,
 		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> w,
 		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> p,
 		std::unordered_set<std::string> select);

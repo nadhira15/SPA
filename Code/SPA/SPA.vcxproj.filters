@@ -141,7 +141,7 @@
     <ClCompile Include="..\source\ControlVariableStorage.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\ClauseGraph.cpp">
+    <ClCompile Include="..\source\Optimizer.cpp">
       <Filter>Source Files\PQL</Filter>
     </ClCompile>
     <ClCompile Include="..\source\OptimizerUtility.cpp">
@@ -236,7 +236,7 @@
     <ClInclude Include="..\source\ControlVariableStorage.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\ClauseGraph.h">
+    <ClInclude Include="..\source\Optimizer.h">
       <Filter>Header Files\PQL</Filter>
     </ClInclude>
     <ClInclude Include="..\source\OptimizerUtility.h">
