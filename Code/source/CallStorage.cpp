@@ -169,3 +169,19 @@ unordered_set<int> CallStorage::getStmCalling(string procedure)
 	}
 	return {};
 }
+
+unordered_set<pair<int, string>, intStringhash> CallStorage::getStmProcCallPairs()
+{
+	return stmProcCallPairList;
+}
+
+void CallStorage::erase()
+{
+	callTable.erase(callTable.begin(), callTable.end());
+	callPairList.erase(callPairList.begin(), callPairList.end());
+	callStarPairList.erase(callStarPairList.begin(), callStarPairList.end());
+	callerList.erase(callerList.begin(), callerList.end());
+	calleeList.erase(calleeList.begin(), calleeList.end());
+	stmToProcMap.erase(stmToProcMap.begin(), stmToProcMap.end());
+	procToStmMap.erase(procToStmMap.begin(), procToStmMap.end());
+}
