@@ -83,32 +83,37 @@ namespace UnitTesting
 		TEST_METHOD(testWithPriority1)
 		{
 			int actual = OptimizerUtility::getWithPriority(1);
-			Assert::AreEqual(actual, 4);
+			Assert::AreEqual(actual, 46);
 		}
 		TEST_METHOD(testWithPriority2)
 		{
 			int actual = OptimizerUtility::getWithPriority(2);
-			Assert::AreEqual(actual, 18);
+			Assert::AreEqual(actual, 32);
 		}
 		TEST_METHOD(testPatternPriorityA11)
 		{
 			int actual = OptimizerUtility::getPatternPriority("assign", 1, 1);
-			Assert::AreEqual(actual, 20);
+			Assert::AreEqual(actual, 30);
 		}
 		TEST_METHOD(testPatternPriorityA02)
 		{
 			int actual = OptimizerUtility::getPatternPriority("assign", 0, 2);
-			Assert::AreEqual(actual, 12);
+			Assert::AreEqual(actual, 38);
 		}
 		TEST_METHOD(testPatternPriorityIfs20)
 		{
 			int actual = OptimizerUtility::getPatternPriority("if", 2, 0);
-			Assert::AreEqual(actual, 33);
+			Assert::AreEqual(actual, 17);
 		}
 		TEST_METHOD(testSuchThatPriorityFollowStar1)
 		{
 			int actual = OptimizerUtility::getSuchThatPriority("Follows*", 1);
-			Assert::AreEqual(actual, 17);
+			Assert::AreEqual(actual, 33);
+		}
+		TEST_METHOD(testSuchThatPriorityNextStar2)
+		{
+			int actual = OptimizerUtility::getSuchThatPriority("Next*", 2);
+			Assert::AreEqual(actual, 11);
 		}
 	};
 }

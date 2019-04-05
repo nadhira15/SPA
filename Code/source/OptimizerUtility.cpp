@@ -67,7 +67,7 @@ bool OptimizerUtility::isWithSynonym(std::string str) {
 int OptimizerUtility::getSuchThatPriority(std::string relation, int synNum) {
 	//Priority determined by the relation and number of synonyms
 	//if 1 syn and 1 wildcard -> 2 syn
-	int res = 100;
+	int res = 50;
 	if (relation.compare("Follows") == 0) {
 		if (synNum == 1) {
 			res = 1;
@@ -164,22 +164,22 @@ int OptimizerUtility::getSuchThatPriority(std::string relation, int synNum) {
 			res = 41;
 		}
 	}
-	return res;
+	return 50 - res;
 }
 
 int OptimizerUtility::getWithPriority(int synNum) {
-	int res = 100;
+	int res = 50;
 	if (synNum == 1) {
 		res = 4;
 	}
 	else {
 		res = 18;
 	}
-	return res;
+	return 50 - res;
 }
 
 int OptimizerUtility::getPatternPriority(std::string synType, int t1, int t2) {
-	int res = 100;
+	int res = 50;
 	if (synType.compare("assign") == 0) {
 		if (t1 == 0 && t2 == 0) {
 			res = 5; //a "", "" -> t1 = 0, t2 = 0
@@ -231,6 +231,6 @@ int OptimizerUtility::getPatternPriority(std::string synType, int t1, int t2) {
 			res = 34; //w _
 		}
 	}
-	return res;
+	return 50 - res;
 }
 

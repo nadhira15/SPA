@@ -31,6 +31,7 @@ private:
 	int psize; //patternClauseSize
 	int wsize; //withClauseSize
 	std::unordered_set<std::string> selectClause;
+	std::unordered_map<std::string, std::string> declarations;
 	std::unordered_map<std::string, std::priority_queue<std::pair<int,int>>> synMap;
 	std::unordered_map<int, std::vector<std::string>> clMap;
 	// these variables are used for storage of results
@@ -42,9 +43,6 @@ private:
 	std::set<std::pair<int,int>> clSet;
 	// processing functions - refer to .cpp for more details
 	void groupByClauseType(int t);
-	std::pair<int, std::vector<std::string>> extractSuchThatSyn(int index);
-	std::pair<int, std::vector<std::string>> extractWithSyn(int index);
-	std::pair<int, std::vector<std::string>> extractPatternSyn(int index);
 	void createMaps(std::vector<std::string> synLst, std::pair<int,int> cl);
 	bool mapClauses(std::pair<int,int> cl, bool trivial);
 	bool mapSynonym(std::string syn, bool trivial);
@@ -54,10 +52,14 @@ public:
 	Optimizer(std::vector<std::pair<std::string, std::pair<std::string, std::string>>> st,
 		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> w,
 		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> p,
-		std::unordered_set<std::string> select);
+		std::unordered_set<std::string> s, std::unordered_map<std::string, std::string> d);
 	//Statement to process
 	void groupClause();
 	//Getter Functions
 	std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> getTrivial();
 	std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> getNonTrivial();
+	//Priority and Syn Extractor (For Unit Testing -- this should otherwise be kept private)
+	std::pair<int, std::vector<std::string>> extractSuchThatSyn(int index);
+	std::pair<int, std::vector<std::string>> extractWithSyn(int index);
+	std::pair<int, std::vector<std::string>> extractPatternSyn(int index);
 };

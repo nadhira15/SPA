@@ -7,11 +7,12 @@ Optimizer::Optimizer(
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> st,
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> w,
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> p, 
-	std::unordered_set<std::string> select) {
+	std::unordered_set<std::string> s, std::unordered_map<std::string, std::string> d) {
 	suchThatClauses = st;
 	withClauses = w;
 	patternClauses = p;
-	selectClause = select;
+	selectClause = s;
+	declarations = d;
 	//internal reference of clauses will follow: p, w, st
 	psize = patternClauses.size();
 	wsize = withClauses.size();
@@ -162,7 +163,7 @@ std::pair<int, std::vector<std::string>> Optimizer::extractPatternSyn(int index)
 		synLst.push_back(f);
 	}
 	//get from declaration --> syn type of syn
-	std::string type;
+	std::string type = declarations[syn];
 	int tmp2 = 0;
 	if (type.compare("assign") == 0) {
 		tmp2 = OptimizerUtility::getPatternEntityType2(s);
@@ -177,11 +178,11 @@ std::pair<int, std::vector<std::string>> Optimizer::extractWithSyn(int index) {
 	std::string s = withClauses.at(index).second.second;
 	int synNum = 0;
 	if (OptimizerUtility::isWithSynonym(f)) {
-		synLst.push_back(f);
+		synLst.push_back(f.substr(0,f.find(".")));
 		synNum++;
 	}
 	if (OptimizerUtility::isWithSynonym(s)) {
-		synLst.push_back(s);
+		synLst.push_back(s.substr(0, s.find(".")));
 		synNum++;
 	}
 	int p = OptimizerUtility::getWithPriority(synNum);
