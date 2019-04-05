@@ -26,12 +26,12 @@ Select w pattern w(_,_)
 6 - Find all while statements with synonym
 while w; variable v;
 Select w pattern w(v,_) with v.varName = "while"
-373,377,399
+342, 358, 373,377,399
 5000  
 7 - Find all while statements with synonym
 while w; variable v;
 Select w pattern w(v,_) with v.varName = "b"
-30,42,56,81,101,107,108,112,114,120,123,124,128,131,172
+30,42,56,81,101,107,108,112,114,120,123,124,128,131,133,170,172
 5000
 8- Find all while statements with synonym
 while w; variable v;
@@ -56,17 +56,17 @@ minus,a,div,b,f,i,procedure,read,print,while,banana,grape,avocado,kiwi,red,blue,
 23 - Find all if statements with synonym
 if ifs; variable v;
 Select ifs pattern ifs(v,_,_) with v.varName = "japan"
-none
+462
 5000
 24 - Find all if statements with synonym
 if ifs; variable v;
 Select ifs pattern ifs(v,_,_) with v.varName = "if"
-168,367
+194,347,367
 5000
 25 - Find all if statements with synonym
 if ifs; variable v;
 Select ifs pattern ifs(v,_,_) with v.varName = "banana"
-233,202
+202,222,233
 5000
 26 - Find all if statements with control variable
 if ifs;

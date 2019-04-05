@@ -1,4 +1,5 @@
 #include "DesignExtractor.h"
+#include "Statement.h"
 
 PKB DesignExtractor::pkb;
 
@@ -10,7 +11,7 @@ void DesignExtractor::extractDesigns()
 
 	//Verification
 	verifyCalledProceduresPresence();
-	
+
 	//Statement-Statement Relationships
 	processFollowStar();
 	processParentStar();
@@ -19,6 +20,7 @@ void DesignExtractor::extractDesigns()
 	vector<string> sortedProcedures = topologicalSortProcedures();
 	processAdvancedUsesAndModifies(sortedProcedures);
 	processCallsStar(sortedProcedures);
+	extractNextEntity();
 }
 
 /*
@@ -85,7 +87,7 @@ void DesignExtractor::processParentStar()
 	int stmtNum = pkb.getTotalStmNo();
 
 	//Process stmt list s where Parent*(s, index) is true.
-	for (int i = 1 ; i <= stmtNum ; i++) {
+	for (int i = 1; i <= stmtNum; i++) {
 		int currStmt = i;
 		int directParentStm = pkb.getParent(i);
 
@@ -188,7 +190,7 @@ void DesignExtractor::DFSRecursive(std::string procedure, unordered_set<std::str
 	pathVisitedProcedure.erase(procedure);
 }
 
-/* 
+/*
  * Performs population of Uses and Modifies for Calls, If/While Container Statements and Procecedures
  * starting from the leaf node procedures.
  */
@@ -214,7 +216,7 @@ void DesignExtractor::processAdvancedUsesAndModifies(std::vector<std::string> so
 void DesignExtractor::processUsesCalls(std::string procedure) {
 	std::vector<int> procedureStm = pkb.getStmList(procedure);
 
-	for (int i = 0; i < procedureStm.size() ; i++) {
+	for (int i = 0; i < procedureStm.size(); i++) {
 		int currLine = procedureStm.at(i);
 		stmType type = pkb.getStmType(currLine);
 
@@ -299,7 +301,7 @@ void DesignExtractor::processUsesProcedures(std::string procedure)
 	//TODO: Implement for Iteration 2
 	std::vector<int> procedureStm = pkb.getStmList(procedure);
 
-	for (int i = 0; i < procedureStm.size() ; i++) {
+	for (int i = 0; i < procedureStm.size(); i++) {
 		int currLine = procedureStm.at(i);
 		std::unordered_set<std::string> usedList = pkb.getVarUsedByStm(currLine);
 
@@ -352,7 +354,7 @@ void DesignExtractor::processCallsStar(std::vector<std::string> sortedProcedures
 			pkb.setCallAnc(procedure, allAncestorCallers);
 		}
 	}
-	
+
 	//Process procedure list s where Calls*(procedure, s) is true.
 	for (int i = 0; i < sortedProcedures.size(); i++) {
 		std::string procedure = sortedProcedures.at(i);
@@ -370,6 +372,48 @@ void DesignExtractor::processCallsStar(std::vector<std::string> sortedProcedures
 				allDescendentsCallee.insert(callee);
 			}
 			pkb.setCallDesc(procedure, allDescendentsCallee);
+		}
+	}
+}
+
+//get all if Statments and extrct Next entity
+void DesignExtractor::extractNextEntity() {
+	unordered_set<int> ifStmtList = pkb.getIfStms();
+	for (int stmt : ifStmtList) {
+		//pair<int,int> first int is last stmt of then block, second int is last stmt of else block
+		pair<int, int> ifLastStmt = pkb.getIfLastStms(stmt);
+		int parent = pkb.getParent(stmt);
+		//if if statment have follower, next(last stmt of then block and else block, follower)
+		if (pkb.getFollower(stmt) != 0) {
+			pkb.addNext(ifLastStmt.first, pkb.getFollower(stmt));
+			pkb.addNext(ifLastStmt.second, pkb.getFollower(stmt));
+		}
+		else {
+			if (parent != 0) {
+				//if if statment have a while statment as parent, 
+				//next(last stmt of then block and else block, while statment)
+				if (pkb.getStmType(parent) == whileStm) {
+					pkb.addNext(ifLastStmt.first, parent);
+					pkb.addNext(ifLastStmt.second, parent);
+				}
+				//if if statment have a if statment as parent, 
+				if (pkb.getStmType(parent) == ifStm) {
+					//next(last stmt of then block and else block, follower of parent)
+					if (pkb.getFollower(parent) != 0) {
+						pkb.addNext(ifLastStmt.first, pkb.getFollower(parent));
+						pkb.addNext(ifLastStmt.second, pkb.getFollower(parent));
+					}
+					//if parent if statement have no follower 
+					else {
+						//check the parent of parent if it is a while statment
+						//next(last stmt of then block and else block, while statment)
+						if (pkb.getStmType(pkb.getParent(parent)) == whileStm) {
+							pkb.addNext(ifLastStmt.first, pkb.getParent(parent));
+							pkb.addNext(ifLastStmt.second, pkb.getParent(parent));
+						}
+					}
+				}
+			}
 		}
 	}
 }
