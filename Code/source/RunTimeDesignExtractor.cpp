@@ -248,6 +248,55 @@ bool RunTimeDesignExtractor::hasAffectsRelation() {
 	return false;
 }
 
+vector<int> RunTimeDesignExtractor::getStatementsAffectedByAnother(int stmt) {
+
+}
+
+vector<int> RunTimeDesignExtractor::getStatementsAffectingAnother(int stmt) {
+	if (pkb->getStmType(stmt) != stmType::assign) {
+		return vector<int>();
+	}
+	std::unordered_set<int> cfgPath;
+	std::vector<int> affectedList;
+	DFSRecursiveGetAffectingList(stmt, stmt, cfgPath, true, affectedList);
+}
+
+void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int start, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedList) {
+	//Add stmt to CFGPath if is not start of DFS
+	//Subsequently it will always add to cfgPath
+	if (!isStart) {
+		cfgPath.insert(current);
+	}
+
+	//If is not starting node we will not check if it affects or breaks affects
+	//Subsequently, if we visit the starting node again we will go into this clause.
+	if (!isStart) {
+		if (isAffectPossible(start, current)) {
+			affectedList.push_back(current);
+		}
+		//We have encountered something in this path that breaks Affects. Therefore we return false.
+		else if (isLastModifiedBroken(current, start)) {
+			return;
+		}
+	}
+
+	//Get neighbouring next statements
+	std::unordered_set<int> nextStatements = pkb->getNext(current);
+
+	//For each neighbouring procedure
+	for (int nextStmt : nextStatements) {
+
+		//Check if next Statemnt is inside the CFGPath.
+		std::unordered_set<int>::const_iterator currPath = cfgPath.find(nextStmt);
+
+		//If next statement has not been visited, visit it.
+		if (currPath == cfgPath.end()) {
+			DFSRecursiveCheckAffecting(start, nextStmt, cfgPath, false);
+		}
+	}
+	return;
+}
+
 bool RunTimeDesignExtractor::isAffectPossible(int stmt, int stmt1) {
 	//Check if stmt and stmt1 are Assign Statements
 	if (pkb->getStmType(stmt) != stmType::assign) {
