@@ -45,7 +45,7 @@ private:
 	void createMaps(std::vector<std::string> synLst, std::tuple<int, int, int> cl);
 	bool mapClauses(std::tuple<int, int, int> cl, bool trivial);
 	bool mapSynonym(std::string syn, bool trivial);
-	std::pair<std::string, std::pair<std::string, std::string>> ClauseGraph::getClause(std::tuple<int, int, int> cl);
+	std::pair<std::string, std::pair<std::string, std::string>> getClause(std::tuple<int, int, int> cl);
 public:
 	//Constructor
 	ClauseGraph(std::vector<std::pair<std::string, std::pair<std::string, std::string>>> st,
@@ -57,7 +57,6 @@ public:
 	//Getter Functions
 	std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> getTrivial();
 	std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> getNonTrivial();
-	//bool Compare(std::tuple<int, int, int> c1, std::tuple<int, int, int> c2);
 };
 
 class Compare {
