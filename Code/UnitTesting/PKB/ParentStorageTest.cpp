@@ -95,7 +95,7 @@ namespace UnitTesting
 			store.addParent_Child(5, 6);
 			store.addParent_Child(6, 7);
 			store.addParent_Child(5, 8);
-			Assert::IsTrue(store.getChildren(5) == unordered_set<int>{6, 8});
+			Assert::IsTrue(store.getChildren(5) == std::unordered_set<int>{6, 8});
 		}
 		
 		TEST_METHOD(getChildren_NonExistingStm_ReturnEmptySet)

@@ -48,16 +48,17 @@ store.setAllFollowedBy(4, allFollowedBy[2]);
 store.setAllFollowedBy(5, allFollowedBy[3]);
 store.setAllFollowedBy(10, allFollowedBy[4]);
 */
-unordered_set<int> allFollowing[5] = { {2, 3, 4, 5}, {3, 4, 5}, {4, 5}, {5}, {10} };
-unordered_set<int> allFollowedBy[5] = { {1}, {1, 2}, {1, 2, 3}, {1, 2, 3, 4}, {9} };
-unordered_set<int> followers = {2, 3, 4, 5, 10};
-unordered_set<int> followed = {1, 2, 3, 4, 9};
-unordered_set< pair<int, int>, intPairhash> followPairs = { pair<int, int>(1, 2), pair<int, int>(2, 3), 
-															pair<int, int>(3, 4), pair<int, int>(4, 5),
-															pair<int, int>(9, 10) };
-unordered_set< pair<int, int>, intPairhash> followStarPairs = { pair<int, int>(1, 2), pair<int, int>(1, 3),
-																pair<int, int>(1, 4), pair<int, int>(1, 5),
-																pair<int, int>(9, 10), pair<int, int>(2, 3),
-																pair<int, int>(2, 4), pair<int, int>(2, 5),
-																pair<int, int>(3, 4), pair<int, int>(3, 5),
-																pair<int, int>(4, 5) };
+std::unordered_set<int> allFollowing[5] = { {2, 3, 4, 5}, {3, 4, 5}, {4, 5}, {5}, {10} };
+std::unordered_set<int> allFollowedBy[5] = { {1}, {1, 2}, {1, 2, 3}, {1, 2, 3, 4}, {9} };
+std::unordered_set<int> followers = {2, 3, 4, 5, 10};
+std::unordered_set<int> followed = {1, 2, 3, 4, 9};
+
+std::unordered_set<std::pair<int, int>, intPairhash> followPairs = { std::pair<int, int>(1, 2),
+	std::pair<int, int>(2, 3), std::pair<int, int>(3, 4), std::pair<int, int>(4, 5),
+	std::pair<int, int>(9, 10) };
+
+std::unordered_set<std::pair<int, int>, intPairhash> followStarPairs = { std::pair<int, int>(1, 2),
+	std::pair<int, int>(1, 3), std::pair<int, int>(1, 4), std::pair<int, int>(1, 5),
+	std::pair<int, int>(9, 10), std::pair<int, int>(2, 3), std::pair<int, int>(2, 4),
+	std::pair<int, int>(2, 5), std::pair<int, int>(3, 4), std::pair<int, int>(3, 5),
+	std::pair<int, int>(4, 5) };

@@ -46,13 +46,19 @@ store.addUsesProc("fruit2", "banana");
 store.addUsesProc("fruit3", "melon");
 store.addUsesProc("fruit2", "melon");
 */
-unordered_set<string> stmVarList[4] = { {"apple", "melon"}, {"banana", "melon"}, {"melon"}, {"melon"} };
-unordered_set<string> procVarList[2] = { {"apple", "melon", "banana"}, {"melon"} };
-unordered_set<int> stmList[4] = { {9}, {9, 10, 11, 12}, {10}, {9, 10, 11, 12} };
-unordered_set<string> procList[4] = { {"fruit2"}, {"fruit2", "fruit3"}, {"fruit2"}, {"fruit2", "fruit3"} };
-unordered_set<pair<int, string>, intStringhash> stmVarPairs = { pair<int, string>(9, "apple"),
-	pair<int, string>(9, "melon"), pair<int, string>(10, "banana"), pair<int, string>(10, "melon"),
-	pair<int, string>(11, "melon"), pair<int, string>(12, "melon") };
-unordered_set<pair<string, string>, strPairhash> procVarPairs = { 
-	pair<string, string>("fruit2", "apple"), pair<string, string>("fruit2", "melon"),
-	pair<string, string>("fruit2", "banana"), pair<string, string>("fruit3", "melon") };
+std::unordered_set<std::string> stmVarList[4] = { {"apple", "melon"}, {"banana", "melon"}, {"melon"}, {"melon"} };
+std::unordered_set<std::string> procVarList[2] = { {"apple", "melon", "banana"}, {"melon"} };
+std::unordered_set<int> stmList[4] = { {9}, {9, 10, 11, 12}, {10}, {9, 10, 11, 12} };
+std::unordered_set<std::string> procList[4] = { {"fruit2"}, {"fruit2", "fruit3"}, {"fruit2"},
+	{"fruit2", "fruit3"} };
+
+std::unordered_set<std::pair<int, std::string>, intStringhash> stmVarPairs =
+	{ std::pair<int, std::string>(9, "apple"), std::pair<int, std::string>(9, "melon"),
+	std::pair<int, std::string>(10, "banana"), std::pair<int, std::string>(10, "melon"),
+	std::pair<int, std::string>(11, "melon"), std::pair<int, std::string>(12, "melon") };
+
+std::unordered_set<std::pair<std::string, std::string>, strPairhash> procVarPairs = {
+	std::pair<std::string, std::string>("fruit2", "apple"),
+	std::pair<std::string, std::string>("fruit2", "melon"),
+	std::pair<std::string, std::string>("fruit2", "banana"),
+	std::pair<std::string, std::string>("fruit3", "melon") };

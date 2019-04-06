@@ -48,17 +48,28 @@ store.addModifiesProc("fruit", "durian");
 store.addModifiesProc("fruit", "figs");
 store.addModifiesProc("fruit2", "pineapple");
 */
-unordered_set<string> ModifyStmVarList[8] = { {"apple"}, {"pineapple"}, {"apple"}, {"durian", "figs"},
-{"durian"}, {"durian"}, {"figs"}, {"pineapple"} };
-unordered_set<string> ModifyProcVarList[2] = { {"apple", "pineapple", "durian", "figs"}, {"pineapple"} };
-unordered_set<int> ModifyStmList[5] = { {1, 4}, {2, 9}, {5, 6, 7}, {5, 8}, {1, 2, 4, 5, 6, 7, 8, 9} };
-unordered_set<string> ModifyProcList[5] = { {"fruit"}, {"fruit", "fruit2"}, {"fruit"}, {"fruit"},
-{"fruit", "fruit2"} };
-unordered_set<pair<int, string>, intStringhash> ModifyStmVarPairs = { pair<int, string>(1, "apple"),
-	pair<int, string>(2, "pineapple"), pair<int, string>(4, "apple"), pair<int, string>(5, "durian"),
-	pair<int, string>(5, "figs"), pair<int, string>(6, "durian"), pair<int, string>(7, "durian"),
-	pair<int, string>(8, "figs"), pair<int, string>(9, "pineapple") };
-unordered_set<pair<string, string>, strPairhash> ModifyProcVarPairs = {
-	pair<string, string>("fruit", "apple"), pair<string, string>("fruit", "pineapple"),
-	pair<string, string>("fruit", "durian"), pair<string, string>("fruit", "figs"),
-	pair<string, string>("fruit2", "pineapple")};
+std::unordered_set<std::string> ModifyStmVarList[8] = { {"apple"}, {"pineapple"}, {"apple"},
+	{"durian", "figs"}, {"durian"}, {"durian"}, {"figs"}, {"pineapple"} };
+
+std::unordered_set<std::string> ModifyProcVarList[2] = { {"apple", "pineapple", "durian", "figs"},
+	{"pineapple"} };
+
+std::unordered_set<int> ModifyStmList[5] = { {1, 4}, {2, 9}, {5, 6, 7}, {5, 8},
+	{1, 2, 4, 5, 6, 7, 8, 9} };
+
+std::unordered_set<std::string> ModifyProcList[5] = { {"fruit"}, {"fruit", "fruit2"}, {"fruit"},
+	{"fruit"}, {"fruit", "fruit2"} };
+
+std::unordered_set<std::pair<int, std::string>, intStringhash> ModifyStmVarPairs =
+	{ std::pair<int, std::string>(1, "apple"), std::pair<int, std::string>(2, "pineapple"),
+	std::pair<int, std::string>(4, "apple"), std::pair<int, std::string>(5, "durian"),
+	std::pair<int, std::string>(5, "figs"), std::pair<int, std::string>(6, "durian"),
+	std::pair<int, std::string>(7, "durian"), std::pair<int, std::string>(8, "figs"),
+	std::pair<int, std::string>(9, "pineapple") };
+
+std::unordered_set<std::pair<std::string, std::string>, strPairhash> ModifyProcVarPairs = {
+	std::pair<std::string, std::string>("fruit", "apple"),
+	std::pair<std::string, std::string>("fruit", "pineapple"),
+	std::pair<std::string, std::string>("fruit", "durian"), 
+	std::pair<std::string, std::string>("fruit", "figs"),
+	std::pair<std::string, std::string>("fruit2", "pineapple")};

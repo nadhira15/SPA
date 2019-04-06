@@ -31,14 +31,15 @@ namespace UnitTesting
 		{
 			UseStorage store;
 			store.addUsesStm(9, "apple");
-			Assert::IsTrue(store.containsStmVarPair(pair<int, string>(9, "apple")));
+			Assert::IsTrue(store.containsStmVarPair(std::pair<int, std::string>(9, "apple")));
 		}
 
 		TEST_METHOD(containsUseProcPair_PairExist_Success)
 		{
 			UseStorage store;
 			store.addUsesProc("fruit2", "apple");
-			Assert::IsTrue(store.containsProcVarPair(pair<string, string>("fruit2", "apple")));
+			Assert::IsTrue(store.containsProcVarPair(
+				std::pair<std::string, std::string>("fruit2", "apple")));
 		}
 
 		TEST_METHOD(getVarUsedByStm_NormalOperation_Success)
