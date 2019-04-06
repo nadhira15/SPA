@@ -28,13 +28,17 @@ public:
 
 	bool hasAffectsRelation();
 
-	vector<int> getStatementsAffectedByAnother(int stm);
+	vector<int> getStatementsAffectingIndex(int stmt);
 
 	void DFSRecursiveGetAffectedByList(int start, int current, std::unordered_set<int>& cfgPath, bool isStart, std::vector<int>& affectedByList);
 
-	vector<int> getStatementsAffectingAnother(int stm);
+	vector<int> getStatementsAffectedByIndex(int stmt);
 
 	void DFSRecursiveGetAffectingList(int start, int current, std::unordered_set<int>& cfgPath, bool isStart, std::vector<int>& affectedList);
+
+	vector<int> getAllStatementsAffectingAnother();
+
+	vector<int> getAllStatementsAffectingByAnother();
 
 	bool isAffectPossible(int stmt, int stmt1);
 

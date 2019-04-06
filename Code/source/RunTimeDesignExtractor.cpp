@@ -89,9 +89,7 @@ void RunTimeDesignExtractor::DFSRecursivePrevious(int statments, unordered_set<i
 
 
 
-
-
-
+//Get true/false of Affects(int, int)
 bool RunTimeDesignExtractor::isAffect(int stmt, int stmt1) {
 	//Check if stmt is able to affect stmt1.
 	bool isPossible = isAffectPossible(stmt, stmt1);
@@ -147,6 +145,7 @@ bool RunTimeDesignExtractor::DFSRecursiveCheckAffectsPair(int start, int target,
 	return false;
 }
 
+//Get true/false of Affects(int,_)
 bool RunTimeDesignExtractor::isStatementAffectingAnother(int stmt) {
 	if (pkb->getStmType(stmt) != stmType::assign) {
 		return false;
@@ -156,12 +155,6 @@ bool RunTimeDesignExtractor::isStatementAffectingAnother(int stmt) {
 }
 
 bool RunTimeDesignExtractor::DFSRecursiveCheckAffecting(int start, int current, std::unordered_set<int> &cfgPath, bool isStart) {
-	//Add stmt to CFGPath if is start of DFS
-	//Subsequently it will always add to cfgPath
-	if (!isStart) {
-		cfgPath.insert(current);
-	}
-
 	//If is not starting node we will not check if it affects or breaks affects
 	//Subsequently, if we visit the starting node again we will go into this clause.
 	if (!isStart) {
@@ -172,6 +165,12 @@ bool RunTimeDesignExtractor::DFSRecursiveCheckAffecting(int start, int current, 
 		else if (isLastModifiedBroken(current, start)) {
 			return false;
 		}
+	}
+
+	//Add stmt to CFGPath if is start of DFS
+	//Subsequently it will always add to cfgPath
+	if (!isStart) {
+		cfgPath.insert(current);
 	}
 
 	//Get neighbouring next statements
@@ -194,6 +193,7 @@ bool RunTimeDesignExtractor::DFSRecursiveCheckAffecting(int start, int current, 
 	return false;
 }
 
+//Get true/false of Affects (_,int)
 bool RunTimeDesignExtractor::isStatementAffectedByAnother(int stmt) {
 	if (pkb->getStmType(stmt) != stmType::assign) {
 		return false;
@@ -203,18 +203,18 @@ bool RunTimeDesignExtractor::isStatementAffectedByAnother(int stmt) {
 }
 
 bool RunTimeDesignExtractor::DFSRecursiveCheckAffectedBy(int end, int current, std::unordered_set<int> &cfgPath, bool isStart) {
-	//Add stmt to CFGPath if is start of DFS
-	//Subsequently it will always add to cfgPath
-	if (!isStart) {
-		cfgPath.insert(current);
-	}
-
 	//If is not starting node we will not check if it affects or breaks affects
 	//Subsequently, if we visit the starting node again we will go into this clause.
 	if (!isStart) {
 		if (isAffectPossible(current, end)) {
 			return true;
 		}
+	}
+
+	//Add stmt to CFGPath if is start of DFS
+	//Subsequently it will always add to cfgPath
+	if (!isStart) {
+		cfgPath.insert(current);
 	}
 
 	//Get neighbouring prev statements
@@ -237,6 +237,7 @@ bool RunTimeDesignExtractor::DFSRecursiveCheckAffectedBy(int end, int current, s
 	return false;
 }
 
+//Get true/false of Affects(_,_)
 bool RunTimeDesignExtractor::hasAffectsRelation() {
 	int stmNumber = pkb->getTotalStmNo();
 
@@ -249,7 +250,7 @@ bool RunTimeDesignExtractor::hasAffectsRelation() {
 }
 
 //Get list of s where Affects(s, index)
-vector<int> RunTimeDesignExtractor::getStatementsAffectedByAnother(int stmt) {
+vector<int> RunTimeDesignExtractor::getStatementsAffectingIndex(int stmt) {
 	if (pkb->getStmType(stmt) != stmType::assign) {
 		return vector<int>();
 	}
@@ -259,12 +260,6 @@ vector<int> RunTimeDesignExtractor::getStatementsAffectedByAnother(int stmt) {
 }
 
 void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int end, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedByList) {
-	//Add stmt to CFGPath if is not start of DFS
-	//Subsequently it will always add to cfgPath
-	if (!isStart) {
-		cfgPath.insert(current);
-	}
-
 	//If is not starting node we will not check if it affects or breaks affects
 	//Subsequently, if we visit the starting node again we will go into this clause.
 	//If we find that affects is possible we return as we know anything above it in the CFG cannot affect the end statemnt.
@@ -273,6 +268,12 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int end, int current,
 			affectedByList.push_back(current);
 			return;
 		}
+	}
+
+	//Add stmt to CFGPath if is not start of DFS
+	//Subsequently it will always add to cfgPath
+	if (!isStart) {
+		cfgPath.insert(current);
 	}
 
 	//Get neighbouring next statements
@@ -293,7 +294,7 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int end, int current,
 }
 
 //Get list of s where Affects(index, s)
-vector<int> RunTimeDesignExtractor::getStatementsAffectingAnother(int stmt) {
+vector<int> RunTimeDesignExtractor::getStatementsAffectedByIndex(int stmt) {
 	if (pkb->getStmType(stmt) != stmType::assign) {
 		return vector<int>();
 	}
@@ -303,12 +304,6 @@ vector<int> RunTimeDesignExtractor::getStatementsAffectingAnother(int stmt) {
 }
 
 void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int start, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedList) {
-	//Add stmt to CFGPath if is not start of DFS
-	//Subsequently it will always add to cfgPath
-	if (!isStart) {
-		cfgPath.insert(current);
-	}
-
 	//If is not starting node we will not check if it affects or breaks affects
 	//Subsequently, if we visit the starting node again we will go into this clause.
 	if (!isStart) {
@@ -319,6 +314,12 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int start, int current
 		else if (isLastModifiedBroken(current, start)) {
 			return;
 		}
+	}
+
+	//Add stmt to CFGPath if is not start of DFS
+	//Subsequently it will always add to cfgPath
+	if (!isStart) {
+		cfgPath.insert(current);
 	}
 
 	//Get neighbouring next statements
@@ -336,6 +337,32 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int start, int current
 		}
 	}
 	return;
+}
+
+//Get list of s where of Affects(s, _)
+vector<int> RunTimeDesignExtractor::getAllStatementsAffectingAnother() {
+	int stmtListSize = pkb->getTotalStmNo();
+	vector<int> result;
+
+	for (int i = 1; i <= stmtListSize; i++) {
+		if (isStatementAffectingAnother(i)) {
+			result.push_back(i);
+		}
+	}
+	return result;
+}
+
+//Get list of s where of Affects(_, s)
+vector<int> RunTimeDesignExtractor::getAllStatementsAffectingByAnother() {
+	int stmtListSize = pkb->getTotalStmNo();
+	vector<int> result;
+
+	for (int i = 1; i <= stmtListSize; i++) {
+		if (isStatementAffectedByAnother(i)) {
+			result.push_back(i);
+		}
+	}
+	return result;
 }
 
 bool RunTimeDesignExtractor::isAffectPossible(int stmt, int stmt1) {
