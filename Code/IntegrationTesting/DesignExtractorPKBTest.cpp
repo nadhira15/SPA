@@ -21,9 +21,9 @@ namespace IntegrationTesting
 			pkb.addProc("Three");
 			pkb.addProc("Four");
 
-			pkb.addCall("One", "Two");
-			pkb.addCall("Two", "Three");
-			pkb.addCall("Three", "Four");
+			pkb.addCall("One", "Two", 1);
+			pkb.addCall("Two", "Three",2);
+			pkb.addCall("Three", "Four", 3);
 
 			de.extractDesigns();
 
@@ -42,7 +42,7 @@ namespace IntegrationTesting
 		}
 
 		TEST_METHOD(designExtractorCyclicTest) {
-			PKB *pkb = new PKB();
+			PKB pkb = PKB();
 			DesignExtractor de = DesignExtractor();
 
 
@@ -50,9 +50,9 @@ namespace IntegrationTesting
 			pkb.addProc("Two");
 			pkb.addProc("Three");
 
-			pkb.addCall("One", "Two");
-			pkb.addCall("Two", "Three");
-			pkb.addCall("Three", "One");
+			pkb.addCall("One", "Two", 1);
+			pkb.addCall("Two", "Three", 2);
+			pkb.addCall("Three", "One", 3);
 
 			Assert::ExpectException<std::string>(DesignExtractor::extractDesigns);
 		}
@@ -64,7 +64,7 @@ namespace IntegrationTesting
 
 			pkb.addProc("One");
 
-			pkb.addCall("One", "One");
+			pkb.addCall("One", "One", 1);
 
 			Assert::ExpectException<std::string>(DesignExtractor::extractDesigns);
 		}
@@ -77,9 +77,9 @@ namespace IntegrationTesting
 			pkb.addProc("Two");
 			pkb.addProc("Three");
 
-			pkb.addCall("One", "Two");
-			pkb.addCall("Two", "Threev");
-			pkb.addCall("Three", "Onez");
+			pkb.addCall("One", "Two", 1);
+			pkb.addCall("Two", "Threev", 2);
+			pkb.addCall("Three", "Onez", 3);
 
 			Assert::ExpectException<std::string>(DesignExtractor::extractDesigns);
 		}
