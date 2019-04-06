@@ -8,13 +8,17 @@ namespace UnitTesting
 {
 	TEST_CLASS(FollowStorageTest)
 	{
-		/*
+		TEST_METHOD_CLEANUP(FollowStorage_Cleanup)
+		{
+			FollowStorage store;
+			store.erase();
+		}
+		
 		TEST_METHOD(addFollow_NormalValues_Success)
 		{
 			FollowStorage store;
 			Assert::IsTrue(store.addFollow(1, 2));
 		}
-		*/
 
 		TEST_METHOD(addFollow_Duplicate_Fail)
 		{

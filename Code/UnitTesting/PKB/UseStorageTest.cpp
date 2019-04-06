@@ -8,6 +8,11 @@ namespace UnitTesting
 {
 	TEST_CLASS(UseStorageTest)
 	{
+		TEST_METHOD_CLEANUP(UseStorage_Cleanup)
+		{
+			UseStorage store;
+			store.erase();
+		}
 		TEST_METHOD(addUsesStm_Duplicate_Fail)
 		{
 			UseStorage store;

@@ -8,13 +8,17 @@ namespace UnitTesting
 {
 	TEST_CLASS(ParentStorageTest)
 	{
-		/*
+		TEST_METHOD_CLEANUP(ParentStorage_Cleanup)
+		{
+			ParentStorage store;
+			store.erase();
+		}
+
 		TEST_METHOD(addParent_NormalValues_Success)
 		{
 			ParentStorage store;
-			Assert::IsTrue(store.addParent(5, 6));
+			Assert::IsTrue(store.addParent_Child(5, 6));
 		}
-		*/
 
 		TEST_METHOD(addParent_Duplicate_Fail)
 		{
@@ -29,13 +33,7 @@ namespace UnitTesting
 			store.addParent_Child(5, 6);
 			Assert::IsFalse(store.isEmpty());
 		}
-		/*
-		TEST_METHOD(isEmpty_NoElements_True)
-		{
-			ParentStorage store;
-			Assert::IsTrue(store.isEmpty());
-		}
-		*/
+
 		TEST_METHOD(isParent_ExistingParent_true)
 		{
 			ParentStorage store;
