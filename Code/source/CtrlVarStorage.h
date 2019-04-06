@@ -2,15 +2,14 @@
 #include <unordered_set>
 #include <unordered_map>
 
-
 #include "Hasher.h"
 
 class CtrlVarStorage {
 
 public:
 	CtrlVarStorage();
-	void addIfControlVariable(int stm, string variable);
-	void addWhileControlVariable(int stm, string variable);
+	void addIfControlVariable(int stm, std::string variable);
+	void addWhileControlVariable(int stm, std::string variable);
 
 	//Call for if(_,_)
 	std::unordered_set<int> getAllIfWithControls();
