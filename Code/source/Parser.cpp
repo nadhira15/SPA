@@ -35,7 +35,7 @@ int Parser::parse(std::vector<Statement> stmtLst, int parent, std::string proced
 	return 0;
 }
 
-void Parser::populateNextEntity(int prevStmtLine, Statement &stmt, int currStmtLine, int parent, string procedure)
+void Parser::populateNextEntity(int prevStmtLine, Statement &stmt, int currStmtLine, int parent, std::string procedure)
 {
 	std::vector<int> procedureStm = pkb.getStmList(procedure);
 	//Add Next relation if is not the very first line or if not an else statement

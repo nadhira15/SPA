@@ -89,10 +89,10 @@ std::string QueryValidator::validateSelectedVar(std::vector<std::string> selecte
 												std::unordered_map<std::string,
 												std::string> declarationsMap) {
 
-	unordered_set<string> intTypeRefStmtNum = { "stmt", "read", "print", "while", "if", "assign", "call" };
-	unordered_set<string> intTypeRefValue = { "constant" };
-	unordered_set<string> stringTypeRefProcName = { "procedure", "call" };
-	unordered_set<string> stringTypeRefVarName = { "variable", "read", "print" };
+	std::unordered_set<std::string> intTypeRefStmtNum = { "stmt", "read", "print", "while", "if", "assign", "call" };
+	std::unordered_set<std::string> intTypeRefValue = { "constant" };
+	std::unordered_set<std::string> stringTypeRefProcName = { "procedure", "call" };
+	std::unordered_set<std::string> stringTypeRefVarName = { "variable", "read", "print" };
 
 	for (int i = 0; i < selectedVar.size(); i++) {
 		
@@ -104,14 +104,14 @@ std::string QueryValidator::validateSelectedVar(std::vector<std::string> selecte
 		// select type: synonym with attributes
 		if (selectedVar[i].find(".") != -1) {
 			int dotIndex = selectedVar[i].find(".");
-			string left = selectedVar[i].substr(0, dotIndex);
-			string right = selectedVar[i].substr(dotIndex + 1, selectedVar[i].length() - dotIndex - 1);
+			std::string left = selectedVar[i].substr(0, dotIndex);
+			std::string right = selectedVar[i].substr(dotIndex + 1, selectedVar[i].length() - dotIndex - 1);
 			
 			if (declarationsMap.find(left) == declarationsMap.end()) {
 				return "selected variable not found";
 			}
 			
-			string synonymType = declarationsMap.find(left)->second;
+			std::string synonymType = declarationsMap.find(left)->second;
 
 			if (right == "stmt#" && (intTypeRefStmtNum.find(synonymType) != intTypeRefStmtNum.end())) {
 				// valid stmt# attribute

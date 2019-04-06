@@ -382,10 +382,10 @@ void DesignExtractor::processCallsStar(std::vector<std::string> sortedProcedures
 
 //get all if Statments and extrct Next entity
 void DesignExtractor::extractNextEntity() {
-	unordered_set<int> ifStmtList = pkb.getIfStms();
+	std::unordered_set<int> ifStmtList = pkb.getIfStms();
 	for (int stmt : ifStmtList) {
 		//pair<int,int> first int is last stmt of then block, second int is last stmt of else block
-		pair<int, int> ifLastStmt = pkb.getIfLastStms(stmt);
+		std::pair<int, int> ifLastStmt = pkb.getIfLastStms(stmt);
 		int parent = pkb.getParent(stmt);
 		//if if statment have follower, next(last stmt of then block and else block, follower)
 		if (pkb.getFollower(stmt) != 0) {

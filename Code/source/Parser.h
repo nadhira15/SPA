@@ -23,7 +23,7 @@ public:
 
 	int parse(std::vector<Statement> stmtLst, int parent, std::string procedure);
 
-	void populateNextEntity(int prevStmtLine, Statement & stmt, int currStmtLine, int parent, string procedure);
+	void populateNextEntity(int prevStmtLine, Statement & stmt, int currStmtLine, int parent, std::string procedure);
 
 private:
 

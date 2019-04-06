@@ -15,22 +15,15 @@ public:
 		std::vector<std::string> selectedVar,
 		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
 		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
-		std::vector<pair<std::string, std::string>> withCondition);
-
-private:
-	static std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>> evaluateTable(
-		std::unordered_map<std::string, std::string> declarations,
-		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
-		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
 		std::vector<std::pair<std::string, std::string>> withCondition);
 
+private:
 	static std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>>
-		evaluateTable(std::unordered_map<std::string, std::string> declarations,
-					  std::vector<std::pair<std::string,
-					  std::pair<std::string, std::string>>> suchThatCondition,
-					  std::vector<std::pair<std::string,
-					  std::pair<std::string, std::string>>> patternCondition,
-					  std::vector<std::pair<std::string, std::string>> withCondition);
+		evaluateTable(
+			std::unordered_map<std::string, std::string> declarations,
+			std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
+			std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
+			std::vector<std::pair<std::string, std::string>> withCondition);
 
 	static std::string isWithTrivial(std::string left, std::string right);
 
@@ -68,7 +61,7 @@ private:
 				   std::unordered_map<std::string, std::vector<std::string>> toBeFiltered);
 
 	static std::string toAttrRefVal(std::unordered_map<std::string, std::string> declarations,
-		string attrRef, string attrMember);
+									std::string attrRef, std::string attrMember);
 
 	static std::string truthValue(bool boolean);
 
