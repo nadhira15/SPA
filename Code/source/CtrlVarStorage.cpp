@@ -7,7 +7,7 @@ CtrlVarStorage::CtrlVarStorage() {
 
 }
 
-void CtrlVarStorage::addIfControlVariable(int stm, string variable) {
+void CtrlVarStorage::addIfControlVariable(int stm, std::string variable) {
 
 	//if cannot find key
 	if (ifVariableToStm.find(variable) == ifVariableToStm.end()) {
@@ -21,7 +21,7 @@ void CtrlVarStorage::addIfControlVariable(int stm, string variable) {
 	}
 }
 
-void CtrlVarStorage::addWhileControlVariable(int stm, string variable) {
+void CtrlVarStorage::addWhileControlVariable(int stm, std::string variable) {
 
 	//If cannot find key
 	if (whileVariableToStm.find(variable) == whileVariableToStm.end()) {
