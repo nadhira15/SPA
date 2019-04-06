@@ -259,15 +259,33 @@ vector<int> RunTimeDesignExtractor::getStatementsAffectingIndex(int stmt) {
 	DFSRecursiveGetAffectingList(stmt, stmt, cfgPath, true, affectedByList);
 }
 
-void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int end, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedByList) {
+void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int end, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedByList, std::unordered_set<std::string> &relevantVar) {
 	//If is not starting node we will not check if it affects or breaks affects
 	//Subsequently, if we visit the starting node again we will go into this clause.
 	//If we find that affects is possible we return as we know anything above it in the CFG cannot affect the end statemnt.
+	std::string currentModified;
+
 	if (!isStart) {
 		if (isAffectPossible(current, end)) {
-			affectedByList.push_back(current);
-			return;
+			std::unordered_set<std::string> modifiedVar = pkb->getVarModifiedByStm(current);
+			//Should only have 1 modified variable.
+			for (std::string var : modifiedVar) {
+				currentModified = var;
+				relevantVar.insert(var);
+			}
+
+			std::unordered_set<std::string>::const_iterator alreadyModified = relevantVar.find(currentModified);
+			//Not found
+			if (alreadyModified == relevantVar.end()) {
+				affectedByList.push_back(current);
+			}
 		}
+	}
+
+	//Early return if the var used by statement has already all been found.
+	if (pkb->getVarUsedByStm(end) == relevantVar) {
+		relevantVar.erase(currentModified);
+		return;
 	}
 
 	//Add stmt to CFGPath if is not start of DFS
@@ -287,9 +305,11 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int end, int current,
 
 		//If next statement has not been visited, visit it.
 		if (currPath == cfgPath.end()) {
-			DFSRecursiveGetAffectedByList(end, prevStmt, cfgPath, false, affectedByList);
+			DFSRecursiveGetAffectedByList(end, prevStmt, cfgPath, false, affectedByList, relevantVar);
 		}
 	}
+
+	relevantVar.erase(currentModified);
 	return;
 }
 
@@ -363,6 +383,11 @@ vector<int> RunTimeDesignExtractor::getAllStatementsAffectingByAnother() {
 		}
 	}
 	return result;
+}
+
+//Get pairs of s where Affects(s, s)
+vector<pair<int, int>> RunTimeDesignExtractor::getAffectsPair() {
+
 }
 
 bool RunTimeDesignExtractor::isAffectPossible(int stmt, int stmt1) {

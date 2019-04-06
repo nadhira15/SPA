@@ -30,7 +30,7 @@ public:
 
 	vector<int> getStatementsAffectingIndex(int stmt);
 
-	void DFSRecursiveGetAffectedByList(int start, int current, std::unordered_set<int>& cfgPath, bool isStart, std::vector<int>& affectedByList);
+	void DFSRecursiveGetAffectedByList(int end, int current, std::unordered_set<int>& cfgPath, bool isStart, std::vector<int>& affectedByList, std::unordered_set<std::string>& relevantVar);
 
 	vector<int> getStatementsAffectedByIndex(int stmt);
 
@@ -39,6 +39,8 @@ public:
 	vector<int> getAllStatementsAffectingAnother();
 
 	vector<int> getAllStatementsAffectingByAnother();
+
+	vector<pair<int,int>> getAffectsPair();
 
 	bool isAffectPossible(int stmt, int stmt1);
 
