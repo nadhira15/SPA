@@ -40,7 +40,11 @@ public:
 
 	vector<int> getAllStatementsAffectingByAnother();
 
-	vector<pair<int,int>> getAffectsPair();
+	std::unordered_set<pair<int, int>> getAffectsPair();
+
+	std::unordered_set<pair<int, int>> getAffectsPairOfProc(std::string procedure);
+
+	std::unordered_set<pair<int, int>> extractAffectsPair(int start, int end, std::unordered_map<std::string, unordered_set<int>>& lastModifiedTable, std::unordered_set<pair<int, int>>& affectsPair);
 
 	bool isAffectPossible(int stmt, int stmt1);
 

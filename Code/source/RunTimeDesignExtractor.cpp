@@ -386,8 +386,100 @@ vector<int> RunTimeDesignExtractor::getAllStatementsAffectingByAnother() {
 }
 
 //Get pairs of s where Affects(s, s)
-vector<pair<int, int>> RunTimeDesignExtractor::getAffectsPair() {
+std::unordered_set<pair<int, int>> RunTimeDesignExtractor::getAffectsPair() {
+	std::unordered_set<std::string> procList = pkb->getProcList();
+	std::unordered_set<pair<int, int>> result;
+	for (std::string procedure : procList) {
+		std::unordered_set<pair<int, int>> subResult = getAffectsPairOfProc(procedure);
+		for (pair<int, int> affectsPair : subResult) {
+			result.insert(affectsPair);
+		}
+	}
+	return result;
+}
 
+std::unordered_set<pair<int, int>> RunTimeDesignExtractor::getAffectsPairOfProc(std::string procedure) {
+	std::vector<int> stmList = pkb->getStmList(procedure);
+
+	int start = stmList.front();
+	int end = stmList.back();
+
+	std::unordered_map<std::string, unordered_set<int>> lastModifiedTable;
+	std::unordered_set<pair<int, int>> pairList;
+
+	extractAffectsPair(start, end, lastModifiedTable, pairList);
+}
+
+
+std::unordered_set<pair<int, int>> RunTimeDesignExtractor::extractAffectsPair(int start, int end, std::unordered_map<std::string, std::unordered_set<int>> &lastModifiedTable, std::unordered_set<pair<int, int>> &affectsPair) {
+	for (int i = start; i <= end; i = pkb->getFollower(i)) {
+		if (pkb->getStmType(i) == stmType::whileStm) {
+
+		}
+		else if (pkb->getStmType(i) == stmType::ifStm) {
+
+		}
+		else if (pkb->getStmType(i) == stmType::read || pkb->getStmType(i) == stmType::call) {
+			processCallAndRead(i, lastModifiedTable);
+		}
+		else if (pkb->getStmType(i) == stmType::assign) {
+			processAssign(i, lastModifiedTable, affectsPair);
+		}
+	}
+}
+
+void RunTimeDesignExtractor::processAssign(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, std::unordered_set<std::pair<int, int>> & affectsPair)
+{
+	std::unordered_set<std::string> usedList = pkb->getVarUsedByStm(i);
+	std::unordered_set<std::string> modifiedList = pkb->getVarModifiedByStm(i);
+
+	//Check if Affects
+	for (std::string usedVar : usedList) {
+		std::unordered_map<std::string, std::unordered_set<int>>::const_iterator got = lastModifiedTable.find(usedVar);
+
+		//If inside lastModified table
+		if (got != lastModifiedTable.end()) {
+			for (int first : got->second) {
+				affectsPair.insert(std::make_pair(first, i));
+			}
+		}
+	}
+
+	//Update Last Modified Table.
+	for (std::string modifiedVar : modifiedList) {
+		//if is new var
+		if (lastModifiedTable.find(modifiedVar) == lastModifiedTable.end()) {
+			std::unordered_set<int> stmtList;
+			stmtList.insert(i);
+			lastModifiedTable[modifiedVar] = stmtList;
+		}
+		//if is old var already existing.
+		else {
+			std::unordered_set<int> stmtList = lastModifiedTable[modifiedVar];
+			stmtList.insert(i);
+			lastModifiedTable[modifiedVar] = stmtList;
+		}
+	}
+}
+
+void RunTimeDesignExtractor::processCallAndRead(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable)
+{
+	std::unordered_set<std::string> modifiedList = pkb->getVarModifiedByStm(i);
+	//Update Last Modified Table.
+	for (std::string modifiedVar : modifiedList) {
+		//if is new var
+		if (lastModifiedTable.find(modifiedVar) == lastModifiedTable.end()) {
+			std::unordered_set<int> stmtList;
+			stmtList.insert(i);
+			lastModifiedTable[modifiedVar] = stmtList;
+		}
+		//if is old var already existing.
+		else {
+			std::unordered_set<int> stmtList = lastModifiedTable[modifiedVar];
+			stmtList.insert(i);
+			lastModifiedTable[modifiedVar] = stmtList;
+		}
+	}
 }
 
 bool RunTimeDesignExtractor::isAffectPossible(int stmt, int stmt1) {
