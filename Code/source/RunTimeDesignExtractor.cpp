@@ -123,7 +123,7 @@ bool RunTimeDesignExtractor::DFSRecursiveCheckAffectsPair(int start, int target,
 
 	//Add stmt to CFGPath if is start of DFS
 	//Subsequently it will always add to cfgPath
-	if (isStart) {
+	if (!isStart) {
 		cfgPath.insert(current);
 	}
 
@@ -152,13 +152,13 @@ bool RunTimeDesignExtractor::isStatementAffectingAnother(int stmt) {
 		return false;
 	}
 	std::unordered_set<int> cfgPath;
-	return DFSRecursiveCheckAffecting(stmt, stmt, cfgPath, false);
+	return DFSRecursiveCheckAffecting(stmt, stmt, cfgPath, true);
 }
 
 bool RunTimeDesignExtractor::DFSRecursiveCheckAffecting(int start, int current, std::unordered_set<int> &cfgPath, bool isStart) {
 	//Add stmt to CFGPath if is start of DFS
 	//Subsequently it will always add to cfgPath
-	if (isStart) {
+	if (!isStart) {
 		cfgPath.insert(current);
 	}
 
@@ -199,13 +199,13 @@ bool RunTimeDesignExtractor::isStatementAffectedByAnother(int stmt) {
 		return false;
 	}
 	std::unordered_set<int> cfgPath;
-	return DFSRecursiveCheckAffectedBy(stmt, stmt, cfgPath, false);
+	return DFSRecursiveCheckAffectedBy(stmt, stmt, cfgPath, true);
 }
 
 bool RunTimeDesignExtractor::DFSRecursiveCheckAffectedBy(int end, int current, std::unordered_set<int> &cfgPath, bool isStart) {
 	//Add stmt to CFGPath if is start of DFS
 	//Subsequently it will always add to cfgPath
-	if (isStart) {
+	if (!isStart) {
 		cfgPath.insert(current);
 	}
 
@@ -248,10 +248,51 @@ bool RunTimeDesignExtractor::hasAffectsRelation() {
 	return false;
 }
 
+//Get list of s where Affects(s, index)
 vector<int> RunTimeDesignExtractor::getStatementsAffectedByAnother(int stmt) {
-
+	if (pkb->getStmType(stmt) != stmType::assign) {
+		return vector<int>();
+	}
+	std::unordered_set<int> cfgPath;
+	std::vector<int> affectedByList;
+	DFSRecursiveGetAffectingList(stmt, stmt, cfgPath, true, affectedByList);
 }
 
+void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int end, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedByList) {
+	//Add stmt to CFGPath if is not start of DFS
+	//Subsequently it will always add to cfgPath
+	if (!isStart) {
+		cfgPath.insert(current);
+	}
+
+	//If is not starting node we will not check if it affects or breaks affects
+	//Subsequently, if we visit the starting node again we will go into this clause.
+	//If we find that affects is possible we return as we know anything above it in the CFG cannot affect the end statemnt.
+	if (!isStart) {
+		if (isAffectPossible(current, end)) {
+			affectedByList.push_back(current);
+			return;
+		}
+	}
+
+	//Get neighbouring next statements
+	std::unordered_set<int> prevStatements = pkb->getPrev(current);
+
+	//For each neighbouring procedure
+	for (int prevStmt : prevStatements) {
+
+		//Check if next Statemnt is inside the CFGPath.
+		std::unordered_set<int>::const_iterator currPath = cfgPath.find(prevStmt);
+
+		//If next statement has not been visited, visit it.
+		if (currPath == cfgPath.end()) {
+			DFSRecursiveGetAffectedByList(end, prevStmt, cfgPath, false, affectedByList);
+		}
+	}
+	return;
+}
+
+//Get list of s where Affects(index, s)
 vector<int> RunTimeDesignExtractor::getStatementsAffectingAnother(int stmt) {
 	if (pkb->getStmType(stmt) != stmType::assign) {
 		return vector<int>();
@@ -291,7 +332,7 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int start, int current
 
 		//If next statement has not been visited, visit it.
 		if (currPath == cfgPath.end()) {
-			DFSRecursiveCheckAffecting(start, nextStmt, cfgPath, false);
+			DFSRecursiveGetAffectingList(start, nextStmt, cfgPath, false, affectedList);
 		}
 	}
 	return;

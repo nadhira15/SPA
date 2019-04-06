@@ -30,6 +30,8 @@ public:
 
 	vector<int> getStatementsAffectedByAnother(int stm);
 
+	void DFSRecursiveGetAffectedByList(int start, int current, std::unordered_set<int>& cfgPath, bool isStart, std::vector<int>& affectedByList);
+
 	vector<int> getStatementsAffectingAnother(int stm);
 
 	void DFSRecursiveGetAffectingList(int start, int current, std::unordered_set<int>& cfgPath, bool isStart, std::vector<int>& affectedList);
