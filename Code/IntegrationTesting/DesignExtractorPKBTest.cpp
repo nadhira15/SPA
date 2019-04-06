@@ -42,7 +42,7 @@ namespace IntegrationTesting
 		}
 
 		TEST_METHOD(designExtractorCyclicTest) {
-			PKB *pkb = new PKB();
+			PKB pkb = PKB();
 			DesignExtractor de = DesignExtractor();
 
 

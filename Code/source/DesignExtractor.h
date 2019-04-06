@@ -1,5 +1,6 @@
 #pragma once
 #include "PKB.h"
+#include "Statement.h"
 
 /* Design Extractor performs Design Entitiy Extraction for the following relations
  * 1) Follow*
@@ -23,6 +24,7 @@ private:
 	static void verifyCalledProceduresPresence();
 	static void processFollowStar();
 	static void processParentStar();
+	static void extractNextEntity();
 	static vector<string> topologicalSortProcedures();
 	static void DFSRecursive(std::string procedure, unordered_set<std::string>& visitedProcedures, vector<std::string>& sortedProcedures, unordered_set<std::string> pathVisitedProcedures);
 	static void processAdvancedUsesAndModifies(std::vector<std::string> sortedProcedures);
