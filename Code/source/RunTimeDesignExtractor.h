@@ -44,11 +44,17 @@ public:
 
 	std::unordered_set<pair<int, int>> getAffectsPairOfProc(std::string procedure);
 
-	std::unordered_set<pair<int, int>> extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>>& lastModifiedTable, std::unordered_set<pair<int, int>>& affectsPair);
+	void extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>>& lastModifiedTable, std::unordered_set<pair<int, int>>& affectsPair);
+
+	void processWhile(std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, int &i, std::unordered_set<std::pair<int, int>> & affectsPair);
+
+	void processIfStatement(std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, int &i, std::unordered_set<std::pair<int, int>> & affectsPair);
 
 	void processAssign(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, std::unordered_set<std::pair<int, int>> & affectsPair);
 
 	void processCallAndRead(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable);
+
+	vector<int> getAllStatementsAffectedByIndexStar(int index);
 
 	bool isAffectPossible(int stmt, int stmt1);
 

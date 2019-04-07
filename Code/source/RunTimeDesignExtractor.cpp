@@ -411,8 +411,7 @@ std::unordered_set<pair<int, int>> RunTimeDesignExtractor::getAffectsPairOfProc(
 	return pairList;
 }
 
-
-std::unordered_set<pair<int, int>> RunTimeDesignExtractor::extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>> &lastModifiedTable, std::unordered_set<pair<int, int>> &affectsPair) {
+void RunTimeDesignExtractor::extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>> &lastModifiedTable, std::unordered_set<pair<int, int>> &affectsPair) {
 	for (int i = start; i == 0; i = pkb->getFollower(i)) {
 		if (pkb->getStmType(i) == stmType::whileStm) {
 			processWhile(lastModifiedTable, i, affectsPair);
@@ -536,6 +535,41 @@ void RunTimeDesignExtractor::processCallAndRead(int &i, std::unordered_map<std::
 			lastModifiedTable[modifiedVar] = stmtList;
 		}
 	}
+}
+
+
+//Get list of s where Affects*(int, s)
+vector<int> RunTimeDesignExtractor::getAllStatementsAffectedByIndexStar(int index) {
+	std::string procedure = pkb->getProcOfStm(index);
+	std::unordered_set<pair<int, int>> relevantPairs = getAffectsPairOfProc(procedure);
+	std::unordered_map<int, std::unordered_set<int>> adjacencyList;
+	std::vector<int> results;
+	
+	for (pair<int, int> affectPair : relevantPairs) {
+		std::unordered_set<int> adjacents = adjacencyList[affectPair.first];
+		adjacents.insert(affectPair.second);
+		adjacencyList[affectPair.first] = adjacents;
+	}
+
+	std::unordered_set<int> visitedPath;
+	DFSRecursiveReachability(index, results, visitedPath, adjacencyList) {
+	}
+}
+
+void DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList) {
+	visitedPath.insert(start);
+
+	std::unordered_set<int> adjacentStms = adjacencyList[start];
+
+	for (int adjacentStm : adjacentStms) {
+		results.push_back(adjacentStm);
+
+		DFSRecursiveReachability(adjacentStm, results, visitedPath, adjacencyList);
+	}
+}
+//Get list of s where Affects*(s, int)
+vector<int> RunTimeDesignExtractor::getAllStatementsAffectingIndexStar() {
+
 }
 
 bool RunTimeDesignExtractor::isAffectPossible(int stmt, int stmt1) {
