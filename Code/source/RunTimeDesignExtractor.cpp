@@ -557,17 +557,6 @@ vector<int> RunTimeDesignExtractor::getAllStatementsAffectedByIndexStar(int inde
 	return results;
 }
 
-void DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList) {
-	visitedPath.insert(start);
-
-	std::unordered_set<int> adjacentStms = adjacencyList[start];
-
-	for (int adjacentStm : adjacentStms) {
-		results.push_back(adjacentStm);
-
-		DFSRecursiveReachability(adjacentStm, results, visitedPath, adjacencyList);
-	}
-}
 //Get list of s where Affects*(s, int)
 vector<int> RunTimeDesignExtractor::getAllStatementsAffectingIndexStar(int index) {
 	std::string procedure = pkb->getProcOfStm(index);
@@ -585,6 +574,45 @@ vector<int> RunTimeDesignExtractor::getAllStatementsAffectingIndexStar(int index
 	DFSRecursiveReachability(index, results, visitedPath, adjacencyList);
 
 	return results;
+}
+
+void RunTimeDesignExtractor::DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList) {
+	visitedPath.insert(start);
+
+	std::unordered_set<int> adjacentStms = adjacencyList[start];
+
+	for (int adjacentStm : adjacentStms) {
+		results.push_back(adjacentStm);
+
+		DFSRecursiveReachability(adjacentStm, results, visitedPath, adjacencyList);
+	}
+}
+
+//Get pairs of s where Affects*(s, s)
+std::unordered_set<pair<int, int>> RunTimeDesignExtractor::getAffectsStarPair() {
+	std::unordered_set<pair<int, int>> relevantPairs = getAffectsPair();
+	std::unordered_map<int, std::unordered_set<int>> adjacencyList;
+	std::unordered_set<pair<int, int>> finalResult;
+
+	for (pair<int, int> affectPair : relevantPairs) {
+		std::unordered_set<int> adjacents = adjacencyList[affectPair.second];
+		adjacents.insert(affectPair.first);
+		adjacencyList[affectPair.second] = adjacents;
+	}
+
+	int simpleSize = pkb->getTotalStmNo();
+
+	for (int i = 1; i <= simpleSize; i++) {
+		std::vector<int> results;
+		std::unordered_set<int> visitedPath;
+
+		DFSRecursiveReachability(i, results, visitedPath, adjacencyList);
+
+		for (int result : results) {
+			finalResult.insert(std::make_pair(i, result));
+		}
+	}
+	return finalResult;
 }
 
 bool RunTimeDesignExtractor::isAffectPossible(int stmt, int stmt1) {

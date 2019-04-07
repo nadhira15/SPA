@@ -58,6 +58,10 @@ public:
 
 	vector<int> getAllStatementsAffectingIndexStar(int index);
 
+	void DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList);
+
+	std::unordered_set<pair<int, int>> getAffectsStarPair();
+
 	bool isAffectPossible(int stmt, int stmt1);
 
 	bool isLastModifiedBroken(int current, int start);
