@@ -23,8 +23,8 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
 	std::vector<std::pair<std::string, std::string>> withCondition) {
-	std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>> resultPair = evaluateTable(
-		declarations, suchThatCondition, patternCondition, withCondition);
+	std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>>
+		resultPair = evaluateTable(declarations, suchThatCondition, patternCondition, withCondition);
 	std::string status = resultPair.first;
 	std::unordered_map<std::string, std::vector<std::string>> resultTable = resultPair.second;
 	std::unordered_set<std::string> resultSet;
@@ -40,25 +40,50 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 			std::unordered_map<std::string, std::vector<std::string>> projectTable;
 			std::vector<std::string> notInResult;
 			for (std::vector<std::string>::size_type i = 0; i != selectedVar.size(); i++) {
-				if (resultTable.count(selectedVar[i]) == 0) {
-					notInResult.push_back(selectedVar[i]);
+				std::string currentVar = selectedVar[i];
+				if (hasReference(currentVar)) {
+					std::string attr = attrOf(currentVar);
+					if (resultTable.count(attr) == 0) {
+						notInResult.push_back(attr);
+					} 
+					else {
+						projectTable.insert({ attr, resultTable[attr] });
+					}
+				}
+				else if (resultTable.count(currentVar) == 0) {
+					notInResult.push_back(currentVar);
 				}
 				else {
-					projectTable.insert({ selectedVar[i], resultTable[selectedVar[i]] });
+					projectTable.insert({ currentVar, resultTable[currentVar] });
 				}
 			}
 			for (std::vector<std::string>::size_type i = 0; i != notInResult.size(); i++) {
-				projectTable = ContainerUtil::product(projectTable, getStmts(declarations, notInResult[i]));
+				projectTable = ContainerUtil::product(projectTable, getStmts(declarations,
+																			 notInResult[i]));
 			}
 			int projectedSize = projectTable.begin()->second.size();
 			for (std::vector<std::string>::size_type i = 0; i != projectedSize; i++) {
 				std::string tuple;
 				for (std::vector<std::string>::size_type j = 0; j != selectedVar.size(); j++) {
+					std::string currentVar = selectedVar[j];
 					if (tuple.size() == 0) {
-						tuple = projectTable[selectedVar[j]][i];
+						if (hasReference(currentVar)) {
+							std::string attr = attrOf(currentVar);
+							tuple = toAttrRefVal(declarations, currentVar, projectTable[attr][i]);
+						}
+						else {
+							tuple = projectTable[currentVar][i];
+						}
 					} 
 					else {
-						tuple = tuple + " " + projectTable[selectedVar[j]][i];
+						if (hasReference(currentVar)) {
+							std::string attr = attrOf(currentVar);
+							tuple = tuple  + " " + 
+								toAttrRefVal(declarations, currentVar, projectTable[attr][i]);
+						}
+						else {
+							tuple = tuple + " " + projectTable[currentVar][i];
+						}
 					}
 				}
 				resultSet.insert(tuple);
@@ -73,17 +98,18 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 /*
 Merge all the results of each clause
 */
-std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>> QueryEvaluator::evaluateTable(
-	std::unordered_map<std::string, std::string> declarations,
-	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
-	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
-	std::vector<std::pair<std::string, std::string>> withCondition) {
+std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>>
+	QueryEvaluator::evaluateTable(
+		std::unordered_map<std::string, std::string> declarations,
+		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
+		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
+		std::vector<std::pair<std::string, std::string>> withCondition) {
+
 	std::unordered_map<std::string, std::vector<std::string>> resultTable;
 	std::string status = "TRUE";
 	if (suchThatCondition.size() != 0) {
-		for (std::vector<std::pair<std::string, std::pair<std::string, std::string>>>::size_type i = 0;
-			i != suchThatCondition.size();
-			i++) {
+		for (std::vector<std::pair<std::string, std::pair<std::string, std::string>>>::size_type
+			 i = 0; i != suchThatCondition.size(); i++) {
 			std::string relation = suchThatCondition[i].first;
 			std::string firstArgument = suchThatCondition[i].second.first;
 			std::string secondArgument = suchThatCondition[i].second.second;
@@ -93,8 +119,9 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 				break;
 			}
 			if (trivialness == "not trivial") {
-				std::unordered_map<std::string, std::vector<std::string>> newTable = evaluateSuchThat(
-					declarations, relation, firstArgument, secondArgument);
+				std::unordered_map<std::string, std::vector<std::string>>
+					newTable = evaluateSuchThat(declarations, relation, firstArgument,
+												secondArgument);
 				resultTable = ContainerUtil::product(resultTable, newTable);
 				if (resultTable.begin()->second.size() == 0) {
 					status = "FALSE";
@@ -107,8 +134,8 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 		for (std::vector<std::pair<std::string, std::pair<std::string, std::string>>>::size_type i = 0;
 			i != patternCondition.size();
 			i++) {
-			std::unordered_map<std::string, std::vector<std::string>> newTable = evaluatePatternCondition(
-				declarations, patternCondition[i]);
+			std::unordered_map<std::string, std::vector<std::string>>
+				newTable = evaluatePatternCondition( declarations, patternCondition[i]);
 			resultTable = ContainerUtil::product(resultTable, newTable);
 			if (resultTable.begin()->second.size() == 0) {
 				status = "FALSE";
@@ -128,8 +155,8 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 				break;
 			}
 			if (trivialness == "not trivial") {
-				std::unordered_map<std::string, std::vector<std::string>> newTable = evaluateWithCondition(
-					declarations, left, right);
+				std::unordered_map<std::string, std::vector<std::string>>
+					newTable = evaluateWithCondition( declarations, left, right);
 				resultTable = ContainerUtil::product(resultTable, newTable);
 				if (resultTable.begin()->second.size() == 0) {
 					status = "FALSE";
@@ -138,8 +165,8 @@ std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>
 			}
 		}
 	}
-	std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>> resultPair(status,
-		resultTable);
+	std::pair<std::string, std::unordered_map<std::string,
+		std::vector<std::string>>> resultPair(status, resultTable);
 	return resultPair;
 }
 
@@ -155,6 +182,18 @@ std::string QueryEvaluator::isWithTrivial(std::string left, std::string right) {
 	return "not trivial";
 }
 
+/*
+The function returns a 
+table consist of 2 columns.
+The first one is the attribute
+value column and the second one 
+is the reference value column, but 
+the key is changed to "name". 
+For example, if attr is r.varName,
+then it returns table with column r 
+and r.varName, but the r.varName is 
+changed to "name".
+*/
 std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluateWithPair(
 	std::unordered_map<std::string, std::string> declarations,
 	std::string attr) {
@@ -503,7 +542,8 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 		}
 		else if (isQuoted(firstArgument)) {
 			if (isQuoted(secondArgument)) {
-				result = PKB().isProcModifying(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument));
+				result = PKB().isProcModifying(trimFrontEnd(firstArgument),
+											   trimFrontEnd(secondArgument));
 				return truthValue(result);
 			}
 			else if (secondArgument == "_") {
@@ -548,7 +588,8 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 				return truthValue(PKB().isCaller(trimFrontEnd(firstArgument)));
 			}
 			else if (isQuoted(secondArgument)) {
-				result = PKB().hasCallStarPair(trimFrontEnd(firstArgument), trimFrontEnd(secondArgument));
+				result = PKB().hasCallStarPair(trimFrontEnd(firstArgument),
+											   trimFrontEnd(secondArgument));
 				return truthValue(result);
 			}
 		}
@@ -913,9 +954,9 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 The function returns the list of all statements.
 */
 std::unordered_set<std::string> QueryEvaluator::getAllStms() {
-	unordered_set<std::string> allStms;
+	std::unordered_set<std::string> allStms;
 	for (int i = 1; i <= PKB().getTotalStmNo(); i++) {
-		allStms.insert(to_string(i));
+		allStms.insert(std::to_string(i));
 	}
 
 	return allStms;
@@ -1050,6 +1091,36 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::filter
 		}
 	}
 	return filteredSet;
+}
+
+/*
+The function evaluate the reference value
+given the value of its attribute. 
+For example: 
+Given statement 6: call MeMaybe.
+Let attrRef br c.procName, where c 
+in declarations are mapped to 
+call. Let attrMember be 6, which is
+a member of the call statements. Then  
+then function returns 6.procName
+*/
+std::string QueryEvaluator::toAttrRefVal(std::unordered_map<std::string, std::string> declarations,
+	std::string attrRef, std::string attrMember) {
+	std::string attr = attrOf(attrRef);
+	std::string ref = refOf(attrRef);
+	std::string attrType = declarations[attr];
+	if ((attrType == "call") && (ref == "procName")) {
+		return PKB().getProcCalledBy(stoi(attrMember));
+	}
+	else if ((attrType == "read") && (ref == "varName")) {
+		return *PKB().getVarModifiedByStm(stoi(attrMember)).begin();
+	}
+	else if ((attrType == "print") && (ref == "varName")) {
+		return *PKB().getVarUsedByStm(stoi(attrMember)).begin();
+	}
+	else {
+		return attrMember;
+	}
 }
 
 /*
