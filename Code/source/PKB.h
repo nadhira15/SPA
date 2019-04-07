@@ -63,13 +63,13 @@ public:
 		add a stm into the else stm list of the specified 'ifStm'
 		statements must be added in numerical order
 	*/
-	void setElseContainerStatements(int ifStm, int stmToAdd);
+	void addElseContainerStatement(int ifStm, int stmToAdd);
 
 	/*
 		add a stm into the stm list of the specified 'whileStm'
 		statements must be added in numerical order
 	*/
-	void setWhileContainerStatements(int whileStm, int stmToAdd);
+	void addWhileContainerStatement(int whileStm, int stmToAdd);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Follows adder & setter Methods	/////////////////////////////////////////////////////////////////

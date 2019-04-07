@@ -109,7 +109,7 @@ void PKB::addIfContainerStatement(int ifStm, int stmToAdd)
 	}
 }
 
-void PKB::setElseContainerStatements(int ifStm, int stmToAdd)
+void PKB::addElseContainerStatement(int ifStm, int stmToAdd)
 {
 	if (!elseBlockStmLists.emplace(ifStm, std::vector<int>{stmToAdd}).second)
 	{
@@ -117,7 +117,7 @@ void PKB::setElseContainerStatements(int ifStm, int stmToAdd)
 	}
 }
 
-void PKB::setWhileContainerStatements(int whileStm, int stmToAdd)
+void PKB::addWhileContainerStatement(int whileStm, int stmToAdd)
 {
 	if (!whileBlockStmLists.emplace(whileStm, std::vector<int>{stmToAdd}).second)
 	{
