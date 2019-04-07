@@ -56,6 +56,8 @@ public:
 
 	vector<int> getAllStatementsAffectedByIndexStar(int index);
 
+	vector<int> getAllStatementsAffectingIndexStar(int index);
+
 	bool isAffectPossible(int stmt, int stmt1);
 
 	bool isLastModifiedBroken(int current, int start);

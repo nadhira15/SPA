@@ -552,8 +552,9 @@ vector<int> RunTimeDesignExtractor::getAllStatementsAffectedByIndexStar(int inde
 	}
 
 	std::unordered_set<int> visitedPath;
-	DFSRecursiveReachability(index, results, visitedPath, adjacencyList) {
-	}
+	DFSRecursiveReachability(index, results, visitedPath, adjacencyList);
+
+	return results;
 }
 
 void DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList) {
@@ -568,8 +569,22 @@ void DFSRecursiveReachability(int start, std::vector<int>& results, std::unorder
 	}
 }
 //Get list of s where Affects*(s, int)
-vector<int> RunTimeDesignExtractor::getAllStatementsAffectingIndexStar() {
+vector<int> RunTimeDesignExtractor::getAllStatementsAffectingIndexStar(int index) {
+	std::string procedure = pkb->getProcOfStm(index);
+	std::unordered_set<pair<int, int>> relevantPairs = getAffectsPairOfProc(procedure);
+	std::unordered_map<int, std::unordered_set<int>> adjacencyList;
+	std::vector<int> results;
 
+	for (pair<int, int> affectPair : relevantPairs) {
+		std::unordered_set<int> adjacents = adjacencyList[affectPair.second];
+		adjacents.insert(affectPair.first);
+		adjacencyList[affectPair.second] = adjacents;
+	}
+
+	std::unordered_set<int> visitedPath;
+	DFSRecursiveReachability(index, results, visitedPath, adjacencyList);
+
+	return results;
 }
 
 bool RunTimeDesignExtractor::isAffectPossible(int stmt, int stmt1) {
