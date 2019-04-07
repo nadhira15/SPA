@@ -7,12 +7,13 @@ class PKB;
 class RunTimeDesignExtractor {
 
 public:
-	unordered_set<int> extractNextStar(int stmt);
-	unordered_set<int> extractPreviousStar(int stmt);
+
+	std::unordered_set<int> extractNextStar(int stmt);
+	std::unordered_set<int> extractPreviousStar(int stmt);
 	bool extractNextStarPair(int start, int end);
-	unordered_set<pair<int, int>, intPairhash> getNextStarPairs();
-	void DFSRecursiveNext(int procedure, unordered_set<int> &visitedStmts, unordered_set<int>& stmtsAfter);
-	void DFSRecursivePrevious(int procedure, unordered_set<int> &visitedStmts, unordered_set<int> &stmtsBefore);
+	std::unordered_set<std::pair<int, int>, intPairhash> getNextStarPairs();
+	void DFSRecursiveNext(int procedure, std::unordered_set<int> &visitedStmts, std::unordered_set<int>& stmtsAfter);
+	void DFSRecursivePrevious(int procedure, std::unordered_set<int> &visitedStmts, std::unordered_set<int> &stmtsBefore);
 
 	bool isAffect(int stmt, int stmt1);
 
@@ -28,23 +29,23 @@ public:
 
 	bool hasAffectsRelation();
 
-	vector<int> getStatementsAffectingIndex(int stmt);
+	std::vector<int> getStatementsAffectingIndex(int stmt);
 
 	void DFSRecursiveGetAffectedByList(int end, int current, std::unordered_set<int>& cfgPath, bool isStart, std::vector<int>& affectedByList, std::unordered_set<std::string>& relevantVar);
 
-	vector<int> getStatementsAffectedByIndex(int stmt);
+	std::vector<int> getStatementsAffectedByIndex(int stmt);
 
 	void DFSRecursiveGetAffectingList(int start, int current, std::unordered_set<int>& cfgPath, bool isStart, std::vector<int>& affectedList);
 
-	vector<int> getAllStatementsAffectingAnother();
+	std::vector<int> getAllStatementsAffectingAnother();
 
-	vector<int> getAllStatementsAffectingByAnother();
+	std::vector<int> getAllStatementsAffectingByAnother();
 
-	std::unordered_set<pair<int, int>> getAffectsPair();
+	std::unordered_set<std::pair<int, int>> getAffectsPair();
 
-	std::unordered_set<pair<int, int>> getAffectsPairOfProc(std::string procedure);
+	std::unordered_set<std::pair<int, int>> getAffectsPairOfProc(std::string procedure);
 
-	void extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>>& lastModifiedTable, std::unordered_set<pair<int, int>>& affectsPair);
+	void extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>>& lastModifiedTable, std::unordered_set<std::pair<int, int>>& affectsPair);
 
 	void processWhile(std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, int &i, std::unordered_set<std::pair<int, int>> & affectsPair);
 
@@ -54,13 +55,13 @@ public:
 
 	void processCallAndRead(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable);
 
-	vector<int> getAllStatementsAffectedByIndexStar(int index);
+	std::vector<int> getAllStatementsAffectedByIndexStar(int index);
 
-	vector<int> getAllStatementsAffectingIndexStar(int index);
+	std::vector<int> getAllStatementsAffectingIndexStar(int index);
 
 	void DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList);
 
-	std::unordered_set<pair<int, int>> getAffectsStarPair();
+	std::unordered_set<std::pair<int, int>> getAffectsStarPair();
 
 	bool isAffectPossible(int stmt, int stmt1);
 

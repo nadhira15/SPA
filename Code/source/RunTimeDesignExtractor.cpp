@@ -1,22 +1,22 @@
 #include"RunTimeDesignExtractor.h"
 
-unordered_set<int> RunTimeDesignExtractor::extractNextStar(int stmt) {
-	unordered_set<int>visitedStmts;
-	unordered_set<int>stmtsAfter;
+std::unordered_set<int> RunTimeDesignExtractor::extractNextStar(int stmt) {
+	std::unordered_set<int>visitedStmts;
+	std::unordered_set<int>stmtsAfter;
 	DFSRecursiveNext(stmt, visitedStmts, stmtsAfter);
 	return stmtsAfter;
 }
 
-unordered_set<int> RunTimeDesignExtractor::extractPreviousStar(int stmt) {
-	unordered_set<int>visitedStmts;
-	unordered_set<int>stmtsBefore;
+std::unordered_set<int> RunTimeDesignExtractor::extractPreviousStar(int stmt) {
+	std::unordered_set<int>visitedStmts;
+	std::unordered_set<int>stmtsBefore;
 	DFSRecursivePrevious(stmt, visitedStmts,stmtsBefore);
 	return stmtsBefore;
 }
 
 bool RunTimeDesignExtractor::extractNextStarPair(int start, int end) {
-	unordered_set<int>visitedStmts;
-	unordered_set<int>stmtsAfter;
+	std::unordered_set<int>visitedStmts;
+	std::unordered_set<int>stmtsAfter;
 	DFSRecursiveNext(start, visitedStmts,stmtsAfter);
 	if (stmtsAfter.find(end) == stmtsAfter.end()) {
 		return false;
@@ -24,13 +24,15 @@ bool RunTimeDesignExtractor::extractNextStarPair(int start, int end) {
 	return true;
 }
 
-unordered_set<pair<int, int>, intPairhash> RunTimeDesignExtractor::getNextStarPairs() {
+
+std::unordered_set<std::pair<int, int>, intPairhash> RunTimeDesignExtractor::getNextStarPairs() {
 	int stmtNum = pkb->getTotalStmNo();
-	unordered_set<pair<int, int>, intPairhash> allNextStarPairs;
+	std::unordered_set<std::pair<int, int>, intPairhash> allNextStarPairs;
 	//for all Statement in statemnet list generate nextStar
 	for (int i = 1; i <= stmtNum; i++) {
-		unordered_set<int>visitedStmts;
-		unordered_set<int>stmtsAfter;
+
+		std::unordered_set<int>visitedStmts;
+		std::unordered_set<int>stmtsAfter;
 		DFSRecursiveNext(i, visitedStmts,stmtsAfter);
 		for (int statments : stmtsAfter) {
 			allNextStarPairs.emplace(i, statments);
@@ -39,11 +41,13 @@ unordered_set<pair<int, int>, intPairhash> RunTimeDesignExtractor::getNextStarPa
 	return allNextStarPairs;
 }
 
-void RunTimeDesignExtractor::DFSRecursiveNext(int statments, unordered_set<int> &visitedStmts, unordered_set<int> &stmtsAfter) {
+void RunTimeDesignExtractor::DFSRecursiveNext(int statments,
+											  std::unordered_set<int> &visitedStmts,
+											  std::unordered_set<int> &stmtsAfter) {
 	//Marks statment as visited
 	visitedStmts.insert(statments);
 	//Get neighbouring statments.
-	unordered_set<int> adjacentStmts = pkb->getNext(statments);
+	std::unordered_set<int> adjacentStmts = pkb->getNext(statments);
 
 	//For each neighbouring statments
 	for (int stmts : adjacentStmts) {
@@ -63,11 +67,14 @@ void RunTimeDesignExtractor::DFSRecursiveNext(int statments, unordered_set<int> 
 	}
 }
 
-void RunTimeDesignExtractor::DFSRecursivePrevious(int statments, unordered_set<int> &visitedStmts, unordered_set<int> &stmtsBefore) {
+
+void RunTimeDesignExtractor::DFSRecursivePrevious(int statments,
+												  std::unordered_set<int> &visitedStmts,
+												  std::unordered_set<int> &stmtsBefore) {
 	//Marks statment as visited
 	visitedStmts.insert(statments);
 	//Get neighbouring statments.
-	unordered_set<int> adjacentStmts = pkb->getPrev(statments);
+	std::unordered_set<int> adjacentStmts = pkb->getPrev(statments);
 
 	//For each neighbouring statments
 	for (int stmts : adjacentStmts) {
@@ -250,9 +257,9 @@ bool RunTimeDesignExtractor::hasAffectsRelation() {
 }
 
 //Get list of s where Affects(s, index)
-vector<int> RunTimeDesignExtractor::getStatementsAffectingIndex(int stmt) {
+std::vector<int> RunTimeDesignExtractor::getStatementsAffectingIndex(int stmt) {
 	if (pkb->getStmType(stmt) != stmType::assign) {
-		return vector<int>();
+		return std::vector<int>();
 	}
 	std::unordered_set<int> cfgPath;
 	std::vector<int> affectedByList;
@@ -314,9 +321,9 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int end, int current,
 }
 
 //Get list of s where Affects(index, s)
-vector<int> RunTimeDesignExtractor::getStatementsAffectedByIndex(int stmt) {
+std::vector<int> RunTimeDesignExtractor::getStatementsAffectedByIndex(int stmt) {
 	if (pkb->getStmType(stmt) != stmType::assign) {
-		return vector<int>();
+		return std::vector<int>();
 	}
 	std::unordered_set<int> cfgPath;
 	std::vector<int> affectedList;
@@ -360,9 +367,9 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int start, int current
 }
 
 //Get list of s where of Affects(s, _)
-vector<int> RunTimeDesignExtractor::getAllStatementsAffectingAnother() {
+std::vector<int> RunTimeDesignExtractor::getAllStatementsAffectingAnother() {
 	int stmtListSize = pkb->getTotalStmNo();
-	vector<int> result;
+	std::vector<int> result;
 
 	for (int i = 1; i <= stmtListSize; i++) {
 		if (isStatementAffectingAnother(i)) {
@@ -373,9 +380,9 @@ vector<int> RunTimeDesignExtractor::getAllStatementsAffectingAnother() {
 }
 
 //Get list of s where of Affects(_, s)
-vector<int> RunTimeDesignExtractor::getAllStatementsAffectingByAnother() {
+std::vector<int> RunTimeDesignExtractor::getAllStatementsAffectingByAnother() {
 	int stmtListSize = pkb->getTotalStmNo();
-	vector<int> result;
+	std::vector<int> result;
 
 	for (int i = 1; i <= stmtListSize; i++) {
 		if (isStatementAffectedByAnother(i)) {
@@ -386,32 +393,32 @@ vector<int> RunTimeDesignExtractor::getAllStatementsAffectingByAnother() {
 }
 
 //Get pairs of s where Affects(s, s)
-std::unordered_set<pair<int, int>> RunTimeDesignExtractor::getAffectsPair() {
+std::unordered_set<std::pair<int, int>> RunTimeDesignExtractor::getAffectsPair() {
 	std::unordered_set<std::string> procList = pkb->getProcList();
-	std::unordered_set<pair<int, int>> result;
+	std::unordered_set<std::pair<int, int>> result;
 	for (std::string procedure : procList) {
-		std::unordered_set<pair<int, int>> subResult = getAffectsPairOfProc(procedure);
-		for (pair<int, int> affectsPair : subResult) {
+		std::unordered_set<std::pair<int, int>> subResult = getAffectsPairOfProc(procedure);
+		for (std::pair<int, int> affectsPair : subResult) {
 			result.insert(affectsPair);
 		}
 	}
 	return result;
 }
 
-std::unordered_set<pair<int, int>> RunTimeDesignExtractor::getAffectsPairOfProc(std::string procedure) {
+std::unordered_set<std::pair<int, int>> RunTimeDesignExtractor::getAffectsPairOfProc(std::string procedure) {
 	std::vector<int> stmList = pkb->getStmList(procedure);
 
 	int start = stmList.front();
 
-	std::unordered_map<std::string, unordered_set<int>> lastModifiedTable;
-	std::unordered_set<pair<int, int>> pairList;
+	std::unordered_map<std::string, std::unordered_set<int>> lastModifiedTable;
+	std::unordered_set<std::pair<int, int>> pairList;
 
 	extractAffectsPair(start, lastModifiedTable, pairList);
 
 	return pairList;
 }
 
-void RunTimeDesignExtractor::extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>> &lastModifiedTable, std::unordered_set<pair<int, int>> &affectsPair) {
+void RunTimeDesignExtractor::extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>> &lastModifiedTable, std::unordered_set<std::pair<int, int>> &affectsPair) {
 	for (int i = start; i == 0; i = pkb->getFollower(i)) {
 		if (pkb->getStmType(i) == stmType::whileStm) {
 			processWhile(lastModifiedTable, i, affectsPair);
@@ -539,13 +546,13 @@ void RunTimeDesignExtractor::processCallAndRead(int &i, std::unordered_map<std::
 
 
 //Get list of s where Affects*(int, s)
-vector<int> RunTimeDesignExtractor::getAllStatementsAffectedByIndexStar(int index) {
+std::vector<int> RunTimeDesignExtractor::getAllStatementsAffectedByIndexStar(int index) {
 	std::string procedure = pkb->getProcOfStm(index);
-	std::unordered_set<pair<int, int>> relevantPairs = getAffectsPairOfProc(procedure);
+	std::unordered_set<std::pair<int, int>> relevantPairs = getAffectsPairOfProc(procedure);
 	std::unordered_map<int, std::unordered_set<int>> adjacencyList;
 	std::vector<int> results;
 	
-	for (pair<int, int> affectPair : relevantPairs) {
+	for (std::pair<int, int> affectPair : relevantPairs) {
 		std::unordered_set<int> adjacents = adjacencyList[affectPair.first];
 		adjacents.insert(affectPair.second);
 		adjacencyList[affectPair.first] = adjacents;
@@ -558,13 +565,13 @@ vector<int> RunTimeDesignExtractor::getAllStatementsAffectedByIndexStar(int inde
 }
 
 //Get list of s where Affects*(s, int)
-vector<int> RunTimeDesignExtractor::getAllStatementsAffectingIndexStar(int index) {
+std::vector<int> RunTimeDesignExtractor::getAllStatementsAffectingIndexStar(int index) {
 	std::string procedure = pkb->getProcOfStm(index);
-	std::unordered_set<pair<int, int>> relevantPairs = getAffectsPairOfProc(procedure);
+	std::unordered_set<std::pair<int, int>> relevantPairs = getAffectsPairOfProc(procedure);
 	std::unordered_map<int, std::unordered_set<int>> adjacencyList;
 	std::vector<int> results;
 
-	for (pair<int, int> affectPair : relevantPairs) {
+	for (std::pair<int, int> affectPair : relevantPairs) {
 		std::unordered_set<int> adjacents = adjacencyList[affectPair.second];
 		adjacents.insert(affectPair.first);
 		adjacencyList[affectPair.second] = adjacents;
@@ -589,12 +596,12 @@ void RunTimeDesignExtractor::DFSRecursiveReachability(int start, std::vector<int
 }
 
 //Get pairs of s where Affects*(s, s)
-std::unordered_set<pair<int, int>> RunTimeDesignExtractor::getAffectsStarPair() {
-	std::unordered_set<pair<int, int>> relevantPairs = getAffectsPair();
+std::unordered_set<std::pair<int, int>> RunTimeDesignExtractor::getAffectsStarPair() {
+	std::unordered_set<std::pair<int, int>> relevantPairs = getAffectsPair();
 	std::unordered_map<int, std::unordered_set<int>> adjacencyList;
-	std::unordered_set<pair<int, int>> finalResult;
+	std::unordered_set<std::pair<int, int>> finalResult;
 
-	for (pair<int, int> affectPair : relevantPairs) {
+	for (std::pair<int, int> affectPair : relevantPairs) {
 		std::unordered_set<int> adjacents = adjacencyList[affectPair.second];
 		adjacents.insert(affectPair.first);
 		adjacencyList[affectPair.second] = adjacents;

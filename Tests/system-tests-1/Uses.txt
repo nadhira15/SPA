@@ -16,7 +16,7 @@ while, if, read, print, else
 7 - select synonym, use synonym varName
 procedure p, q; variable v;
 Select p such that Uses(p, "sum")
-TestA, TestB
+TestA, TestB, TestC
 5000
 8 - select synonym, use synonym varName
 procedure p, q; variable v;

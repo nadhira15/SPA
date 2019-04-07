@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -16,7 +16,7 @@
     <ClCompile Include="..\source\CallStorage.cpp" />
     <ClCompile Include="..\source\ConditionalExp.cpp" />
     <ClCompile Include="..\source\ContainerUtil.cpp" />
-    <ClCompile Include="..\source\ControlVariableStorage.cpp" />
+    <ClCompile Include="..\source\CtrlVarStorage.cpp" />
     <ClCompile Include="..\source\DesignExtractor.cpp" />
     <ClCompile Include="..\source\ElseParser.cpp" />
     <ClCompile Include="..\source\ExpressionUtil.cpp" />
@@ -39,7 +39,9 @@
     <ClCompile Include="..\source\FollowStorage.cpp" />
     <ClCompile Include="..\source\ParentStorage.cpp" />
     <ClCompile Include="..\source\UseStorage.cpp" />
-    <ClCompile Include="..\source\ModifyStorage.cpp" />
+    <ClCompile Include="..\source\ModifyStorage.cpp" /> 
+    <ClCompile Include="..\source\Optimizer.cpp" />   
+    <ClCompile Include="..\source\OptimizerUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\AssignParser.h" />
@@ -47,13 +49,15 @@
     <ClInclude Include="..\source\CallStorage.h" />
     <ClInclude Include="..\source\ConditionalExp.h" />
     <ClInclude Include="..\source\ContainerUtil.h" />
-    <ClInclude Include="..\source\ControlVariableStorage.h" />
+    <ClInclude Include="..\source\CtrlVarStorage.h" />
     <ClInclude Include="..\source\DesignExtractor.h" />
     <ClInclude Include="..\source\ElseParser.h" />
     <ClInclude Include="..\source\ExpressionUtil.h" />
     <ClInclude Include="..\source\IfParser.h" />
     <ClInclude Include="..\source\LexicalToken.h" />
     <ClInclude Include="..\source\NextStorage.h" />
+    <ClInclude Include="..\source\Optimizer.h" />
+    <ClInclude Include="..\source\OptimizerUtility.h" />
     <ClInclude Include="..\source\Parser.h" />
     <ClInclude Include="..\source\PKB.h" />
     <ClInclude Include="..\source\PrintParser.h" />
