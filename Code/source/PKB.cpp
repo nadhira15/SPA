@@ -374,7 +374,7 @@ std::string PKB::getProcOfStm(int stm)
 {
 	if (stm < stmProcList.size())
 	{
-		return stmProcList.at(stm);
+		return stmProcList.at(stm - 1);
 	}
 	return "";
 }
