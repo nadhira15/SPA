@@ -5,9 +5,9 @@
 */
 Optimizer::Optimizer(
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> st,
-	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> w,
+	std::vector<std::pair<std::string, std::string>> w,
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> p, 
-	std::unordered_set<std::string> s, std::unordered_map<std::string, std::string> d) {
+	std::vector<std::string> s, std::unordered_map<std::string, std::string> d) {
 	suchThatClauses = st;
 	withClauses = w;
 	patternClauses = p;
@@ -89,7 +89,7 @@ void Optimizer::createMaps(std::vector<std::string> synLst, std::pair<int,int> c
 * Note: The actual clause, rather than the internal reference, is added to the results graph
 */
 bool Optimizer::mapClauses(std::pair<int,int> cl, bool isTrivial) {
-	std::pair<std::string, std::pair<std::string, std::string>> clause;
+	std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>> clause;
 	clause = getClause(cl.second);
 	graph.push_back(clause);
 	clSet.erase(cl); //clause removed from bookkeeping sets
@@ -112,7 +112,7 @@ bool Optimizer::mapClauses(std::pair<int,int> cl, bool isTrivial) {
 */
 bool Optimizer::mapSynonym(std::string syn, bool isTrivial) {
 	//check if syn is part of select if group is trivial
-	if (isTrivial && (selectClause.find(syn) != selectClause.end())) {
+	if (isTrivial && (std::find(selectClause.begin(), selectClause.end(), syn) != selectClause.end())) {
 		isTrivial = false;
 	}
 	synSet.erase(syn); //synonym removed from bookkeeping sets
@@ -189,8 +189,8 @@ std::pair<int, std::vector<std::string>> Optimizer::extractPatternSyn(int index)
 
 std::pair<int, std::vector<std::string>> Optimizer::extractWithSyn(int index) {
 	std::vector<std::string> synLst;
-	std::string f = withClauses.at(index).second.first;
-	std::string s = withClauses.at(index).second.second;
+	std::string f = withClauses.at(index).first;
+	std::string s = withClauses.at(index).second;
 	int synNum = 0;
 	int i1 = 0;
 	if (OptimizerUtility::isWithSynonym(f)) {
@@ -222,23 +222,23 @@ std::pair<int, std::vector<std::string>> Optimizer::extractWithSyn(int index) {
 }
 
 /* Getter functions */
-std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> Optimizer::getTrivial() {
+std::vector<std::vector<std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>>>> Optimizer::getTrivial() {
 	return trivial;
 }
-std::vector<std::vector<std::pair<std::string, std::pair<std::string, std::string>>>> Optimizer::getNonTrivial() {
+std::vector<std::vector<std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>>>> Optimizer::getNonTrivial() {
 	return nontrivial;
 }
 
-std::pair<std::string, std::pair<std::string, std::string>> Optimizer::getClause(int cl) {
-	std::pair<std::string, std::pair<std::string, std::string>> clause;
+std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>> Optimizer::getClause(int cl) {
+	std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>> clause;
+	int index;
 	if (cl >= psize + wsize) {
-		clause = suchThatClauses.at(cl - psize - wsize);
-	}
-	else if (cl >= psize) {
-		clause = withClauses.at(cl - psize);
-	}
-	else {
-		clause = patternClauses.at(cl);
+		index = cl - psize - wsize;
+		clause = std::make_pair(std::make_pair("st", suchThatClauses.at(index).first), suchThatClauses.at(index).second);
+	} else if (cl >= psize) {
+		clause = std::make_pair(std::make_pair("with", "with"), withClauses.at(cl - psize));
+	} else {
+		clause = std::make_pair(std::make_pair("pattern", patternClauses.at(cl).first), patternClauses.at(cl).second);
 	}
 	return clause;
 }
