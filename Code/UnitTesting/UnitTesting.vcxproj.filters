@@ -33,6 +33,12 @@
     <ClInclude Include="PKB\ModifyStorageStub.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PKB\CallStorageStub.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PKB\NextStorageStub.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -92,13 +98,19 @@
     <ClCompile Include="DesignExtractor\DesignExtractorTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DesignExtractor\NextStartTest.cpp">
+    <ClCompile Include="Utility\OptimizerUtilityTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OptimizerUtilityTest.cpp">
+    <ClCompile Include="PQL\OptimizerTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OptimizerTest.cpp">
+    <ClCompile Include="PKB\CallStorageTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PKB\NextStorageTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignExtractor\NextStarTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

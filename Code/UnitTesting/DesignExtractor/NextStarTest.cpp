@@ -10,7 +10,10 @@ namespace UnitTesting
 	TEST_CLASS(NextStarTest)
 	{
 	public:
-
+		TEST_METHOD_CLEANUP(Storage_CleanUp)
+		{
+			PKB().erase();
+		}
 		TEST_METHOD(testNextStar)
 		{
 			PKB storage = PKB();

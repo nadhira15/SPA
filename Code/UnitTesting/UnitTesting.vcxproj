@@ -162,7 +162,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="PKB\CallStorageStub.h" />
     <ClInclude Include="PKB\ModifyStorageStub.h" />
+    <ClInclude Include="PKB\NextStorageStub.h" />
     <ClInclude Include="PKB\ParentStorageStub.h" />
     <ClInclude Include="PKB\FollowStorageStub.h" />
     <ClInclude Include="PKB\UseStorageStub.h" />
@@ -172,9 +174,11 @@
   <ItemGroup>
     <ClCompile Include="Parser\CallParserTest.cpp" />
     <ClCompile Include="DesignExtractor\DesignExtractorTest.cpp" />
-    <ClCompile Include="DesignExtractor\NextStartTest.cpp" />
+    <ClCompile Include="DesignExtractor\NextStarTest.cpp" />
+    <ClCompile Include="PKB\CallStorageTest.cpp" />
     <ClCompile Include="PKB\FollowStorageTest.cpp" />
     <ClCompile Include="PKB\ModifyStorageTest.cpp" />
+    <ClCompile Include="PKB\NextStorageTest.cpp" />
     <ClCompile Include="PKB\ParentStorageTest.cpp" />
     <ClCompile Include="PKB\UseStorageTest.cpp" />
     <ClCompile Include="PreProcessor\PreprocessorTest.cpp" />
