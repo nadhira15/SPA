@@ -1,4 +1,4 @@
-﻿# Prerequisites
+# Prerequisites
 *.d
 
 # Compiled Object files
@@ -401,3 +401,5 @@ healthchecksdb
 Code/Tests/out.xml
 Tests/system-tests-1/out.xml
 *.vcxproj.user
+Tests/system-tests-2/out.xml
+Tests/system-tests-2/analysis.xsl
