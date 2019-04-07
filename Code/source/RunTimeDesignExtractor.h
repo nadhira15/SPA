@@ -44,7 +44,11 @@ public:
 
 	std::unordered_set<pair<int, int>> getAffectsPairOfProc(std::string procedure);
 
-	std::unordered_set<pair<int, int>> extractAffectsPair(int start, int end, std::unordered_map<std::string, unordered_set<int>>& lastModifiedTable, std::unordered_set<pair<int, int>>& affectsPair);
+	std::unordered_set<pair<int, int>> extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>>& lastModifiedTable, std::unordered_set<pair<int, int>>& affectsPair);
+
+	void processAssign(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, std::unordered_set<std::pair<int, int>> & affectsPair);
+
+	void processCallAndRead(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable);
 
 	bool isAffectPossible(int stmt, int stmt1);
 

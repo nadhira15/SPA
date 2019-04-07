@@ -402,22 +402,23 @@ std::unordered_set<pair<int, int>> RunTimeDesignExtractor::getAffectsPairOfProc(
 	std::vector<int> stmList = pkb->getStmList(procedure);
 
 	int start = stmList.front();
-	int end = stmList.back();
 
 	std::unordered_map<std::string, unordered_set<int>> lastModifiedTable;
 	std::unordered_set<pair<int, int>> pairList;
 
-	extractAffectsPair(start, end, lastModifiedTable, pairList);
+	extractAffectsPair(start, lastModifiedTable, pairList);
+
+	return pairList;
 }
 
 
-std::unordered_set<pair<int, int>> RunTimeDesignExtractor::extractAffectsPair(int start, int end, std::unordered_map<std::string, std::unordered_set<int>> &lastModifiedTable, std::unordered_set<pair<int, int>> &affectsPair) {
-	for (int i = start; i <= end; i = pkb->getFollower(i)) {
+std::unordered_set<pair<int, int>> RunTimeDesignExtractor::extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>> &lastModifiedTable, std::unordered_set<pair<int, int>> &affectsPair) {
+	for (int i = start; i == 0; i = pkb->getFollower(i)) {
 		if (pkb->getStmType(i) == stmType::whileStm) {
-
+			processWhile(lastModifiedTable, i, affectsPair);
 		}
 		else if (pkb->getStmType(i) == stmType::ifStm) {
-
+			processIfStatement(lastModifiedTable, i, affectsPair);
 		}
 		else if (pkb->getStmType(i) == stmType::read || pkb->getStmType(i) == stmType::call) {
 			processCallAndRead(i, lastModifiedTable);
@@ -426,6 +427,61 @@ std::unordered_set<pair<int, int>> RunTimeDesignExtractor::extractAffectsPair(in
 			processAssign(i, lastModifiedTable, affectsPair);
 		}
 	}
+}
+
+void RunTimeDesignExtractor::processWhile(std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, int &i, std::unordered_set<std::pair<int, int>> & affectsPair)
+{
+	//Make copy for While Block
+	std::unordered_map<std::string, std::unordered_set<int>> lastModifiedTableCopy = lastModifiedTable;
+
+	int whileStatementFirst = pkb->getWhileStmContainer(i).front();
+
+	extractAffectsPair(whileStatementFirst, lastModifiedTable, affectsPair);
+
+	//If the modifiedTable was updated, we redo the while loop.
+	while (lastModifiedTableCopy != lastModifiedTable) {
+		lastModifiedTableCopy = lastModifiedTable;
+		extractAffectsPair(whileStatementFirst, lastModifiedTable, affectsPair);
+	}
+}
+
+void RunTimeDesignExtractor::processIfStatement(std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, int &i, std::unordered_set<std::pair<int, int>> & affectsPair)
+{
+	//Make copy for if Block
+	std::unordered_map<std::string, std::unordered_set<int>> lastModifiedTableCopy1 = lastModifiedTable;
+	//Make copy for else Block
+	std::unordered_map<std::string, std::unordered_set<int>> lastModifiedTableCopy2 = lastModifiedTable;
+
+	int ifStatementFirst = pkb->getIfStmContainer(i).front();
+	int elseStatementFirst = pkb->getElseStmContainer(i).front();
+
+	//Parse if Side
+	extractAffectsPair(ifStatementFirst, lastModifiedTableCopy1, affectsPair);
+
+	//Parse Else side
+	extractAffectsPair(elseStatementFirst, lastModifiedTableCopy2, affectsPair);
+
+	//Merge the 2 lastModified Table
+	for (std::pair <std::string, std::unordered_set<int>> entry : lastModifiedTableCopy1) {
+		std::string var = entry.first;
+		std::unordered_set<int> list = entry.second;
+
+		//If not found, we just add the list directly to copy 2 from copy 1.
+		if (lastModifiedTableCopy2.find(var) == lastModifiedTableCopy2.end()) {
+			lastModifiedTableCopy2[var] = list;
+		}
+
+		//If found, we add entries from copy 1 to copy 2.
+		else {
+			std::unordered_set<int> stmtList = lastModifiedTableCopy2[var];
+			for (int stmt : list) {
+				stmtList.insert(stmt);
+			}
+			lastModifiedTableCopy2[var] = stmtList;
+		}
+	}
+
+	lastModifiedTable = lastModifiedTableCopy2;
 }
 
 void RunTimeDesignExtractor::processAssign(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, std::unordered_set<std::pair<int, int>> & affectsPair)
