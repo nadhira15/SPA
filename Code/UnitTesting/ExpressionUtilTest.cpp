@@ -148,5 +148,15 @@ namespace UnitTesting
 
 			Assert::IsTrue(expectedVariables == output);
 		}
+
+		TEST_METHOD(testValidExpressionHard)
+		{
+			std::string testExpression = "shoes + (pants * (sandals + 1) / (2 + (3 * ( (4 % 3) + 5) / (heels * 2 + (4 * 3))))) * shirt";
+
+			bool isValid = ExpressionUtil::verifyInfixExpression(testExpression);
+
+			Assert::IsTrue(isValid);
+
+		}
 	};
 }
