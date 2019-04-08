@@ -1,4 +1,4 @@
-﻿# Prerequisites
+# Prerequisites
 *.d
 
 # Compiled Object files
@@ -401,3 +401,17 @@ healthchecksdb
 Code/Tests/out.xml
 Tests/system-tests-1/out.xml
 *.vcxproj.user
+Tests/system-tests-2/out.xml
+Tests/system-tests-2/analysis.xsl
+Tests/system-tests-1/out-WithClause.xml
+Tests/system-tests-1/out-Uses.xml
+Tests/system-tests-1/out-Tuples.xml
+Tests/system-tests-1/out-NoClause.xml
+Tests/system-tests-1/out-NextStar.xml
+Tests/system-tests-1/out-Next.xml
+Tests/system-tests-1/out-Multiple-easy.xml
+Tests/system-tests-1/out-Modifies.xml
+Tests/system-tests-1/out-CallsStar.xml
+Tests/system-tests-1/out-Calls.xml
+Tests/system-tests-1/out-Boolean.xml
+Tests/system-tests-1/out-Pattern.xml
