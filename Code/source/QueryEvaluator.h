@@ -18,12 +18,19 @@ public:
 		std::vector<std::pair<std::string, std::string>> withCondition);
 
 private:
-	static std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>>
-		evaluateTable(
-			std::unordered_map<std::string, std::string> declarations,
-			std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
-			std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
-			std::vector<std::pair<std::string, std::string>> withCondition);
+	static std::unordered_set<std::string> toStringSet(
+		std::unordered_map<std::string, std::string> declarations,
+		std::vector<std::string> selectedVar,
+		std::unordered_map<std::string, std::vector<std::string>> projectTable);
+	static std::unordered_map<std::string, std::vector<std::string>> getProjectTable(
+		std::unordered_map<std::string, std::string> declarations,
+		std::vector<std::string> selectedVar,
+		std::unordered_map<std::string, std::vector<std::string>> resultTable);
+	static std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>> evaluateTable(
+		std::unordered_map<std::string, std::string> declarations,
+		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
+		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
+		std::vector<std::pair<std::string, std::string>> withCondition);
 
 	static std::string isWithTrivial(std::string left, std::string right);
 
