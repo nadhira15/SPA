@@ -53,6 +53,24 @@ public:
 	// add the last statement for an if else block
 	void addElseLastStm(int ifStm, int elseStm);
 
+	/*
+		add a stm into the if stm list of the specified 'ifStm'
+		statements must be added in numerical order
+	*/
+	void addIfContainerStatement(int ifStm, int stmToAdd);
+
+	/*
+		add a stm into the else stm list of the specified 'ifStm'
+		statements must be added in numerical order
+	*/
+	void addElseContainerStatement(int ifStm, int stmToAdd);
+
+	/*
+		add a stm into the stm list of the specified 'whileStm'
+		statements must be added in numerical order
+	*/
+	void addWhileContainerStatement(int whileStm, int stmToAdd);
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Follows adder & setter Methods	/////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,6 +263,30 @@ public:
 
 	// returns the last statements of the specified if stm's then and else block
 	std::pair<int, int> getIfLastStms(int ifStm);
+
+	/*
+		return the list of statements in the specified if block
+		return an empty set if 'ifStm' is not found
+	*/
+	std::vector<int> getIfStmContainer(int ifStm);
+
+	/*
+		return the list of statements in the specified else block
+		return an empty set if 'ifStm' is not found
+	*/
+	std::vector<int> getElseStmContainer(int ifStm);
+
+	/*
+		return the list of statements in the specified while block
+		return an empty set if 'whileStm' is not found
+	*/
+	std::vector<int> getWhileStmContainer(int whileStm);
+
+	/*
+		return the procedure the specified stm belongs to
+		return empty string if stm is not found
+	*/
+	std::string getProcOfStm(int stm);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Follows Getter Methods	/////////////////////////////////////////////////////////////////////////
@@ -644,7 +686,8 @@ public:
 
 private:
 	static std::unordered_set<std::string> procList;
-	static std::unordered_map<std::string, std::vector<int>> procStmList;
+	static std::unordered_map<std::string, std::vector<int>> procStmMap;
+	static std::vector<std::string> stmProcList;
 	static std::vector<stmType> stmTypeList;
 	static std::unordered_set<std::string> varList;
 	static std::unordered_set<std::string> constList;
@@ -656,8 +699,9 @@ private:
 	static std::unordered_set<int> callStmList;
 	static std::unordered_set< std::pair<int, std::string>, intStringhash > readPairList;
 	static std::unordered_set< std::pair<int, std::string>, intStringhash > printPairList;
-	static std::unordered_map<int, int> whileLastStmList;
-	static std::unordered_map<int, std::pair<int, int> > ifLastStmList;
+	static std::unordered_map<int, std::vector<int>> whileBlockStmLists;
+	static std::unordered_map<int, std::vector<int>> ifBlockStmLists;
+	static std::unordered_map<int, std::vector<int>> elseBlockStmLists;
 
 	static FollowStorage fStore;
 	static ParentStorage pStore;
