@@ -581,7 +581,7 @@ bool PKB::hasNextRelation()
 
 bool PKB::hasNextStarPair(int line1, int line2)
 {
-	return RunTimeDesignExtractor::extractNextStarPair(this, line1, line2);
+	return RunTimeDesignExtractor().extractNextStarPair(line1, line2);
 }
 
 std::unordered_set<int> PKB::getNext(int line)
@@ -596,12 +596,12 @@ std::unordered_set<int> PKB::getPrev(int line)
 
 std::unordered_set<int> PKB::getAllLnAfter(int line)
 {
-	return RunTimeDesignExtractor::extractNextStar(this, line);
+	return RunTimeDesignExtractor().extractNextStar(line);
 }
 
 std::unordered_set<int> PKB::getAllLnBefore(int line)
 {
-	return RunTimeDesignExtractor::extractPreviousStar(this, line);
+	return RunTimeDesignExtractor().extractPreviousStar(line);
 }
 
 std::unordered_set<int> PKB::getAllNext()
@@ -621,7 +621,7 @@ std::unordered_set<std::pair<int, int>, intPairhash> PKB::getNextPairs()
 
 std::unordered_set<std::pair<int, int>, intPairhash> PKB::getNextStarPairs()
 {
-	return RunTimeDesignExtractor::getNextStarPairs(this);
+	return RunTimeDesignExtractor().getNextStarPairs();
 }
 
 bool PKB::hasAffectsRelation()
