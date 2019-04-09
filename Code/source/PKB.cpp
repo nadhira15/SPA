@@ -879,6 +879,11 @@ void PKB::erase()
 	whileStmList.erase(whileStmList.begin(), whileStmList.end());
 	callStmList.erase(callStmList.begin(), callStmList.end());
 	patternList.erase(patternList.begin(), patternList.end());
+	readPairList.erase(readPairList.begin(), readPairList.end());
+	printPairList.erase(printPairList.begin(), printPairList.end());
+	whileBlockStmLists.erase(whileBlockStmLists.begin(), whileBlockStmLists.end());
+	ifBlockStmLists.erase(ifBlockStmLists.begin(), ifBlockStmLists.end());
+	elseBlockStmLists.erase(elseBlockStmLists.begin(), elseBlockStmLists.end());
 	fStore.erase();
 	pStore.erase();
 	uStore.erase();
