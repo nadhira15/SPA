@@ -265,6 +265,10 @@ int PKB::getTotalStmNo()
 
 stmType PKB::getStmType(int stm)
 {
+	if (stm <= 0 || stm >= stmTypeList.size())
+	{
+		return nonExistant;
+	}
 	return stmTypeList.at(stm - 1);
 }
 

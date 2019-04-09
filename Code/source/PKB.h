@@ -14,7 +14,7 @@
 #include "RunTimeDesignExtractor.h"
 #include "Hasher.h"
 
-enum stmType {read, print, assign, whileStm, ifStm, call};
+enum stmType {nonExistant, read, print, assign, whileStm, ifStm, call};
 
 /*
 	Accepts relationship, pattern and other general data from Parser and DesignExtractor and
@@ -225,7 +225,10 @@ public:
 	// returns the total number of statements in the entire program
 	int getTotalStmNo();
 
-	// return the statement type of stm
+	/*
+		return the statement type of stm
+		return nonExistant if stm cannot be found
+	*/
 	stmType getStmType(int stm);
 
 	// returns the stored list of read statements
