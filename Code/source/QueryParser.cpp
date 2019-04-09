@@ -299,9 +299,9 @@ std::vector<std::pair<std::string, std::pair<std::string, std::string>>>
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> output;
 
 	for (int i = 0; i < patternClause.size(); i++) {
-		int openBracket = patternClause[i].find("(");
+		int openBracket = patternClause[i].find_first_of("(");
 		int comma = patternClause[i].find(",");
-		int closeBracket = patternClause[i].find(")");
+		int closeBracket = patternClause[i].find_last_of(")");
 		int strLen = patternClause[i].length();
 		std::string varName;
 
