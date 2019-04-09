@@ -23,15 +23,15 @@ Passes the following to query evaluator:
 3. vector<pair<string, pair<string, string>>> suchThatCondition
 4. vector<pair<string, pair<string, string>>> patternCondition
 */
-std::unordered_set<std::string> QueryParser::parse(std::string query) {
+std::list<std::string> QueryParser::parse(std::string query) {
 	
 	std::string errorString;
-	std::unordered_set<std::string> result;
+	std::list<std::string> result;
 
 	// initial query validation
 	errorString = QueryValidator::initialValidation(query);
 	if (errorString != "") {
-		result.insert("error");
+		result.push_back("error");
 		return result;
 	}
 
@@ -41,7 +41,7 @@ std::unordered_set<std::string> QueryParser::parse(std::string query) {
 	// validating clauses
 	errorString = QueryValidator::validateClauses(clauses);
 	if (errorString != "") {
-		result.insert("error");
+		result.push_back("error");
 		return result;
 	}
 
@@ -51,7 +51,7 @@ std::unordered_set<std::string> QueryParser::parse(std::string query) {
 	// validating declarations
 	errorString = QueryValidator::validateDeclarations(declarations);
 	if (errorString != "") {
-		result.insert("error");
+		result.push_back("error");
 		return result;
 	}
 
@@ -119,7 +119,7 @@ std::unordered_set<std::string> QueryParser::parse(std::string query) {
 	// validating 'Select' parameter
 	errorString = QueryValidator::validateSelectedVar(selectedVar, declarations);
 	if (errorString != "") {
-		result.insert("error");
+		result.push_back("error");
 		return result;
 	}
 
@@ -132,33 +132,33 @@ std::unordered_set<std::string> QueryParser::parse(std::string query) {
 	// validating 'such that' parameter
 	errorString = QueryValidator::validateSuchThatParam(suchThatCondition, declarations);
 	if (errorString == "semantic error" && selectBoolean) {
-		result.insert("FALSE");
+		result.push_back("FALSE");
 		return result;
 	}
 	else if (errorString != "") {
-		result.insert("error");
+		result.push_back("error");
 		return result;
 	}
 
 	// validating 'pattern' parameter
 	errorString = QueryValidator::validatePatternParam(patternCondition, declarations);
 	if (errorString == "semantic error" && selectBoolean) {
-		result.insert("FALSE");
+		result.push_back("FALSE");
 		return result;
 	}
 	else if (errorString != "") {
-		result.insert("error");
+		result.push_back("error");
 		return result;
 	}
 
 	// validating 'with' parameter
 	errorString = QueryValidator::validateWithParam(withCondition, declarations);
 	if (errorString == "semantic error" && selectBoolean) {
-		result.insert("FALSE");
+		result.push_back("FALSE");
 		return result;
 	}
 	else if (errorString != "") {
-		result.insert("error");
+		result.push_back("error");
 		return result;
 	}
 
@@ -360,7 +360,7 @@ std::vector<std::pair<std::string, std::string>>
 Calls QueryEvaluator to evaluate the query result
 Returns a unordered_set<string> consisting of results
 */
-std::unordered_set<std::string>
+std::list<std::string>
 	QueryParser::evaluateSelectConditions(std::unordered_map<std::string, std::string> declarations,
 										  std::vector<std::string> selectedVar,
 										  std::vector<std::pair<std::string,
