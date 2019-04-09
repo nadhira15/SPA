@@ -575,8 +575,38 @@ bool RunTimeDesignExtractor::isAffectStar(int start, int target) {
 		adjacencyList[affectPair.first] = adjacents;
 	}
 
-
+	std::unordered_set<int> visitedPath;
+	return DFSRecursiveStartReachableToEnd(start, target, visitedPath, adjacencyList, true);
 }
+
+bool RunTimeDesignExtractor::DFSRecursiveStartReachableToEnd(int start, int end, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList, bool isStart) {
+	//We dont add if it is the first visit to starting index
+	//If 2nd visit onwards we add it.
+	if (!isStart) {
+		visitedPath.insert(start);
+
+		//If start == end it means we have found the target destination node.
+		if (start == end) {
+			return true;
+		}
+	}
+
+	std::unordered_set<int> adjacentStms = adjacencyList[start];
+
+
+	for (int adjacentStm : adjacentStms) {
+		if (visitedPath.find(adjacentStm) == visitedPath.end) {
+			bool found = DFSRecursiveStartReachableToEnd(adjacentStm, end, visitedPath, adjacencyList, false);
+
+			if (found) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 
 
 //Get list of s where Affects*(int, s)

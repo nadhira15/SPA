@@ -71,6 +71,12 @@ public:
 	std::unordered_set<std::pair<int, int>, intPairhash> getAffectsPair();
 
 	/*
+	 * Check for the truthfullness of Relation Affects*(INTEGER, INTEGER).
+	 * Returns true if such a relation is found.
+	 */
+	bool isAffectStar(int start, int target);
+
+	/*
 	 * Check for the the list of SYNONYM of Relation Affects*(INTEGER, SYNONYM).
 	 * Returns list of possible SYNONYM
 	 */
@@ -132,7 +138,8 @@ private:
 	//Performs Affects relation lastModified update for modifying statements.
 	void processCallAndRead(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable);
 
-	bool isAffectStar(int start, int target);
+	//Perform Affects Table ytraversal for Affects*(INTEGER, INTEGER).
+	bool DFSRecursiveStartReachableToEnd(int start, int end, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList, bool isStart);
 
 	//Performs Affects Table traversal for Affects*(SYNONYM, SYNONYM).
 	void DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList, bool isStart);
