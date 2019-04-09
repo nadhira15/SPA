@@ -132,8 +132,10 @@ private:
 	//Performs Affects relation lastModified update for modifying statements.
 	void processCallAndRead(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable);
 
+	bool isAffectStar(int start, int target);
+
 	//Performs Affects Table traversal for Affects*(SYNONYM, SYNONYM).
-	void DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList);
+	void DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList, bool isStart);
 
 	/* Checks if 
 	 * (1) stmt1 and stmt2 are assign statements

@@ -562,6 +562,22 @@ void RunTimeDesignExtractor::processCallAndRead(int &i, std::unordered_map<std::
 	}
 }
 
+//Check if Affects*(int, int) is true.
+bool RunTimeDesignExtractor::isAffectStar(int start, int target) {
+	std::string procedure = pkb->getProcOfStm(start);
+	std::unordered_set<std::pair<int, int>, intPairhash> relevantPairs = getAffectsPairOfProc(procedure);
+	std::unordered_map<int, std::unordered_set<int>> adjacencyList;
+	std::vector<int> results;
+
+	for (std::pair<int, int> affectPair : relevantPairs) {
+		std::unordered_set<int> adjacents = adjacencyList[affectPair.first];
+		adjacents.insert(affectPair.second);
+		adjacencyList[affectPair.first] = adjacents;
+	}
+
+
+}
+
 
 //Get list of s where Affects*(int, s)
 std::vector<int> RunTimeDesignExtractor::getAllStatementsAffectedByIndexStar(int index) {
@@ -577,7 +593,7 @@ std::vector<int> RunTimeDesignExtractor::getAllStatementsAffectedByIndexStar(int
 	}
 
 	std::unordered_set<int> visitedPath;
-	DFSRecursiveReachability(index, results, visitedPath, adjacencyList);
+	DFSRecursiveReachability(index, results, visitedPath, adjacencyList, true);
 
 	return results;
 }
@@ -596,20 +612,24 @@ std::vector<int> RunTimeDesignExtractor::getAllStatementsAffectingIndexStar(int 
 	}
 
 	std::unordered_set<int> visitedPath;
-	DFSRecursiveReachability(index, results, visitedPath, adjacencyList);
+	DFSRecursiveReachability(index, results, visitedPath, adjacencyList, true);
 
 	return results;
 }
 
-void RunTimeDesignExtractor::DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList) {
-	visitedPath.insert(start);
+void RunTimeDesignExtractor::DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList, bool isStart) {
+	if (!isStart) {
+		visitedPath.insert(start);
+		results.push_back(start);
+	}
 
 	std::unordered_set<int> adjacentStms = adjacencyList[start];
 
 	for (int adjacentStm : adjacentStms) {
-		results.push_back(adjacentStm);
-
-		DFSRecursiveReachability(adjacentStm, results, visitedPath, adjacencyList);
+		//If not visited, visit it.
+		if (visitedPath.find(adjacentStm) == visitedPath.end()) {
+			DFSRecursiveReachability(adjacentStm, results, visitedPath, adjacencyList, false);
+		}
 	}
 }
 
@@ -631,7 +651,7 @@ std::unordered_set<std::pair<int, int>, intPairhash> RunTimeDesignExtractor::get
 		std::vector<int> results;
 		std::unordered_set<int> visitedPath;
 
-		DFSRecursiveReachability(i, results, visitedPath, adjacencyList);
+		DFSRecursiveReachability(i, results, visitedPath, adjacencyList, false);
 
 		for (int result : results) {
 			finalResult.insert(std::make_pair(i, result));
