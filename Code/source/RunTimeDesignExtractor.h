@@ -41,17 +41,17 @@ public:
 
 	std::vector<int> getAllStatementsAffectingByAnother();
 
-	std::unordered_set<std::pair<int, int>> getAffectsPair();
+	std::unordered_set<std::pair<int, int>, intPairhash> getAffectsPair();
 
-	std::unordered_set<std::pair<int, int>> getAffectsPairOfProc(std::string procedure);
+	std::unordered_set<std::pair<int, int>, intPairhash> getAffectsPairOfProc(std::string procedure);
 
-	void extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>>& lastModifiedTable, std::unordered_set<std::pair<int, int>>& affectsPair);
+	void extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>>& lastModifiedTable, std::unordered_set<std::pair<int, int>, intPairhash>& affectsPair);
 
-	void processWhile(std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, int &i, std::unordered_set<std::pair<int, int>> & affectsPair);
+	void processWhile(std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, int &i, std::unordered_set<std::pair<int, int>, intPairhash> & affectsPair);
 
-	void processIfStatement(std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, int &i, std::unordered_set<std::pair<int, int>> & affectsPair);
+	void processIfStatement(std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, int &i, std::unordered_set<std::pair<int, int>, intPairhash> & affectsPair);
 
-	void processAssign(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, std::unordered_set<std::pair<int, int>> & affectsPair);
+	void processAssign(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, std::unordered_set<std::pair<int, int>, intPairhash> & affectsPair);
 
 	void processCallAndRead(int &i, std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable);
 
@@ -61,7 +61,7 @@ public:
 
 	void DFSRecursiveReachability(int start, std::vector<int>& results, std::unordered_set<int>& visitedPath, std::unordered_map<int, std::unordered_set<int>> adjacencyList);
 
-	std::unordered_set<std::pair<int, int>> getAffectsStarPair();
+	std::unordered_set<std::pair<int, int>, intPairhash> getAffectsStarPair();
 
 	bool isAffectPossible(int stmt, int stmt1);
 
