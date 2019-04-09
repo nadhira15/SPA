@@ -56,7 +56,9 @@ private:
 	static std::unordered_set<std::string> getAllStms();
 
 	static std::unordered_map<std::string, std::vector<std::string>>
-		getStmts(std::unordered_map<std::string, std::string> declarations, std::string syn);
+		getStmtsMap(std::unordered_map<std::string, std::string> declarations, std::string syn);
+
+	static std::unordered_set<std::string> getStmts(std::string);
 
 	static std::unordered_map<std::string, std::vector<std::string>>
 		filterType(std::string synonym, std::unordered_map<std::string, std::string> declarations,
