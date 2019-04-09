@@ -10,7 +10,7 @@
 class QueryEvaluator
 {
 public:
-	static std::unordered_set<std::string> projectResult(
+	static std::list<std::string> projectResult(
 		std::unordered_map<std::string, std::string> declarations,
 		std::vector<std::string> selectedVar,
 		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
@@ -18,7 +18,7 @@ public:
 		std::vector<std::pair<std::string, std::string>> withCondition);
 
 private:
-	static std::unordered_set<std::string> toStringSet(
+	static std::list<std::string> toStringList(
 		std::unordered_map<std::string, std::string> declarations,
 		std::vector<std::string> selectedVar,
 		std::unordered_map<std::string, std::vector<std::string>> projectTable);

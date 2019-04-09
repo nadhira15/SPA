@@ -17,7 +17,7 @@
 /*
 Projects result of the query 
 */
-std::unordered_set<std::string> QueryEvaluator::projectResult(
+std::list<std::string> QueryEvaluator::projectResult(
 	std::unordered_map<std::string, std::string> declarations,
 	std::vector<std::string> selectedVar,
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
@@ -27,27 +27,27 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 		resultPair = evaluateTable(declarations, suchThatCondition, patternCondition, withCondition);
 	std::string status = resultPair.first;
 	std::unordered_map<std::string, std::vector<std::string>> resultTable = resultPair.second;
-	std::unordered_set<std::string> resultSet;
+	std::list<std::string> resultList;
 	if (selectedVar[0] == "BOOLEAN") {
-		resultSet.insert(status);
+		resultList.push_back(status);
 	}
 	else if (status == "TRUE" && (resultTable.size() == 0 || resultTable.begin()->second.size() != 0)) {
 			std::unordered_map<std::string, std::vector<std::string>> projectTable =
 				getProjectTable(declarations, selectedVar, resultTable);
-			resultSet = toStringSet(declarations, selectedVar, projectTable);
+			resultList = toStringList(declarations, selectedVar, projectTable);
 	}
-	return resultSet;
+	return resultList;
 }
 
 /*
 Translate the projectTable to 
 set of strings.
 */
-std::unordered_set<std::string> QueryEvaluator::toStringSet(
+std::list<std::string> QueryEvaluator::toStringList(
 	std::unordered_map<std::string, std::string> declarations,
 	std::vector<std::string> selectedVar,
 	std::unordered_map<std::string, std::vector<std::string>> projectTable) {
-	std::unordered_set<std::string> resultSet;
+	std::list<std::string> resultList;
 	int projectedSize = projectTable.begin()->second.size();
 	for (std::vector<std::string>::size_type i = 0; i != projectedSize; i++) {
 		std::string tuple;
@@ -73,9 +73,9 @@ std::unordered_set<std::string> QueryEvaluator::toStringSet(
 				}
 			}
 		}
-		resultSet.insert(tuple);
+		resultList.push_back(tuple);
 	}
-	return resultSet;
+	return resultList;
 }
 
 /*
