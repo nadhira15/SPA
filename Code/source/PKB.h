@@ -261,10 +261,16 @@ public:
 	// returns the stored list of <print stm, variable> pairs
 	std::unordered_set< std::pair<int, std::string>, intStringhash > getPrintPairs();
 
-	// returns the last statement of the specified while loop
+	/*
+		returns the last statement of the specified while loop
+		return 0 if 'whileStm' is not found
+	*/
 	int getWhileLastStm(int whileStm);
 
-	// returns the last statements of the specified if stm's then and else block
+	/*
+		returns the last statements of the specified if stm's then and else block
+		return a pair of 0 if 'ifStm' is not found
+	*/
 	std::pair<int, int> getIfLastStms(int ifStm);
 
 	/*

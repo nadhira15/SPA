@@ -376,7 +376,7 @@ std::vector<int> PKB::getWhileStmContainer(int whileStm)
 
 std::string PKB::getProcOfStm(int stm)
 {
-	if (stm < stmProcList.size())
+	if (stm <= stmProcList.size() && stm > 0)
 	{
 		return stmProcList.at(stm - 1);
 	}
@@ -807,7 +807,8 @@ std::unordered_set<int> PKB::findPattern(std::string expr, bool isExclusive)
 	return validStm;
 }
 
-std::unordered_set<std::pair<int, std::string>, intStringhash>PKB::findPatternPairs(std::string expr, bool isExclusive)
+std::unordered_set<std::pair<int, std::string>, intStringhash>PKB::findPatternPairs(std::string expr,
+																					bool isExclusive)
 {
 	std::unordered_set<std::pair<int, std::string>, intStringhash> validPairs;
 	for each (const auto elem in patternList)
