@@ -95,3 +95,9 @@ std::unordered_set<std::pair<int, std::string>, intStringhash> CtrlVarStorage::g
 	return result;
 }
 
+void CtrlVarStorage::erase()
+{
+	ifVariableToStm.erase(ifVariableToStm.begin(), ifVariableToStm.end());
+	whileVariableToStm.erase(whileVariableToStm.begin(), whileVariableToStm.end());
+}
+
