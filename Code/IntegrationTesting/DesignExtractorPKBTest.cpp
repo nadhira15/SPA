@@ -39,6 +39,7 @@ namespace IntegrationTesting
 
 			Assert::IsTrue(pkb.hasCallStarPair("Three", "Four"));
 
+			pkb.erase();
 		}
 
 		TEST_METHOD(designExtractorCyclicTest) {
@@ -55,6 +56,8 @@ namespace IntegrationTesting
 			pkb.addCall("Three", "One", 3);
 
 			Assert::ExpectException<std::string>(DesignExtractor::extractDesigns);
+			pkb.erase();
+
 		}
 
 		TEST_METHOD(designExtractorSingleCyclicTest) {
@@ -67,6 +70,8 @@ namespace IntegrationTesting
 			pkb.addCall("One", "One", 1);
 
 			Assert::ExpectException<std::string>(DesignExtractor::extractDesigns);
+			pkb.erase();
+
 		}
 
 		TEST_METHOD(designExtractorNonExistantProc) {
@@ -82,6 +87,8 @@ namespace IntegrationTesting
 			pkb.addCall("Three", "Onez", 3);
 
 			Assert::ExpectException<std::string>(DesignExtractor::extractDesigns);
+			pkb.erase();
+
 		}
 
 		TEST_METHOD(designExtractorFollowStarTest) {
@@ -127,6 +134,8 @@ namespace IntegrationTesting
 			std::unordered_set<int> set({ 2, 3, 4, 7 });
 
 			Assert::IsTrue(pkb.getAllFollowing(1) == set);
+			pkb.erase();
+
 
 
 

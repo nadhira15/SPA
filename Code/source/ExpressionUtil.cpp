@@ -1,7 +1,7 @@
 #include "ExpressionUtil.h"
 
 std::regex terms("(\\w+)");
-std::regex validExpression("^(?:\\(*\\s*(\\w+)\\s*\\)*)(?:\\s*[+\\*\\-%\\/]\\s*(?:\\(*\\s*(\\w+)\\s*\\)*))*$");
+std::regex validExpression("^(?:[\\(\\s]*(\\w+)[\\s\\)]*)(?:\\s*[+\\*\\-%\\/]\\s*(?:[\\(\\s]*(\\w+)[\\s\\)]*))*$");
 
 /* Converts an Infix Expression into a Postfix Expression.
  * Preconditon: The Infix Expression must be a valid infixExpression. Perform a check by calling
@@ -88,8 +88,7 @@ std::string ExpressionUtil::convertInfixToPrefix(std::string expression) {
 		operandStack.push(subexpre);
 	}
 			
-	return " " + operandStack.top() + " ";
-
+	return operandStack.top();
 }
 
 /* This function performs white space cleaning of an infix expression.
