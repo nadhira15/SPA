@@ -1,7 +1,8 @@
 #include "PKB.h"
 
 std::unordered_set<std::string> PKB::procList;
-std::unordered_map<std::string, std::vector<int>> PKB::procStmList;
+std::unordered_map<std::string, std::vector<int>> PKB::procStmMap;
+std::vector<std::string> PKB::stmProcList;
 std::vector<stmType> PKB::stmTypeList;
 std::unordered_set<std::string> PKB::varList;
 std::unordered_set<std::string> PKB::constList;
@@ -13,8 +14,9 @@ std::unordered_set<int> PKB::whileStmList;
 std::unordered_set<int> PKB::callStmList;
 std::unordered_set< std::pair<int, std::string>, intStringhash > PKB::readPairList;
 std::unordered_set< std::pair<int, std::string>, intStringhash > PKB::printPairList;
-std::unordered_map<int, int> PKB::whileLastStmList;
-std::unordered_map<int, std::pair<int, int> > PKB::ifLastStmList;
+std::unordered_map<int, std::vector<int>> PKB::whileBlockStmLists;
+std::unordered_map<int, std::vector<int>> PKB::ifBlockStmLists;
+std::unordered_map<int, std::vector<int>> PKB::elseBlockStmLists;
 
 FollowStorage PKB::fStore;
 ParentStorage PKB::pStore;
@@ -37,9 +39,10 @@ bool PKB::addProc(std::string name)
 void PKB::addStatement(int stmNo, stmType type, std::string procedure)
 {
 	stmTypeList.push_back(type);
-	if (!procStmList.emplace(procedure, std::vector<int>{stmNo}).second)
+	stmProcList.push_back(procedure);
+	if (!procStmMap.emplace(procedure, std::vector<int>{stmNo}).second)
 	{
-		procStmList.find(procedure)->second.push_back(stmNo);
+		procStmMap.find(procedure)->second.push_back(stmNo);
 	}
 
 	switch (type)
@@ -78,23 +81,47 @@ void PKB::addConstant(std::string value)
 }
 
 void PKB::addWhileLastStm(int whileStm, int lastStm)
-{
-	whileLastStmList.emplace(whileStm, lastStm);
+{//unused
+	//whileLastStmList.emplace(whileStm, lastStm);
 }
 
 void PKB::addThenLastStm(int ifStm, int thenStm)
-{
+{/*unused
 	if (!ifLastStmList.emplace(ifStm, std::pair<int, int>{thenStm, 0}).second)
 	{
 		ifLastStmList.at(ifStm).first = thenStm;
-	}
+	}*/
 }
 
 void PKB::addElseLastStm(int ifStm, int elseStm)
-{
+{/*unused
 	if (!ifLastStmList.emplace(ifStm, std::pair<int, int>{0, elseStm}).second)
 	{
 		ifLastStmList.at(ifStm).second = elseStm;
+	}*/
+}
+
+void PKB::addIfContainerStatement(int ifStm, int stmToAdd)
+{
+	if (!ifBlockStmLists.emplace(ifStm, std::vector<int>{stmToAdd}).second)
+	{
+		ifBlockStmLists.at(ifStm).push_back(stmToAdd);
+	}
+}
+
+void PKB::addElseContainerStatement(int ifStm, int stmToAdd)
+{
+	if (!elseBlockStmLists.emplace(ifStm, std::vector<int>{stmToAdd}).second)
+	{
+		elseBlockStmLists.at(ifStm).push_back(stmToAdd);
+	}
+}
+
+void PKB::addWhileContainerStatement(int whileStm, int stmToAdd)
+{
+	if (!whileBlockStmLists.emplace(whileStm, std::vector<int>{stmToAdd}).second)
+	{
+		whileBlockStmLists.at(whileStm).push_back(stmToAdd);
 	}
 }
 
@@ -224,9 +251,9 @@ std::unordered_set<std::string> PKB::getProcList()
 
 std::vector<int> PKB::getStmList(std::string procedure)
 {
-	if (procStmList.find(procedure) != procStmList.end())
+	if (procStmMap.find(procedure) != procStmMap.end())
 	{
-		return procStmList.at(procedure);
+		return procStmMap.at(procedure);
 	}
 	return {};
 }
@@ -293,20 +320,63 @@ std::unordered_set<std::pair<int, std::string>, intStringhash> PKB::getPrintPair
 
 int PKB::getWhileLastStm(int whileStm)
 {
-	if (whileLastStmList.find(whileStm) != whileLastStmList.end())
+	if (whileBlockStmLists.find(whileStm) != whileBlockStmLists.end())
 	{
-		return whileLastStmList.at(whileStm);
+		std::vector<int> whileBlock = whileBlockStmLists.at(whileStm);
+		return whileBlock.at(whileBlock.size() - 1);
 	}
 	return 0;
 }
 
 std::pair<int, int> PKB::getIfLastStms(int ifStm)
 {
-	if (ifLastStmList.find(ifStm) != ifLastStmList.end())
+	if (ifBlockStmLists.find(ifStm) != ifBlockStmLists.end())
 	{
-		return ifLastStmList.at(ifStm);
+		std::vector<int> ifBlock = ifBlockStmLists.at(ifStm);
+		std::vector<int> elseBlock = elseBlockStmLists.at(ifStm);
+
+		int first = ifBlock.at(ifBlock.size() - 1);
+		int second = elseBlock.at(elseBlock.size() - 1);
+
+		return std::pair<int, int>(first, second);
 	}
 	return std::pair<int, int>(0, 0);
+}
+
+std::vector<int> PKB::getIfStmContainer(int ifStm)
+{
+	if (ifBlockStmLists.find(ifStm) != ifBlockStmLists.end())
+	{
+		return ifBlockStmLists.at(ifStm);
+	}
+	return {};
+}
+
+std::vector<int> PKB::getElseStmContainer(int ifStm)
+{
+	if (elseBlockStmLists.find(ifStm) != elseBlockStmLists.end())
+	{
+		return elseBlockStmLists.at(ifStm);
+	}
+	return {};
+}
+
+std::vector<int> PKB::getWhileStmContainer(int whileStm)
+{
+	if (whileBlockStmLists.find(whileStm) != whileBlockStmLists.end())
+	{
+		return whileBlockStmLists.at(whileStm);
+	}
+	return {};
+}
+
+std::string PKB::getProcOfStm(int stm)
+{
+	if (stm < stmProcList.size())
+	{
+		return stmProcList.at(stm - 1);
+	}
+	return "";
 }
 
 bool PKB::hasFollowRelation()
@@ -581,7 +651,7 @@ bool PKB::hasNextRelation()
 
 bool PKB::hasNextStarPair(int line1, int line2)
 {
-	return RunTimeDesignExtractor::extractNextStarPair(this, line1, line2);
+	return RunTimeDesignExtractor().extractNextStarPair(line1, line2);
 }
 
 std::unordered_set<int> PKB::getNext(int line)
@@ -596,12 +666,12 @@ std::unordered_set<int> PKB::getPrev(int line)
 
 std::unordered_set<int> PKB::getAllLnAfter(int line)
 {
-	return RunTimeDesignExtractor::extractNextStar(this, line);
+	return RunTimeDesignExtractor().extractNextStar(line);
 }
 
 std::unordered_set<int> PKB::getAllLnBefore(int line)
 {
-	return RunTimeDesignExtractor::extractPreviousStar(this, line);
+	return RunTimeDesignExtractor().extractPreviousStar(line);
 }
 
 std::unordered_set<int> PKB::getAllNext()
@@ -621,7 +691,7 @@ std::unordered_set<std::pair<int, int>, intPairhash> PKB::getNextPairs()
 
 std::unordered_set<std::pair<int, int>, intPairhash> PKB::getNextStarPairs()
 {
-	return RunTimeDesignExtractor::getNextStarPairs(this);
+	return RunTimeDesignExtractor().getNextStarPairs();
 }
 
 bool PKB::hasAffectsRelation()
@@ -793,7 +863,7 @@ std::unordered_set<std::pair<int, std::string>, intStringhash> PKB::getWhileStmC
 void PKB::erase()
 {
 	procList.erase(procList.begin(), procList.end());
-	procStmList.erase(procStmList.begin(), procStmList.end());
+	procStmMap.erase(procStmMap.begin(), procStmMap.end());
 	stmTypeList.erase(stmTypeList.begin(), stmTypeList.end());
 	varList.erase(varList.begin(), varList.end());
 	constList.erase(constList.begin(), constList.end());
