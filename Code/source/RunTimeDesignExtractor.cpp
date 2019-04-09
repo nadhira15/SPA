@@ -446,7 +446,25 @@ void RunTimeDesignExtractor::processWhile(std::unordered_map<std::string, std::u
 
 	//If the modifiedTable was updated, we redo the while loop.
 	while (lastModifiedTableCopy != lastModifiedTable) {
-		lastModifiedTableCopy = lastModifiedTable;
+		//Merge the 2 lastModified Table
+		for (std::pair <std::string, std::unordered_set<int>> entry : lastModifiedTableCopy) {
+			std::string var = entry.first;
+			std::unordered_set<int> list = entry.second;
+
+			//If not found, we just add the list directly to copy 2 from copy 1.
+			if (lastModifiedTable.find(var) == lastModifiedTable.end()) {
+				lastModifiedTable[var] = list;
+			}
+
+			//If found, we add entries from copy 1 to copy 2.
+			else {
+				std::unordered_set<int> stmtList = lastModifiedTable[var];
+				for (int stmt : list) {
+					stmtList.insert(stmt);
+				}
+				lastModifiedTable[var] = stmtList;
+			}
+		}
 		extractAffectsPair(whileStatementFirst, lastModifiedTable, affectsPair);
 	}
 }
