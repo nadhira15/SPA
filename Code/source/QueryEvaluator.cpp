@@ -696,8 +696,14 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllFollowers());
 			}
 			else if (isInteger(firstArgument)) {
-				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getFollower(
-					stoi(firstArgument)));
+				int result = PKB().getFollower(stoi(firstArgument));
+				if (result > 0) {
+					tableResult = ContainerUtil::to_mapvec(secondArgument, result);
+				}
+				else {
+					std::vector<std::string> emptyVec;
+					tableResult.insert({ secondArgument, emptyVec });
+				}
 			}
 		}
 	}
