@@ -342,13 +342,13 @@ std::vector<std::pair<std::string, std::string>>
 		std::string firstArgs;
 
 		if (withClause[i].find("with") != -1) {
-			firstArgs = StringUtil::removeAllWhitespaces(withClause[i].substr(4, equalSign - 4));
+			firstArgs = StringUtil::trim(withClause[i].substr(4, equalSign - 4), whitespace);
 		}
 		else {
-			firstArgs = StringUtil::removeAllWhitespaces(withClause[i].substr(3, equalSign - 3));
+			firstArgs = StringUtil::trim(withClause[i].substr(3, equalSign - 3), whitespace);
 		}
 		std::string secondArgs =
-			StringUtil::removeAllWhitespaces(withClause[i].substr(equalSign + 1));
+			StringUtil::trim(withClause[i].substr(equalSign + 1), whitespace);
 
 		output.push_back(make_pair(firstArgs, secondArgs));
 	}
