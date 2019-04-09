@@ -418,3 +418,8 @@ Tests/system-tests-1/out-Pattern.xml
 Tests/system-tests-1/out-Follows.xml
 Tests/system-tests-3/out.xml
 Tests/system-tests-1/out-FollowsStar.xml
+Code/Tests/out-2.xml
+Code/Tests/out-4.xml
+Code/Tests/out-3.xml
+Code/Tests/out-irregular.xml
+Code/Tests/out-1.xml
