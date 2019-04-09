@@ -14,7 +14,7 @@
 #include "RunTimeDesignExtractor.h"
 #include "Hasher.h"
 
-enum stmType {read, print, assign, whileStm, ifStm, call};
+enum stmType {nonExistant, read, print, assign, whileStm, ifStm, call};
 
 /*
 	Accepts relationship, pattern and other general data from Parser and DesignExtractor and
@@ -225,7 +225,10 @@ public:
 	// returns the total number of statements in the entire program
 	int getTotalStmNo();
 
-	// return the statement type of stm
+	/*
+		return the statement type of stm
+		return nonExistant if stm cannot be found
+	*/
 	stmType getStmType(int stm);
 
 	// returns the stored list of read statements
@@ -258,10 +261,16 @@ public:
 	// returns the stored list of <print stm, variable> pairs
 	std::unordered_set< std::pair<int, std::string>, intStringhash > getPrintPairs();
 
-	// returns the last statement of the specified while loop
+	/*
+		returns the last statement of the specified while loop
+		return 0 if 'whileStm' is not found
+	*/
 	int getWhileLastStm(int whileStm);
 
-	// returns the last statements of the specified if stm's then and else block
+	/*
+		returns the last statements of the specified if stm's then and else block
+		return a pair of 0 if 'ifStm' is not found
+	*/
 	std::pair<int, int> getIfLastStms(int ifStm);
 
 	/*
@@ -593,34 +602,34 @@ public:
 	bool hasAffectStarPair(int stm1, int stm2);
 
 	/*
-		return the stm affecting 'stm'
-		return 0 if 'stm' is not found
+		return a list of statements affecting 'stm'
+		return {} if 'stm' is not found
 	*/
-	int  getAffector(int stm);
+	std::vector<int> getAffector(int stm);
 
 	/*
-		return the stm affected by 'stm'
-		return 0 if 'stm' is not found
+		return a list of statements affected by 'stm'
+		return {} if 'stm' is not found
 	*/
-	int getAffected(int stm);
+	std::vector<int> getAffected(int stm);
 
 	/*
 		return a list of statements that is directly/indirectly affecting 'stm'
 		return an empty set if 'stm' is not found
 	*/
-	std::unordered_set<int> getAffectorStar(int stm);
+	std::vector<int> getAffectorStar(int stm);
 
 	/*
 		return a list of statements that is directly/indirectly affected by 'stm'
 		return an empty set if 'stm' is not found
 	*/
-	std::unordered_set<int> getAffectedStar(int stm);
+	std::vector<int> getAffectedStar(int stm);
 
 	// returns a list of all statements that affects another
-	std::unordered_set<int> getAllAffectors();
+	std::vector<int> getAllAffectors();
 
 	// returns a list of all statements that is affected by another
-	std::unordered_set<int> getAllAffected();
+	std::vector<int> getAllAffected();
 
 	// returns a list of all affects pairs
 	std::unordered_set< std::pair<int, int>, intPairhash> getAffectPairs();
@@ -678,7 +687,10 @@ public:
 	// return a list of all <  While Statement, Control Variable > pairs
 	std::unordered_set<std::pair<int, std::string>, intStringhash> getWhileStmControlVariablePair();
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Erase Methods			//////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// erase storage
 	void erase();
 
 private:
