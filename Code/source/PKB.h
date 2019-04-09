@@ -602,34 +602,34 @@ public:
 	bool hasAffectStarPair(int stm1, int stm2);
 
 	/*
-		return the stm affecting 'stm'
-		return 0 if 'stm' is not found
+		return a list of statements affecting 'stm'
+		return {} if 'stm' is not found
 	*/
-	int  getAffector(int stm);
+	std::vector<int> getAffector(int stm);
 
 	/*
-		return the stm affected by 'stm'
-		return 0 if 'stm' is not found
+		return a list of statements affected by 'stm'
+		return {} if 'stm' is not found
 	*/
-	int getAffected(int stm);
+	std::vector<int> getAffected(int stm);
 
 	/*
 		return a list of statements that is directly/indirectly affecting 'stm'
 		return an empty set if 'stm' is not found
 	*/
-	std::unordered_set<int> getAffectorStar(int stm);
+	std::vector<int> getAffectorStar(int stm);
 
 	/*
 		return a list of statements that is directly/indirectly affected by 'stm'
 		return an empty set if 'stm' is not found
 	*/
-	std::unordered_set<int> getAffectedStar(int stm);
+	std::vector<int> getAffectedStar(int stm);
 
 	// returns a list of all statements that affects another
-	std::unordered_set<int> getAllAffectors();
+	std::vector<int> getAllAffectors();
 
 	// returns a list of all statements that is affected by another
-	std::unordered_set<int> getAllAffected();
+	std::vector<int> getAllAffected();
 
 	// returns a list of all affects pairs
 	std::unordered_set< std::pair<int, int>, intPairhash> getAffectPairs();

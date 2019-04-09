@@ -700,74 +700,62 @@ std::unordered_set<std::pair<int, int>, intPairhash> PKB::getNextStarPairs()
 
 bool PKB::hasAffectsRelation()
 {
-	// call DE
-	return false;
+	return RunTimeDesignExtractor().hasAffectsRelation();
 }
 
 bool PKB::isAffector(int stm)
 {
-	// call DE
-	return false;
+	return RunTimeDesignExtractor().isStatementAffectingAnother(stm);
 }
 
 bool PKB::isAffected(int stm)
 {
-	// call DE
-	return false;
+	return RunTimeDesignExtractor().isStatementAffectedByAnother(stm);
 }
 
 bool PKB::hasAffectStarPair(int stm1, int stm2)
 {
-	// call DE
-	return false;
+	return RunTimeDesignExtractor().isAffect(stm1, stm2);
 }
 
-int PKB::getAffector(int stm)
+std::vector<int> PKB::getAffector(int stm)
 {
-	// call DE
-	return 0;
+	return RunTimeDesignExtractor().getStatementsAffectingIndex(stm);
 }
 
-int PKB::getAffected(int stm)
+std::vector<int> PKB::getAffected(int stm)
 {
-	// call DE
-	return 0;
+	return RunTimeDesignExtractor().getStatementsAffectedByIndex(stm);
 }
 
-std::unordered_set<int> PKB::getAffectorStar(int stm)
+std::vector<int> PKB::getAffectorStar(int stm)
 {
-	// call DE
-	return std::unordered_set<int>();
+	return RunTimeDesignExtractor().getAllStatementsAffectingIndexStar(stm);
 }
 
-std::unordered_set<int> PKB::getAffectedStar(int stm)
+std::vector<int> PKB::getAffectedStar(int stm)
 {
-	// call DE
-	return std::unordered_set<int>();
+	return RunTimeDesignExtractor().getAllStatementsAffectedByIndexStar(stm);
 }
 
-std::unordered_set<int> PKB::getAllAffectors()
+std::vector<int> PKB::getAllAffectors()
 {
-	// call DE
-	return std::unordered_set<int>();
+	return RunTimeDesignExtractor().getAllStatementsAffectingAnother();
 }
 
-std::unordered_set<int> PKB::getAllAffected()
+std::vector<int> PKB::getAllAffected()
 {
-	// call DE
-	return std::unordered_set<int>();
+	return RunTimeDesignExtractor().getAllStatementsAffectingByAnother();
 }
 
 std::unordered_set<std::pair<int, int>, intPairhash> PKB::getAffectPairs()
 {
-	// call DE
-	return std::unordered_set<std::pair<int, int>, intPairhash>();
+	return RunTimeDesignExtractor().getAffectsPair();
 }
 
 std::unordered_set<std::pair<int, int>, intPairhash> PKB::getAffectStarPairs()
 {
-	// call DE
-	return std::unordered_set<std::pair<int, int>, intPairhash>();
+	return RunTimeDesignExtractor().getAffectsStarPair();
 }
 
 std::unordered_set<int> PKB::findPattern(std::string variable, std::string expr, bool isExclusive)
