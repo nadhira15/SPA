@@ -1033,7 +1033,7 @@ which is stored as set of integers.
 */
 std::unordered_set<std::string> QueryEvaluator::getStmts(std::string type) {
 	std::unordered_set<std::string> result;
-	if (type == "stmt") {
+	if (type == "stmt" || type == "prog_line") {
 		result = getAllStms();
 	}
 	else if (type == "read") {
