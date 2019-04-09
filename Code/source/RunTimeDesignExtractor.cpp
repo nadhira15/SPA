@@ -263,10 +263,10 @@ std::vector<int> RunTimeDesignExtractor::getStatementsAffectingIndex(int stmt) {
 	}
 	std::unordered_set<int> cfgPath;
 	std::vector<int> affectedByList;
-	DFSRecursiveGetAffectingList(stmt, stmt, cfgPath, true, affectedByList);
+	DFSRecursiveGetAffectedByList(stmt, stmt, cfgPath, true, affectedByList);
 }
 
-void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int end, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedByList, std::unordered_set<std::string> &relevantVar) {
+void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int end, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedByList, std::unordered_set<std::string> &relevantVar) {
 	//If is not starting node we will not check if it affects or breaks affects
 	//Subsequently, if we visit the starting node again we will go into this clause.
 	//If we find that affects is possible we return as we know anything above it in the CFG cannot affect the end statemnt.
@@ -312,7 +312,7 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int end, int current,
 
 		//If next statement has not been visited, visit it.
 		if (currPath == cfgPath.end()) {
-			DFSRecursiveGetAffectedByList(end, prevStmt, cfgPath, false, affectedByList, relevantVar);
+			DFSRecursiveGetAffectingList(end, prevStmt, cfgPath, false, affectedByList, relevantVar);
 		}
 	}
 
@@ -327,10 +327,10 @@ std::vector<int> RunTimeDesignExtractor::getStatementsAffectedByIndex(int stmt) 
 	}
 	std::unordered_set<int> cfgPath;
 	std::vector<int> affectedList;
-	DFSRecursiveGetAffectingList(stmt, stmt, cfgPath, true, affectedList);
+	DFSRecursiveGetAffectedByList(stmt, stmt, cfgPath, true, affectedList);
 }
 
-void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int start, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedList) {
+void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int start, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedList) {
 	//If is not starting node we will not check if it affects or breaks affects
 	//Subsequently, if we visit the starting node again we will go into this clause.
 	if (!isStart) {
@@ -360,7 +360,7 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int start, int current
 
 		//If next statement has not been visited, visit it.
 		if (currPath == cfgPath.end()) {
-			DFSRecursiveGetAffectingList(start, nextStmt, cfgPath, false, affectedList);
+			DFSRecursiveGetAffectedByList(start, nextStmt, cfgPath, false, affectedList);
 		}
 	}
 	return;
