@@ -85,7 +85,9 @@ std::vector<std::string> ConditionalExp::getVariables() {
 			std::stringstream(line3) >> year;
 		}
 		else {
+			//do lexicaltoken check on the variable
 			if (LexicalToken::verifyName(line3)) {
+				//if variable is not already in the variable vector add it in
 				if (find(variables.begin(), variables.end(), line3) == variables.end()) {
 					variables.push_back(line3);
 				}
@@ -126,7 +128,10 @@ std::vector<std::string> ConditionalExp::getConstants() {
 			constants.push_back(line3);
 		}
 		else {
-			variables.push_back(line3);
+			//if constant is not in the constant vector add it in
+			if (find(constants.begin(), constants.end(), line3) == constants.end()) {
+				constants.push_back(line3);
+			}
 		}
 	}
 	return constants;
