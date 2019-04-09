@@ -197,6 +197,10 @@ void Parser::extractWhileEntity(std::string &stmtString, int stmtLine,
 	for (std::string constant : constants) {
 		pkb.addConstant(constant);
 	}
+
+	for (Statement stm : stmtLst) {
+		pkb.addWhileContainerStatement(stmtLine, stm.getStmtNum());
+	}
 	
 	wp.parseStmtLst();
 }
@@ -217,12 +221,21 @@ void Parser::extractIfEntity(std::string &stmtString, int stmtLine,
 		pkb.addConstant(constant);
 	}
 
+	for (Statement stm : stmtLst) {
+		pkb.addIfContainerStatement(stmtLine, stm.getStmtNum());
+	}
+
 	ip.parseStmtLst();
 }
 
 void Parser::extractElseEntity(std::string &stmtString, int stmtLine,
 							   std::vector<Statement> stmtLst, std::string procedure) {
 	ElseParser ep = ElseParser(stmtLine, stmtString, stmtLst, procedure);
+
+	for (Statement stm : stmtLst) {
+		pkb.addElseContainerStatement(stmtLine, stm.getStmtNum());
+	}
+
 	ep.parseStmtLst();
 }
 
