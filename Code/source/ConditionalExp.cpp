@@ -8,7 +8,7 @@
 using namespace ConditionalExp;
 
 std::string str; 
-std::regex formular("\\s*\\(*(!?\\s*\\(*\\s*(?:[a-zA-Z]+\\d*[a-zA-Z]*)|(?:\\d+))\\s*\\)*\\s*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\s]*((?:[a-zA-Z]+\\d*[a-zA-Z]*)|(?:\\d+))[\\(\\s\\)]*(([\\(\\s\\)]*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\s\\)]*(([a-zA-Z]+\\d*[a-zA-Z]*)|(\\d+)))*[\\(\\s\\)]*)");
+std::regex formular("\\s*\\(*(!?\\s*\\(*\\s*([a-zA-Z]+\\d*[a-zA-Z]*)|(\\d+))\\s*\\)*\\s*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\)\\s]*(([a-zA-Z]+\\d*[a-zA-Z]*)|(\\d+))[\\(\\s\\)]*(([\\(\\s\\)]*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\s\\)]*(([a-zA-Z]+\\d*[a-zA-Z]*)|(\\d+)))*[\\(\\s\\)]*)");
 
 
 bool ConditionalExp::verifyConditionalExp(std::string statement) {
@@ -73,8 +73,9 @@ std::vector<std::string> ConditionalExp::getVariables() {
 				variableVector.push_back(line2.substr(prev, pos - prev));
 			prev = pos + 1;
 		}
-		if (prev < line2.length())
+		if (prev < line2.length()) {
 			variableVector.push_back(line2.substr(prev, std::string::npos));
+		}
 	}
 	for (std::vector<std::string>::const_iterator i = variableVector.begin(); i != variableVector.end(); ++i) {
 		line3 = *i;
@@ -85,7 +86,10 @@ std::vector<std::string> ConditionalExp::getVariables() {
 		}
 		else {
 			if (LexicalToken::verifyName(line3)) {
-				variables.push_back(line3);
+				if (find(variables.begin(), variables.end(), line3) == variables.end()) {
+					variables.push_back(line3);
+				}
+				
 			}
 		}
 	}
