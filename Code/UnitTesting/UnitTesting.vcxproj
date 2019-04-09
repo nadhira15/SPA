@@ -163,10 +163,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="PKB\CallStorageStub.h" />
+    <ClInclude Include="PKB\CtrlVarStorageStub.h" />
     <ClInclude Include="PKB\ModifyStorageStub.h" />
     <ClInclude Include="PKB\NextStorageStub.h" />
     <ClInclude Include="PKB\ParentStorageStub.h" />
     <ClInclude Include="PKB\FollowStorageStub.h" />
+    <ClInclude Include="PKB\PKBStub.h" />
     <ClInclude Include="PKB\UseStorageStub.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -176,10 +178,12 @@
     <ClCompile Include="DesignExtractor\DesignExtractorTest.cpp" />
     <ClCompile Include="DesignExtractor\NextStarTest.cpp" />
     <ClCompile Include="PKB\CallStorageTest.cpp" />
+    <ClCompile Include="PKB\CtrlVarStorageTest.cpp" />
     <ClCompile Include="PKB\FollowStorageTest.cpp" />
     <ClCompile Include="PKB\ModifyStorageTest.cpp" />
     <ClCompile Include="PKB\NextStorageTest.cpp" />
     <ClCompile Include="PKB\ParentStorageTest.cpp" />
+    <ClCompile Include="PKB\PKBTest.cpp" />
     <ClCompile Include="PKB\UseStorageTest.cpp" />
     <ClCompile Include="PreProcessor\PreprocessorTest.cpp" />
     <ClCompile Include="PQL\QueryParserTest.cpp" />

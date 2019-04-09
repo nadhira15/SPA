@@ -8,181 +8,123 @@ namespace UnitTesting
 {
 	TEST_CLASS(ParentStorageTest)
 	{
-		TEST_METHOD_CLEANUP(ParentStorage_Cleanup)
+		TEST_METHOD_INITIALIZE(ParentStorage_Initializing)
 		{
 			ParentStorage store;
 			store.erase();
-		}
-
-		TEST_METHOD(addParent_NormalValues_Success)
-		{
-			ParentStorage store;
-			Assert::IsTrue(store.addParent_Child(5, 6));
+			store.addParent_Child(5, 6);
+			store.addParent_Child(6, 7);
+			store.addParent_Child(5, 8);
+			store.addParent_Child(5, 9);
+			store.addParent_Child(11, 12);
+			store.setAncestors(6, { 5 });
+			store.setAncestors(7, { 5, 6 });
+			store.setAncestors(8, { 5 });
+			store.setAncestors(9, { 5 });
+			store.setAncestors(12, { 11 });
+			store.setDescendants(5, { 6, 7, 8, 9 });
+			store.setDescendants(6, { 7 });
+			store.setDescendants(11, { 12 });
 		}
 
 		TEST_METHOD(addParent_Duplicate_Fail)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			Assert::IsFalse(store.addParent_Child(5, 6));
+			Assert::IsFalse(ParentStorage().addParent_Child(5, 6));
 		}
 
-		TEST_METHOD(isEmpty_AddedParentElements_False)
+		TEST_METHOD(isEmpty_False)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			Assert::IsFalse(store.isEmpty());
+			Assert::IsFalse(ParentStorage().isEmpty());
 		}
 
 		TEST_METHOD(isParent_ExistingParent_true)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			Assert::IsTrue(store.isParent(5));
+			Assert::IsTrue(ParentStorage().isParent(5));
 		}
 
 		TEST_METHOD(isParent_StmIsNotParent_false)
 		{
-			ParentStorage store;
-			store.addParent_Child(6, 7);
-			Assert::IsFalse(store.isParent(7));
+			Assert::IsFalse(ParentStorage().isParent(7));
 		}
 
 		TEST_METHOD(isParent_NonExistingStm_false)
 		{
-			ParentStorage store;
-			store.addParent_Child(6, 7);
-			Assert::IsFalse(store.isParent(2));
+			Assert::IsFalse(ParentStorage().isParent(0));
 		}
 
 		TEST_METHOD(isChild_ExistingChild_true)
 		{
-			ParentStorage store;
-			store.addParent_Child(6, 7);
-			Assert::IsTrue(store.isChild(7));
+			Assert::IsTrue(ParentStorage().isChild(7));
 		}
 
 		TEST_METHOD(isChild_StmIsNotChild_false)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			Assert::IsFalse(store.isChild(5));
+			Assert::IsFalse(ParentStorage().isChild(5));
 		}
 
 		TEST_METHOD(isChild_NonExistingStm_false)
 		{
-			ParentStorage store;
-			store.addParent_Child(6, 7);
-			Assert::IsFalse(store.isChild(2));
+			Assert::IsFalse(ParentStorage().isChild(0));
 		}
 
-		TEST_METHOD(getParent_ExistingStm_Success)
+		TEST_METHOD(getParent_Correct)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			Assert::AreEqual(store.getParent(6), 5);
+			Assert::IsTrue(ParentStorage().getParent(6) == parentTable.at(6).parent);
 		}
 		
 		TEST_METHOD(getParent_NonExistingStm_ReturnZero)
 		{
-			ParentStorage store;
-			Assert::AreEqual(store.getParent(1), 0);
+			Assert::AreEqual(ParentStorage().getParent(1), 0);
 		}
 		
-		TEST_METHOD(getChildren_ExistingStm_Success)
+		TEST_METHOD(getChildren_Correct)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			store.addParent_Child(6, 7);
-			store.addParent_Child(5, 8);
-			Assert::IsTrue(store.getChildren(5) == std::unordered_set<int>{6, 8});
+			Assert::IsTrue(ParentStorage().getChildren(5) == parentTable.at(5).children);
 		}
 		
 		TEST_METHOD(getChildren_NonExistingStm_ReturnEmptySet)
 		{
-			ParentStorage store;
-			Assert::IsTrue(store.getChildren(1).empty());
+			Assert::IsTrue(ParentStorage().getChildren(1) == std::unordered_set<int>{});
 		}
 		
-		TEST_METHOD(getAllParent_NormalOperation_Success)
+		TEST_METHOD(getAllParent_Correct)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			store.addParent_Child(6, 7);
-			store.addParent_Child(5, 8);
-			store.addParent_Child(10, 11);
-			Assert::IsTrue(store.getAllParent() == parents);
+			Assert::IsTrue(ParentStorage().getAllParent() == parents);
 		}
 		
-		TEST_METHOD(getAllChildren_NormalOperation_Success)
+		TEST_METHOD(getAllChildren_Correct)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			store.addParent_Child(6, 7);
-			store.addParent_Child(5, 8);
-			store.addParent_Child(10, 11);
-			Assert::IsTrue(store.getAllChildren() == children);
+			Assert::IsTrue(ParentStorage().getAllChildren() == children);
 		}
 		
-		TEST_METHOD(getFollowPairs_NormalOperation_Success)
+		TEST_METHOD(getFollowPairs_Correct)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			store.addParent_Child(6, 7);
-			store.addParent_Child(5, 8);
-			store.addParent_Child(10, 11);
-			Assert::IsTrue(store.getParentChildPairs() == parentPair);
+			Assert::IsTrue(ParentStorage().getParentChildPairs() == parentPair);
 		}
 		
 		TEST_METHOD(hasAncDescPair_ContainsPair_True)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			store.setDescendants(5, descendants[0]);
-			Assert::IsTrue(store.hasAncDescPair({ 5, 6 }));
+			Assert::IsTrue(ParentStorage().hasAncDescPair({ 5, 6 }));
 		}
 
 		TEST_METHOD(hasAncDescPair_NonExistingPair_False)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			store.setDescendants(5, { 6 });
-			Assert::IsFalse(store.hasAncDescPair({ 4, 8 }));
+			Assert::IsFalse(ParentStorage().hasAncDescPair({ 4, 8 }));
 		}
 		
-		TEST_METHOD(getAncestors_NormalOperation_Success)
+		TEST_METHOD(getAncestors_Correct)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			store.addParent_Child(6, 7);
-			store.addParent_Child(5, 8);
-			store.setAncestors(7, ancestors[1]);
-			Assert::IsTrue(store.getAncestors(7) == ancestors[1]);
+			Assert::IsTrue(ParentStorage().getAncestors(7) == parentTable.at(7).ancestors);
 		}
 		
-		TEST_METHOD(getDescendants_NormalOperation_Success)
+		TEST_METHOD(getDescendants_Correct)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			store.setDescendants(5, descendants[0]);
-			Assert::IsTrue(store.getDescendants(5) == descendants[0]);
+			Assert::IsTrue(ParentStorage().getDescendants(5) == parentTable.at(5).descendants);
 		}
 		
-		TEST_METHOD(getAncDescPair_NormalOperation_Success)
+		TEST_METHOD(getAncDescPair_Correct)
 		{
-			ParentStorage store;
-			store.addParent_Child(5, 6);
-			store.addParent_Child(6, 7);
-			store.addParent_Child(5, 8);
-			store.addParent_Child(10, 11);
-			store.setAncestors(6, ancestors[0]);
-			store.setAncestors(7, ancestors[1]);
-			store.setAncestors(8, ancestors[2]);
-			store.setAncestors(11, ancestors[3]);
-			store.setDescendants(5, descendants[0]);
-			store.setDescendants(6, descendants[1]);
-			store.setDescendants(10, descendants[2]);
-			Assert::IsTrue(store.getAncDescPair() == parentStarPair);
+			Assert::IsTrue(ParentStorage().getAncDescPair() == parentStarPair);
 		}
 		
 	};
