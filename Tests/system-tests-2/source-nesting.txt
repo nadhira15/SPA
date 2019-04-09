@@ -79,7 +79,7 @@ procedure whileInsideWhile {
 		while (triangle == pentagon) {
 			call doubleWhileInsideWhile;
 			read triangle;
-			pentago = circle + square;
+			pentagon = circle + square;
 		}
 		call whileInsideWhileInsideWhile;
 	}
