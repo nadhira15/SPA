@@ -8,124 +8,97 @@ namespace UnitTesting
 {
 	TEST_CLASS(ModifyStorageTest)
 	{
-		TEST_METHOD_CLEANUP(ModifyStorage_Cleanup)
+		TEST_METHOD_INITIALIZE(ModifyStorage_Initializing)
 		{
 			ModifyStorage store;
 			store.erase();
+			store.addModifiesStm(1, "apple");
+			store.addModifiesStm(2, "pineapple");
+			store.addModifiesStm(2, "pear");
+			store.addModifiesStm(4, "apple");
+			store.addModifiesStm(5, "durian");
+			store.addModifiesStm(5, "figs");
+			store.addModifiesStm(5, "pear");
+			store.addModifiesStm(6, "durian");
+			store.addModifiesStm(7, "durian");
+			store.addModifiesStm(8, "figs");
+			store.addModifiesStm(9, "pear");
+			store.addModifiesStm(10, "pineapple");
+			store.addModifiesStm(11, "pear");
+			store.addModifiesStm(12, "pear");
+			store.addModifiesStm(14, "pear");
+			store.addModifiesStm(15, "pear");
+			store.addModifiesProc("fruit", "apple");
+			store.addModifiesProc("fruit", "pineapple");
+			store.addModifiesProc("fruit", "durian");
+			store.addModifiesProc("fruit", "figs");
+			store.addModifiesProc("fruit", "pear");
+			store.addModifiesProc("fruit2", "pineapple");
+			store.addModifiesProc("fruit2", "pear");
+			store.addModifiesProc("fruit3", "pear");
+			store.addModifiesProc("fruit4", "pear");
 		}
 		TEST_METHOD(addModifiesStm_Duplicate_Fail)
 		{
-			ModifyStorage store;
-			store.addModifiesStm(1, "apple");
-			Assert::IsFalse(store.addModifiesStm(1, "apple"));
+			Assert::IsFalse(ModifyStorage().addModifiesStm(1, "apple"));
 		}
 
 		TEST_METHOD(addModifiesProc_Duplicate_Fail)
 		{
-			ModifyStorage store;
-			store.addModifiesProc("fruit", "apple");
-			Assert::IsFalse(store.addModifiesProc("fruit", "apple"));
+			Assert::IsFalse(ModifyStorage().addModifiesProc("fruit", "apple"));
 		}
 
 		TEST_METHOD(containsModifyStmPair_PairExist_Success)
 		{
-			ModifyStorage store;
-			store.addModifiesStm(1, "apple");
-			Assert::IsTrue(store.containsStmVarPair(std::pair<int, std::string>(1, "apple")));
+			Assert::IsTrue(ModifyStorage().
+						   containsStmVarPair(std::pair<int, std::string>(1, "apple")));
 		}
 
 		TEST_METHOD(containsModifyProcPair_PairExist_Success)
 		{
-			ModifyStorage store;
-			store.addModifiesProc("fruit", "apple");
-			Assert::IsTrue(store.containsProcVarPair(std::pair<std::string, std::string>("fruit", "apple")));
+			Assert::IsTrue(ModifyStorage().
+						   containsProcVarPair(std::pair<std::string, std::string>("fruit", "apple")));
 		}
 
-		TEST_METHOD(getVarModifiedByStm_NormalOperation_Success)
+		TEST_METHOD(getVarModifiedByStm_Correct)
 		{
-			ModifyStorage store;
-			store.addModifiesStm(5, "durian");
-			store.addModifiesStm(5, "figs");
-			Assert::IsTrue(store.getVarModifiedByStm(5) == ModifyStmVarList[3]);
+			Assert::IsTrue(ModifyStorage().getVarModifiedByStm(5) == stmToVarMapModifies.at(5));
 		}
 
-		TEST_METHOD(getVarModifiedByProc_NormalOperation_Success)
+		TEST_METHOD(getVarModifiedByProc_Correct)
 		{
-			ModifyStorage store;
-			store.addModifiesProc("fruit", "apple");
-			store.addModifiesProc("fruit", "pineapple");
-			store.addModifiesProc("fruit", "pineapple");
-			store.addModifiesProc("fruit", "durian");
-			store.addModifiesProc("fruit", "figs");
-			Assert::IsTrue(store.getVarModifiedByProc("fruit") == ModifyProcVarList[0]);
+			Assert::IsTrue(ModifyStorage().getVarModifiedByProc("fruit") ==
+						   procToVarMapModifies.at("fruit"));
 		}
 
-		TEST_METHOD(getStmModifying_NormalOperation_Success)
+		TEST_METHOD(getStmModifying_Correct)
 		{
-			ModifyStorage store;
-			store.addModifiesStm(1, "apple");
-			store.addModifiesStm(4, "apple");
-			Assert::IsTrue(store.getStmModifying("apple") == ModifyStmList[0]);
+			Assert::IsTrue(ModifyStorage().getStmModifying("apple") == varToStmMapModifies.at("apple"));
 		}
 
-		TEST_METHOD(getProcModifying_NormalOperation_Success)
+		TEST_METHOD(getProcModifying_Correct)
 		{
-			ModifyStorage store;
-			store.addModifiesProc("fruit2", "pineapple");
-			store.addModifiesProc("fruit", "pineapple");
-			Assert::IsTrue(store.getProcModifying("pineapple") == ModifyProcList[1]);
+			Assert::IsTrue(ModifyStorage().getProcModifying("pear") == varToProcMapModifies.at("pear"));
 		}
 
 		TEST_METHOD(getStmModifying_EmptyString_AllStm)
 		{
-			ModifyStorage store;
-			store.addModifiesStm(1, "apple");
-			store.addModifiesStm(2, "pineapple");
-			store.addModifiesStm(4, "apple");
-			store.addModifiesStm(5, "durian");
-			store.addModifiesStm(5, "figs");
-			store.addModifiesStm(6, "durian");
-			store.addModifiesStm(7, "durian");
-			store.addModifiesStm(8, "figs");
-			store.addModifiesStm(9, "pineapple");
-			Assert::IsTrue(store.getStmModifying("") == ModifyStmList[4]);
+			Assert::IsTrue(ModifyStorage().getStmModifying("") == varToStmMapModifies.at(""));
 		}
 
 		TEST_METHOD(getProcModifying_EmptyString_AllProc)
 		{
-			ModifyStorage store;
-			store.addModifiesProc("fruit", "apple");
-			store.addModifiesProc("fruit", "pineapple");
-			store.addModifiesProc("fruit", "durian");
-			store.addModifiesProc("fruit", "figs");
-			store.addModifiesProc("fruit2", "pineapple");
-			Assert::IsTrue(store.getProcModifying("") == ModifyProcList[4]);
+			Assert::IsTrue(ModifyStorage().getProcModifying("") == varToProcMapModifies.at(""));
 		}
 
-		TEST_METHOD(ModifyStmPairs_NormalOperation_Success)
+		TEST_METHOD(ModifyStmPairs_Correct)
 		{
-			ModifyStorage store;
-			store.addModifiesStm(1, "apple");
-			store.addModifiesStm(2, "pineapple");
-			store.addModifiesStm(4, "apple");
-			store.addModifiesStm(5, "durian");
-			store.addModifiesStm(5, "figs");
-			store.addModifiesStm(6, "durian");
-			store.addModifiesStm(7, "durian");
-			store.addModifiesStm(8, "figs");
-			store.addModifiesStm(9, "pineapple");
-			Assert::IsTrue(store.getStmVarPairs() == ModifyStmVarPairs);
+			Assert::IsTrue(ModifyStorage().getStmVarPairs() == ModifyStmVarPairs);
 		}
 
-		TEST_METHOD(ModifyProcPairs_NormalOperation_Success)
+		TEST_METHOD(ModifyProcPairs_Correct)
 		{
-			ModifyStorage store;
-			store.addModifiesProc("fruit", "apple");
-			store.addModifiesProc("fruit", "pineapple");
-			store.addModifiesProc("fruit", "durian");
-			store.addModifiesProc("fruit", "figs");
-			store.addModifiesProc("fruit2", "pineapple");
-			Assert::IsTrue(store.getProcVarPairs() == ModifyProcVarPairs);
+			Assert::IsTrue(ModifyStorage().getProcVarPairs() == ModifyProcVarPairs);
 		}
 
 	};

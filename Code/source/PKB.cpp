@@ -265,6 +265,10 @@ int PKB::getTotalStmNo()
 
 stmType PKB::getStmType(int stm)
 {
+	if (stm <= 0 || stm >= stmTypeList.size())
+	{
+		return nonExistant;
+	}
 	return stmTypeList.at(stm - 1);
 }
 
@@ -372,7 +376,7 @@ std::vector<int> PKB::getWhileStmContainer(int whileStm)
 
 std::string PKB::getProcOfStm(int stm)
 {
-	if (stm < stmProcList.size())
+	if (stm <= stmProcList.size() && stm > 0)
 	{
 		return stmProcList.at(stm - 1);
 	}
@@ -696,74 +700,62 @@ std::unordered_set<std::pair<int, int>, intPairhash> PKB::getNextStarPairs()
 
 bool PKB::hasAffectsRelation()
 {
-	// call DE
-	return false;
+	return RunTimeDesignExtractor().hasAffectsRelation();
 }
 
 bool PKB::isAffector(int stm)
 {
-	// call DE
-	return false;
+	return RunTimeDesignExtractor().isStatementAffectingAnother(stm);
 }
 
 bool PKB::isAffected(int stm)
 {
-	// call DE
-	return false;
+	return RunTimeDesignExtractor().isStatementAffectedByAnother(stm);
 }
 
 bool PKB::hasAffectStarPair(int stm1, int stm2)
 {
-	// call DE
-	return false;
+	return RunTimeDesignExtractor().isAffect(stm1, stm2);
 }
 
-int PKB::getAffector(int stm)
+std::vector<int> PKB::getAffector(int stm)
 {
-	// call DE
-	return 0;
+	return RunTimeDesignExtractor().getStatementsAffectingIndex(stm);
 }
 
-int PKB::getAffected(int stm)
+std::vector<int> PKB::getAffected(int stm)
 {
-	// call DE
-	return 0;
+	return RunTimeDesignExtractor().getStatementsAffectedByIndex(stm);
 }
 
-std::unordered_set<int> PKB::getAffectorStar(int stm)
+std::vector<int> PKB::getAffectorStar(int stm)
 {
-	// call DE
-	return std::unordered_set<int>();
+	return RunTimeDesignExtractor().getAllStatementsAffectingIndexStar(stm);
 }
 
-std::unordered_set<int> PKB::getAffectedStar(int stm)
+std::vector<int> PKB::getAffectedStar(int stm)
 {
-	// call DE
-	return std::unordered_set<int>();
+	return RunTimeDesignExtractor().getAllStatementsAffectedByIndexStar(stm);
 }
 
-std::unordered_set<int> PKB::getAllAffectors()
+std::vector<int> PKB::getAllAffectors()
 {
-	// call DE
-	return std::unordered_set<int>();
+	return RunTimeDesignExtractor().getAllStatementsAffectingAnother();
 }
 
-std::unordered_set<int> PKB::getAllAffected()
+std::vector<int> PKB::getAllAffected()
 {
-	// call DE
-	return std::unordered_set<int>();
+	return RunTimeDesignExtractor().getAllStatementsAffectingByAnother();
 }
 
 std::unordered_set<std::pair<int, int>, intPairhash> PKB::getAffectPairs()
 {
-	// call DE
-	return std::unordered_set<std::pair<int, int>, intPairhash>();
+	return RunTimeDesignExtractor().getAffectsPair();
 }
 
 std::unordered_set<std::pair<int, int>, intPairhash> PKB::getAffectStarPairs()
 {
-	// call DE
-	return std::unordered_set<std::pair<int, int>, intPairhash>();
+	return RunTimeDesignExtractor().getAffectsStarPair();
 }
 
 std::unordered_set<int> PKB::findPattern(std::string variable, std::string expr, bool isExclusive)
@@ -803,7 +795,8 @@ std::unordered_set<int> PKB::findPattern(std::string expr, bool isExclusive)
 	return validStm;
 }
 
-std::unordered_set<std::pair<int, std::string>, intStringhash>PKB::findPatternPairs(std::string expr, bool isExclusive)
+std::unordered_set<std::pair<int, std::string>, intStringhash>PKB::findPatternPairs(std::string expr,
+																					bool isExclusive)
 {
 	std::unordered_set<std::pair<int, std::string>, intStringhash> validPairs;
 	for each (const auto elem in patternList)
@@ -874,6 +867,11 @@ void PKB::erase()
 	whileStmList.erase(whileStmList.begin(), whileStmList.end());
 	callStmList.erase(callStmList.begin(), callStmList.end());
 	patternList.erase(patternList.begin(), patternList.end());
+	readPairList.erase(readPairList.begin(), readPairList.end());
+	printPairList.erase(printPairList.begin(), printPairList.end());
+	whileBlockStmLists.erase(whileBlockStmLists.begin(), whileBlockStmLists.end());
+	ifBlockStmLists.erase(ifBlockStmLists.begin(), ifBlockStmLists.end());
+	elseBlockStmLists.erase(elseBlockStmLists.begin(), elseBlockStmLists.end());
 	fStore.erase();
 	pStore.erase();
 	uStore.erase();
