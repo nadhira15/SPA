@@ -8,9 +8,10 @@ namespace UnitTesting
 {
 	TEST_CLASS(NextStorageTest)
 	{
-		TEST_CLASS_INITIALIZE(NextStorage_Initialize)
+		TEST_METHOD_INITIALIZE(NextStorage_Initialize)
 		{
 			NextStorage store;
+			store.erase();
 			store.addNext(1, 2);
 			store.addNext(2, 3);
 			store.addNext(3, 4);
