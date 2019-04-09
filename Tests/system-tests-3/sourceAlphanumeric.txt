@@ -71,4 +71,9 @@ procedure dr1nk5 {
 		print ju1c3;
 	}
 	y0ghuRT = y0ghuRT + 1;
+	call on3l1n3;
+}
+
+procedure on3l1n3 {
+	cl455r00m = fru1t5 * dr1nk5;
 }
