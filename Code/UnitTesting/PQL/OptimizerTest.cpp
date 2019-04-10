@@ -76,6 +76,19 @@ namespace UnitTesting
 			std::pair<int, std::vector<std::string>> expected = std::make_pair(32, vect);
 			Assert::IsTrue(result.first == expected.first && result.second == expected.second);
 		}
+		TEST_METHOD(testExtractWithSynonymProgline)
+		{
+			std::pair<std::string, std::string> clause = std::make_pair("n", "pr.stmt#");
+			std::vector<std::pair<std::string, std::string>> w;
+			w.push_back(clause);
+			d["n"] = "prog_line";
+			d["pr"] = "print";
+			Optimizer op = Optimizer(empty, w, empty, s, d);
+			std::pair<int, std::vector<std::string>> result = op.extractWithSyn(0);
+			std::vector<std::string> vect{ "pr", "n" };
+			std::pair<int, std::vector<std::string>> expected = std::make_pair(32, vect);
+			Assert::IsTrue(result.first == expected.first && result.second == expected.second);
+		}
 		TEST_METHOD(testExtractPatternSynonymAssign)
 		{
 			std::string str1 = { '"', 'v', 'a', 'r', '"' };
