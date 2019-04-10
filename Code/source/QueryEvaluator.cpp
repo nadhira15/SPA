@@ -994,6 +994,54 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			}
 		}
 	}
+	if (relation == "Affects") {
+		if (isSynonym(firstArgument)) {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllAffectors());
+			}
+			else if (isInteger(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAffector(
+					stoi(secondArgument)));
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getAffectPairs());
+			}
+		}
+		if (isSynonym(secondArgument)) {
+			if (firstArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllAffected());
+			}
+			else if (isInteger(firstArgument)) {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAffected(
+					stoi(firstArgument)));
+			}
+		}
+	}
+	if (relation == "Affects*") {
+		if (isSynonym(firstArgument)) {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllAffectors());
+			}
+			else if (isInteger(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAffectorStar(
+					stoi(secondArgument)));
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getAffectStarPairs());
+			}
+		}
+		if (isSynonym(secondArgument)) {
+			if (firstArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllAffected());
+			}
+			else if (isInteger(firstArgument)) {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAffectedStar(
+					stoi(firstArgument)));
+			}
+		}
+	}
 
 	if (tableResult.size() == 1) {
 		if (isSynonym(firstArgument)) {
