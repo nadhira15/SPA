@@ -29,7 +29,7 @@ void Optimizer::groupClause() {
 	}
 	//while loop to order non-synonym clauses
 	std::pair<int,int> cl;
-	while (!nonSynPQ.empty) { //
+	while (!nonSynPQ.empty()) { //
 		cl = nonSynPQ.top();
 		nonsynonym.push_back(getClause(cl.second));
 		nonSynPQ.pop();
@@ -150,8 +150,8 @@ std::pair<int, std::vector<std::string>> Optimizer::extractSuchThatSyn(int index
 	int tmp1 = OptimizerUtility::getSuchThatEntityType(f);
 	int tmp2 = OptimizerUtility::getSuchThatEntityType(s);
 	if (tmp1 != 1 && tmp2 != 1) { //if nonsyn
+		nonSynPQ.push(std::make_pair(OptimizerUtility::getNoSynSuchThatPriority(r, tmp1 + tmp2), index + wsize + psize));
 		tmp1 = 0;
-		nonSynPQ.push(std::make_pair(OptimizerUtility::getNoSynSuchThatPriority(r), index));
 	} else {
 		int synNum = 0;
 		if (tmp1 > 0) {
@@ -227,7 +227,6 @@ std::pair<int, std::vector<std::string>> Optimizer::extractWithSyn(int index) {
 	int tmp = 0;
 	bool tmp1 = OptimizerUtility::isWithSynonym(f);
 	bool tmp2 = OptimizerUtility::isWithSynonym(s);
-	std::string syn;
 	if (tmp1) {
 		syn = f.substr(0, f.find("."));
 		tmp = OptimizerUtility::getSynonymPriority(declarations[syn]);
@@ -251,7 +250,7 @@ std::pair<int, std::vector<std::string>> Optimizer::extractWithSyn(int index) {
 		synNum++;
 	}
 	if (synNum == 0) {
-		nonSynPQ.push(std::make_pair(19, index));
+		nonSynPQ.push(std::make_pair(9, index + psize));
 	} else {
 		tmp = OptimizerUtility::getWithPriority(synNum);
 	}

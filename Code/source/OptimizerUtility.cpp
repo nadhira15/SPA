@@ -262,33 +262,27 @@ int OptimizerUtility::getSynonymPriority(std::string type) {
 	return 12 - res;
 }
 
-int OptimizerUtility::getNoSynSuchThatPriority(std::string relation) {
-	int res = 20;
-	if (relation.compare("Follows") == 0) {
-		res = 3;
-	} else if (relation.compare("Follows*") == 0) {
-		res = 9;
-	} else if (relation.compare("Parent") == 0) {
-		res = 4;
-	} else if (relation.compare("Parent*") == 0) {
-		res = 10;
-	} else if (relation.compare("Modifies") == 0) {
-		res = 5;
-	} else if (relation.compare("Uses") == 0) {
-		res = 7;
-	} else if (relation.compare("Next") == 0) {
-		res = 6;
-	} else if (relation.compare("Next*") == 0) {
-		res = 13;
-	} else if (relation.compare("Calls") == 0) {
-		res = 8;
-	} else if (relation.compare("Calls*") == 0) {
-		res = 11;
-	} else if (relation.compare("Affects") == 0) {
-		res = 12;
-	} else if (relation.compare("Affects*") == 0) {
-		res = 14;
+int OptimizerUtility::getNoSynSuchThatPriority(std::string relation, int type) {
+	int res = 10;
+	if (type == 0) {
+		if (relation.compare("Affects") == 0 || relation.compare("Next*") == 0 || relation.compare("Affects*") == 0) {
+			res = 6;
+		} else {
+			res = 3;
+		}
+	} else if (type == 2) {
+		if (relation.compare("Affects") == 0 || relation.compare("Next*") == 0 || relation.compare("Affects*") == 0) {
+			res = 7;
+		} else {
+			res = 4;
+		}
+	} else {
+		if (relation.compare("Affects") == 0 || relation.compare("Next*") == 0 || relation.compare("Affects*") == 0) {
+			res = 8;
+		} else {
+			res = 5;
+		}
 	}
-	return 20 - res;
+	return 10 - res;
 }
 
