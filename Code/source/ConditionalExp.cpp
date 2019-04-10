@@ -125,9 +125,6 @@ std::vector<std::string> ConditionalExp::getConstants() {
 		{
 			int year;
 			std::stringstream(line3) >> year;
-			constants.push_back(line3);
-		}
-		else {
 			//if constant is not in the constant vector add it in
 			if (find(constants.begin(), constants.end(), line3) == constants.end()) {
 				constants.push_back(line3);
