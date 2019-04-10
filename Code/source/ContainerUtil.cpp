@@ -15,6 +15,19 @@
 #include "ContainerUtil.h"
 
 /*
+The function transforms a set of integers
+into a set of strings
+*/
+std::unordered_set<std::string> ContainerUtil::intSetToStrSet(std::unordered_set<int> intSet) {
+	std::unordered_set<std::string> strSet;
+	for (std::unordered_set<int>::iterator it = intSet.begin(); it != intSet.end(); ++it) {
+		strSet.insert(std::to_string(*it));
+	}
+
+	return strSet;
+}
+
+/*
 The function returns a map of string to
 vector of string given a key and an integer.
 */

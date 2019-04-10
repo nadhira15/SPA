@@ -19,7 +19,7 @@ procedure whileOnly {
 		call whileInsideWhile;					// 13
 		print two;								// 14
 		call whileInsideIf;						// 15
-		three = thre * two * one;				// 16
+		three = three * two * one;				// 16
 		call doubleWhile;						// 17
 	}
 }
@@ -79,7 +79,7 @@ procedure whileInsideWhile {
 		while (triangle == pentagon) {			// 51
 			call doubleWhileInsideWhile;		// 52
 			read triangle;						// 53
-			pentago = circle + square;			// 54
+			pentagon = circle + square;			// 54
 		}
 		call whileInsideWhileInsideWhile;		// 55
 	}
