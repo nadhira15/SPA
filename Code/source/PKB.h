@@ -598,6 +598,9 @@ public:
 	// checks if 'stm' is affected by another
 	bool isAffected(int stm);
 
+	// checks if the relation Affects(stm1, stm2) exist
+	bool hasAffectPair(int stm1, int stm2);
+
 	// checks if the relation Affects*(stm1, stm2) exist
 	bool hasAffectStarPair(int stm1, int stm2);
 
