@@ -145,7 +145,7 @@ none
 5000
 30 - select synonym, parent stmtNum stmtNum
 constant cons;
-Select cons such that Parent(18, 26)
+Select cons such that Parent(18, 23)
 none
 5000
 31 - select synonym, parent stmtNum stmtNum
@@ -186,7 +186,7 @@ Select w such that Parent(w, pr)
 38 - select synonym, parent synonym synonym
 stmt s; call c;
 Select s such that Parent(s, c)
-1, 11, 18, 19, 30, 31, 41, 46, 50, 51, 56, 61, 68, 73
+1, 11, 18, 19, 30, 31, 36, 41, 46, 50, 51, 56, 61, 68, 73
 5000
 39 - select synonym, parent synonym and synonym
 stmt s; assign a; 
