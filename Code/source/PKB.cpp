@@ -713,9 +713,14 @@ bool PKB::isAffected(int stm)
 	return RunTimeDesignExtractor().isStatementAffectedByAnother(stm);
 }
 
-bool PKB::hasAffectStarPair(int stm1, int stm2)
+bool PKB::hasAffectPair(int stm1, int stm2)
 {
 	return RunTimeDesignExtractor().isAffect(stm1, stm2);
+}
+
+bool PKB::hasAffectStarPair(int stm1, int stm2)
+{
+	return RunTimeDesignExtractor().isAffectStar(stm1, stm2);
 }
 
 std::vector<int> PKB::getAffector(int stm)
