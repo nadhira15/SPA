@@ -660,6 +660,42 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			};
 		}
 	}
+	if (relation == "Affects") {
+		if (firstArgument == "_") {
+			if (secondArgument == "_") {
+				return truthValue(PKB().hasAffectsRelation());
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().isAffected(stoi(secondArgument)));
+			}
+		}
+		else if (isInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				return truthValue(PKB().isAffector(stoi(firstArgument)));
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().hasAffectStarPair(stoi(firstArgument), stoi(secondArgument)));
+			}
+		}
+	}
+	if (relation == "Affects*") {
+		if (firstArgument == "_") {
+			if (secondArgument == "_") {
+				return truthValue(PKB().hasAffectsRelation());
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().isAffected(stoi(secondArgument)));
+			}
+		}
+		else if (isInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				return truthValue(PKB().isAffector(stoi(firstArgument)));
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().hasAffectStarPair(stoi(firstArgument), stoi(secondArgument)));
+			}
+		}
+	}
 	return "not trivial";
 }
 
