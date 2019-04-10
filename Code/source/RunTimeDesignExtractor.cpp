@@ -428,7 +428,7 @@ std::unordered_set<std::pair<int, int>, intPairhash> RunTimeDesignExtractor::get
 }
 
 void RunTimeDesignExtractor::extractAffectsPair(int start, std::unordered_map<std::string, std::unordered_set<int>> &lastModifiedTable, std::unordered_set<std::pair<int, int>, intPairhash> &affectsPair) {
-	for (int i = start; i == 0; i = pkb->getFollower(i)) {
+	for (int i = start; i != 0; i = pkb->getFollower(i)) {
 		if (pkb->getStmType(i) == stmType::whileStm) {
 			processWhile(lastModifiedTable, i, affectsPair);
 		}
@@ -456,22 +456,22 @@ void RunTimeDesignExtractor::processWhile(std::unordered_map<std::string, std::u
 	//If the modifiedTable was updated, we redo the while loop.
 	while (lastModifiedTableCopy != lastModifiedTable) {
 		//Merge the 2 lastModified Table
-		for (std::pair <std::string, std::unordered_set<int>> entry : lastModifiedTableCopy) {
+		for (std::pair <std::string, std::unordered_set<int>> entry : lastModifiedTable) {
 			std::string var = entry.first;
 			std::unordered_set<int> list = entry.second;
 
-			//If not found, we just add the list directly to copy 2 from copy 1.
-			if (lastModifiedTable.find(var) == lastModifiedTable.end()) {
-				lastModifiedTable[var] = list;
+			//If not found, we just add the list directly to copy from original.
+			if (lastModifiedTableCopy.find(var) == lastModifiedTableCopy.end()) {
+				lastModifiedTableCopy[var] = list;
 			}
 
 			//If found, we add entries from copy 1 to copy 2.
 			else {
-				std::unordered_set<int> stmtList = lastModifiedTable[var];
+				std::unordered_set<int> stmtList = lastModifiedTableCopy[var];
 				for (int stmt : list) {
 					stmtList.insert(stmt);
 				}
-				lastModifiedTable[var] = stmtList;
+				lastModifiedTableCopy[var] = stmtList;
 			}
 		}
 		extractAffectsPair(whileStatementFirst, lastModifiedTable, affectsPair);
@@ -573,6 +573,13 @@ void RunTimeDesignExtractor::processCallAndRead(int &i, std::unordered_map<std::
 
 //Check if Affects*(int, int) is true.
 bool RunTimeDesignExtractor::isAffectStar(int start, int target) {
+	if (start < 1 || target < 1) {
+		return false;
+	}
+
+	if (start > pkb->getTotalStmNo() || target > pkb->getTotalStmNo()) {
+		return false;
+	}
 	std::string procedure = pkb->getProcOfStm(start);
 	std::unordered_set<std::pair<int, int>, intPairhash> relevantPairs = getAffectsPairOfProc(procedure);
 	std::unordered_map<int, std::unordered_set<int>> adjacencyList;
