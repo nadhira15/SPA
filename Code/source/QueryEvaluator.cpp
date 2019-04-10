@@ -660,6 +660,42 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			};
 		}
 	}
+	if (relation == "Affects") {
+		if (firstArgument == "_") {
+			if (secondArgument == "_") {
+				return truthValue(PKB().hasAffectsRelation());
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().isAffected(stoi(secondArgument)));
+			}
+		}
+		else if (isInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				return truthValue(PKB().isAffector(stoi(firstArgument)));
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().hasAffectStarPair(stoi(firstArgument), stoi(secondArgument)));
+			}
+		}
+	}
+	if (relation == "Affects*") {
+		if (firstArgument == "_") {
+			if (secondArgument == "_") {
+				return truthValue(PKB().hasAffectsRelation());
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().isAffected(stoi(secondArgument)));
+			}
+		}
+		else if (isInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				return truthValue(PKB().isAffector(stoi(firstArgument)));
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().hasAffectStarPair(stoi(firstArgument), stoi(secondArgument)));
+			}
+		}
+	}
 	return "not trivial";
 }
 
@@ -954,6 +990,54 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			}
 			else if (isInteger(firstArgument)) {
 				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllLnAfter(
+					stoi(firstArgument)));
+			}
+		}
+	}
+	if (relation == "Affects") {
+		if (isSynonym(firstArgument)) {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllAffectors());
+			}
+			else if (isInteger(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAffector(
+					stoi(secondArgument)));
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getAffectPairs());
+			}
+		}
+		if (isSynonym(secondArgument)) {
+			if (firstArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllAffected());
+			}
+			else if (isInteger(firstArgument)) {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAffected(
+					stoi(firstArgument)));
+			}
+		}
+	}
+	if (relation == "Affects*") {
+		if (isSynonym(firstArgument)) {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllAffectors());
+			}
+			else if (isInteger(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAffectorStar(
+					stoi(secondArgument)));
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getAffectStarPairs());
+			}
+		}
+		if (isSynonym(secondArgument)) {
+			if (firstArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllAffected());
+			}
+			else if (isInteger(firstArgument)) {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAffectedStar(
 					stoi(firstArgument)));
 			}
 		}

@@ -595,7 +595,7 @@ bool RunTimeDesignExtractor::DFSRecursiveStartReachableToEnd(int start, int end,
 
 
 	for (int adjacentStm : adjacentStms) {
-		if (visitedPath.find(adjacentStm) == visitedPath.end) {
+		if (visitedPath.find(adjacentStm) == visitedPath.end()) {
 			bool found = DFSRecursiveStartReachableToEnd(adjacentStm, end, visitedPath, adjacencyList, false);
 
 			if (found) {
