@@ -273,32 +273,37 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int end, int current, 
 	//If is not starting node we will not check if it affects or breaks affects
 	//Subsequently, if we visit the starting node again we will go into this clause.
 	//If we find that affects is possible we return as we know anything above it in the CFG cannot affect the end statemnt.
-	std::string currentModified;
+
+	std::unordered_set<std::string> usedList = pkb->getVarUsedByStm(end);
+	std::unordered_set<std::string> modifiedVar;
 
 	//Not first node
 	if (!isStart) {
-		//If affects is possible
-		if (isAffectPossible(current, end)) {
-			std::unordered_set<std::string> modifiedVar = pkb->getVarModifiedByStm(current);
-			//Should only have 1 modified variable. Get what current is modifying
-			for (std::string var : modifiedVar) {
-				currentModified = var;
-			}
+		//If the current can modify
+		if (pkb->getStmType(current)  == stmType::assign || pkb->getStmType(current) == stmType::call || pkb->getStmType(current) == stmType::read ){
+			modifiedVar = pkb->getVarModifiedByStm(current);
 
-			std::unordered_set<std::string>::const_iterator alreadyModified = relevantVar.find(currentModified);
-			//Check if what current is modifying has already been modified later on
-			if (alreadyModified == relevantVar.end()) {
-				//if not, we accept it as a possible value
-				affectedByList.push_back(current);
-				//we mark it as modified.
-				relevantVar.insert(currentModified);
+
+			for (std::string var : modifiedVar) {
+				std::unordered_set<std::string>::const_iterator alreadyModified = relevantVar.find(var);
+				//Check if what current is modifying has already been modified later on
+				if (alreadyModified == relevantVar.end()) {
+					//if not, we accept it as a possible value if end uses it
+					if (usedList.find(var) != usedList.end()) {
+						affectedByList.push_back(current);
+						//we mark it as modified.
+						relevantVar.insert(var);
+					}
+				}
 			}
 		}
 	}
 
 	//Early return if the var used by statement has already all been found.
 	if (pkb->getVarUsedByStm(end) == relevantVar) {
-		relevantVar.erase(currentModified);
+		for (std::string var : modifiedVar) {
+			relevantVar.erase(var);
+		}
 		return;
 	}
 
@@ -323,7 +328,9 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int end, int current, 
 		}
 	}
 
-	relevantVar.erase(currentModified);
+	for (std::string var : modifiedVar) {
+		relevantVar.erase(var);
+	}
 	return;
 }
 
@@ -447,35 +454,37 @@ void RunTimeDesignExtractor::extractAffectsPair(int start, std::unordered_map<st
 void RunTimeDesignExtractor::processWhile(std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, int &i, std::unordered_set<std::pair<int, int>, intPairhash> & affectsPair)
 {
 	//Make copy for While Block
-	std::unordered_map<std::string, std::unordered_set<int>> lastModifiedTableCopy = lastModifiedTable;
+	std::unordered_map<std::string, std::unordered_set<int>> lastModifiedTableCopy;
+	std::unordered_map<std::string, std::unordered_set<int>> lastModifiedTableIntermediate = lastModifiedTable;
 
 	int whileStatementFirst = pkb->getWhileStmContainer(i).front();
 
-	extractAffectsPair(whileStatementFirst, lastModifiedTable, affectsPair);
+	do {
+		lastModifiedTableCopy = lastModifiedTableIntermediate;
+		lastModifiedTable = lastModifiedTableIntermediate;
+		extractAffectsPair(whileStatementFirst, lastModifiedTable, affectsPair);
 
-	//If the modifiedTable was updated, we redo the while loop.
-	while (lastModifiedTableCopy != lastModifiedTable) {
-		//Merge the 2 lastModified Table
 		for (std::pair <std::string, std::unordered_set<int>> entry : lastModifiedTable) {
 			std::string var = entry.first;
 			std::unordered_set<int> list = entry.second;
 
 			//If not found, we just add the list directly to copy from original.
-			if (lastModifiedTableCopy.find(var) == lastModifiedTableCopy.end()) {
-				lastModifiedTableCopy[var] = list;
+			if (lastModifiedTableIntermediate.find(var) == lastModifiedTableIntermediate.end()) {
+				lastModifiedTableIntermediate[var] = list;
 			}
 
 			//If found, we add entries from copy 1 to copy 2.
 			else {
-				std::unordered_set<int> stmtList = lastModifiedTableCopy[var];
+				std::unordered_set<int> stmtList = lastModifiedTableIntermediate[var];
 				for (int stmt : list) {
 					stmtList.insert(stmt);
 				}
-				lastModifiedTableCopy[var] = stmtList;
+				lastModifiedTableIntermediate[var] = stmtList;
 			}
 		}
-		extractAffectsPair(whileStatementFirst, lastModifiedTable, affectsPair);
-	}
+	} while (lastModifiedTableIntermediate != lastModifiedTableCopy);
+
+	lastModifiedTable = lastModifiedTableCopy;
 }
 
 void RunTimeDesignExtractor::processIfStatement(std::unordered_map<std::string, std::unordered_set<int>> & lastModifiedTable, int &i, std::unordered_set<std::pair<int, int>, intPairhash> & affectsPair)
@@ -524,6 +533,8 @@ void RunTimeDesignExtractor::processAssign(int &i, std::unordered_map<std::strin
 
 	//Check if Affects
 	for (std::string usedVar : usedList) {
+
+		//Check if it uses something that has been previously modified.
 		std::unordered_map<std::string, std::unordered_set<int>>::const_iterator got = lastModifiedTable.find(usedVar);
 
 		//If inside lastModified table
@@ -545,6 +556,7 @@ void RunTimeDesignExtractor::processAssign(int &i, std::unordered_map<std::strin
 		//if is old var already existing.
 		else {
 			std::unordered_set<int> stmtList = lastModifiedTable[modifiedVar];
+			stmtList.clear();
 			stmtList.insert(i);
 			lastModifiedTable[modifiedVar] = stmtList;
 		}
@@ -556,18 +568,7 @@ void RunTimeDesignExtractor::processCallAndRead(int &i, std::unordered_map<std::
 	std::unordered_set<std::string> modifiedList = pkb->getVarModifiedByStm(i);
 	//Update Last Modified Table.
 	for (std::string modifiedVar : modifiedList) {
-		//if is new var
-		if (lastModifiedTable.find(modifiedVar) == lastModifiedTable.end()) {
-			std::unordered_set<int> stmtList;
-			stmtList.insert(i);
-			lastModifiedTable[modifiedVar] = stmtList;
-		}
-		//if is old var already existing.
-		else {
-			std::unordered_set<int> stmtList = lastModifiedTable[modifiedVar];
-			stmtList.insert(i);
-			lastModifiedTable[modifiedVar] = stmtList;
-		}
+		lastModifiedTable.erase(modifiedVar);
 	}
 }
 
@@ -611,6 +612,8 @@ bool RunTimeDesignExtractor::DFSRecursiveStartReachableToEnd(int start, int end,
 
 
 	for (int adjacentStm : adjacentStms) {
+
+		//If we have not visited it.
 		if (visitedPath.find(adjacentStm) == visitedPath.end()) {
 			bool found = DFSRecursiveStartReachableToEnd(adjacentStm, end, visitedPath, adjacencyList, false);
 
