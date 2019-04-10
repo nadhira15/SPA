@@ -47,28 +47,12 @@ void Parser::populateNextEntity(int prevStmtLine, Statement &stmt, int currStmtL
 	if (stmt.getType() == 6) {
 		pkb.addThenLastStm(stmt.getStmtNum(), stmt.getStmtLst().back().getStmtNum());
 		pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
-		if (pkb.getFollower(currStmtLine) == 0) {
-			if (parent != 0) {
-				//if parent is While statment
-				if ((pkb.getStmType(parent) == 5)) {
-					pkb.addNext(stmt.getStmtLst().back().getStmtNum(), parent);
-				}
-			}
-		}
 	}
 
 	//Add Next relation for Else
 	if (stmt.getType() == 7) {
 		pkb.addElseLastStm(stmt.getStmtNum(), stmt.getStmtLst().back().getStmtNum());
 		pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
-		if (pkb.getFollower(currStmtLine) == 0) {
-			if (parent != 0) {
-				//if parent is While statment
-				if ((pkb.getStmType(parent) == 5)) {
-					pkb.addNext(stmt.getStmtLst().back().getStmtNum(), parent);
-				}
-			}
-		}
 	}
 	
 	//Add Next relation for WHILE statment type

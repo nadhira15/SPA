@@ -13,6 +13,7 @@ namespace UnitTesting
 		TEST_METHOD(testNextStar)
 		{
 			PKB storage = PKB();
+			storage.erase();
 			storage.addNext(1, 2);
 			storage.addNext(2, 3);
 			storage.addNext(3, 4);
@@ -24,6 +25,7 @@ namespace UnitTesting
 		TEST_METHOD(testAllLnAfter)
 		{
 			PKB storage = PKB();
+			storage.erase();
 			storage.addNext(1, 2);
 			storage.addNext(2, 3);
 			storage.addNext(3, 4);
@@ -44,6 +46,7 @@ namespace UnitTesting
 		TEST_METHOD(testNextStarPair)
 		{
 			PKB storage = PKB();
+			storage.erase();
 			storage.addStatement(1, assign, "proc1");
 			storage.addStatement(2, whileStm, "proc1");
 			storage.addStatement(3, assign, "proc1");

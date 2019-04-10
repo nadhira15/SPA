@@ -8,9 +8,10 @@ namespace UnitTesting
 {
 	TEST_CLASS(CallStorageTest)
 	{
-		TEST_CLASS_INITIALIZE(CallStorage_Initialize)
+		TEST_METHOD_INITIALIZE(CallStorage_Initialize)
 		{
 			CallStorage store;
+			store.erase();
 			store.addCall("fruit", "fruit2", 2);
 			store.addCall("fruit", "fruit3", 9);
 			store.addCall("fruit2", "fruit3", 12);
@@ -23,10 +24,6 @@ namespace UnitTesting
 			store.setCallDesc("fruit3", std::unordered_set<std::string>{"fruit4"});
 		}
 
-		TEST_CLASS_CLEANUP(CallStorage_CleanUp)
-		{
-			CallStorage().erase();
-		}
 		TEST_METHOD(isEmpty_CallStorage_False)
 		{
 			CallStorage store;

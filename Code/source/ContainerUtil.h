@@ -10,6 +10,7 @@
 class ContainerUtil
 {
 public:
+	static std::unordered_set<std::string> intSetToStrSet(std::unordered_set<int> intSet);
 	static std::unordered_map<std::string, std::vector<std::string>> to_mapvec(std::string key,
 		int n);
 	static std::unordered_map<std::string, std::vector<std::string>> to_mapvec(std::string key,

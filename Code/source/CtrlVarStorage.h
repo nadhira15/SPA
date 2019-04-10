@@ -29,6 +29,9 @@ public:
 	//Call for w(s,_)
 	std::unordered_set<std::pair<int, std::string>, intStringhash> getWhileStmControlVariablePair();
 
+	// Empty storage
+	void erase();
+
 private:
 	static std::unordered_map<std::string, std::unordered_set<int>> ifVariableToStm;
 	static std::unordered_map<std::string, std::unordered_set<int>> whileVariableToStm;

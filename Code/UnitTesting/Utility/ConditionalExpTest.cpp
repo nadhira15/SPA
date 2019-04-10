@@ -14,6 +14,12 @@ namespace UnitTesting
 			Assert::AreEqual(true, result);
 		}
 
+		TEST_METHOD(testValidInput2)
+		{
+			bool result = ConditionalExp::verifyConditionalExp("(b00k - p3nc1l) < (0 + 3 * (1 + (4 * (((1)))) * 5) + p3nc1l)");
+			Assert::AreEqual(true, result);
+		}
+
 		TEST_METHOD(testInvalidInput)
 		{
 			bool result = ConditionalExp::verifyConditionalExp("x)=y+1");
@@ -38,6 +44,23 @@ namespace UnitTesting
 			std::vector<std::string>expectedVariables = { "variable1", "variable2","variable3","variable4","variable5","variable6","variable7","variable8","variable9","variable10","variable11" };
 			std::vector<std::string>actualVariables = ConditionalExp::getVariables();
 			Assert::IsTrue(expectedVariables == actualVariables);
+		}
+
+		TEST_METHOD(testVariables2)
+		{
+			bool result = ConditionalExp::verifyConditionalExp("(b00k - p3nc1l) < (0 + 3 * (1 + (4 * (((1)))) * 5) + p3nc1l)");
+			std::vector<std::string>expectedVariables = { "b00k","p3nc1l"};
+			std::vector<std::string>actualVariables = ConditionalExp::getVariables();
+			Assert::IsTrue(expectedVariables == actualVariables);
+		}
+
+
+		TEST_METHOD(testConstants)
+		{
+			bool result = ConditionalExp::verifyConditionalExp("(b00k - p3nc1l) < (0 + 3 * (1 + (4 * (((1)))) * 5) + p3nc1l)");
+			std::vector<std::string>expectedConstants = {"0","3","1", "4", "5"};
+			std::vector<std::string>actualConstants = ConditionalExp::getConstants();
+			Assert::IsTrue(expectedConstants == actualConstants);
 		}
 
 	};

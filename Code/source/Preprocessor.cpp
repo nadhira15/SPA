@@ -62,7 +62,6 @@ Statement Preprocessor::processProc(int bookmark)
 	int valid;
 	std::string tmp;
 	size_t tmpn;
-	int tmpn2;
 	tmpn = chunk.find('{', bookmark);
 	if (tmpn != std::string::npos) {
 		tmp = trim(chunk.substr(bookmark, tmpn - bookmark));
@@ -73,12 +72,11 @@ Statement Preprocessor::processProc(int bookmark)
 	if (valid == 0) {
 		throw std::string("procedure") + std::to_string(stmtNum);
 	}
-	tmpn2 = stmtNum;
 	std::vector<Statement> stmtlst = processLst(tmpn + 1);
 	if (stmtlst.empty() || !ifStmt.empty()) {
 		throw std::string("procedure") + std::to_string(stmtNum);
 	}
-	Statement s = Statement(tmp, stmtlst, valid, tmpn2); //will proceed even with errors
+	Statement s = Statement(tmp, stmtlst, valid, 0); //will proceed even with errors
 	return s;
 }
 
@@ -225,9 +223,6 @@ int Preprocessor::validateProc(std::string s)
 
 /*
 trim whitespace from front and back of string
-adapted from an answer in StackOverflow
-https://stackoverflow.com/questions/44973435/stdptr-fun-replacement-for-c17/44973498#44973498
-to save memory, will change this to void method in future
 */
 std::string Preprocessor::trim(std::string s) {
 	s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) {

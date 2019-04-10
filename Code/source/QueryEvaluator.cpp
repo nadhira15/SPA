@@ -17,7 +17,7 @@
 /*
 Projects result of the query 
 */
-std::unordered_set<std::string> QueryEvaluator::projectResult(
+std::list<std::string> QueryEvaluator::projectResult(
 	std::unordered_map<std::string, std::string> declarations,
 	std::vector<std::string> selectedVar,
 	std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
@@ -27,27 +27,27 @@ std::unordered_set<std::string> QueryEvaluator::projectResult(
 		resultPair = evaluateTable(declarations, suchThatCondition, patternCondition, withCondition);
 	std::string status = resultPair.first;
 	std::unordered_map<std::string, std::vector<std::string>> resultTable = resultPair.second;
-	std::unordered_set<std::string> resultSet;
+	std::list<std::string> resultList;
 	if (selectedVar[0] == "BOOLEAN") {
-		resultSet.insert(status);
+		resultList.push_back(status);
 	}
 	else if (status == "TRUE" && (resultTable.size() == 0 || resultTable.begin()->second.size() != 0)) {
 			std::unordered_map<std::string, std::vector<std::string>> projectTable =
 				getProjectTable(declarations, selectedVar, resultTable);
-			resultSet = toStringSet(declarations, selectedVar, projectTable);
+			resultList = toStringList(declarations, selectedVar, projectTable);
 	}
-	return resultSet;
+	return resultList;
 }
 
 /*
 Translate the projectTable to 
 set of strings.
 */
-std::unordered_set<std::string> QueryEvaluator::toStringSet(
+std::list<std::string> QueryEvaluator::toStringList(
 	std::unordered_map<std::string, std::string> declarations,
 	std::vector<std::string> selectedVar,
 	std::unordered_map<std::string, std::vector<std::string>> projectTable) {
-	std::unordered_set<std::string> resultSet;
+	std::list<std::string> resultList;
 	int projectedSize = projectTable.begin()->second.size();
 	for (std::vector<std::string>::size_type i = 0; i != projectedSize; i++) {
 		std::string tuple;
@@ -73,9 +73,9 @@ std::unordered_set<std::string> QueryEvaluator::toStringSet(
 				}
 			}
 		}
-		resultSet.insert(tuple);
+		resultList.push_back(tuple);
 	}
-	return resultSet;
+	return resultList;
 }
 
 /*
@@ -108,7 +108,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::getPro
 		}
 	}
 	for (std::vector<std::string>::size_type i = 0; i != notInResult.size(); i++) {
-		projectTable = ContainerUtil::product(projectTable, getStmts(declarations, notInResult[i]));
+		projectTable = ContainerUtil::product(projectTable, getStmtsMap(declarations, notInResult[i]));
 	}
 	return projectTable;
 }
@@ -226,7 +226,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		return ContainerUtil::to_mapvec(attr, "name", PKB().getReadPairs());
 	}
 	else {
-		std::vector<std::string> attrVal= getStmts(declarations, attr)[attr];
+		std::vector<std::string> attrVal= getStmtsMap(declarations, attr)[attr];
 		std::unordered_map<std::string, std::vector<std::string>> doubleMap;
 		doubleMap.insert({ {attr, attrVal}, {"name", attrVal} });
 		return doubleMap;
@@ -272,7 +272,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			return evaluateSuchThat(declarations, "Uses", attr, right);
 		}
 		else {
-			std::vector<std::string> attrVal = getStmts(declarations, attr)[attr];
+			std::vector<std::string> attrVal = getStmtsMap(declarations, attr)[attr];
 			if (!isQuoted(right)
 				&& std::find(attrVal.begin(), attrVal.end(), right) != attrVal.end()) {
 				return ContainerUtil::to_mapvec(attr, right);
@@ -300,7 +300,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			return evaluateSuchThat(declarations, "Uses", attr, left);
 		}
 		else {
-			std::vector<std::string> attrVal = getStmts(declarations, attr)[attr];
+			std::vector<std::string> attrVal = getStmtsMap(declarations, attr)[attr];
 			if (!isQuoted(left)
 				&& std::find(attrVal.begin(), attrVal.end(), left) != attrVal.end()) {
 				return ContainerUtil::to_mapvec(attr, left);
@@ -316,13 +316,13 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 	}
 	else if (hasReference(left) && isSynonym(right)) {
 		std::string attr = attrOf(left);
-		return ContainerUtil::intersectOne(getStmts(declarations, attr),
-			getStmts(declarations, right));
+		return ContainerUtil::intersectOne(getStmtsMap(declarations, attr),
+			getStmtsMap(declarations, right));
 	}
 	else if (isSynonym(left) && hasReference(right)) {
 		std::string attr = attrOf(right);
-		return ContainerUtil::intersectOne(getStmts(declarations, left),
-			getStmts(declarations, attr));
+		return ContainerUtil::intersectOne(getStmtsMap(declarations, left),
+			getStmtsMap(declarations, attr));
 	}
 	else {
 		std::string leftAttr = attrOf(left);
@@ -331,8 +331,8 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 		std::string rightAttr = attrOf(right);
 		std::string rightAttrType = declarations[rightAttr];
 		if (leftRef == "stmt#" || leftRef == "value") {
-			return ContainerUtil::intersectOne(getStmts(declarations, leftAttr),
-				getStmts(declarations, rightAttr));
+			return ContainerUtil::intersectOne(getStmtsMap(declarations, leftAttr),
+				getStmtsMap(declarations, rightAttr));
 		}
 		else {
 			return ContainerUtil::intersectTwo(evaluateWithPair(declarations, leftAttr),
@@ -356,7 +356,7 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 	if (patternType == "assign") {
 		if (rightArgument == "_") {
 			if (leftArgument == "_") {
-				return getStmts(declarations, patternSynonym);
+				return getStmtsMap(declarations, patternSynonym);
 			}
 			else if (isQuoted(leftArgument)) {
 				return ContainerUtil::to_mapvec(patternSynonym,
@@ -660,6 +660,42 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			};
 		}
 	}
+	if (relation == "Affects") {
+		if (firstArgument == "_") {
+			if (secondArgument == "_") {
+				return truthValue(PKB().hasAffectsRelation());
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().isAffected(stoi(secondArgument)));
+			}
+		}
+		else if (isInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				return truthValue(PKB().isAffector(stoi(firstArgument)));
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().hasAffectStarPair(stoi(firstArgument), stoi(secondArgument)));
+			}
+		}
+	}
+	if (relation == "Affects*") {
+		if (firstArgument == "_") {
+			if (secondArgument == "_") {
+				return truthValue(PKB().hasAffectsRelation());
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().isAffected(stoi(secondArgument)));
+			}
+		}
+		else if (isInteger(firstArgument)) {
+			if (secondArgument == "_") {
+				return truthValue(PKB().isAffector(stoi(firstArgument)));
+			}
+			else if (isInteger(secondArgument)) {
+				return truthValue(PKB().hasAffectStarPair(stoi(firstArgument), stoi(secondArgument)));
+			}
+		}
+	}
 	return "not trivial";
 }
 
@@ -696,8 +732,14 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllFollowers());
 			}
 			else if (isInteger(firstArgument)) {
-				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getFollower(
-					stoi(firstArgument)));
+				int result = PKB().getFollower(stoi(firstArgument));
+				if (result > 0) {
+					tableResult = ContainerUtil::to_mapvec(secondArgument, result);
+				}
+				else {
+					std::vector<std::string> emptyVec;
+					tableResult.insert({ secondArgument, emptyVec });
+				}
 			}
 		}
 	}
@@ -952,6 +994,54 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evalua
 			}
 		}
 	}
+	if (relation == "Affects") {
+		if (isSynonym(firstArgument)) {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllAffectors());
+			}
+			else if (isInteger(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAffector(
+					stoi(secondArgument)));
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getAffectPairs());
+			}
+		}
+		if (isSynonym(secondArgument)) {
+			if (firstArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllAffected());
+			}
+			else if (isInteger(firstArgument)) {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAffected(
+					stoi(firstArgument)));
+			}
+		}
+	}
+	if (relation == "Affects*") {
+		if (isSynonym(firstArgument)) {
+			if (secondArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAllAffectors());
+			}
+			else if (isInteger(secondArgument)) {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, PKB().getAffectorStar(
+					stoi(secondArgument)));
+			}
+			else {
+				tableResult = ContainerUtil::to_mapvec(firstArgument, secondArgument,
+					PKB().getAffectStarPairs());
+			}
+		}
+		if (isSynonym(secondArgument)) {
+			if (firstArgument == "_") {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAllAffected());
+			}
+			else if (isInteger(firstArgument)) {
+				tableResult = ContainerUtil::to_mapvec(secondArgument, PKB().getAffectedStar(
+					stoi(firstArgument)));
+			}
+		}
+	}
 
 	if (tableResult.size() == 1) {
 		if (isSynonym(firstArgument)) {
@@ -984,7 +1074,7 @@ std::unordered_set<std::string> QueryEvaluator::getAllStms() {
 The function retrieves all statements 
 of a given type
 */
-std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::getStmts(
+std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::getStmtsMap(
 	std::unordered_map<std::string, std::string> declarations,
 	std::string syn) {
 	std::string synType = declarations[syn];
@@ -1021,6 +1111,47 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::getStm
 }
 
 /*
+The function retrieves set of all
+members of a certain type from PKB
+which is stored as set of integers.
+*/
+std::unordered_set<std::string> QueryEvaluator::getStmts(std::string type) {
+	std::unordered_set<std::string> result;
+	if (type == "stmt" || type == "prog_line") {
+		result = getAllStms();
+	}
+	else if (type == "read") {
+		result = ContainerUtil::intSetToStrSet(PKB().getReadStms());
+	}
+	else if (type == "print") {
+		result = ContainerUtil::intSetToStrSet(PKB().getPrintStms());
+	}
+	else if (type == "while") {
+		result = ContainerUtil::intSetToStrSet(PKB().getWhileStms());
+	}
+	else if (type == "if") {
+		result = ContainerUtil::intSetToStrSet(PKB().getIfStms());
+	}
+	else if (type == "assign") {
+		result = ContainerUtil::intSetToStrSet(PKB().getAssignStms());
+	}
+	else if (type == "variable") {
+		result = PKB().getVariables();
+	}
+	else if (type == "constant") {
+		result = PKB().getConstants();
+	}
+	else if (type == "procedure") {
+		result = PKB().getProcList();
+	}
+	else if (type == "call") {
+		result = ContainerUtil::intSetToStrSet(PKB().getCallStms());
+	}
+	
+	return result;
+}
+
+/*
 The function does filtering
 for singleton results from PKB 
 so that the output satisfy a given
@@ -1031,17 +1162,15 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::filter
 	std::unordered_map<std::string, std::vector<std::string>> toBeFiltered) {
 	std::unordered_map<std::string, std::vector<std::string>> filteredTable;
 	std::string synonymType = declarations[synonym];
-	std::unordered_map<std::string, std::vector<std::string>> typeRequiredSet = getStmts(
-		declarations, synonym);
-	std::vector<std::string> filter = typeRequiredSet[synonym];
-	if (synonymType == "stmt") {
+	std::unordered_set<std::string> filter = getStmts(synonymType);
+	if (synonymType == "stmt" || synonymType == "variable") {
 		return toBeFiltered;
 	} 
 	else {
 		std::vector<std::string> oldColumn = toBeFiltered[synonym];
 		std::vector<std::string> newColumn;
 		for (std::vector<std::string>::size_type i = 0; i != oldColumn.size(); i++) {
-			if (std::find(filter.begin(), filter.end(), oldColumn[i]) != filter.end()) {
+			if (filter.count(oldColumn[i]) == 1) {
 				newColumn.push_back(oldColumn[i]);
 			}
 		}
@@ -1063,45 +1192,40 @@ std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::filter
 	std::unordered_map<std::string, std::vector<std::string>> filteredSet;
 	std::string synonym1Type = declarations[synonym1];
 	std::string synonym2Type = declarations[synonym2];
-	std::unordered_map<std::string, std::vector<std::string>> type1RequiredSet = getStmts(
-		declarations, synonym1);
-	std::unordered_map<std::string, std::vector<std::string>> type2RequiredSet = getStmts(
-		declarations, synonym2);
-	std::vector<std::string> filter1 = type1RequiredSet[synonym1];
-	std::vector<std::string> filter2 = type2RequiredSet[synonym2];
+	std::unordered_set<std::string> filter1 = getStmts(synonym1Type);
+	std::unordered_set<std::string> filter2 = getStmts(synonym2Type);
 	std::vector<std::string> oldColumn1 = toBeFiltered[synonym1];
 	std::vector<std::string> oldColumn2 = toBeFiltered[synonym2];
-	if (synonym1Type == "stmt" && synonym2Type == "stmt") {
+	if (synonym1Type == "stmt" && (synonym2Type == "stmt" || synonym2Type == "variable")) {
 		return toBeFiltered;
 	}
-	else if (synonym1Type == "stmt" && synonym2Type != "stmt") {
+	else if (synonym1Type == "stmt" && synonym2Type != "stmt" && synonym2Type != "variable") {
 		for (auto it = toBeFiltered.begin(); it != toBeFiltered.end(); ++it) {
 			std::vector<std::string> newColumn;
 			for (std::vector<std::string>::size_type i = 0; i != oldColumn2.size(); i++) {
-				if (std::find(filter2.begin(), filter2.end(), oldColumn2[i]) != filter2.end()) {
+				if (filter2.count(oldColumn2[i]) == 1) {
 					newColumn.push_back(it->second[i]);
 				}
 			}
 			filteredSet.insert({ it->first, newColumn });
 		}
 	}
-	else if (synonym1Type != "stmt" && synonym2Type == "stmt") {
+	else if (synonym1Type != "stmt" && (synonym2Type == "stmt" || synonym2Type == "variable")) {
 		for (auto it = toBeFiltered.begin(); it != toBeFiltered.end(); ++it) {
 			std::vector<std::string> newColumn;
 			for (std::vector<std::string>::size_type i = 0; i != oldColumn1.size(); i++) {
-				if (std::find(filter1.begin(), filter1.end(), oldColumn1[i]) != filter1.end()) {
+				if (filter1.count(oldColumn1[i]) == 1) {
 					newColumn.push_back(it->second[i]);
 				}
 			}
 			filteredSet.insert({ it->first, newColumn });
 		}
 	}
-	else if (synonym1Type != "stmt" && synonym2Type != "stmt") {
+	else if (synonym1Type != "stmt" && synonym2Type != "stmt" && synonym2Type != "variable") {
 		for (auto it = toBeFiltered.begin(); it != toBeFiltered.end(); ++it) {
 			std::vector<std::string> newColumn;
 			for (std::vector<std::string>::size_type i = 0; i != oldColumn1.size(); i++) {
-				if (std::find(filter1.begin(), filter1.end(), oldColumn1[i]) != filter1.end() 
-					&& std::find(filter2.begin(), filter2.end(), oldColumn2[i]) != filter2.end()) {
+				if ((filter1.count(oldColumn1[i]) == 1) && (filter2.count(oldColumn2[i]) == 1)) {
 					newColumn.push_back(it->second[i]);
 				}
 			}

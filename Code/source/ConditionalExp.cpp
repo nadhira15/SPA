@@ -8,7 +8,7 @@
 using namespace ConditionalExp;
 
 std::string str; 
-std::regex formular("\\s*\\(*(!?\\s*\\(*\\s*(?:[a-zA-Z]+\\d*[a-zA-Z]*)|(?:\\d+))\\s*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\s]*((?:[a-zA-Z]+\\d*[a-zA-Z]*)|(?:\\d+))[\\(\\s\\)]*(([\\(\\s\\)]*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\s\\)]*(([a-zA-Z]+\\d*[a-zA-Z]*)|(\\d+)))*[\\(\\s\\)]*)");
+std::regex formular("\\s*\\(*(!?\\s*\\(*\\s*([a-zA-Z]+[\\da-zA-Z]*)|(\\d+))\\s*\\)*\\s*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\)\\s]*(([a-zA-Z]+[\\da-zA-Z]*)|(\\d+))[\\(\\s\\)]*(([\\(\\s\\)]*([\\+\\-\\*/%<>]|[<>!=]=)[\\(\\s\\)]*(([a-zA-Z]+[\\da-zA-Z]*)|(\\d+)))*[\\(\\s\\)]*)");
 
 
 bool ConditionalExp::verifyConditionalExp(std::string statement) {
@@ -73,8 +73,9 @@ std::vector<std::string> ConditionalExp::getVariables() {
 				variableVector.push_back(line2.substr(prev, pos - prev));
 			prev = pos + 1;
 		}
-		if (prev < line2.length())
+		if (prev < line2.length()) {
 			variableVector.push_back(line2.substr(prev, std::string::npos));
+		}
 	}
 	for (std::vector<std::string>::const_iterator i = variableVector.begin(); i != variableVector.end(); ++i) {
 		line3 = *i;
@@ -84,8 +85,13 @@ std::vector<std::string> ConditionalExp::getVariables() {
 			std::stringstream(line3) >> year;
 		}
 		else {
+			//do lexicaltoken check on the variable
 			if (LexicalToken::verifyName(line3)) {
-				variables.push_back(line3);
+				//if variable is not already in the variable vector add it in
+				if (find(variables.begin(), variables.end(), line3) == variables.end()) {
+					variables.push_back(line3);
+				}
+				
 			}
 		}
 	}
@@ -119,10 +125,10 @@ std::vector<std::string> ConditionalExp::getConstants() {
 		{
 			int year;
 			std::stringstream(line3) >> year;
-			constants.push_back(line3);
-		}
-		else {
-			variables.push_back(line3);
+			//if constant is not in the constant vector add it in
+			if (find(constants.begin(), constants.end(), line3) == constants.end()) {
+				constants.push_back(line3);
+			}
 		}
 	}
 	return constants;
