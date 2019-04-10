@@ -262,8 +262,11 @@ std::vector<int> RunTimeDesignExtractor::getStatementsAffectingIndex(int stmt) {
 		return std::vector<int>();
 	}
 	std::unordered_set<int> cfgPath;
-	std::vector<int> affectedByList;
-	DFSRecursiveGetAffectedByList(stmt, stmt, cfgPath, true, affectedByList);
+	std::vector<int> affectingList;
+	std::unordered_set<std::string> modifiedList;
+	DFSRecursiveGetAffectingList(stmt, stmt, cfgPath, true, affectingList, modifiedList);
+
+	return affectingList;
 }
 
 void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int end, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedByList, std::unordered_set<std::string> &relevantVar) {
@@ -272,19 +275,23 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int end, int current, 
 	//If we find that affects is possible we return as we know anything above it in the CFG cannot affect the end statemnt.
 	std::string currentModified;
 
+	//Not first node
 	if (!isStart) {
+		//If affects is possible
 		if (isAffectPossible(current, end)) {
 			std::unordered_set<std::string> modifiedVar = pkb->getVarModifiedByStm(current);
-			//Should only have 1 modified variable.
+			//Should only have 1 modified variable. Get what current is modifying
 			for (std::string var : modifiedVar) {
 				currentModified = var;
-				relevantVar.insert(var);
 			}
 
 			std::unordered_set<std::string>::const_iterator alreadyModified = relevantVar.find(currentModified);
-			//Not found
+			//Check if what current is modifying has already been modified later on
 			if (alreadyModified == relevantVar.end()) {
+				//if not, we accept it as a possible value
 				affectedByList.push_back(current);
+				//we mark it as modified.
+				relevantVar.insert(currentModified);
 			}
 		}
 	}
@@ -326,8 +333,10 @@ std::vector<int> RunTimeDesignExtractor::getStatementsAffectedByIndex(int stmt) 
 		return std::vector<int>();
 	}
 	std::unordered_set<int> cfgPath;
-	std::vector<int> affectedList;
-	DFSRecursiveGetAffectedByList(stmt, stmt, cfgPath, true, affectedList);
+	std::vector<int> affectedByList;
+	DFSRecursiveGetAffectedByList(stmt, stmt, cfgPath, true, affectedByList);
+
+	return affectedByList;
 }
 
 void RunTimeDesignExtractor::DFSRecursiveGetAffectedByList(int start, int current, std::unordered_set<int> &cfgPath, bool isStart, std::vector<int> &affectedList) {
