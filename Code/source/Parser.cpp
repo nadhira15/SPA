@@ -58,7 +58,10 @@ void Parser::populateNextEntity(int prevStmtLine, Statement &stmt, int currStmtL
 	//Add Next relation for WHILE statment type
 	if (stmt.getType() == 5) {
 		pkb.addNext(currStmtLine, stmt.getStmtLst().front().getStmtNum());
-		pkb.addNext(stmt.getStmtLst().back().getStmtNum(), currStmtLine);
+
+		if (stmt.getStmtLst().back().getType() != 7) {
+			pkb.addNext(stmt.getStmtLst().back().getStmtNum(), currStmtLine);
+		}
 	}
 }
 
