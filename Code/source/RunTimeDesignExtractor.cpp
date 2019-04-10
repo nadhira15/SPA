@@ -720,7 +720,7 @@ bool RunTimeDesignExtractor::isAffectPossible(int stmt, int stmt1) {
 
 	//Check if stmt modifies something that stmt1 uses
 	std::unordered_set<std::string> modifiedInStmt = pkb->getVarModifiedByStm(stmt);
-	std::unordered_set<std::string> usedInStmt1 = pkb->getVarModifiedByStm(stmt1);
+	std::unordered_set<std::string> usedInStmt1 = pkb->getVarUsedByStm(stmt1);
 	bool isPossible = contains(modifiedInStmt, usedInStmt1);
 
 	return isPossible;
