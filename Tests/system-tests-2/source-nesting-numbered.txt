@@ -19,7 +19,7 @@ procedure whileOnly {
 		call whileInsideWhile;					// 13
 		print two;								// 14
 		call whileInsideIf;						// 15
-		three = thre * two * one;				// 16
+		three = three * two * one;				// 16
 		call doubleWhile;						// 17
 	}
 }

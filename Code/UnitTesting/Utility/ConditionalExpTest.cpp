@@ -40,5 +40,13 @@ namespace UnitTesting
 			Assert::IsTrue(expectedVariables == actualVariables);
 		}
 
+		TEST_METHOD(testVariables2)
+		{
+			bool result = ConditionalExp::verifyConditionalExp("(b00k - p3nc1l) < (0 + 3 * (1 + (4 * (((1)))) * 5) + p3nc1l)");
+			std::vector<std::string>expectedVariables = { "b00k","p3nc1l"};
+			std::vector<std::string>actualVariables = ConditionalExp::getVariables();
+			Assert::IsTrue(expectedVariables == actualVariables);
+		}
+
 	};
 }
