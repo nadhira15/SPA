@@ -75,7 +75,7 @@ std::unordered_map<std::string, std::vector<std::string>> WithEvaluator::evaluat
 		withMap.insert({ right, emptyVec });
 		return withMap;
 	}
-	else if (!QueryUtility::hasReference(left) 
+	else if (QueryUtility::hasReference(left) 
 		&& !QueryUtility::hasReference(right) && !QueryUtility::isSynonym(right)) {
 		std::string attr = QueryUtility::attrOf(left);
 		std::string ref = QueryUtility::refOf(left);
