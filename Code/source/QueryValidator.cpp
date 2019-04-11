@@ -164,6 +164,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 		"assign", "call", "procedure", "prog_line" };
 	std::unordered_set<std::string> validFirstArgsModifies = { "stmt", "read", "while", "if",
 "assign", "call", "procedure", "prog_line" };
+	std::unordered_set<std::string> validSecondArgsUsesModifies = { "variable" };
 	std::unordered_set<std::string> validArgsCalls = { "procedure" };
 	std::unordered_set<std::string> validArgsAffects = { "stmt", "assign", "prog_line" };
 
@@ -248,7 +249,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 			if (secondArgs == "_" ||
 				LexicalToken::verifyInteger(secondArgs) ||
 				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
-				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs))) {
+				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs) && (validSecondArgsUsesModifies.find(secondArgsType) != validSecondArgsUsesModifies.end()))) {
 				// valid second args
 			}
 			else {
@@ -271,7 +272,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 			if (secondArgs == "_" ||
 				LexicalToken::verifyInteger(secondArgs) ||
 				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
-				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs))) {
+				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs) && (validSecondArgsUsesModifies.find(secondArgsType) != validSecondArgsUsesModifies.end()))) {
 				// valid first args
 			}
 			else {
