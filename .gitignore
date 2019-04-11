@@ -427,3 +427,6 @@ Tests/system-tests-3/out-CallsStar.xml
 Tests/system-tests-3/out-Calls.xml
 Tests/system-tests-2/out-CallsStar.xml
 Tests/system-tests-2/out-Calls.xml
+Tests/system-tests-2/out-ParentStar.xml
+Tests/system-tests-2/out-Parent.xml
+Tests/system-tests-2/out-Affects.xml
