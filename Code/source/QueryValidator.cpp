@@ -201,7 +201,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 			
 			// Validating first args
 			if (firstArgs == "_" ||
-				LexicalToken::verifyInteger(firstArgs) ||
+				(LexicalToken::verifyInteger(firstArgs) && (std::stoi(firstArgs) > 0)) ||
 				validFirstArgsParent.find(firstArgsType) != validFirstArgsParent.end()) {
 				// valid first args
 			}
@@ -211,7 +211,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating second args
 			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyInteger(secondArgs) && (std::stoi(secondArgs) > 0)) ||
 				validArgs.find(secondArgsType) != validArgs.end()) {
 				// valid second args
 			}
@@ -223,7 +223,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating first args
 			if (firstArgs == "_" ||
-				LexicalToken::verifyInteger(firstArgs) ||
+				(LexicalToken::verifyInteger(firstArgs) && (std::stoi(firstArgs) > 0)) ||
 				validArgs.find(firstArgsType) != validArgs.end()) {
 				// valid first args
 			}
@@ -233,7 +233,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating second args
 			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyInteger(secondArgs) && (std::stoi(secondArgs) > 0)) ||
 				validArgs.find(secondArgsType) != validArgs.end()) {
 				// valid second args
 			}
@@ -244,7 +244,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 		else if (relation == "Uses") {
 
 			// Validating first args
-			if (LexicalToken::verifyInteger(firstArgs) ||
+			if ((LexicalToken::verifyInteger(firstArgs) && (std::stoi(firstArgs) > 0)) ||
 				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
 				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validFirstArgsUses.find(firstArgsType) != validFirstArgsUses.end()))) {
 				// valid first args
@@ -255,7 +255,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating second args
 			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyInteger(secondArgs) && (std::stoi(secondArgs) > 0)) ||
 				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
 				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs) && (validSecondArgsUsesModifies.find(secondArgsType) != validSecondArgsUsesModifies.end()))) {
 				// valid second args
@@ -267,7 +267,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 		else if (relation == "Modifies") {
 
 			// Validating first args
-			if (LexicalToken::verifyInteger(firstArgs) ||
+			if ((LexicalToken::verifyInteger(firstArgs) && (std::stoi(firstArgs) > 0)) ||
 				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
 				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validFirstArgsModifies.find(firstArgsType) != validFirstArgsModifies.end()))) {
 				// valid first args
@@ -278,7 +278,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating second args
 			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyInteger(secondArgs) && (std::stoi(secondArgs) > 0)) ||
 				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
 				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs) && (validSecondArgsUsesModifies.find(secondArgsType) != validSecondArgsUsesModifies.end()))) {
 				// valid first args
@@ -313,7 +313,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating first args
 			if (firstArgs == "_" ||
-				LexicalToken::verifyInteger(firstArgs) ||
+				(LexicalToken::verifyInteger(firstArgs) && (std::stoi(firstArgs) > 0)) ||
 				(LexicalToken::verifyName(firstArgs) && (validArgsAffects.find(firstArgsType) != validArgsAffects.end()))) {
 				// valid first args
 			}
@@ -323,7 +323,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating second args
 			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyInteger(secondArgs) && (std::stoi(secondArgs) > 0)) ||
 				(LexicalToken::verifyName(secondArgs) && (validArgsAffects.find(secondArgsType) != validArgsAffects.end()))) {
 				// valid second args
 			}
