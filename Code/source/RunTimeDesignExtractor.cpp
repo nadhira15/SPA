@@ -728,9 +728,9 @@ std::unordered_set<std::pair<int, int>, intPairhash> RunTimeDesignExtractor::get
 	std::unordered_set<std::pair<int, int>, intPairhash> finalResult;
 
 	for (std::pair<int, int> affectPair : relevantPairs) {
-		std::unordered_set<int> adjacents = adjacencyList[affectPair.second];
-		adjacents.insert(affectPair.first);
-		adjacencyList[affectPair.second] = adjacents;
+		std::unordered_set<int> adjacents = adjacencyList[affectPair.first];
+		adjacents.insert(affectPair.second);
+		adjacencyList[affectPair.first] = adjacents;
 	}
 
 	int simpleSize = pkb->getTotalStmNo();
@@ -739,7 +739,7 @@ std::unordered_set<std::pair<int, int>, intPairhash> RunTimeDesignExtractor::get
 		std::vector<int> results;
 		std::unordered_set<int> visitedPath;
 
-		DFSRecursiveReachability(i, results, visitedPath, adjacencyList, false);
+		DFSRecursiveReachability(i, results, visitedPath, adjacencyList, true);
 
 		for (int result : results) {
 			finalResult.insert(std::make_pair(i, result));
