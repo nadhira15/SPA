@@ -290,7 +290,10 @@ void RunTimeDesignExtractor::DFSRecursiveGetAffectingList(int end, int current, 
 				if (alreadyModified == relevantVar.end()) {
 					//if not, we accept it as a possible value if end uses it
 					if (usedList.find(var) != usedList.end()) {
-						affectedByList.push_back(current);
+						//We only add if the current is an assign statement.
+						if (pkb->getStmType(current) == stmType::assign) {
+							affectedByList.push_back(current);
+						}
 						//we mark it as modified.
 						relevantVar.insert(var);
 					}
