@@ -94,6 +94,10 @@ std::string QueryValidator::validateSelectedVar(std::vector<std::string> selecte
 	std::unordered_set<std::string> stringTypeRefProcName = { "procedure", "call" };
 	std::unordered_set<std::string> stringTypeRefVarName = { "variable", "read", "print" };
 
+	if (selectedVar.size() == 0) {
+		return "invalid queries";
+	}
+
 	for (int i = 0; i < selectedVar.size(); i++) {
 		
 		// select type: BOOLEAN
@@ -164,6 +168,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 		"assign", "call", "procedure", "prog_line" };
 	std::unordered_set<std::string> validFirstArgsModifies = { "stmt", "read", "while", "if",
 "assign", "call", "procedure", "prog_line" };
+	std::unordered_set<std::string> validSecondArgsUsesModifies = { "variable" };
 	std::unordered_set<std::string> validArgsCalls = { "procedure" };
 	std::unordered_set<std::string> validArgsAffects = { "stmt", "assign", "prog_line" };
 
@@ -175,6 +180,10 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 		std::string secondArgsType;
 
 		// Initial Validation
+		if ((relation == "") || (firstArgs == "") || (secondArgs == "")) {
+			return "invalid query";
+		}
+
 		if (validRelation.find(relation) == validRelation.end()) {
 			return "invalid query";
 		}
@@ -248,7 +257,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 			if (secondArgs == "_" ||
 				LexicalToken::verifyInteger(secondArgs) ||
 				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
-				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs))) {
+				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs) && (validSecondArgsUsesModifies.find(secondArgsType) != validSecondArgsUsesModifies.end()))) {
 				// valid second args
 			}
 			else {
@@ -271,7 +280,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 			if (secondArgs == "_" ||
 				LexicalToken::verifyInteger(secondArgs) ||
 				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
-				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs))) {
+				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs) && (validSecondArgsUsesModifies.find(secondArgsType) != validSecondArgsUsesModifies.end()))) {
 				// valid first args
 			}
 			else {
