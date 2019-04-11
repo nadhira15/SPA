@@ -189,9 +189,6 @@
     <ClCompile Include="..\source\IfEvaluator.cpp">
       <Filter>Source Files\PQL</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\WhileEvaluator.cpp">
-      <Filter>Header Files\Utility</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\WithEvaluator.cpp">
       <Filter>Source Files\PQL</Filter>
     </ClCompile>
@@ -199,6 +196,9 @@
       <Filter>Source Files\PQL</Filter>
     </ClCompile>
     <ClCompile Include="..\source\PatternEvaluator.cpp">
+      <Filter>Source Files\PQL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\WhileEvaluator.cpp">
       <Filter>Source Files\PQL</Filter>
     </ClCompile>
   </ItemGroup>
