@@ -6,7 +6,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTesting
 {
-	TEST_CLASS(ContainerUtilTest)
+	TEST_CLASS(QueryUtilityTest)
 	{
 	public:
 
@@ -14,7 +14,7 @@ namespace UnitTesting
 		{
 			std::vector<int> emptyIntVec;
 			std::string key ("key");
-			std::unordered_map<std::string, std::vector<std::string>> result = ContainerUtil::to_mapvec(key, 
+			std::unordered_map<std::string, std::vector<std::string>> result = QueryUtility::to_mapvec(key, 
 				emptyIntVec);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> emptyVec;
@@ -27,7 +27,7 @@ namespace UnitTesting
 		{
 			std::vector<int> nonEmptyIntVec { 1, 2, 3 };
 			std::string key ("key");
-			std::unordered_map<std::string, std::vector<std::string>> result = ContainerUtil::to_mapvec(key,
+			std::unordered_map<std::string, std::vector<std::string>> result = QueryUtility::to_mapvec(key,
 				nonEmptyIntVec);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> vec { "1", "2", "3" };
@@ -42,7 +42,7 @@ namespace UnitTesting
 			std::vector<std::pair<int, std::string>> emptyIntStrVec;
 			std::string key1 ("key1");
 			std::string key2 ("key2");
-			std::unordered_map<std::string, std::vector<std::string>> result = ContainerUtil::to_mapvec(key1, 
+			std::unordered_map<std::string, std::vector<std::string>> result = QueryUtility::to_mapvec(key1, 
 				key2, emptyIntStrVec);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> emptyVec;
@@ -63,7 +63,7 @@ namespace UnitTesting
 			std::string key1 ("key1");
 			std::string key2 ("key2");
 			std::unordered_map<std::string, std::vector<std::string>> result =
-				ContainerUtil::to_mapvec(key1, key2, nonEmptyIntStrVec);
+				QueryUtility::to_mapvec(key1, key2, nonEmptyIntStrVec);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> vec1 { "1", "2" };
 			std::vector<std::string> vec2 { "one", "two" };
@@ -79,7 +79,7 @@ namespace UnitTesting
 			std::unordered_set<int> emptyIntSet;
 			std::string key ("key");
 			std::unordered_map<std::string, std::vector<std::string>> result =
-				ContainerUtil::to_mapvec(key, emptyIntSet);
+				QueryUtility::to_mapvec(key, emptyIntSet);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> emptyVec;
 			std::pair<std::string, std::vector<std::string>> keyValuePair (key, emptyVec);
@@ -92,7 +92,7 @@ namespace UnitTesting
 			std::unordered_set<int> nonEmptyIntSet ({ 1, 2, 3 });
 			std::string key ("key");
 			std::unordered_map<std::string, std::vector<std::string>> result =
-				ContainerUtil::to_mapvec(key, nonEmptyIntSet);
+				QueryUtility::to_mapvec(key, nonEmptyIntSet);
 			Assert::AreEqual(result.count(key) == 1, true);
 			std::vector<std::string> toCheck = result[key];
 			for (std::vector<std::string>::size_type i = 0; i != toCheck.size(); i++) {
@@ -106,7 +106,7 @@ namespace UnitTesting
 			std::string key1 ("key1");
 			std::string key2 ("key2");
 			std::unordered_map<std::string, std::vector<std::string>> result =
-				ContainerUtil::to_mapvec(key1, key2, emptyIntPairSet);
+				QueryUtility::to_mapvec(key1, key2, emptyIntPairSet);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> emptyVec;
 			std::pair<std::string, std::vector<std::string>> keyValuePair1 (key1, emptyVec);
@@ -125,7 +125,7 @@ namespace UnitTesting
 			nonEmptyIntPairSet.insert(secondPair);
 			std::string key1 ("key1");
 			std::string key2 ("key2");
-			std::unordered_map<std::string, std::vector<std::string>> result = ContainerUtil::to_mapvec(key1,
+			std::unordered_map<std::string, std::vector<std::string>> result = QueryUtility::to_mapvec(key1,
 				key2, nonEmptyIntPairSet);
 			Assert::AreEqual(result.count(key1) == 1, true);
 			Assert::AreEqual(result.count(key2) == 1, true);
@@ -145,7 +145,7 @@ namespace UnitTesting
 			std::string key1 ("key1");
 			std::string key2 ("key2");
 			std::unordered_map<std::string, std::vector<std::string>> result =
-				ContainerUtil::to_mapvec(key1, key2, emptyIntStrSet);
+				QueryUtility::to_mapvec(key1, key2, emptyIntStrSet);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> emptyVec;
 			std::pair<std::string, std::vector<std::string>> keyValuePair1 (key1, emptyVec);
@@ -165,7 +165,7 @@ namespace UnitTesting
 			std::string key1 ("key1");
 			std::string key2 ("key2");
 			std::unordered_map<std::string, std::vector<std::string>> result =
-				ContainerUtil::to_mapvec(key1, key2, nonEmptyIntStringSet);
+				QueryUtility::to_mapvec(key1, key2, nonEmptyIntStringSet);
 			Assert::AreEqual(result.count(key1) == 1, true);
 			Assert::AreEqual(result.count(key2) == 1, true);
 			std::vector<std::string> toCheck1 = result[key1];
@@ -184,7 +184,7 @@ namespace UnitTesting
 			std::string key1 ("key1");
 			std::string key2 ("key2");
 			std::unordered_map<std::string, std::vector<std::string>> result =
-				ContainerUtil::to_mapvec(key1, key2, emptyStrPairSet);
+				QueryUtility::to_mapvec(key1, key2, emptyStrPairSet);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> emptyVec;
 			std::pair<std::string, std::vector<std::string>> keyValuePair1 (key1, emptyVec);
@@ -204,7 +204,7 @@ namespace UnitTesting
 			std::string key1 ("key1");
 			std::string key2 ("key2");
 			std::unordered_map<std::string, std::vector<std::string>> result =
-				ContainerUtil::to_mapvec(key1, key2, nonEmptyStrPairSet);
+				QueryUtility::to_mapvec(key1, key2, nonEmptyStrPairSet);
 			Assert::AreEqual(result.count(key1) == 1, true);
 			Assert::AreEqual(result.count(key2) == 1, true);
 			std::vector<std::string> toCheck1 = result[key1];
@@ -231,7 +231,7 @@ namespace UnitTesting
 			std::vector<std::string> val4{ "7", "8" };
 			oldTable.insert({ {key1, val1}, {key2, val2} });
 			toAddTable.insert({ { key3, val3 }, { key4, val4 } });
-			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::product(
+			std::unordered_map<std::string, std::vector<std::string>> newTable = QueryUtility::product(
 				oldTable, toAddTable);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> newVal1{ "1", "2", "1", "2" };
@@ -253,7 +253,7 @@ namespace UnitTesting
 			std::vector<std::string> val3{ "2", "3" };
 			oldTable.insert({ {key1, val1}, {key2, val2} });
 			toAddTable.insert({ key1, val3 });
-			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::product(
+			std::unordered_map<std::string, std::vector<std::string>> newTable = QueryUtility::product(
 				oldTable, toAddTable);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> newVal1{ "4", "5" };
@@ -273,7 +273,7 @@ namespace UnitTesting
 			std::vector<std::string> val4{ "7", "8" };
 			oldTable.insert({ {key1, val1}, {key2, val2} });
 			toAddTable.insert({ { key1, val3 }, { key2, val4 } });
-			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::product(
+			std::unordered_map<std::string, std::vector<std::string>> newTable = QueryUtility::product(
 				oldTable, toAddTable);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			toCompare.insert({ {key1, val3}, {key2, val4} });
@@ -292,7 +292,7 @@ namespace UnitTesting
 			std::vector<std::string> val4{ "2", "3", "4" };
 			oldTable.insert({ {key1, val1}, {key2, val2} });
 			toAddTable.insert({ { key3, val3 }, { key1, val4 } });
-			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::product(
+			std::unordered_map<std::string, std::vector<std::string>> newTable = QueryUtility::product(
 				oldTable, toAddTable);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> newVal1{ "2", "3" };
@@ -316,7 +316,7 @@ namespace UnitTesting
 			std::vector<std::string> val5{ "y", "z", "z" };
 			oldTable.insert({ {key1, val1}, {key2, val2}, {key3, val3} });
 			toAddTable.insert({ { key1, val4 }, { key4, val5 } });
-			std::unordered_map<std::string, std::vector<std::string>> newTable = ContainerUtil::product(
+			std::unordered_map<std::string, std::vector<std::string>> newTable = QueryUtility::product(
 				oldTable, toAddTable);
 			std::unordered_map<std::string, std::vector<std::string>> toCompare;
 			std::vector<std::string> newVal1{ "1", "1", "2" };
