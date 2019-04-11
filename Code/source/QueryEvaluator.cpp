@@ -78,114 +78,75 @@ std::list<std::string> QueryEvaluator::toStringList(
 	return resultList;
 }
 
+std::string QueryEvaluator::isTrivialGroupTrue(std::vector<
+	std::pair<std::pair<
+	std::string, std::string>, std::pair<std::string, std::string>>>
+	trivialGroup) {
+	for (std::vector<
+		std::pair<std::pair<
+		std::string, std::string>, std::pair<std::string, std::string>>>::size_type i = 0;
+		i != trivialGroup.size(); i++) {
+		std::string clauseType = 
+	}
+}
+
 /*
 Get the project table  
 with selected variables as 
 the columns from resultTable.
 */
-std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::getProjectTable(
+std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::getGroupProjectTable(
 	std::unordered_map<std::string, std::string> declarations,
 	std::vector<std::string> selectedVar,
-	std::unordered_map<std::string, std::vector<std::string>> resultTable) {
-	std::unordered_map<std::string, std::vector<std::string>> projectTable;
+	std::unordered_map<std::string, std::vector<std::string>> groupTable) {
+	std::unordered_map<std::string, std::vector<std::string>> groupProjectTable;
 	std::vector<std::string> notInResult;
 	for (std::vector<std::string>::size_type i = 0; i != selectedVar.size(); i++) {
 		std::string currentVar = selectedVar[i];
 		if (hasReference(currentVar)) {
 			std::string attr = attrOf(currentVar);
-			if (resultTable.count(attr) == 0) {
-				notInResult.push_back(attr);
-			}
-			else {
-				projectTable.insert({ attr, resultTable[attr] });
+			if (groupTable.count(attr) == 1) {
+				groupProjectTable.insert({ attr, groupTable[attr] });
 			}
 		}
-		else if (resultTable.count(currentVar) == 0) {
-			notInResult.push_back(currentVar);
-		}
-		else {
-			projectTable.insert({ currentVar, resultTable[currentVar] });
+		if (groupTable.count(currentVar) == 1) {
+			groupProjectTable.insert({ currentVar, groupTable[currentVar] });
 		}
 	}
-	for (std::vector<std::string>::size_type i = 0; i != notInResult.size(); i++) {
-		projectTable = ContainerUtil::product(projectTable, getStmtsMap(declarations, notInResult[i]));
-	}
-	return projectTable;
+	return groupProjectTable;
 }
 
 /*
 Merge all the results of each clause
 */
-std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>>
-	QueryEvaluator::evaluateTable(
+std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluateGroup(
 		std::unordered_map<std::string, std::string> declarations,
-		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
-		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
-		std::vector<std::pair<std::string, std::string>> withCondition) {
-
+		std::vector<std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>>>
+			groupClause) {
 	std::unordered_map<std::string, std::vector<std::string>> resultTable;
-	std::string status = "TRUE";
-	if (suchThatCondition.size() != 0) {
-		for (std::vector<std::pair<std::string, std::pair<std::string, std::string>>>::size_type
-			 i = 0; i != suchThatCondition.size(); i++) {
-			std::string relation = suchThatCondition[i].first;
-			std::string firstArgument = suchThatCondition[i].second.first;
-			std::string secondArgument = suchThatCondition[i].second.second;
-			std::string trivialness = isSuchThatTrivial(relation, firstArgument, secondArgument);
-			if (trivialness == "false") {
-				status = "FALSE";
-				break;
-			}
-			if (trivialness == "not trivial") {
-				std::unordered_map<std::string, std::vector<std::string>>
-					newTable = evaluateSuchThat(declarations, relation, firstArgument,
-												secondArgument);
-				resultTable = ContainerUtil::product(resultTable, newTable);
-				if (resultTable.begin()->second.size() == 0) {
-					status = "FALSE";
-					break;
-				}
-			}
+	std::unordered_map<std::string, std::vector<std::string>> toAddTable;
+	for (std::vector<
+		std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>>>::size_type
+		i = 0; i != groupClause.size(); i++) {
+		std::string clauseType = groupClause[i].first.first;
+		std::string relation = groupClause[i].first.second;
+		std::string firstArgument = groupClause[i].second.first;
+		std::string secondArgument = groupClause[i].second.second;
+		if (clauseType == "st") {
+			toAddTable = evaluateSuchThat(declarations, relation, firstArgument,
+				secondArgument);
 		}
-	}
-	if (patternCondition.size() != 0 && status == "TRUE") {
-		for (std::vector<std::pair<std::string, std::pair<std::string, std::string>>>::size_type i = 0;
-			i != patternCondition.size();
-			i++) {
-			std::unordered_map<std::string, std::vector<std::string>>
-				newTable = evaluatePatternCondition( declarations, patternCondition[i]);
-			resultTable = ContainerUtil::product(resultTable, newTable);
-			if (resultTable.begin()->second.size() == 0) {
-				status = "FALSE";
-				break;
-			}
+		else if (clauseType == "pattern") {
+			toAddTable = evaluatePatternCondition(declarations, relation, firstArgument,
+				secondArgument);
 		}
-	}
-	if (withCondition.size() != 0 && status == "TRUE") {
-		for (std::vector<std::pair<std::string, std::string>>::size_type i = 0;
-			i != withCondition.size();
-			i++) {
-			std::string left = withCondition[i].first;
-			std::string right = withCondition[i].second;
-			std::string trivialness = isWithTrivial(left, right);
-			if (trivialness == "false") {
-				status = "FALSE";
-				break;
-			}
-			if (trivialness == "not trivial") {
-				std::unordered_map<std::string, std::vector<std::string>>
-					newTable = evaluateWithCondition( declarations, left, right);
-				resultTable = ContainerUtil::product(resultTable, newTable);
-				if (resultTable.begin()->second.size() == 0) {
-					status = "FALSE";
-					break;
-				}
-			}
+		else {
+			toAddTable = evaluateWithCondition(declarations, firstArgument, secondArgument);
 		}
+		resultTable = ContainerUtil::product(resultTable, toAddTable);
 	}
-	std::pair<std::string, std::unordered_map<std::string,
-		std::vector<std::string>>> resultPair(status, resultTable);
-	return resultPair;
+
+	return resultTable;
 }
 
 /*
@@ -197,7 +158,7 @@ std::string QueryEvaluator::isWithTrivial(std::string left, std::string right) {
 	if ((isQuoted(left) && isQuoted(right)) || (isInteger(left) && isInteger(right))) {
 		return truthValue(left == right);
 	}
-	return "not trivial";
+	return "NON TRIVIAL";
 }
 
 /*
@@ -347,76 +308,73 @@ pattern clauses
 */
 std::unordered_map<std::string, std::vector<std::string>> QueryEvaluator::evaluatePatternCondition(
 	std::unordered_map<std::string, std::string> declarations,
-	std::pair<std::string, std::pair<std::string, std::string>> pattern) {
-	std::string patternSynonym = pattern.first;
+	std::string patternSynonym, std::string firstArgument, std::string secondArgument) {
 	std::string patternType = declarations[patternSynonym];
-	std::string leftArgument = pattern.second.first;
-	std::string rightArgument = pattern.second.second;
 
 	if (patternType == "assign") {
-		if (rightArgument == "_") {
-			if (leftArgument == "_") {
+		if (secondArgument == "_") {
+			if (firstArgument == "_") {
 				return getStmtsMap(declarations, patternSynonym);
 			}
-			else if (isQuoted(leftArgument)) {
+			else if (isQuoted(firstArgument)) {
 				return ContainerUtil::to_mapvec(patternSynonym,
-					PKB().findPattern(trimFrontEnd(leftArgument), "", false));
+					PKB().findPattern(trimFrontEnd(firstArgument), "", false));
 			}
-			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, 
+			return ContainerUtil::to_mapvec(patternSynonym, firstArgument, 
 				PKB().findPatternPairs("", false));
 		}
-		else if (isQuoted(rightArgument)) {
-			rightArgument = trimFrontEnd(rightArgument);
-			rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
-			if (leftArgument == "_") {
-				return ContainerUtil::to_mapvec(patternSynonym, 
-					PKB().findPattern(rightArgument, true));
-			}
-			else if (isQuoted(leftArgument)) {
+		else if (isQuoted(secondArgument)) {
+			secondArgument = trimFrontEnd(secondArgument);
+			secondArgument = ExpressionUtil::convertInfixToPrefix(secondArgument);
+			if (firstArgument == "_") {
 				return ContainerUtil::to_mapvec(patternSynonym,
-					PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, true));
+					PKB().findPattern(secondArgument, true));
 			}
-			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, 
-				PKB().findPatternPairs(rightArgument, true));
+			else if (isQuoted(firstArgument)) {
+				return ContainerUtil::to_mapvec(patternSynonym,
+					PKB().findPattern(trimFrontEnd(firstArgument), secondArgument, true));
+			}
+			return ContainerUtil::to_mapvec(patternSynonym, firstArgument,
+				PKB().findPatternPairs(secondArgument, true));
 		}
 		else {
-			rightArgument = trimFrontEnd(trimFrontEnd(rightArgument));
-			rightArgument = ExpressionUtil::convertInfixToPrefix(rightArgument);
-			if (leftArgument == "_") {
+			secondArgument = trimFrontEnd(trimFrontEnd(secondArgument));
+			secondArgument = ExpressionUtil::convertInfixToPrefix(secondArgument);
+			if (firstArgument == "_") {
 				return ContainerUtil::to_mapvec(patternSynonym, 
-					PKB().findPattern(rightArgument, false));
+					PKB().findPattern(firstArgument, false));
 			}
-			else if (isQuoted(leftArgument)) {
+			else if (isQuoted(firstArgument)) {
 				return ContainerUtil::to_mapvec(patternSynonym,
-					PKB().findPattern(trimFrontEnd(leftArgument), rightArgument, false));
+					PKB().findPattern(trimFrontEnd(firstArgument), secondArgument, false));
 			}
-			return ContainerUtil::to_mapvec(patternSynonym, leftArgument, 
-				PKB().findPatternPairs(rightArgument, false));
+			return ContainerUtil::to_mapvec(patternSynonym, firstArgument, 
+				PKB().findPatternPairs(secondArgument, false));
 		}
 	}
 	if (patternType == "if") {
-		if (leftArgument == "_") {
+		if (firstArgument == "_") {
 			return ContainerUtil::to_mapvec(patternSynonym, PKB().getAllIfWithControls());
 		}
-		else if (isQuoted(leftArgument)) {
+		else if (isQuoted(firstArgument)) {
 			return ContainerUtil::to_mapvec(patternSynonym, PKB().getIfStmWithControlVariable(
-				trimFrontEnd(leftArgument)));
+				trimFrontEnd(firstArgument)));
 		}
 		else {
-			return ContainerUtil::to_mapvec(patternSynonym, leftArgument,
+			return ContainerUtil::to_mapvec(patternSynonym, firstArgument,
 				PKB().getIfStmControlVariablePair());
 		}
 	}
 	if (patternType == "while") {
-		if (leftArgument == "_") {
+		if (firstArgument == "_") {
 			return ContainerUtil::to_mapvec(patternSynonym, PKB().getAllWhileWithControls());
 		}
-		else if (isQuoted(leftArgument)) {
+		else if (isQuoted(firstArgument)) {
 			return ContainerUtil::to_mapvec(patternSynonym, PKB().getWhileStmWithControlVariable(
-				trimFrontEnd(leftArgument)));
+				trimFrontEnd(firstArgument)));
 		}
 		else {
-			return ContainerUtil::to_mapvec(patternSynonym, leftArgument,
+			return ContainerUtil::to_mapvec(patternSynonym, firstArgument,
 				PKB().getWhileStmControlVariablePair());
 		}
 	}
@@ -450,7 +408,7 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			};
 		}
 		else if (firstArgument == secondArgument) {
-			return "false";
+			return "FALSE";
 		}
 	}
 	else if (relation == "Follows*") {
@@ -474,7 +432,7 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			}
 		}
 		else if (firstArgument == secondArgument) {
-			return "false";
+			return "FALSE";
 		}
 	}
 	else if (relation == "Parent") {
@@ -498,7 +456,7 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			}
 		}
 		else if (firstArgument == secondArgument) {
-			return "false";
+			return "FALSE";
 		}
 	}
 	else if (relation == "Parent*") {
@@ -522,7 +480,7 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			}
 		}
 		else if (firstArgument == secondArgument) {
-			return "false";
+			return "FALSE";
 		}
 	}
 	else if (relation == "Uses") {
@@ -589,7 +547,7 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			}
 		}
 		else if (firstArgument == secondArgument) {
-			return "false";
+			return "FALSE";
 		}
 	}
 	else if (relation == "Calls*") {
@@ -612,7 +570,7 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			}
 		}
 		else if (firstArgument == secondArgument) {
-			return "false";
+			return "FALSE";
 		}
 	}
 	if (relation == "Next") {
@@ -636,7 +594,7 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			};
 		}
 		else if (firstArgument == secondArgument) {
-			return "false";
+			return "FALSE";
 		}
 	}
 	if (relation == "Next*") {
@@ -658,6 +616,9 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 				result = PKB().hasNextStarPair(stoi(firstArgument), stoi(secondArgument)) == 1;
 				return truthValue(result);
 			};
+		}
+		else if (firstArgument == secondArgument) {
+			return "FALSE";
 		}
 	}
 	if (relation == "Affects") {
@@ -696,7 +657,7 @@ std::string QueryEvaluator::isSuchThatTrivial(std::string relation, std::string 
 			}
 		}
 	}
-	return "not trivial";
+	return "NON TRIVIAL";
 }
 
 /*
@@ -1271,10 +1232,10 @@ into a string.
 */
 std::string QueryEvaluator::truthValue(bool boolean) {
 	if (boolean) {
-		return "true";
+		return "TRUE";
 	}
 
-	return "false";
+	return "FALSE";
 }
 
 /*

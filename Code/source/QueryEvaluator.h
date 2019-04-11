@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "Optimizer.h"
 #include "PKB.h"
 
 class QueryEvaluator
@@ -22,15 +23,16 @@ private:
 		std::unordered_map<std::string, std::string> declarations,
 		std::vector<std::string> selectedVar,
 		std::unordered_map<std::string, std::vector<std::string>> projectTable);
-	static std::unordered_map<std::string, std::vector<std::string>> getProjectTable(
+
+	static std::unordered_map<std::string, std::vector<std::string>> getGroupProjectTable(
 		std::unordered_map<std::string, std::string> declarations,
 		std::vector<std::string> selectedVar,
-		std::unordered_map<std::string, std::vector<std::string>> resultTable);
-	static std::pair<std::string, std::unordered_map<std::string, std::vector<std::string>>> evaluateTable(
+		std::unordered_map<std::string, std::vector<std::string>> groupTable);
+
+	static std::unordered_map<std::string, std::vector<std::string>> evaluateGroup(
 		std::unordered_map<std::string, std::string> declarations,
-		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> suchThatCondition,
-		std::vector<std::pair<std::string, std::pair<std::string, std::string>>> patternCondition,
-		std::vector<std::pair<std::string, std::string>> withCondition);
+		std::vector<std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>>>
+			clauseGroup);
 
 	static std::string isWithTrivial(std::string left, std::string right);
 
@@ -40,11 +42,11 @@ private:
 
 	static std::unordered_map<std::string, std::vector<std::string>>
 		evaluateWithCondition(std::unordered_map<std::string,std::string> declarations,
-							  std::string left, std::string right);
+			std::string firstArgument, std::string secondArgument);
 
 	static std::unordered_map<std::string, std::vector<std::string>>
 		evaluatePatternCondition(std::unordered_map<std::string, std::string> declarations,
-								 std::pair<std::string, std::pair<std::string, std::string>> pattern);
+			std::string patternSynonym, std::string firstArgument, std::string secondArgument);
 
 	static std::string isSuchThatTrivial(std::string relation, std::string firstArgument,
 										 std::string secondArgument);
