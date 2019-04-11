@@ -94,6 +94,10 @@ std::string QueryValidator::validateSelectedVar(std::vector<std::string> selecte
 	std::unordered_set<std::string> stringTypeRefProcName = { "procedure", "call" };
 	std::unordered_set<std::string> stringTypeRefVarName = { "variable", "read", "print" };
 
+	if (selectedVar.size() == 0) {
+		return "invalid queries";
+	}
+
 	for (int i = 0; i < selectedVar.size(); i++) {
 		
 		// select type: BOOLEAN
@@ -176,6 +180,10 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 		std::string secondArgsType;
 
 		// Initial Validation
+		if ((relation == "") || (firstArgs == "") || (secondArgs == "")) {
+			return "invalid query";
+		}
+
 		if (validRelation.find(relation) == validRelation.end()) {
 			return "invalid query";
 		}
