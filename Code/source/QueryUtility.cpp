@@ -53,6 +53,18 @@ bool QueryUtility::hasReference(std::string s) {
 }
 
 /*
+Checks if string s, which is an integer
+is not in the range of integers of source
+statements
+*/
+bool QueryUtility::isOutOfRange(std::string s) {
+	bool result = LexicalToken::verifyInteger(s)
+		&& ((s.compare("1") < 0)
+		|| (s.compare(std::to_string(PKB().getTotalStmNo())) > 0));
+	return result;
+}
+
+/*
 Get attribute of an
 attribute reference.
 */

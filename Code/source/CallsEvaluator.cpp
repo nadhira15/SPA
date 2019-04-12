@@ -9,23 +9,22 @@ std::string CallsEvaluator::isTrivial(std::string firstArgument, std::string sec
 	bool result;
 	if (firstArgument == "_") {
 		if (secondArgument == "_") {
-			return QueryUtility::truthValue(PKB().hasCallRelation());
+			result = PKB().hasCallRelation();
 		}
 		else if (QueryUtility::isQuoted(secondArgument)) {
-			return QueryUtility::truthValue(PKB().isCallee(QueryUtility::trimFrontEnd(secondArgument)));
+			result = PKB().isCallee(QueryUtility::trimFrontEnd(secondArgument));
 		}
 	}
 	else if (QueryUtility::isQuoted(firstArgument)) {
 		if (secondArgument == "_") {
-			return QueryUtility::truthValue(PKB().isCaller(QueryUtility::trimFrontEnd(firstArgument)));
+			result = PKB().isCaller(QueryUtility::trimFrontEnd(firstArgument));
 		}
 		else if (QueryUtility::isQuoted(secondArgument)) {
 			result = PKB().getCallee(QueryUtility::trimFrontEnd(firstArgument)).count(
 				QueryUtility::trimFrontEnd(secondArgument)) == 1;
-			return QueryUtility::truthValue(result);
 		}
 	}
-	return "NON TRIVIAL";
+	return QueryUtility::truthValue(result);
 }
 
 /*

@@ -3,30 +3,27 @@
 #include "NextStarEvaluator.h"	
 
 /*
-Checks if NextStar clause is trivial
+Evaluate trivial NextStar clause 
 */
 std::string NextStarEvaluator::isTrivial(std::string firstArgument, std::string secondArgument) {
 	bool result;
 	if (firstArgument == "_") {
 		if (secondArgument == "_") {
-			return QueryUtility::truthValue(PKB().hasNextRelation());
+			result = PKB().hasNextRelation();
 		}
 		else if (QueryUtility::isInteger(secondArgument)) {
 			result = PKB().getPrev(stoi(secondArgument)).size() > 0;
-			return QueryUtility::truthValue(result);
 		}
 	}
 	else if (QueryUtility::isInteger(firstArgument)) {
 		if (secondArgument == "_") {
 			result = PKB().getNext(stoi(firstArgument)).size() > 0;
-			return QueryUtility::truthValue(result);
 		}
 		else if (QueryUtility::isInteger(secondArgument)) {
 			result = PKB().hasNextStarPair(stoi(firstArgument), stoi(secondArgument)) == 1;
-			return QueryUtility::truthValue(result);
 		};
 	}
-	return "NON TRIVIAL";
+	return QueryUtility::truthValue(result);
 }
 
 /*

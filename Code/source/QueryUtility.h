@@ -23,6 +23,8 @@ namespace QueryUtility
 
 	bool hasReference(std::string s);
 
+	bool isOutOfRange(std::string s);
+
 	std::string attrOf(std::string s);
 
 	std::string refOf(std::string s);
