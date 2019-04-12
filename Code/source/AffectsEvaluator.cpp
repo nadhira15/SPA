@@ -43,8 +43,8 @@ std::unordered_map<std::string, std::vector<std::string>> AffectsEvaluator::eval
 				stoi(secondArgument)));
 		}
 		else if (firstArgument == secondArgument) {
-			tableResult = QueryUtility::to_mapvec(firstArgument, "twin",
-				PKB().getAffectPairs());
+			tableResult = QueryUtility::to_mapvec(firstArgument, QueryUtility::getTwin(
+				PKB().getAffectPairs()));
 		}
 		else {
 			tableResult = QueryUtility::to_mapvec(firstArgument, secondArgument,
