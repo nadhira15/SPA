@@ -3,32 +3,28 @@
 #include "ModifiesEvaluator.h"	
 
 /*
-Checks if Modifies clause is trivial
+Evaluate trivial Modifies clause
 */
 std::string ModifiesEvaluator::isTrivial(std::string firstArgument, std::string secondArgument) {
 	bool result;
 	if (QueryUtility::isInteger(firstArgument)) {
 		if (QueryUtility::isQuoted(secondArgument)) {
 			result = PKB().isStmModifying(stoi(firstArgument), QueryUtility::trimFrontEnd(secondArgument));
-			return QueryUtility::truthValue(result);
 		}
 		else if (secondArgument == "_") {
 			result = PKB().getVarModifiedByStm(stoi(firstArgument)).size() > 0;
-			return QueryUtility::truthValue(result);
 		}
 	}
 	else if (QueryUtility::isQuoted(firstArgument)) {
 		if (QueryUtility::isQuoted(secondArgument)) {
 			result = PKB().isProcModifying(QueryUtility::trimFrontEnd(firstArgument),
 				QueryUtility::trimFrontEnd(secondArgument));
-			return QueryUtility::truthValue(result);
 		}
 		else if (secondArgument == "_") {
 			result = PKB().getVarModifiedByProc(QueryUtility::trimFrontEnd(firstArgument)).size() > 0;
-			return QueryUtility::truthValue(result);
 		}
 	}
-	return "NON TRIVIAL";
+	return QueryUtility::truthValue(result);
 }
 
 /*

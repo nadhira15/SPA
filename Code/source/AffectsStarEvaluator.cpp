@@ -6,23 +6,24 @@
 Checks if AffectsStar clause is trivial
 */
 std::string AffectsStarEvaluator::isTrivial(std::string firstArgument, std::string secondArgument) {
+	bool result;
 	if (firstArgument == "_") {
 		if (secondArgument == "_") {
-			return QueryUtility::truthValue(PKB().hasAffectsRelation());
+			result = PKB().hasAffectsRelation();
 		}
 		else if (QueryUtility::isInteger(secondArgument)) {
-			return QueryUtility::truthValue(PKB().isAffected(stoi(secondArgument)));
+			result = PKB().isAffected(stoi(secondArgument));
 		}
 	}
 	else if (QueryUtility::isInteger(firstArgument)) {
 		if (secondArgument == "_") {
-			return QueryUtility::truthValue(PKB().isAffector(stoi(firstArgument)));
+			result = PKB().isAffector(stoi(firstArgument));
 		}
 		else if (QueryUtility::isInteger(secondArgument)) {
-			return QueryUtility::truthValue(PKB().hasAffectStarPair(stoi(firstArgument), stoi(secondArgument)));
+			result = PKB().hasAffectStarPair(stoi(firstArgument), stoi(secondArgument));
 		}
 	}
-	return "NON TRIVIAL";
+	return QueryUtility::truthValue(result);
 }
 
 /*

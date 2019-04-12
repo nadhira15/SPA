@@ -10,6 +10,69 @@ namespace UnitTesting
 	{
 	public:
 
+		TEST_METHOD(truthValue_success)
+		{
+			std::string result = QueryUtility::truthValue(true);
+			std::string expected = "TRUE";
+			Assert::AreEqual(result == expected, true);
+		}
+
+		TEST_METHOD(trimFrontEnd_success)
+		{
+			std::string result = QueryUtility::trimFrontEnd("\"baby\"");
+			std::string expected = "baby";
+			Assert::AreEqual(result == expected, true);
+		}
+
+		TEST_METHOD(isInteger_success)
+		{
+			bool result = QueryUtility::isInteger("123456789");
+			Assert::AreEqual(result, true);
+		}
+
+		TEST_METHOD(isQuoted_success)
+		{
+			bool result = QueryUtility::isQuoted("\"baby\"");
+			Assert::AreEqual(result, true);
+		}
+
+		TEST_METHOD(hasReference_success)
+		{
+			bool result = QueryUtility::hasReference("baby.shark");
+			Assert::AreEqual(result, true);
+		}
+
+		TEST_METHOD(attrOf_success)
+		{
+			std::string result = QueryUtility::attrOf("baby.shark");
+			std::string expected = "baby";
+			Assert::AreEqual(result == expected, true);
+		}
+
+		TEST_METHOD(refOf_success)
+		{
+			std::string result = QueryUtility::refOf("baby.shark");
+			std::string expected = "shark";
+			Assert::AreEqual(result == expected, true);
+		}
+
+		TEST_METHOD(intSetToStrSet_success)
+		{
+			std::unordered_set<int> intSet ({ 1, 2, 3 });
+			std::unordered_set<std::string> result = QueryUtility::intSetToStrSet(intSet);
+			std::unordered_set<std::string> expected ({ "1", "2", "3" });
+			Assert::AreEqual(result == expected, true);
+		}
+
+		TEST_METHOD(getTwin_success)
+		{
+			std::unordered_set<std::pair<int, int>, intPairhash> intPairSet(
+				{ {1, 2}, {3, 3}, {4, 5}, {6, 6} });
+			std::unordered_set<int> result = QueryUtility::getTwin(intPairSet);
+			std::unordered_set<int> expected({ 3, 6 });
+			Assert::AreEqual(result == expected, true);
+		}
+
 		TEST_METHOD(intVecToMapVec_empty_success)
 		{
 			std::vector<int> emptyIntVec;
@@ -23,6 +86,7 @@ namespace UnitTesting
 
 			Assert::AreEqual(result == toCompare, true);
 		}
+
 		TEST_METHOD(intVecToMapVec_nonEmpty_success)
 		{
 			std::vector<int> nonEmptyIntVec { 1, 2, 3 };
