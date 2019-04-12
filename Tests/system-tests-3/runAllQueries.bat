@@ -9,6 +9,8 @@ title system test 3 queries
 ..\..\Code\Debug\AutoTester sourceAlphanumeric.txt Next.txt out-Next.xml
 ..\..\Code\Debug\AutoTester sourceAlphanumeric.txt NextStar.txt out-NextStar.xml
 
+..\..\Code\Debug\AutoTester sourceAlphanumeric.txt NoCondition.txt out-NoCondition.xml
+
 echo FINISHED
 pause
 exit
