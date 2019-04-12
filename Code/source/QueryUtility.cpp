@@ -59,8 +59,8 @@ statements
 */
 bool QueryUtility::isOutOfRange(std::string s) {
 	bool result = LexicalToken::verifyInteger(s)
-		&& (s.compare("1") < 0)
-		&& (s.compare(std::to_string(PKB().getTotalStmNo())) > 0);
+		&& ((s.compare("1") < 0)
+		|| (s.compare(std::to_string(PKB().getTotalStmNo())) > 0));
 	return result;
 }
 
