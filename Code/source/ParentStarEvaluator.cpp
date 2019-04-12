@@ -3,30 +3,27 @@
 #include "ParentStarEvaluator.h"	
 
 /*
-Checks if ParentStar clause is trivial
+Evaluate trivial ParentStar clause
 */
 std::string ParentStarEvaluator::isTrivial(std::string firstArgument, std::string secondArgument) {
 	bool result;
 	if (firstArgument == "_") {
 		if (secondArgument == "_") {
-			return QueryUtility::truthValue(PKB().hasParentRelation());
+			result = PKB().hasParentRelation();
 		}
 		else if (QueryUtility::isInteger(secondArgument)) {
 			result = PKB().isChild(stoi(secondArgument)) > 0;
-			return QueryUtility::truthValue(result);
 		}
 	}
 	else if (QueryUtility::isInteger(firstArgument)) {
 		if (secondArgument == "_") {
 			result = PKB().isParent(stoi(firstArgument)) > 0;
-			return QueryUtility::truthValue(result);
 		}
 		else if (QueryUtility::isInteger(secondArgument)) {
 			result = PKB().hasAncDescPair(stoi(firstArgument), stoi(secondArgument));
-			return QueryUtility::truthValue(result);
 		}
 	}
-	return "NON TRIVIAL";
+	return QueryUtility::truthValue(result);
 }
 
 /*

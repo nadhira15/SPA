@@ -3,32 +3,28 @@
 #include "UsesEvaluator.h"	
 
 /*
-Checks if Uses clause is trivial
+Evaluate trivial Uses clause 
 */
 std::string UsesEvaluator::isTrivial(std::string firstArgument, std::string secondArgument) {
 	bool result;
 	if (QueryUtility::isInteger(firstArgument)) {
 		if (QueryUtility::isQuoted(secondArgument)) {
 			result = PKB().isStmUsing(stoi(firstArgument), QueryUtility::trimFrontEnd(secondArgument));
-			return QueryUtility::truthValue(result);
 		}
 		else if (secondArgument == "_") {
 			result = PKB().getVarUsedByStm(stoi(firstArgument)).size() > 0;
-			return QueryUtility::truthValue(result);
 		}
 	}
 	else if (QueryUtility::isQuoted(firstArgument)) {
 		if (QueryUtility::isQuoted(secondArgument)) {
 			result = PKB().isProcUsing(QueryUtility::trimFrontEnd(firstArgument), 
 				QueryUtility::trimFrontEnd(secondArgument));
-			return QueryUtility::truthValue(result);
 		}
 		else if (secondArgument == "_") {
 			result = PKB().getVarUsedByProc(QueryUtility::trimFrontEnd(firstArgument)).size() > 0;
-			return QueryUtility::truthValue(result);
 		}
 	}
-	return "NON TRIVIAL";
+	return QueryUtility::truthValue(result);
 }
 
 /*
