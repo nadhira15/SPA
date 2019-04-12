@@ -20,7 +20,7 @@ std::string AffectsEvaluator::isTrivial(std::string firstArgument, std::string s
 			result = PKB().isAffector(stoi(firstArgument));
 		}
 		else if (QueryUtility::isInteger(secondArgument)) {
-			result = PKB().hasAffectStarPair(stoi(firstArgument), stoi(secondArgument));
+			result = PKB().hasAffectPair(stoi(firstArgument), stoi(secondArgument));
 		}
 	}
 	return QueryUtility::truthValue(result);
