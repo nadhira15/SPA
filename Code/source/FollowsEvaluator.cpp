@@ -3,30 +3,27 @@
 #include "FollowsEvaluator.h"	
 
 /*
-Checks if Follows clause is trivial 
+Evaluate trivial Follows clause.
 */
 std::string FollowsEvaluator::isTrivial(std::string firstArgument, std::string secondArgument) {
 	bool result;
 	if (firstArgument == "_") {
 		if (secondArgument == "_") {
-			return QueryUtility::truthValue(PKB().hasFollowRelation());
+			result = PKB().hasFollowRelation();
 		}
 		else if (QueryUtility::isInteger(secondArgument)) {
 			result = PKB().getStmFollowedBy(stoi(secondArgument)) > 0;
-			return QueryUtility::truthValue(result);
 		}
 	}
 	else if (QueryUtility::isInteger(firstArgument)) {
 		if (secondArgument == "_") {
 			result = PKB().getFollower(stoi(firstArgument)) > 0;
-			return QueryUtility::truthValue(result);
 		}
 		else if (QueryUtility::isInteger(secondArgument)) {
 			result = PKB().getFollower(stoi(firstArgument)) == stoi(secondArgument);
-			return QueryUtility::truthValue(result);
 		};
 	}
-	return "NON TRIVIAL";
+	return QueryUtility::truthValue(result);
 }
 
 /* 
