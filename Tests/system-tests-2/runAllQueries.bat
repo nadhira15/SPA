@@ -2,6 +2,7 @@
 title system test 2 queries
 
 ..\..\Code\Debug\AutoTester source-nesting.txt Affects.txt out-Affects.xml
+..\..\Code\Debug\AutoTester source-nesting.txt AffectsStar.txt out-AffectsStar.xml
 
 ..\..\Code\Debug\AutoTester source-nesting.txt Calls.txt out-Calls.xml
 ..\..\Code\Debug\AutoTester source-nesting.txt CallsStar.txt out-CallsStar.xml
