@@ -34,6 +34,7 @@ void Optimizer::groupClause() {
 		nonsynonym.push_back(getClause(cl.second));
 		pq.pop();
 	}
+	processSelect();
 	bool isTrivial;
 	//while loop to chain clauses (Dijkstra)
 	while (!clSet.empty()) {
@@ -46,6 +47,18 @@ void Optimizer::groupClause() {
 			nontrivial.push_back(graph);
 		}
 		graph.clear();
+	}
+}
+
+/* Preprocesses select clause for O(1) time for comparison */
+void Optimizer::processSelect() {
+	for (std::vector<std::string>::iterator it = selectClause.begin(); it != selectClause.end(); ++it) {
+		if ((*it).find(".") != std::string::npos) { //is attribute
+			selectSet.insert((*it).substr(0, (*it).find(".")));
+		} else {
+			selectSet.insert(*it);
+		}
+
 	}
 }
 
@@ -141,8 +154,8 @@ bool Optimizer::mapClauses(std::pair<int,int> cl, bool isTrivial) {
 */
 bool Optimizer::mapSynonym(std::string syn, bool isTrivial) {
 	//check if syn is part of select if group is trivial
-	if (isTrivial && (std::find(selectClause.begin(), selectClause.end(), syn) != selectClause.end())) {
-		isTrivial = false;
+	if (isTrivial) {
+		isTrivial = selectSet.find(syn) == selectSet.end();
 	}
 	synSet.erase(syn); //synonym removed from bookkeeping sets
 	while (!synMap[syn].empty()) {
