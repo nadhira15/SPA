@@ -35,10 +35,10 @@ void Optimizer::groupClause() {
 		pq.pop();
 	}
 	bool isTrivial;
-	//while loop to chain clauses (DFS)
+	//while loop to chain clauses (Dijkstra)
 	while (!clSet.empty()) {
-		//function for the more efficient clause? get from PKB statistics or use pq
-		pq.push(*clSet.begin()); //rn use the first in set
+		pq.push(*clSet.begin()); //use the first in set (ordered by priority)
+		clSet.erase(clSet.begin()); //clause removed from bookkeeping sets
 		isTrivial = mapGraph();
 		if (isTrivial) {
 			trivial.push_back(graph);
@@ -90,9 +90,9 @@ void Optimizer::createMaps(std::vector<std::string> synLst, std::pair<int, int> 
 
 /*
 * Chains synonyms and clauses together
-* Input: clause, isTrivial
+* Input: NIL
 * Output: isTrivial
-* Bookeeping: as this is DFS, a synSet and clSet is used for bookkeeping
+* Bookeeping: as this is Dijkstra, a synSet and clSet is used for bookkeeping
   i.e. once a clause/synonym is accessed, no other synonym/clause can access it
   As the for loop is implemented, the algorithm is guaranteed to access all synonyms of the clause and vice versa
 * Note: The actual clause, rather than the internal reference, is added to the results graph
@@ -101,7 +101,6 @@ bool Optimizer::mapGraph() {
 	std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>> clause;
 	bool isTrivial = true;
 	std::pair<int, int> cl;
-	clSet.erase(pq.top()); //clause removed from bookkeeping sets
 	while (!pq.empty()) {
 		cl = pq.top();
 		clause = getClause(cl.second);
@@ -112,6 +111,15 @@ bool Optimizer::mapGraph() {
 	return isTrivial;
 }
 
+/*
+* Chains synonyms and clauses together
+* Input: clause, isTrivial
+* Output: isTrivial
+* Bookeeping: as this is Dijkstra, a synSet and clSet is used for bookkeeping
+  i.e. once a clause/synonym is accessed, no other synonym/clause can access it
+  As the for loop is implemented, the algorithm is guaranteed to access all synonyms of the clause and vice versa
+* Note: function meant to loop through synonyms of clause to find connected clauses
+*/
 bool Optimizer::mapClauses(std::pair<int,int> cl, bool isTrivial) {
 	for (std::vector<std::string>::iterator it = clMap[cl.second].begin(); it != clMap[cl.second].end(); ++it) {
 		if (synSet.find(*it) != synSet.end()) { //check if synonym is already (partially) processed
@@ -125,10 +133,11 @@ bool Optimizer::mapClauses(std::pair<int,int> cl, bool isTrivial) {
 * Chains synonyms and clauses together
 * Input: synonym, isTrivial
 * Output: isTrivial
-* Bookeeping: as this is DFS, a synSet and clSet is used for bookkeeping
+* Bookeeping: as this is Dijkstra, a synSet and clSet is used for bookkeeping
   i.e. once a clause/synonym is accessed, no other synonym/clause can access it
   As the for loop is implemented, the algorithm is guaranteed to access all synonyms of the clause and vice versa
 * Note: Group is assumed to be trivial until a select synonym matches
+  function meant to loop through clauses of the particular synonym to get connected clauses
 */
 bool Optimizer::mapSynonym(std::string syn, bool isTrivial) {
 	//check if syn is part of select if group is trivial
@@ -243,7 +252,7 @@ std::pair<int, std::vector<std::string>> Optimizer::extractWithSyn(int index) {
 bool Optimizer::isProg_line(std::string str) {
 	bool res = false;
 	if (declarations.find(str) != declarations.end()) {
-		res = declarations[str] == "prog_line";
+		res = declarations[str].compare("prog_line") == 0;
 	}
 	return res;
 }
