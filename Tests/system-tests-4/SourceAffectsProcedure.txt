@@ -10,14 +10,13 @@ procedure a{
 		call d;			
 		c = b;			
 	} else {
-		b = c;		
-		read c;		
-		print b;	
+		b = c;
+		read c;
+		print b;
 	}
 }
-
 procedure b{
-	read b;			
+	read b;	
 	while (b <1) {	
 		print c;	
 		c = c + 1;	
@@ -25,7 +24,6 @@ procedure b{
 		b = a + c;	
 	}
 }
-
 procedure c{
 	c = c - 1;		
 	b = c + d;		
@@ -34,15 +32,14 @@ procedure c{
 	c = c;			
 	read d;			
 }
-
 procedure d{
 	if (a == c) then {
 		b = b + 1;	
 		d = d + b;	
 		print c;	
 	} else {
-		read c;		
+		read c;	
 		d = b + 1;	
 	}
-	print c;		
+	print c;
 }

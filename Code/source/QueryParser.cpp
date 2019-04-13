@@ -66,9 +66,9 @@ std::list<std::string> QueryParser::parse(std::string query) {
 	std::vector<std::string> suchThatClauses;
 	std::vector<std::string> patternClauses;
 	std::vector<std::string> withClauses;
-	int suchThatIndex = selectStatement.find("such that");
-	int patternIndex = selectStatement.find("pattern");
-	int withIndex = selectStatement.find("with");
+	int suchThatIndex = selectStatement.find("such that ");
+	int patternIndex = selectStatement.find("pattern ");
+	int withIndex = selectStatement.find("with ");
 	int andIndex = maxInt;
 	std::string previousClause;
 
@@ -84,27 +84,30 @@ std::list<std::string> QueryParser::parse(std::string query) {
 	}
 
 	while (selectStatement.length() > 0 && nextIndex != -1) {
-		suchThatIndex = selectStatement.substr(1).find("such that");
-		patternIndex = selectStatement.substr(1).find("pattern");
-		withIndex = selectStatement.substr(1).find("with");
-		andIndex = selectStatement.substr(1).find("and");
+		suchThatIndex = selectStatement.substr(1).find(" such that");
+		patternIndex = selectStatement.substr(1).find(" pattern ");
+		withIndex = selectStatement.substr(1).find(" with ");
+		andIndex = selectStatement.substr(1).find(" and ");
 		indexes = { suchThatIndex, patternIndex, withIndex, andIndex };
 		nextIndex = getMinimumValue(indexes) + 1;
 		
 		if (nextIndex == 0) {
 			nextIndex = selectStatement.length();
 		}
+		else {
+			nextIndex = nextIndex - 1;
+		}
 
 		std::string currentClause = selectStatement.substr(0, nextIndex);
-		if (currentClause.find("such that") != -1 || (currentClause.find("and") != -1 && previousClause == "such that")) {
+		if (currentClause.find("such that ") != -1 || (currentClause.find("and ") != -1 && previousClause == "such that")) {
 			previousClause = "such that";
 			suchThatClauses.push_back(currentClause);
 		}
-		else if (currentClause.find("pattern") != -1 || (currentClause.find("and") != -1 && previousClause == "pattern")) {
+		else if (currentClause.find("pattern ") != -1 || (currentClause.find("and ") != -1 && previousClause == "pattern")) {
 			previousClause = "pattern";
 			patternClauses.push_back(currentClause);
 		}
-		else if (currentClause.find("with") != -1 || (currentClause.find("and") != -1 && previousClause == "with")) {
+		else if (currentClause.find("with ") != -1 || (currentClause.find("and ") != -1 && previousClause == "with")) {
 			previousClause = "with";
 			withClauses.push_back(currentClause);
 		}
@@ -331,16 +334,16 @@ std::vector<std::pair<std::string, std::pair<std::string, std::string>>>
 
 		if (patternClause[i].find("pattern") != -1) {
 			varName =
-				StringUtil::removeAllWhitespaces(patternClause[i].substr(7, openBracket - 7));
+				StringUtil::trim(patternClause[i].substr(7, openBracket - 7), whitespace);
 		}
 		else {
 			varName =
-				StringUtil::removeAllWhitespaces(patternClause[i].substr(3, openBracket - 3));
+				StringUtil::trim(patternClause[i].substr(3, openBracket - 3), whitespace);
 		}
 
 		std::string firstPattern =
-			StringUtil::removeAllWhitespaces(patternClause[i].substr(openBracket + 1,
-																	 comma - openBracket - 1));
+			StringUtil::trim(patternClause[i].substr(openBracket + 1,
+																	 comma - openBracket - 1), whitespace);
 		std::string secondPattern =
 			StringUtil::removeAllWhitespaces(patternClause[i].substr(comma + 1,
 																	 closeBracket - comma - 1));
