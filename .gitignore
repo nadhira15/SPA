@@ -446,3 +446,5 @@ Tests/system-tests-3/out-AffectsStar.xml
 Tests/system-tests-4/out-Affects.xml
 Tests/system-tests-4/out-AffectsStar.xml
 Tests/system-tests-2/out-AffectsStar.xml
+Tests/system-tests-4/out-Uses.xml
+Tests/system-tests-4/out-Modifies.xml
