@@ -49,8 +49,8 @@ Select s such that Follows*(s, 52)
 46, 50, 51
 5000
 11 - select synonym, follows* synonym stmtNum
-stmt s;
-Select s such that Follows*(ifs, 45)
+if ifs;
+Select ifs such that Follows*(ifs, 45)
 32
 5000
 12 - select synonym, follows* synonym stmtNum
