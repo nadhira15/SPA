@@ -24,7 +24,7 @@ std::string SuchThatEvaluator::isTrivial(std::string relation, std::string first
 		return UsesEvaluator::isTrivial(firstArgument, secondArgument);
 	}
 	else if (relation == "Modifies") {
-		return UsesEvaluator::isTrivial(firstArgument, secondArgument);
+		return ModifiesEvaluator::isTrivial(firstArgument, secondArgument);
 	}
 	else if (relation == "Calls") {
 		return CallsEvaluator::isTrivial(firstArgument, secondArgument);
