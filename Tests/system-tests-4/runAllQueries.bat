@@ -1,8 +1,9 @@
 @echo off
-title system test 3 queries
+title system test 4 queries
 
-..\..\Code\Debug\AutoTester SourceAffectsProcedure.txt Affects.txt out-Affects.xml
-..\..\Code\Debug\AutoTester SourceAffectsProcedure.txt AffectsStar.txt out-AffectsStar.xml
+..\..\Code\Release\AutoTester SourceAffectsProcedure.txt Affects.txt out-Affects.xml
+..\..\Code\Release\AutoTester SourceAffectsProcedure.txt AffectsStar.txt out-AffectsStar.xml
+
 
 echo FINISHED
 pause

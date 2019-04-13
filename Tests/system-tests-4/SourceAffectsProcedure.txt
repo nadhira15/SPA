@@ -5,9 +5,10 @@ procedure a{
 		call c;
 		a = a;
 	}
-	if ( b < c) {
+	if ( b < c) then {
 		b = b;
 		call d;
+	} else {
 		c = b;
 	}
 }
@@ -32,7 +33,7 @@ procedure c{
 }
 
 procedure d{
-	if (a == c) {
+	if (a == c) then {
 		b = b + 1;
 		d = d + b;
 		print c;
