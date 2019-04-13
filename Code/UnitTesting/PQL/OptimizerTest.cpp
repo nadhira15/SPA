@@ -192,7 +192,7 @@ namespace UnitTesting
 			p.push_back(clause1);
 			st.push_back(clause2); st.push_back(clause3); st.push_back(clause4); st.push_back(clause8);
 			w.push_back(clause5); w.push_back(clause6); w.push_back(clause7);
-			s.push_back("a");
+			s.push_back("a.stmt#");
 			d["w"] = "while"; d["v"] = "variable"; d["ifs"] = "if"; d["s"] = "stmt";
 			Optimizer op = Optimizer(st, w, p, s, d);
 			op.groupClause();
