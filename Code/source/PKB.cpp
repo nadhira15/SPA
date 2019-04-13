@@ -877,8 +877,6 @@ void PKB::clear()
 	whileBlockStmLists.clear();
 	ifBlockStmLists.clear();
 	elseBlockStmLists.clear();
-	affectPairCache.clear();
-	affectStarPairCache.clear();
 	fStore.clear();
 	pStore.clear();
 	uStore.clear();
