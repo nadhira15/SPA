@@ -46,7 +46,7 @@ namespace IntegrationTesting
 
 		TEST_METHOD(parserPopulatePKBNextRelationTest) {
 			PKB pkb = PKB();
-			pkb.erase();
+			pkb.clear();
 			Parser parser = Parser();
 			DesignExtractor de = DesignExtractor();
 			std::vector<Statement>simple;

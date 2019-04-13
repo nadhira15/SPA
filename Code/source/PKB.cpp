@@ -862,6 +862,7 @@ void PKB::clear()
 {
 	procList.clear();
 	procStmMap.clear();
+	stmProcList.clear();
 	stmTypeList.clear();
 	varList.clear();
 	constList.clear();
