@@ -95,7 +95,7 @@ std::list<std::string> QueryParser::parse(std::string query) {
 			nextIndex = selectStatement.length();
 		}
 		else {
-			nextIndex = nextIndex - 1;
+			nextIndex = nextIndex + 1;
 		}
 
 		std::string currentClause = selectStatement.substr(0, nextIndex);
