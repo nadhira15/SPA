@@ -94,6 +94,10 @@ std::string QueryValidator::validateSelectedVar(std::vector<std::string> selecte
 	std::unordered_set<std::string> stringTypeRefProcName = { "procedure", "call" };
 	std::unordered_set<std::string> stringTypeRefVarName = { "variable", "read", "print" };
 
+	if (selectedVar.size() == 0) {
+		return "invalid queries";
+	}
+
 	for (int i = 0; i < selectedVar.size(); i++) {
 		
 		// select type: BOOLEAN
@@ -164,6 +168,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 		"assign", "call", "procedure", "prog_line" };
 	std::unordered_set<std::string> validFirstArgsModifies = { "stmt", "read", "while", "if",
 "assign", "call", "procedure", "prog_line" };
+	std::unordered_set<std::string> validSecondArgsUsesModifies = { "variable" };
 	std::unordered_set<std::string> validArgsCalls = { "procedure" };
 	std::unordered_set<std::string> validArgsAffects = { "stmt", "assign", "prog_line" };
 
@@ -175,6 +180,10 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 		std::string secondArgsType;
 
 		// Initial Validation
+		if ((relation == "") || (firstArgs == "") || (secondArgs == "")) {
+			return "invalid query";
+		}
+
 		if (validRelation.find(relation) == validRelation.end()) {
 			return "invalid query";
 		}
@@ -192,7 +201,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 			
 			// Validating first args
 			if (firstArgs == "_" ||
-				LexicalToken::verifyInteger(firstArgs) ||
+				(LexicalToken::verifyInteger(firstArgs) && (std::stoi(firstArgs) > 0)) ||
 				validFirstArgsParent.find(firstArgsType) != validFirstArgsParent.end()) {
 				// valid first args
 			}
@@ -202,7 +211,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating second args
 			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyInteger(secondArgs) && (std::stoi(secondArgs) > 0)) ||
 				validArgs.find(secondArgsType) != validArgs.end()) {
 				// valid second args
 			}
@@ -214,7 +223,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating first args
 			if (firstArgs == "_" ||
-				LexicalToken::verifyInteger(firstArgs) ||
+				(LexicalToken::verifyInteger(firstArgs) && (std::stoi(firstArgs) > 0)) ||
 				validArgs.find(firstArgsType) != validArgs.end()) {
 				// valid first args
 			}
@@ -224,7 +233,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating second args
 			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyInteger(secondArgs) && (std::stoi(secondArgs) > 0)) ||
 				validArgs.find(secondArgsType) != validArgs.end()) {
 				// valid second args
 			}
@@ -235,7 +244,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 		else if (relation == "Uses") {
 
 			// Validating first args
-			if (LexicalToken::verifyInteger(firstArgs) ||
+			if ((LexicalToken::verifyInteger(firstArgs) && (std::stoi(firstArgs) > 0)) ||
 				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
 				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validFirstArgsUses.find(firstArgsType) != validFirstArgsUses.end()))) {
 				// valid first args
@@ -246,9 +255,9 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating second args
 			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyInteger(secondArgs) && (std::stoi(secondArgs) > 0)) ||
 				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
-				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs))) {
+				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs) && (validSecondArgsUsesModifies.find(secondArgsType) != validSecondArgsUsesModifies.end()))) {
 				// valid second args
 			}
 			else {
@@ -258,7 +267,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 		else if (relation == "Modifies") {
 
 			// Validating first args
-			if (LexicalToken::verifyInteger(firstArgs) ||
+			if ((LexicalToken::verifyInteger(firstArgs) && (std::stoi(firstArgs) > 0)) ||
 				(firstArgs[0] == '"' && LexicalToken::verifyName(firstArgs.substr(1, firstArgs.length() - 2))) ||
 				(firstArgs[0] != '"' && LexicalToken::verifyName(firstArgs) && (validFirstArgsModifies.find(firstArgsType) != validFirstArgsModifies.end()))) {
 				// valid first args
@@ -269,9 +278,9 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating second args
 			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyInteger(secondArgs) && (std::stoi(secondArgs) > 0)) ||
 				(secondArgs[0] == '"' && LexicalToken::verifyName(secondArgs.substr(1, secondArgs.length() - 2))) ||
-				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs))) {
+				(secondArgs[0] != '"' && LexicalToken::verifyName(secondArgs) && (validSecondArgsUsesModifies.find(secondArgsType) != validSecondArgsUsesModifies.end()))) {
 				// valid first args
 			}
 			else {
@@ -304,7 +313,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating first args
 			if (firstArgs == "_" ||
-				LexicalToken::verifyInteger(firstArgs) ||
+				(LexicalToken::verifyInteger(firstArgs) && (std::stoi(firstArgs) > 0)) ||
 				(LexicalToken::verifyName(firstArgs) && (validArgsAffects.find(firstArgsType) != validArgsAffects.end()))) {
 				// valid first args
 			}
@@ -314,7 +323,7 @@ std::string QueryValidator::validateSuchThatParam(std::vector<std::pair<std::str
 
 			// Validating second args
 			if (secondArgs == "_" ||
-				LexicalToken::verifyInteger(secondArgs) ||
+				(LexicalToken::verifyInteger(secondArgs) && (std::stoi(secondArgs) > 0)) ||
 				(LexicalToken::verifyName(secondArgs) && (validArgsAffects.find(secondArgsType) != validArgsAffects.end()))) {
 				// valid second args
 			}
