@@ -16,7 +16,7 @@ none
 4 - select synonym, modifies synonym wildcard
 stmt s;
 Select s such that Modifies(s, _)
-1, 2, 3, 4, 5, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 27, 28, 29, 30, 31, 32, 33, 35, 36, 37, 39, 41, 42, 43, 45, 46, 47, 49, 50, 51, 53, 54, 55
+1, 2, 3, 4, 5, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 27, 29, 30, 31, 32, 33, 35, 36, 37, 39, 41, 42, 43, 45, 46, 47, 49, 50, 51, 53, 54, 55
 5000
 5 - select synonym, modifies synonym wildcard
 variable v; procedure p;
@@ -46,7 +46,7 @@ Select w such that Modifies(w, _)
 10 - select synonym, modifies procedure varName
 procedure p;
 Select p such that Modifies(p, "fru1t5")
-cl455r00m, fru1t5, dr1nk5, on3l1n3
+none
 5000
 11 - select synonym, modifies procedure varName
 procedure p;
@@ -86,7 +86,7 @@ Select c such that Modifies(c, "y0ghuRT")
 18 - select synonym, modifies synonym varName
 stmt s;
 Select s such that Modifies(s, "m4ng0")
-5, 10, 14, 21, 22, 27
+1, 4, 5, 9, 10, 14, 21, 22, 27
 5000
 19 - select synonym, modifies undeclared synonym and varName
 stmt s; 
@@ -190,7 +190,7 @@ Select re such that Modifies(re, v)
 5000
 39 - select synonym, modifies synonym and synonym
 assign a; variable v;
-Select s such that Modifies(a, v)
+Select a such that Modifies(a, v)
 3, 7, 8, 12, 13, 17, 18, 19, 22, 25, 27, 29, 31, 33, 36, 41, 42, 43, 49, 51, 53, 55
 5000
 40 - select synonym, modifies synonym and undeclared synonym

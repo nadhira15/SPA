@@ -90,7 +90,7 @@ Select s such that Parent(s, 19)
 5000
 19 - select synonym, parent synonym stmtNum
 while w; 
-Select s such that Parent(w, 49)
+Select w such that Parent(w, 49)
 46
 5000
 20 - select synonym, parent synonym stmtNum
@@ -131,7 +131,7 @@ Select cons such that Parent(45, 50)
 27 - select synonym, parent stmtNum stmtNum
 if ifs;
 Select ifs such that Parent(1, 4)
-4, 21, 32
+4, 9, 21, 32
 5000
 28 - select synonym, parent stmtNum and stmtNum
 stmt s;
@@ -150,7 +150,7 @@ none
 5000
 31 - select synonym, parent synonym synonym
 read re; if ifs;
-Select ifs such that Parent(ifs, re)
+Select re such that Parent(ifs, re)
 39
 5000
 32 - select synonym, parent synonym synonym

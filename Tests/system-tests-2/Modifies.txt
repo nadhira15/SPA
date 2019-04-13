@@ -191,7 +191,7 @@ Select re such that Modifies(re, v)
 39 - select synonym, modifies synonym and synonym
 assign a; variable v;
 Select a such that Modifies(a, v)
-2, 16, 27, 34, 38, 42, 54, 59, 64, 70, 74, 83, 85, 86
+3, 16, 22, 27, 34, 38, 42, 54, 59, 64, 70, 74, 83, 85, 86
 5000
 40 - select synonym, modifies synonym and undeclared synonym
 stmt s;
