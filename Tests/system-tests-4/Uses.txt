@@ -129,8 +129,8 @@ Select v such that Uses(18, v)
 a, c
 5000
 28 - select synonym, uses stmtNum and undeclared synonym
-stmt s;
-Select s such that Uses(27, v)
+variable v;
+Select v such that Uses(27, v)
 d, b
 5000
 29 - select synonym, uses nonexistent stmtNum and undeclared synonym

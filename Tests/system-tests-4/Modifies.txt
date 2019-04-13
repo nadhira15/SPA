@@ -129,8 +129,8 @@ Select v such that Modifies(16, v)
 c
 5000
 28 - select synonym, modifies stmtNum and synonym
-stmt s; variable v;
-Select s such that Modifies(27, v)
+variable v;
+Select v such that Modifies(27, v)
 d
 5000
 29 - select synonym, modifies nonexistent stmtNum and undeclared synonym
