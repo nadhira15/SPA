@@ -36,7 +36,7 @@ namespace UnitTesting
 		TEST_METHOD(getNext_MultipleNext_ReturnSet)
 		{
 			NextStorage store;
-			Assert::IsTrue(store.getNext(5) == next[4]);
+			Assert::IsTrue(store.getNext(5) == nextTable.at(5).next);
 		}
 
 		TEST_METHOD(getNext_NonExistingStm_ReturnEmptySet)
@@ -48,7 +48,7 @@ namespace UnitTesting
 		TEST_METHOD(getPrev_MultiplePrev_ReturnSet)
 		{
 			NextStorage store;
-			Assert::IsTrue(store.getPrev(6) == previous[4]);
+			Assert::IsTrue(store.getPrev(6) == nextTable.at(6).previous);
 		}
 
 		TEST_METHOD(getPrev_NoPrev_ReturnEmptySet)
