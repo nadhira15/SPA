@@ -18,6 +18,7 @@ namespace IntegrationTesting
 		TEST_METHOD(parserPopulatePKBParentRelationTest)
 		{
 			PKB pkb = PKB();
+			pkb.erase();
 			Parser parser = Parser();
 
 			//Line 2 read cat;
