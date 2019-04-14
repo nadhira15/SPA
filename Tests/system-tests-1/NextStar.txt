@@ -145,7 +145,7 @@ none
 5000
 30 - select synonym, next next nonexistent stmtNum and nonexistent stmtNum
 stmt s; 
-Select s such that Next*(123190, 621190301931)
+Select s such that Next*(123190, 621190)
 none
 5000
 31 - select synonym, next synonym synonym
