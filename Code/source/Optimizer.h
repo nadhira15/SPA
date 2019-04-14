@@ -34,6 +34,7 @@ private:
 	std::unordered_map<std::string, std::string> declarations;
 	std::unordered_map<std::string, std::priority_queue<std::pair<int, int>>> synMap;
 	std::unordered_map<int, std::vector<std::string>> clMap;
+	std::unordered_set<std::string> selectSet;
 	std::priority_queue<std::pair<int, int>> pq;
 	// these variables are used for storage of results
 	std::vector<std::vector<std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>>>> trivial;
@@ -48,6 +49,7 @@ private:
 	void groupByClauseType(int t);
 	void createMaps(std::vector<std::string> synLst, std::pair<int, int> cl);
 	bool mapGraph();
+	void processSelect();
 	bool mapClauses(std::pair<int, int> cl, bool trivial);
 	bool mapSynonym(std::string syn, bool trivial);
 	std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string>> getClause(int cl);
