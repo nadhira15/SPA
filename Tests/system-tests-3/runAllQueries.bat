@@ -2,6 +2,7 @@
 title system test 3 queries
 
 ..\..\Code\Release\AutoTester sourceAlphanumeric.txt Affects.txt out-Affects.xml
+..\..\Code\Release\AutoTester sourceAlphanumeric.txt AffectsStar.txt out-AffectsStar.xml
 
 ..\..\Code\Release\AutoTester sourceAlphanumeric.txt Calls.txt out-Calls.xml
 ..\..\Code\Release\AutoTester sourceAlphanumeric.txt CallsStar.txt out-CallsStar.xml
