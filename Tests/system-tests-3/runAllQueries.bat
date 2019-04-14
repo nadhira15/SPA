@@ -13,9 +13,13 @@ title system test 3 queries
 ..\..\Code\Release\AutoTester sourceAlphanumeric.txt NoCondition.txt out-NoCondition.xml
 
 ..\..\Code\Release\AutoTester sourceAlphanumeric.txt Boolean.txt out-Boolean.xml
+..\..\Code\Release\AutoTester sourceAlphanumeric.txt With.txt out-With.xml
+
 
 ..\..\Code\Release\AutoTester sourceAlphanumeric.txt PatternWhile.txt out-PatternWhile.xml
 ..\..\Code\Release\AutoTester sourceAlphanumeric.txt PatternIf.txt out-PatternIf.xml
+..\..\Code\Release\AutoTester sourceAlphanumeric.txt PatternAssign.txt out-PatternAssign.xml
+
 
 
 echo FINISHED
