@@ -60,6 +60,22 @@ namespace IntegrationTesting
 			store.addVariable("pear");
 			store.addVariable("jackfruit");
 
+			store.addNext(1, 2);
+			store.addNext(2, 3);
+			store.addNext(3, 4);
+			store.addNext(4, 5);
+			store.addNext(5, 6);
+			store.addNext(6, 7);
+			store.addNext(7, 6);
+			store.addNext(5, 8);
+			store.addNext(8, 9);
+			store.addNext(10, 11);
+			store.addNext(11, 12);
+			store.addNext(12, 11);
+			store.addNext(13, 14);
+
+
+
 			store.addFollow(1, 2);
 			store.addFollow(2, 3);
 			store.addFollow(3, 4);
@@ -93,6 +109,30 @@ namespace IntegrationTesting
 			expected.insert(std::make_pair(4, 8));
 
 			Assert::IsTrue(affectsReturn == expected);
+
+		}
+
+		TEST_METHOD(RTDEhasAffectsPairTest) {
+
+			PKB store;
+
+			bool hasAffects;
+
+			hasAffects = RunTimeDesignExtractor().hasAffectsRelation();
+
+			Assert::IsTrue(hasAffects);
+
+		}
+
+		TEST_METHOD(RTDEisAffectTest) {
+
+			PKB store;
+
+			bool isAffects;
+
+			isAffects = RunTimeDesignExtractor().isAffect(4, 8);
+
+			Assert::IsTrue(isAffects);
 
 		}
 
