@@ -67,6 +67,7 @@ namespace IntegrationTesting
 
 		TEST_METHOD(GeneralInformationTest) {
 			PKB pkb = PKB();
+      
 			Assert::IsTrue(PKB().getProcList() == procList);
 			Assert::AreEqual(PKB().getTotalStmNo(), 15);
 			Assert::IsTrue(PKB().getReadStms() == readStmList);
@@ -129,7 +130,7 @@ namespace IntegrationTesting
 			Assert::IsTrue(pkb.getProcVarModifyPairs() ==
 						   std::unordered_set<std::pair<std::string, std::string>, strPairhash>{});
 		}
-
+    
 		TEST_METHOD(UsesRelationTest) {
 			PKB pkb = PKB();
 			Assert::IsTrue(pkb.isStmUsing(3, "banana"));
