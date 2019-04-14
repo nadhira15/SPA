@@ -15,6 +15,7 @@ title system test 3 queries
 ..\..\Code\Release\AutoTester sourceAlphanumeric.txt Boolean.txt out-Boolean.xml
 
 ..\..\Code\Release\AutoTester sourceAlphanumeric.txt PatternWhile.txt out-PatternWhile.xml
+..\..\Code\Release\AutoTester sourceAlphanumeric.txt PatternIf.txt out-PatternIf.xml
 
 
 echo FINISHED
